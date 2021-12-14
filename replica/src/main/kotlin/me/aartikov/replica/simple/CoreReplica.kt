@@ -13,19 +13,17 @@ interface CoreReplica<T : Any> : Replica<T> {
 
     val eventFlow: Flow<ReplicaEvent<T>>
 
-    fun load(forceRefresh: Boolean = false)
-
     fun setData(data: T)
 
     fun mutateData(transform: (T) -> T)
 
     fun makeFresh()
 
-    fun makeStale(reason: StaleReason = StaleReason.ChangedManually)
+    fun makeStale()
 
     fun cancelLoading()
 
-    fun clear(cancelLoading: Boolean = true)
+    fun clear() // TODO: не отменяет текущий запрос?
 
     fun clearError()
 }

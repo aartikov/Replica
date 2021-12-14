@@ -12,5 +12,7 @@ interface Replica<T : Any> {
 
     fun refresh()
 
-    suspend fun get(refreshed: Boolean = false): T
+    suspend fun getData(): T
+
+    suspend fun getRefreshedData(): T
 }

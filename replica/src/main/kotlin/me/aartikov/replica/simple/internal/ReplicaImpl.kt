@@ -1,8 +1,7 @@
 package me.aartikov.replica.simple.internal
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import me.aartikov.replica.simple.*
 import me.aartikov.replica.simple.behaviour.ReplicaBehaviour
 import me.aartikov.replica.simple.internal.Action.*
@@ -71,15 +70,39 @@ internal class ReplicaImpl<T : Any>(
     }
 
     override fun refresh() {
-        load(forceRefresh = true)
+        loop.dispatch(LoadingAction.Load)
     }
 
-    override suspend fun get(refreshed: Boolean): T {
-        TODO("Not yet implemented")
+    override suspend fun getData(): T {
+        return getDataInternal(refreshed = false)
     }
 
-    override fun load(forceRefresh: Boolean) {
-        loop.dispatch(LoadingAction.Load(forceRefresh))
+    override suspend fun getRefreshedData(): T {
+        return getDataInternal(refreshed = true)
+    }
+
+    private suspend fun getDataInternal(refreshed: Boolean): T {
+        val data = state.data
+        if (!refreshed && data != null && data.fresh) {
+            return data.value
+        }
+
+        val event = eventFlow
+            .onStart {
+                refresh()
+            }
+            .filterIsInstance<ReplicaEvent.LoadingEvent<T>>()
+            .filter { it !is ReplicaEvent.LoadingEvent.LoadingStarted }
+            .first()
+
+        when (event) {
+            is ReplicaEvent.LoadingEvent.DataLoaded -> return event.data
+            is ReplicaEvent.LoadingEvent.LoadingCanceled -> throw CancellationException()
+            is ReplicaEvent.LoadingEvent.LoadingError -> throw event.error
+            is ReplicaEvent.LoadingEvent.LoadingStarted -> {
+                throw IllegalStateException("Event can't be LoadingStarted")
+            }
+        }
     }
 
     override fun setData(data: T) {
@@ -94,15 +117,15 @@ internal class ReplicaImpl<T : Any>(
         loop.dispatch(FreshnessChangingAction.MakeFresh)
     }
 
-    override fun makeStale(reason: StaleReason) {
-        loop.dispatch(FreshnessChangingAction.MakeStale(reason))
+    override fun makeStale() {
+        loop.dispatch(FreshnessChangingAction.MakeStale)
     }
 
     override fun cancelLoading() {
         loop.dispatch(LoadingAction.Cancel)
     }
 
-    override fun clear(cancelLoading: Boolean) {
+    override fun clear() {
         TODO("Not yet implemented")
     }
 

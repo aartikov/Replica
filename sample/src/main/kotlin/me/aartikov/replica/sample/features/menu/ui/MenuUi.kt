@@ -30,8 +30,8 @@ fun MenuUi(
             ) {
                 MenuButton(
                     modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.profile_title),
-                    onClick = { component.onMenuItemClick(MenuItem.Profile) }
+                    text = stringResource(R.string.project_title),
+                    onClick = { component.onMenuItemClick(MenuItem.Project) }
                 )
             }
         }

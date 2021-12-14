@@ -3,7 +3,7 @@ package me.aartikov.replica.sample.features.root.ui
 import com.arkivanov.decompose.router.RouterState
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.sample.features.message.ui.MessageComponent
-import me.aartikov.replica.sample.features.profile.ui.ProfileComponent
+import me.aartikov.replica.sample.features.project.ui.ProjectComponent
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 interface RootComponent {
@@ -16,6 +16,6 @@ interface RootComponent {
 
     sealed interface Child {
         class Menu(val component: MenuComponent) : Child
-        class Profile(val component: ProfileComponent) : Child
+        class Project(val component: ProjectComponent) : Child
     }
 }

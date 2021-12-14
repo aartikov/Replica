@@ -1,7 +1,7 @@
 package me.aartikov.replica.simple
 
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 data class ReplicaSettings(
     val loadDataOnActiveObserverAdded: Boolean,
@@ -11,7 +11,7 @@ data class ReplicaSettings(
     companion object {
         val Default = ReplicaSettings(
             loadDataOnActiveObserverAdded = true,
-            staleTime = 1.minutes
+            staleTime = 10.seconds
         )
 
         val WithoutBehaviour = ReplicaSettings(

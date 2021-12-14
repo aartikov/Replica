@@ -1,7 +1,8 @@
 package me.aartikov.replica.simple.internal
 
 import me.aartikov.replica.simple.ReplicaData
-import me.aartikov.replica.simple.StaleReason
+import me.aartikov.replica.simple.ReplicaEvent.FreshnessEvent
+import me.aartikov.replica.simple.ReplicaEvent.LoadingEvent
 import me.aartikov.replica.simple.internal.Action.*
 import me.aartikov.sesame.loop.*
 import me.aartikov.replica.simple.ReplicaEvent as Event
@@ -10,7 +11,7 @@ import me.aartikov.replica.simple.ReplicaState as State
 internal sealed interface Action<out T : Any> {
 
     sealed interface LoadingAction<out T : Any> : Action<T> {
-        data class Load(val forceRefresh: Boolean) : LoadingAction<Nothing>
+        object Load : LoadingAction<Nothing>
         object Cancel : LoadingAction<Nothing>
         data class DataLoaded<T : Any>(val data: T) : LoadingAction<T>
         object LoadingCanceled : LoadingAction<Nothing>
@@ -24,7 +25,7 @@ internal sealed interface Action<out T : Any> {
 
     sealed interface FreshnessChangingAction : Action<Nothing> {
         object MakeFresh : FreshnessChangingAction
-        data class MakeStale(val reason: StaleReason) : FreshnessChangingAction
+        object MakeStale : FreshnessChangingAction
     }
 
     sealed interface ObserverAction : Action<Nothing> {
@@ -64,11 +65,10 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
             when {
                 state.loading -> nothing()
 
-                !action.forceRefresh && state.data?.fresh == true -> nothing()
-
                 else -> next(
                     state.copy(loading = true),
-                    Effect.Load
+                    Effect.Load,
+                    Effect.EmitEvent(LoadingEvent.LoadingStarted)
                 )
             }
         }
@@ -96,15 +96,15 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                     error = null,
                     loading = false
                 ),
-                Effect.EmitEvent(Event.Freshness.BecameFresh)
+                Effect.EmitEvent(LoadingEvent.DataLoaded(action.data)),
+                Effect.EmitEvent(FreshnessEvent.Freshened)
             )
         }
 
         is LoadingAction.LoadingCanceled -> {
             next(
-                state.copy(
-                    loading = false
-                )
+                state.copy(loading = false),
+                Effect.EmitEvent(LoadingEvent.LoadingCanceled),
             )
         }
 
@@ -114,7 +114,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                     error = action.error,
                     loading = false
                 ),
-                Effect.EmitEvent(Event.Error.LoadingError(action.error))
+                Effect.EmitEvent(LoadingEvent.LoadingError(action.error))
             )
         }
     }
@@ -123,8 +123,29 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
         state: State<T>,
         action: DataChangingAction<T>
     ): Next<State<T>, Effect<T>> = when (action) {
-        is DataChangingAction.SetData -> nothing()
-        is DataChangingAction.MutateData -> nothing()
+        is DataChangingAction.SetData -> {
+            next(
+                state.copy(
+                    data = if (state.data != null) {
+                        state.data.copy(value = action.data)
+                    } else {
+                        ReplicaData(
+                            value = action.data,
+                            fresh = false
+                        )
+                    }
+                )
+            )
+        }
+        is DataChangingAction.MutateData -> {
+            next(
+                state.copy(
+                    data = state.data?.copy(
+                        value = action.transform(state.data.value)
+                    )
+                )
+            )
+        }
     }
 
     private fun reduceFreshnessChangingAction(
@@ -137,19 +158,19 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                     state.copy(
                         data = state.data.copy(fresh = true)
                     ),
-                    Effect.EmitEvent(Event.Freshness.BecameFresh)
+                    Effect.EmitEvent(FreshnessEvent.Freshened)
                 )
             } else {
                 nothing()
             }
         }
         is FreshnessChangingAction.MakeStale -> {
-            if (state.data != null) {
+            if (state.data?.fresh == true) {
                 next(
                     state.copy(
                         data = state.data.copy(fresh = false)
                     ),
-                    Effect.EmitEvent(Event.Freshness.BecameStale(action.reason))
+                    Effect.EmitEvent(FreshnessEvent.BecameStale)
                 )
             } else {
                 nothing()

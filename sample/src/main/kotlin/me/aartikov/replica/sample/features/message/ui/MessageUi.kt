@@ -6,7 +6,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,12 +13,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import kotlinx.coroutines.delay
 import me.aartikov.replica.sample.core.ui.message.MessageData
 import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.utils.ShowDialog
 import me.aartikov.replica.sample.core.ui.utils.resolve
-import me.aartikov.sesame.dialog.DialogControl
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 @Composable
@@ -28,34 +24,29 @@ fun MessageUi(
     modifier: Modifier = Modifier,
     bottomPadding: Dp,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        MessageDialog(component.dialogControl, bottomPadding)
-    }
-}
-
-@Composable
-fun MessageDialog(dialog: DialogControl<MessageData, Unit>, bottomPadding: Dp) {
-    ShowDialog(dialog) { data ->
-        MessagePopup(
-            messageData = data,
-            bottomPadding = bottomPadding,
-            dismiss = dialog::dismiss
-        )
+    val inverseIsDarkTheme = MaterialTheme.colors.isLight
+    AppTheme(inverseIsDarkTheme) {
+        Box(modifier = modifier.fillMaxSize()) {
+            component.visibleMessageData?.let {
+                MessagePopup(
+                    messageData = it,
+                    bottomPadding = bottomPadding
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun MessagePopup(
     messageData: MessageData,
-    bottomPadding: Dp,
-    dismiss: () -> Unit
+    bottomPadding: Dp
 ) {
     Popup(
         alignment = Alignment.BottomCenter,
-        onDismissRequest = dismiss,
         properties = PopupProperties(
             dismissOnBackPress = false,
-            dismissOnClickOutside = false,
+            dismissOnClickOutside = false
         )
     ) {
         Card(
@@ -75,11 +66,6 @@ private fun MessagePopup(
             )
         }
     }
-
-    LaunchedEffect(messageData) {
-        delay(4000L)
-        dismiss()
-    }
 }
 
 @Preview(showSystemUi = true)
@@ -92,7 +78,5 @@ fun MessageUiPreview() {
 
 class FakeMessageComponent : MessageComponent {
 
-    override val dialogControl = DialogControl<MessageData, Unit>().apply {
-        show(MessageData(text = LocalizedString.raw("Message")))
-    }
+    override val visibleMessageData = MessageData(LocalizedString.raw("Message"))
 }

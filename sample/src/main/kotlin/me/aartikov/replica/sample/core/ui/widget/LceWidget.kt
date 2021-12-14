@@ -11,7 +11,6 @@ fun <T : Any> LceWidget(
     state: Loadable<T>,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
-    emptyContent: @Composable (() -> Unit)? = null,
     content: @Composable (data: T, refreshing: Boolean) -> Unit
 ) {
     val (data, loading, error) = state
@@ -25,9 +24,5 @@ fun <T : Any> LceWidget(
             onRetryClick = onRetryClick,
             modifier = modifier
         )
-
-        else -> if (emptyContent != null) {
-            emptyContent()
-        }
     }
 }

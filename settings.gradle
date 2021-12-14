@@ -35,18 +35,27 @@ dependencyResolutionManagement {
             alias('accompanist-swiperefresh').to('com.google.accompanist', 'accompanist-swiperefresh').version('0.20.0')
             alias('accompanist-systemuicontroller').to('com.google.accompanist', 'accompanist-systemuicontroller').version('0.20.0')
             alias('coil').to('io.coil-kt', 'coil-compose').version('1.4.0')
+            alias('splashscreen').to('androidx.core', 'core-splashscreen').version('1.0.0-alpha02')
 
             // Architecture
             version('sesame', '1.3.0-beta1')
             alias('sesame-loop').to('com.github.aartikov', 'sesame-loop').versionRef('sesame') // TODO: copy to Replica?
             alias('sesame-localizedString').to('com.github.aartikov', 'sesame-localized-string').versionRef('sesame')
-            alias('sesame-dialog').to('com.github.aartikov', 'sesame-dialog').versionRef('sesame')
-            bundle('sesame', ['sesame-dialog', 'sesame-localizedString'])
 
             version('decompose', '0.4.0')
             alias('decompose-core').to('com.arkivanov.decompose', 'decompose').versionRef('decompose')
             alias('decompose-compose').to('com.arkivanov.decompose', 'extensions-compose-jetpack').versionRef('decompose')
             bundle('decompose', ['decompose-core', 'decompose-compose'])
+
+
+            // Serialization
+            alias('serialization-json').to('org.jetbrains.kotlinx', 'kotlinx-serialization-json').version('1.3.0')
+            alias('serialization-plugin').to('org.jetbrains.kotlin', 'kotlin-serialization').versionRef('kotlin')
+
+            // Network
+            alias('retrofit-core').to('com.squareup.retrofit2', 'retrofit').version('2.9.0')
+            alias('retrofit-converter-serialization').to('com.jakewharton.retrofit', 'retrofit2-kotlinx-serialization-converter').version('0.8.0')
+            alias('okhttp-logging').to('com.squareup.okhttp3', 'logging-interceptor').version('4.9.2')
 
             // DI
             alias('koin-android').to('io.insert-koin', 'koin-android').version('3.1.2')

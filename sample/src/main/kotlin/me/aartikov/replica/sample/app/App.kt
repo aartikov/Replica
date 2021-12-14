@@ -1,7 +1,6 @@
 package me.aartikov.replica.sample.app
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
 import me.aartikov.replica.sample.BuildConfig
 import me.aartikov.replica.sample.core.ui.ComponentFactory
 import org.koin.android.ext.koin.androidContext
@@ -16,7 +15,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initLogger()
         koin = createKoin().also {
             it.declare(ComponentFactory(it))

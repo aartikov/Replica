@@ -1,20 +1,44 @@
 package me.aartikov.replica.sample.core.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
-private val LightColorPalette = lightColors(
-    primary = Colors.Red,
-    primaryVariant = Colors.DarkRed,
-    secondary = Colors.Green,
-    surface = Colors.LightGray
+private val LightColors = lightColors(
+    primary = RawColors.orange,
+    primaryVariant = RawColors.darkOrange,
+    secondary = RawColors.orange,
+    background = RawColors.white,
+    surface = RawColors.lightGray,
+    error = RawColors.red,
+    onPrimary = RawColors.white,
+    onSecondary = RawColors.white,
+    onBackground = RawColors.black,
+    onSurface = RawColors.black
+)
+
+private val DarkColors = darkColors(
+    primary = RawColors.orangeDesaturated,
+    primaryVariant = RawColors.orangeDesaturated,
+    secondary = RawColors.orangeDesaturated,
+    background = RawColors.darkGray,
+    surface = RawColors.darkGray,
+    error = RawColors.redDesaturated,
+    onPrimary = RawColors.black,
+    onSecondary = RawColors.black,
+    onBackground = RawColors.white,
+    onSurface = RawColors.white
 )
 
 @Composable
-fun AppTheme(content: @Composable() () -> Unit) {
+fun AppTheme(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
     MaterialTheme(
-        colors = LightColorPalette,
+        colors = if (isDarkTheme) DarkColors else LightColors,
         typography = Typography,
         shapes = Shapes,
         content = content

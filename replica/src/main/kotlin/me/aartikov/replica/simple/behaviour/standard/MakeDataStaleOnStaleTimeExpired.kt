@@ -5,22 +5,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.aartikov.replica.simple.CoreReplica
 import me.aartikov.replica.simple.ReplicaEvent
-import me.aartikov.replica.simple.StaleReason
 import me.aartikov.replica.simple.behaviour.ReplicaBehaviour
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-internal class MakeStaleOnTimeExpired<T : Any>(
+internal class MakeDataStaleOnStaleTimeExpired<T : Any>(
     private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 
     private var staleJob: Job? = null
 
     override fun handleEvent(replica: CoreReplica<T>, event: ReplicaEvent<T>) {
-        if (event is ReplicaEvent.Freshness) {
+        if (event is ReplicaEvent.FreshnessEvent) {
             when (event) {
-                is ReplicaEvent.Freshness.BecameFresh -> launchStaleJob(replica)
-                is ReplicaEvent.Freshness.BecameStale -> cancelStaleJob()
+                is ReplicaEvent.FreshnessEvent.Freshened -> launchStaleJob(replica)
+                is ReplicaEvent.FreshnessEvent.BecameStale -> cancelStaleJob()
             }
         }
     }
@@ -31,10 +30,10 @@ internal class MakeStaleOnTimeExpired<T : Any>(
         if (staleTime.isPositive()) {
             staleJob = replica.coroutineScope.launch {
                 delay(staleTime)
-                replica.makeStale(reason = StaleReason.StaleTimeExpired)
+                replica.makeStale()
             }
         } else {
-            replica.makeStale(reason = StaleReason.StaleTimeExpired)
+            replica.makeStale()
         }
     }
 

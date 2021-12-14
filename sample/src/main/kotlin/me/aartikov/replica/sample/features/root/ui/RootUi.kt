@@ -20,7 +20,7 @@ import me.aartikov.replica.sample.features.menu.ui.FakeMenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuUi
 import me.aartikov.replica.sample.features.message.ui.FakeMessageComponent
 import me.aartikov.replica.sample.features.message.ui.MessageUi
-import me.aartikov.replica.sample.features.profile.ui.ProfileUi
+import me.aartikov.replica.sample.features.project.ui.ProjectUi
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 @Composable
@@ -28,11 +28,8 @@ fun RootUi(
     component: RootComponent,
     modifier: Modifier = Modifier
 ) {
-    val systemUiController = rememberSystemUiController()
-    val statusBarColor = MaterialTheme.colors.primaryVariant
-    LaunchedEffect(statusBarColor) {
-        systemUiController.setStatusBarColor(statusBarColor)
-    }
+
+    SystemBarColors()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -48,8 +45,27 @@ fun RootUi(
     MessageUi(
         component = component.messageComponent,
         modifier = modifier,
-        bottomPadding = 40.dp
+        bottomPadding = 16.dp
     )
+}
+
+@Composable
+private fun SystemBarColors() {
+    val systemUiController = rememberSystemUiController()
+
+    val statusBarColor = if (MaterialTheme.colors.isLight) {
+        MaterialTheme.colors.primaryVariant
+    } else {
+        MaterialTheme.colors.surface
+    }
+    LaunchedEffect(statusBarColor) {
+        systemUiController.setStatusBarColor(statusBarColor)
+    }
+
+    val navigationBarColor = MaterialTheme.colors.surface
+    LaunchedEffect(navigationBarColor) {
+        systemUiController.setNavigationBarColor(navigationBarColor)
+    }
 }
 
 @Composable
@@ -57,7 +73,7 @@ private fun Content(routerState: RouterState<*, RootComponent.Child>) {
     Children(routerState) { child ->
         when (val instance = child.instance) {
             is RootComponent.Child.Menu -> MenuUi(instance.component)
-            is RootComponent.Child.Profile -> ProfileUi(instance.component)
+            is RootComponent.Child.Project -> ProjectUi(instance.component)
         }
     }
 }

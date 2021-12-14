@@ -2,10 +2,7 @@ package me.aartikov.replica.sample.core.ui.error_handing
 
 import me.aartikov.replica.sample.BuildConfig
 import me.aartikov.replica.sample.R
-import me.aartikov.replica.sample.core.domain.domain.exception.DeserializationException
-import me.aartikov.replica.sample.core.domain.domain.exception.NoInternetException
-import me.aartikov.replica.sample.core.domain.domain.exception.NoServerResponseException
-import me.aartikov.replica.sample.core.domain.domain.exception.ServerException
+import me.aartikov.replica.sample.core.domain.*
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 val Exception.errorMessage: LocalizedString
@@ -15,6 +12,8 @@ val Exception.errorMessage: LocalizedString
         is NoServerResponseException -> LocalizedString.resource(R.string.error_no_server_response)
 
         is NoInternetException -> LocalizedString.resource(R.string.error_no_internet_connection)
+
+        is MatchingAppNotFoundException -> LocalizedString.resource(R.string.error_matching_app_not_found)
 
         else -> {
             val description = this.message

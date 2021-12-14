@@ -3,9 +3,10 @@
     <string name="common_retry">Retry</string>
 
     <!-- Errors -->
-    <string name="error_no_internet_connection">No internet connection.</string>
-    <string name="error_invalid_response">"Server error. Please try again later.</string>
-    <string name="error_no_server_response">"Failed to connect to the server. Please try again later.</string>
-    <string name="error_unexpected">Something goes wrong.</string>
+    <string name="error_no_internet_connection">No internet connection</string>
+    <string name="error_invalid_response">Server error. Please try again later</string>
+    <string name="error_no_server_response">Failed to connect to the server. Please try again later</string>
+    <string name="error_matching_app_not_found">Matching application is not found.</string>
+    <string name="error_unexpected">Something goes wrong</string>
     <string name="error_unexpected_with_description">Something goes wrong. %s</string>
 </resources>

@@ -6,6 +6,7 @@ buildscript {
     dependencies {
         classpath libs.kotlin.plugin
         classpath libs.android.plugin
+        classpath libs.serialization.plugin
     }
 }
 

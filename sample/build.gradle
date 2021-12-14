@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -26,6 +27,7 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         useIR = true
     }
 
@@ -57,10 +59,19 @@ dependencies {
     implementation libs.accompanist.swiperefresh
     implementation libs.accompanist.systemuicontroller
     implementation libs.coil
+    implementation libs.splashscreen
 
     // Architecture
-    implementation libs.bundles.sesame
+    implementation libs.sesame.localizedString
     implementation libs.bundles.decompose
+
+    // Network
+    implementation libs.retrofit.core
+    implementation libs.retrofit.converter.serialization
+    implementation libs.okhttp.logging
+
+    // Serialization
+    implementation libs.serialization.json
 
     // DI
     implementation libs.koin.android

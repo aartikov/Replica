@@ -23,7 +23,7 @@ interface ReplicaClient {
 
     fun <T : Any> createReplica(
         coroutineScope: CoroutineScope = this.coroutineScope,
-        replicaSettings: ReplicaSettings = this.replicaSettings,
+        settings: ReplicaSettings = this.replicaSettings,
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
         fetcher: Fetcher<T>
     ): CoreReplica<T>

@@ -16,7 +16,7 @@ import me.aartikov.replica.sample.features.menu.createMenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuItem
 import me.aartikov.replica.sample.features.message.createMessagesComponent
-import me.aartikov.replica.sample.features.profile.createProfileComponent
+import me.aartikov.replica.sample.features.project.createProjectComponent
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 class RealRootComponent(
@@ -49,23 +49,23 @@ class RealRootComponent(
                 )
             }
 
-            is ChildConfig.Profile -> {
-                RootComponent.Child.Profile(
-                    componentFactory.createProfileComponent(componentContext)
+            is ChildConfig.Project -> {
+                RootComponent.Child.Project(
+                    componentFactory.createProjectComponent(componentContext)
                 )
             }
         }
 
     private fun onMenuOutput(output: MenuComponent.Output): Unit = when (output) {
         is MenuComponent.Output.OpenScreen -> when (output.menuItem) {
-            MenuItem.Profile -> router.push(ChildConfig.Profile)
+            MenuItem.Project -> router.push(ChildConfig.Project)
         }
     }
 
     private fun getTitle(routerState: RouterState<*, RootComponent.Child>): LocalizedString =
         when (routerState.activeChild.instance) {
             is RootComponent.Child.Menu -> LocalizedString.resource(R.string.app_name)
-            is RootComponent.Child.Profile -> LocalizedString.resource(R.string.profile_title)
+            is RootComponent.Child.Project -> LocalizedString.resource(R.string.project_title)
         }
 
     private sealed interface ChildConfig : Parcelable {
@@ -74,7 +74,7 @@ class RealRootComponent(
         object Menu : ChildConfig
 
         @Parcelize
-        object Profile : ChildConfig
+        object Project : ChildConfig
     }
 }
 

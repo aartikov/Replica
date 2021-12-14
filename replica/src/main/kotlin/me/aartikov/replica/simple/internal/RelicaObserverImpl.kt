@@ -46,7 +46,7 @@ internal class ReplicaObserverImpl<T : Any>(
     private fun launchErrorEventsObserving() {
         replicaEventFlow
             .toActivableFlow(coroutineScope, activeFlow)
-            .filterIsInstance<ReplicaEvent.Error>()
+            .filterIsInstance<ReplicaEvent.ErrorEvent>()
             .onEach { errorEvent ->
                 _errorEventFlow.emit(errorEvent.error)
             }

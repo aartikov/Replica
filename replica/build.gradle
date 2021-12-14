@@ -11,13 +11,14 @@ java {
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+        useIR = true
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        useIR = true
     }
 }
 

@@ -20,14 +20,14 @@ internal class ReplicaClientImpl(
 
     override fun <T : Any> createReplica(
         coroutineScope: CoroutineScope,
-        replicaSettings: ReplicaSettings,
+        settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>>,
         fetcher: Fetcher<T>
     ): CoreReplica<T> {
         val replica = ReplicaImpl<T>(
             coroutineScope,
             fetcher,
-            behaviours = createStandardBehaviours<T>(replicaSettings) + behaviours,
+            behaviours = createStandardBehaviours<T>(settings) + behaviours,
             onFinished = this::removeReplica
         )
         replicas.add(replica)

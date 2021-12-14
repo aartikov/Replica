@@ -8,6 +8,8 @@ data class ReplicaState<T : Any>(
     val activeObserverUuids: Set<String>
 ) {
 
+    val hasFreshData get() = data != null && data.fresh
+
     val observerCount get() = observerUuids.size
 
     val activeObserverCount get() = activeObserverUuids.size
