@@ -1,0 +1,16 @@
+# Build files and folders
+.gradle/
+build/
+
+# Properties
+local.properties
+
+# Idea
+.idea/
+**/*.iml
+
+# Mac OS
+.DS_Store
+
+# Layout Inspector files
+captures/

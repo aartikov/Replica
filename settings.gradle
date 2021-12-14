@@ -1,0 +1,62 @@
+rootProject.name = "Replica"
+include ':sample'
+include ':replica'
+
+enableFeaturePreview('VERSION_CATALOGS')
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    versionCatalogs {
+        libs {
+            // Kotlin
+            version('kotlin', '1.6.0')
+            alias('kotlin-plugin').to('org.jetbrains.kotlin', 'kotlin-gradle-plugin').versionRef('kotlin')
+
+            version('coroutines', '1.6.0-RC')
+            alias('coroutines-core').to('org.jetbrains.kotlinx', 'kotlinx-coroutines-core').versionRef('coroutines')
+            alias('coroutines-android').to('org.jetbrains.kotlinx', 'kotlinx-coroutines-android').versionRef('coroutines')
+
+            // Android
+            alias('android-plugin').to('com.android.tools.build', 'gradle').version('7.0.3')
+            alias('android-desugar').to('com.android.tools', 'desugar_jdk_libs').version('1.1.5')
+
+            // UI
+            version('compose', '1.1.0-beta04')
+            alias('compose-ui').to('androidx.compose.ui', 'ui').versionRef('compose')
+            alias('compose-material').to('androidx.compose.material', 'material').versionRef('compose')
+            alias('compose-preview').to('androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
+            alias('compose-tooling').to('androidx.compose.ui', 'ui-tooling').versionRef('compose')
+            alias('activity-compose').to('androidx.activity', 'activity-compose').version('1.3.1')
+            alias('appcompat').to('androidx.appcompat', 'appcompat').version('1.3.1')
+            alias('accompanist-swiperefresh').to('com.google.accompanist', 'accompanist-swiperefresh').version('0.20.0')
+            alias('accompanist-systemuicontroller').to('com.google.accompanist', 'accompanist-systemuicontroller').version('0.20.0')
+            alias('coil').to('io.coil-kt', 'coil-compose').version('1.4.0')
+
+            // Architecture
+            version('sesame', '1.3.0-beta1')
+            alias('sesame-loop').to('com.github.aartikov', 'sesame-loop').versionRef('sesame') // TODO: copy to Replica?
+            alias('sesame-localizedString').to('com.github.aartikov', 'sesame-localized-string').versionRef('sesame')
+            alias('sesame-dialog').to('com.github.aartikov', 'sesame-dialog').versionRef('sesame')
+            bundle('sesame', ['sesame-dialog', 'sesame-localizedString'])
+
+            version('decompose', '0.4.0')
+            alias('decompose-core').to('com.arkivanov.decompose', 'decompose').versionRef('decompose')
+            alias('decompose-compose').to('com.arkivanov.decompose', 'extensions-compose-jetpack').versionRef('decompose')
+            bundle('decompose', ['decompose-core', 'decompose-compose'])
+
+            // DI
+            alias('koin-android').to('io.insert-koin', 'koin-android').version('3.1.2')
+
+            // Debugging
+            alias('timber').to('com.jakewharton.timber', 'timber').version('5.0.1')
+
+            // Testing
+            alias('junit').to('junit', 'junit').version('4.13.2')
+
+        }
+    }
+}

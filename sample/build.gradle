@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "me.aartikov.replica.sample"
+        minSdk 23
+        targetSdk 31
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        useIR = true
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.compose.get()
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring libs.android.desugar
+
+    implementation project(':replica')
+
+    // Kotlin
+    implementation libs.coroutines.core
+    implementation libs.coroutines.android
+
+    // UI
+    implementation libs.compose.ui
+    implementation libs.compose.material
+    implementation libs.compose.preview
+    debugImplementation libs.compose.tooling
+    implementation libs.activity.compose
+    implementation libs.appcompat
+    implementation libs.accompanist.swiperefresh
+    implementation libs.accompanist.systemuicontroller
+    implementation libs.coil
+
+    // Architecture
+    implementation libs.bundles.sesame
+    implementation libs.bundles.decompose
+
+    // DI
+    implementation libs.koin.android
+
+    // Debugging
+    implementation libs.timber
+}

@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath libs.kotlin.plugin
+        classpath libs.android.plugin
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
