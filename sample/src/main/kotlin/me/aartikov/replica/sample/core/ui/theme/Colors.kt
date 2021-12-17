@@ -9,7 +9,7 @@ object RawColors {
     val red = Color(0xFFFF5722)
     val redDesaturated = Color(0xFFE09983)
     val white = Color(0xFFFFFFFF)
-    val lightGray = Color(0xFFE7E7E7)
+    val lightGray = Color(0xFFEFEFEF)
     val darkGray = Color(0xFF121212)
     val black = Color(0xFF000000)
 }

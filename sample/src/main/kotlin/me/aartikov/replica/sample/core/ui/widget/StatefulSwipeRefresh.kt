@@ -31,7 +31,6 @@ fun StatefulSwipeRefresh(
         indicator = { s, trigger ->
             SwipeRefreshIndicator(
                 s, trigger,
-                backgroundColor = MaterialTheme.colors.background,
                 contentColor = MaterialTheme.colors.primary
             )
         },
