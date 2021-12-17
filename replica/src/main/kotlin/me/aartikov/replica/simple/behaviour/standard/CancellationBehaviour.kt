@@ -11,8 +11,8 @@ import me.aartikov.replica.simple.state
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-internal class ClearingBehaviour<T : Any>(
-    private val clearTime: Duration
+internal class CancellationBehaviour<T : Any>(
+    private val cancelTime: Duration
 ) : ReplicaBehaviour<T> {
 
     private var job: Job? = null
@@ -20,7 +20,7 @@ internal class ClearingBehaviour<T : Any>(
     override fun handleEvent(replica: CoreReplica<T>, event: ReplicaEvent<T>) {
         when (event) {
             is ReplicaEvent.ObserverCountChanged, is ReplicaEvent.LoadingEvent -> {
-                if (replica.state.canBeCleared) {
+                if (replica.state.canBeCanceled) {
                     launchJob(replica)
                 } else {
                     cancelJob()
@@ -30,18 +30,18 @@ internal class ClearingBehaviour<T : Any>(
         }
     }
 
-    private val ReplicaState<T>.canBeCleared: Boolean get() = observerCount == 0 && !loading
+    private val ReplicaState<T>.canBeCanceled: Boolean get() = observerCount == 0 && loading && !dataRequested
 
     @OptIn(ExperimentalTime::class)
     private fun launchJob(replica: CoreReplica<T>) {
         cancelJob()
-        if (clearTime.isPositive()) {
+        if (cancelTime.isPositive()) {
             job = replica.coroutineScope.launch {
-                delay(clearTime)
-                replica.clear()
+                delay(cancelTime)
+                replica.cancelLoading()
             }
         } else {
-            replica.clear()
+            replica.cancelLoading()
         }
     }
 

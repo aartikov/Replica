@@ -71,12 +71,12 @@ internal class ReplicaImpl<T : Any>(
     }
 
     override fun refresh() {
-        loop.dispatch(LoadingAction.Load)
+        loop.dispatch(LoadingAction.Load())
     }
 
     override fun revalidate() {
         if (!state.hasFreshData) {
-            loop.dispatch(LoadingAction.Load)
+            loop.dispatch(LoadingAction.Load())
         }
     }
 
@@ -96,7 +96,7 @@ internal class ReplicaImpl<T : Any>(
 
         val event = eventFlow
             .onStart {
-                refresh()
+                loop.dispatch(LoadingAction.Load(dataRequested = true))
             }
             .filterIsInstance<LoadingEvent.LoadingFinished<T>>()
             .first()

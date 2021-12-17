@@ -1,6 +1,7 @@
 package me.aartikov.replica.simple.behaviour
 
 import me.aartikov.replica.simple.ReplicaSettings
+import me.aartikov.replica.simple.behaviour.standard.CancellationBehaviour
 import me.aartikov.replica.simple.behaviour.standard.ClearingBehaviour
 import me.aartikov.replica.simple.behaviour.standard.RevalidateOnActivatedBehaviour
 import me.aartikov.replica.simple.behaviour.standard.StalenessBehaviour
@@ -18,5 +19,9 @@ internal fun <T : Any> createStandardBehaviours(replicaSettings: ReplicaSettings
 
         if (replicaSettings.clearTime != null) {
             add(ClearingBehaviour(replicaSettings.clearTime))
+        }
+
+        if (replicaSettings.cancelTime != null) {
+            add(CancellationBehaviour(replicaSettings.cancelTime))
         }
     }

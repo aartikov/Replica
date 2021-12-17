@@ -5,7 +5,8 @@ data class ReplicaState<T : Any>(
     val loading: Boolean,
     val error: Exception?,
     val observerUuids: Set<String>,
-    val activeObserverUuids: Set<String>
+    val activeObserverUuids: Set<String>,
+    val dataRequested: Boolean
 ) {
 
     val hasFreshData get() = data != null && data.fresh
@@ -20,7 +21,8 @@ data class ReplicaState<T : Any>(
             loading = false,
             error = null,
             observerUuids = emptySet(),
-            activeObserverUuids = emptySet()
+            activeObserverUuids = emptySet(),
+            dataRequested = false
         )
     }
 }

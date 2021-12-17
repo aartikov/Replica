@@ -6,7 +6,8 @@ import kotlin.time.Duration.Companion.seconds
 data class ReplicaSettings(
     val revalidateOnActivated: Boolean,
     val staleTime: Duration?,
-    val clearTime: Duration?
+    val clearTime: Duration?,
+    val cancelTime: Duration?
 ) {
 
     companion object {
@@ -14,13 +15,15 @@ data class ReplicaSettings(
         val Default = ReplicaSettings(
             revalidateOnActivated = true,
             staleTime = 10.seconds,
-            clearTime = null
+            clearTime = null,
+            cancelTime = 0.5.seconds
         )
 
         val WithoutBehaviour = ReplicaSettings(
             revalidateOnActivated = false,
             staleTime = null,
-            clearTime = null
+            clearTime = null,
+            cancelTime = null
         )
     }
 }

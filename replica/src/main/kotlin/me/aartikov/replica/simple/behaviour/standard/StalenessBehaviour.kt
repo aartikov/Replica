@@ -13,21 +13,21 @@ internal class StalenessBehaviour<T : Any>(
     private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 
-    private var staleJob: Job? = null
+    private var job: Job? = null
 
     override fun handleEvent(replica: CoreReplica<T>, event: ReplicaEvent<T>) {
         when (event) {
-            is ReplicaEvent.FreshnessEvent.Freshened -> launchStaleJob(replica)
-            is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> cancelStaleJob()
+            is ReplicaEvent.FreshnessEvent.Freshened -> launchJob(replica)
+            is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> cancelJob()
             else -> Unit
         }
     }
 
     @OptIn(ExperimentalTime::class)
-    private fun launchStaleJob(replica: CoreReplica<T>) {
-        cancelStaleJob()
+    private fun launchJob(replica: CoreReplica<T>) {
+        cancelJob()
         if (staleTime.isPositive()) {
-            staleJob = replica.coroutineScope.launch {
+            job = replica.coroutineScope.launch {
                 delay(staleTime)
                 replica.makeStale()
             }
@@ -36,8 +36,8 @@ internal class StalenessBehaviour<T : Any>(
         }
     }
 
-    private fun cancelStaleJob() {
-        staleJob?.cancel()
-        staleJob = null
+    private fun cancelJob() {
+        job?.cancel()
+        job = null
     }
 }

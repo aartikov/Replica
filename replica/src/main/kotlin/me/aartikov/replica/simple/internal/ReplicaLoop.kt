@@ -11,7 +11,7 @@ import me.aartikov.replica.simple.ReplicaState as State
 internal sealed interface Action<out T : Any> {
 
     sealed interface LoadingAction<out T : Any> : Action<T> {
-        object Load : LoadingAction<Nothing>
+        data class Load(val dataRequested: Boolean = false) : LoadingAction<Nothing>
         object Cancel : LoadingAction<Nothing>
         data class DataLoaded<T : Any>(val data: T) : LoadingAction<T>
         object LoadingCanceled : LoadingAction<Nothing>
@@ -70,10 +70,19 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
 
         is LoadingAction.Load -> {
             when {
-                state.loading -> nothing()
+                state.loading -> if (action.dataRequested && !state.dataRequested) {
+                    next(
+                        state.copy(dataRequested = true)
+                    )
+                } else {
+                    nothing()
+                }
 
                 else -> next(
-                    state.copy(loading = true),
+                    state.copy(
+                        loading = true,
+                        dataRequested = state.dataRequested || action.dataRequested
+                    ),
                     Effect.Load,
                     Effect.EmitEvent(LoadingEvent.LoadingStarted)
                 )
@@ -86,7 +95,10 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
 
                 else -> {
                     next(
-                        state.copy(loading = false),
+                        state.copy(
+                            loading = false,
+                            dataRequested = false
+                        ),
                         Effect.CancelLoading
                     )
                 }
@@ -101,7 +113,8 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                         fresh = true
                     ),
                     error = null,
-                    loading = false
+                    loading = false,
+                    dataRequested = false
                 ),
                 Effect.EmitEvent(LoadingEvent.LoadingFinished.Success(action.data)),
                 Effect.EmitEvent(FreshnessEvent.Freshened)
@@ -110,7 +123,10 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
 
         is LoadingAction.LoadingCanceled -> {
             next(
-                state.copy(loading = false),
+                state.copy(
+                    loading = false,
+                    dataRequested = false
+                ),
                 Effect.EmitEvent(LoadingEvent.LoadingFinished.Canceled),
             )
         }
@@ -119,7 +135,8 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
             next(
                 state.copy(
                     error = action.error,
-                    loading = false
+                    loading = false,
+                    dataRequested = false
                 ),
                 Effect.EmitEvent(LoadingEvent.LoadingFinished.Error(action.error))
             )
