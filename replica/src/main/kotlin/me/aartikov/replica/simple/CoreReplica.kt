@@ -21,9 +21,11 @@ interface CoreReplica<T : Any> : Replica<T> {
 
     fun makeStale()
 
+    fun invalidate()
+
     fun cancelLoading()
 
-    fun clear() // TODO: не отменяет текущий запрос?
+    fun clear() // cancels in progress loading
 
     fun clearError()
 }

@@ -3,13 +3,14 @@ package me.aartikov.replica.simple.internal
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.simple.*
+import me.aartikov.replica.simple.ReplicaEvent.*
 import me.aartikov.replica.simple.behaviour.ReplicaBehaviour
 import me.aartikov.replica.simple.internal.Action.*
 
 internal class ReplicaImpl<T : Any>(
+    behaviours: List<ReplicaBehaviour<T>>,
     override val coroutineScope: CoroutineScope,
     fetcher: Fetcher<T>,
-    behaviours: List<ReplicaBehaviour<T>>,
     onFinished: (ReplicaImpl<T>) -> Unit
 ) : CoreReplica<T> {
 
@@ -73,6 +74,12 @@ internal class ReplicaImpl<T : Any>(
         loop.dispatch(LoadingAction.Load)
     }
 
+    override fun revalidate() {
+        if (!state.hasFreshData) {
+            loop.dispatch(LoadingAction.Load)
+        }
+    }
+
     override suspend fun getData(): T {
         return getDataInternal(refreshed = false)
     }
@@ -91,17 +98,13 @@ internal class ReplicaImpl<T : Any>(
             .onStart {
                 refresh()
             }
-            .filterIsInstance<ReplicaEvent.LoadingEvent<T>>()
-            .filter { it !is ReplicaEvent.LoadingEvent.LoadingStarted }
+            .filterIsInstance<LoadingEvent.LoadingFinished<T>>()
             .first()
 
         when (event) {
-            is ReplicaEvent.LoadingEvent.DataLoaded -> return event.data
-            is ReplicaEvent.LoadingEvent.LoadingCanceled -> throw CancellationException()
-            is ReplicaEvent.LoadingEvent.LoadingError -> throw event.error
-            is ReplicaEvent.LoadingEvent.LoadingStarted -> {
-                throw IllegalStateException("Event can't be LoadingStarted")
-            }
+            is LoadingEvent.LoadingFinished.Success -> return event.data
+            is LoadingEvent.LoadingFinished.Canceled -> throw CancellationException()
+            is LoadingEvent.LoadingFinished.Error -> throw event.error
         }
     }
 
@@ -121,15 +124,22 @@ internal class ReplicaImpl<T : Any>(
         loop.dispatch(FreshnessChangingAction.MakeStale)
     }
 
+    override fun invalidate() {
+        makeStale()
+        if (state.activeObserverCount > 0) {
+            refresh()
+        }
+    }
+
     override fun cancelLoading() {
         loop.dispatch(LoadingAction.Cancel)
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        loop.dispatch(ClearAction.ClearAll)
     }
 
     override fun clearError() {
-        TODO("Not yet implemented")
+        loop.dispatch(ClearAction.ClearError)
     }
 }

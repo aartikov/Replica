@@ -28,6 +28,12 @@ internal sealed interface Action<out T : Any> {
         object MakeStale : FreshnessChangingAction
     }
 
+
+    sealed interface ClearAction : Action<Nothing> {
+        object ClearAll : ClearAction
+        object ClearError : ClearAction
+    }
+
     sealed interface ObserverAction : Action<Nothing> {
         data class ObserverAdded(val uuid: String, val active: Boolean) : ObserverAction
         data class ObserverRemoved(val uuid: String) : ObserverAction
@@ -53,6 +59,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
         is LoadingAction -> reduceLoadingAction(state, action)
         is DataChangingAction -> reduceDataChangingAction(state, action)
         is FreshnessChangingAction -> reduceFreshnessChangingAction(state, action)
+        is ClearAction -> reduceClearAction(state, action)
         is ObserverAction -> reduceObservingAction(state, action)
     }
 
@@ -96,7 +103,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                     error = null,
                     loading = false
                 ),
-                Effect.EmitEvent(LoadingEvent.DataLoaded(action.data)),
+                Effect.EmitEvent(LoadingEvent.LoadingFinished.Success(action.data)),
                 Effect.EmitEvent(FreshnessEvent.Freshened)
             )
         }
@@ -104,7 +111,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
         is LoadingAction.LoadingCanceled -> {
             next(
                 state.copy(loading = false),
-                Effect.EmitEvent(LoadingEvent.LoadingCanceled),
+                Effect.EmitEvent(LoadingEvent.LoadingFinished.Canceled),
             )
         }
 
@@ -114,7 +121,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                     error = action.error,
                     loading = false
                 ),
-                Effect.EmitEvent(LoadingEvent.LoadingError(action.error))
+                Effect.EmitEvent(LoadingEvent.LoadingFinished.Error(action.error))
             )
         }
     }
@@ -175,6 +182,24 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
             } else {
                 nothing()
             }
+        }
+    }
+
+    private fun reduceClearAction(
+        state: State<T>,
+        action: ClearAction
+    ): Next<State<T>, Effect<T>> = when (action) {
+        ClearAction.ClearAll -> {
+            next(
+                state = state.copy(data = null),
+                Effect.CancelLoading,
+                Effect.EmitEvent(Event.ClearedEvent)
+            )
+        }
+        ClearAction.ClearError -> {
+            next(
+                state = state.copy(error = null)
+            )
         }
     }
 

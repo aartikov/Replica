@@ -4,19 +4,23 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 data class ReplicaSettings(
-    val loadDataOnActiveObserverAdded: Boolean,
-    val staleTime: Duration?
+    val revalidateOnActivated: Boolean,
+    val staleTime: Duration?,
+    val clearTime: Duration?
 ) {
 
     companion object {
+
         val Default = ReplicaSettings(
-            loadDataOnActiveObserverAdded = true,
-            staleTime = 10.seconds
+            revalidateOnActivated = true,
+            staleTime = 10.seconds,
+            clearTime = null
         )
 
         val WithoutBehaviour = ReplicaSettings(
-            loadDataOnActiveObserverAdded = false,
-            staleTime = null
+            revalidateOnActivated = false,
+            staleTime = null,
+            clearTime = null
         )
     }
 }

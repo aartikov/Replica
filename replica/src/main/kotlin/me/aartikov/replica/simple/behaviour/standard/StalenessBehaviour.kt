@@ -9,18 +9,17 @@ import me.aartikov.replica.simple.behaviour.ReplicaBehaviour
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-internal class MakeDataStaleOnStaleTimeExpired<T : Any>(
+internal class StalenessBehaviour<T : Any>(
     private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 
     private var staleJob: Job? = null
 
     override fun handleEvent(replica: CoreReplica<T>, event: ReplicaEvent<T>) {
-        if (event is ReplicaEvent.FreshnessEvent) {
-            when (event) {
-                is ReplicaEvent.FreshnessEvent.Freshened -> launchStaleJob(replica)
-                is ReplicaEvent.FreshnessEvent.BecameStale -> cancelStaleJob()
-            }
+        when (event) {
+            is ReplicaEvent.FreshnessEvent.Freshened -> launchStaleJob(replica)
+            is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> cancelStaleJob()
+            else -> Unit
         }
     }
 

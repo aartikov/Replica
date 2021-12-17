@@ -22,17 +22,17 @@ interface ReplicaClient {
     val replicaSettings: ReplicaSettings
 
     fun <T : Any> createReplica(
-        coroutineScope: CoroutineScope = this.coroutineScope,
         settings: ReplicaSettings = this.replicaSettings,
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
+        coroutineScope: CoroutineScope = this.coroutineScope,
         fetcher: Fetcher<T>
     ): CoreReplica<T>
 
 }
 
 fun ReplicaClient(
-    coroutineScope: CoroutineScope = GlobalCoroutineScope,
-    replicaSettings: ReplicaSettings = ReplicaSettings.Default
+    replicaSettings: ReplicaSettings = ReplicaSettings.Default,
+    coroutineScope: CoroutineScope = GlobalCoroutineScope
 ): ReplicaClient {
-    return ReplicaClientImpl(coroutineScope, replicaSettings)
+    return ReplicaClientImpl(replicaSettings, coroutineScope)
 }

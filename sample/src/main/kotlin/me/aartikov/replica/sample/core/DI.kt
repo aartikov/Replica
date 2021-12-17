@@ -1,6 +1,7 @@
 package me.aartikov.replica.sample.core
 
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.sample.core.data.GlobalReplicaSettings
 import me.aartikov.replica.sample.core.data.network.BaseUrl
 import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
 import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
@@ -17,5 +18,5 @@ val coreModule = module {
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }
-    single { ReplicaClient() }
+    single { ReplicaClient(GlobalReplicaSettings) }
 }

@@ -8,15 +8,20 @@ sealed interface ReplicaEvent<out T : Any> {
 
     sealed interface LoadingEvent<out T : Any> : ReplicaEvent<T> {
         object LoadingStarted : LoadingEvent<Nothing>
-        data class DataLoaded<T : Any>(val data: T) : LoadingEvent<T>
-        object LoadingCanceled : LoadingEvent<Nothing>
-        data class LoadingError(override val error: Exception) : LoadingEvent<Nothing>, ErrorEvent
+
+        sealed interface LoadingFinished<out T : Any> : LoadingEvent<T> {
+            data class Success<T : Any>(val data: T) : LoadingFinished<T>
+            object Canceled : LoadingFinished<Nothing>
+            data class Error(override val error: Exception) : LoadingFinished<Nothing>, ErrorEvent
+        }
     }
 
     sealed interface FreshnessEvent : ReplicaEvent<Nothing> {
         object Freshened : FreshnessEvent
         object BecameStale : FreshnessEvent
     }
+
+    object ClearedEvent : ReplicaEvent<Nothing>
 
     data class ObserverCountChanged(
         val count: Int,

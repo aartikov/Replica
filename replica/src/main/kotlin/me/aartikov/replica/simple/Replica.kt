@@ -12,6 +12,8 @@ interface Replica<T : Any> {
 
     fun refresh()
 
+    fun revalidate()
+
     suspend fun getData(): T
 
     suspend fun getRefreshedData(): T
