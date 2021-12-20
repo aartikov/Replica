@@ -1,8 +1,10 @@
 package me.aartikov.replica.sample.core.ui.widget
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import me.aartikov.replica.simple.Loadable
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import me.aartikov.replica.single.Loadable
 
 @Composable
 fun <T : Any> SwipeRefreshLceWidget(
@@ -19,9 +21,32 @@ fun <T : Any> SwipeRefreshLceWidget(
     ) { data, refreshing ->
         StatefulSwipeRefresh(
             refreshing = refreshing,
-            onRefresh = onRefresh
+            onRefresh = onRefresh,
+            indicator = { s, trigger ->
+                SwipeRefreshIndicator(
+                    s, trigger,
+                    contentColor = MaterialTheme.colors.primaryVariant
+                )
+            }
         ) { pullToRefreshPulled ->
             content(data, refreshing = refreshing && !pullToRefreshPulled)
         }
     }
+}
+
+@Composable
+fun <T : Any> SwipeRefreshLceWidget(
+    state: Loadable<T>,
+    onRefresh: () -> Unit,
+    onRetryClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (data: T) -> Unit
+) {
+    SwipeRefreshLceWidget(
+        state = state,
+        onRefresh = onRefresh,
+        onRetryClick = onRetryClick,
+        modifier = modifier,
+        content = { data, _ -> content(data) }
+    )
 }

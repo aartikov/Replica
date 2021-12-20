@@ -7,9 +7,9 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val LightColors = lightColors(
-    primary = RawColors.orange,
-    primaryVariant = RawColors.darkOrange,
-    secondary = RawColors.orange,
+    primary = RawColors.mint,
+    primaryVariant = RawColors.darkMint,
+    secondary = RawColors.mint,
     background = RawColors.white,
     surface = RawColors.lightGray,
     error = RawColors.red,
@@ -20,12 +20,12 @@ private val LightColors = lightColors(
 )
 
 private val DarkColors = darkColors(
-    primary = RawColors.orangeDesaturated,
-    primaryVariant = RawColors.orangeDesaturated,
-    secondary = RawColors.orangeDesaturated,
+    primary = RawColors.desaturatedMint,
+    primaryVariant = RawColors.desaturatedMint,
+    secondary = RawColors.desaturatedMint,
     background = RawColors.darkGray,
     surface = RawColors.darkGray,
-    error = RawColors.redDesaturated,
+    error = RawColors.desaturatedRed,
     onPrimary = RawColors.black,
     onSecondary = RawColors.black,
     onBackground = RawColors.white,

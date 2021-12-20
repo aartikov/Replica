@@ -1,7 +1,7 @@
 package me.aartikov.replica.sample.features.project.ui
 
 import me.aartikov.replica.sample.features.project.domain.Project
-import me.aartikov.replica.simple.Loadable
+import me.aartikov.replica.single.Loadable
 
 interface ProjectComponent {
 

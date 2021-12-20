@@ -1,7 +1,6 @@
 package me.aartikov.replica.sample.core
 
 import me.aartikov.replica.client.ReplicaClient
-import me.aartikov.replica.sample.core.data.GlobalReplicaSettings
 import me.aartikov.replica.sample.core.data.network.BaseUrl
 import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
 import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
@@ -15,8 +14,9 @@ import org.koin.dsl.module
 
 val coreModule = module {
     single(named(BaseUrl.Github)) { NetworkApiFactory(BaseUrl.Github.url) }
+    single(named(BaseUrl.Pokemons)) { NetworkApiFactory(BaseUrl.Pokemons.url) }
+    single { ReplicaClient() }
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }
-    single { ReplicaClient(GlobalReplicaSettings) }
 }

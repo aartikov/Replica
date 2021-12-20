@@ -3,6 +3,7 @@ package me.aartikov.replica.sample.features.menu.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,18 +22,34 @@ fun MenuUi(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
-        Box(modifier = Modifier.padding(32.dp)) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .width(IntrinsicSize.Max)
-            ) {
-                MenuButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.project_title),
-                    onClick = { component.onMenuItemClick(MenuItem.Project) }
-                )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier.padding(top = 32.dp),
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.h5
+            )
+
+            Box(modifier = Modifier.weight(1.0f)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .width(IntrinsicSize.Max)
+                ) {
+                    MenuButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.project_title),
+                        onClick = { component.onMenuItemClick(MenuItem.Project) }
+                    )
+
+                    MenuButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.pokemons_title),
+                        onClick = { component.onMenuItemClick(MenuItem.Pokemons) }
+                    )
+                }
             }
         }
     }

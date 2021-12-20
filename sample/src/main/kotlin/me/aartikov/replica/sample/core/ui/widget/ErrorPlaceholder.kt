@@ -9,8 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.sample.R
+import me.aartikov.replica.sample.core.ui.theme.AppTheme
 
 
 @Composable
@@ -19,28 +21,36 @@ fun ErrorPlaceholder(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(horizontal = 18.dp)
-                .align(Alignment.Center)
-                .fillMaxWidth()
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxSize()
+    ) {
+        Text(
+            text = errorMessage,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.body2
+        )
+        TextButton(
+            onClick = onRetryClick
         ) {
             Text(
-                text = errorMessage,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.body2
+                text = stringResource(R.string.common_retry).uppercase()
             )
-            TextButton(
-                onClick = onRetryClick
-            ) {
-                Text(
-                    text = stringResource(R.string.common_retry).uppercase()
-                )
-            }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ErrorPlaceholderPreview() {
+    AppTheme {
+        ErrorPlaceholder(
+            errorMessage = "Error message",
+            onRetryClick = {}
+        )
     }
 }

@@ -12,7 +12,6 @@ compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
         useIR = true
-        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
 }
 compileTestKotlin {

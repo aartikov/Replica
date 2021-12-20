@@ -1,10 +1,12 @@
 package me.aartikov.replica.sample.features.project.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -16,9 +18,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.sample.core.ui.theme.AppTheme
+import me.aartikov.replica.sample.core.ui.widget.RefreshingProgress
 import me.aartikov.replica.sample.core.ui.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.sample.features.project.domain.Project
-import me.aartikov.replica.simple.Loadable
+import me.aartikov.replica.single.Loadable
 
 @Composable
 fun ProjectUi(
@@ -39,19 +42,13 @@ fun ProjectUi(
                 onUrlClick = component::onUrlClick
             )
 
-            if (refreshing) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp)
-                )
-            }
+            RefreshingProgress(refreshing)
         }
     }
 }
 
 @Composable
-fun ProjectContent(
+private fun ProjectContent(
     project: Project,
     onUrlClick: (url: String) -> Unit,
     modifier: Modifier = Modifier
@@ -60,10 +57,11 @@ fun ProjectContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier.padding(top = 32.dp),
             textAlign = TextAlign.Center,
             text = project.name,
             style = MaterialTheme.typography.h5,
@@ -101,7 +99,7 @@ fun ProjectContent(
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun ProjectUiPreview() {
     AppTheme {
@@ -112,14 +110,15 @@ fun ProjectUiPreview() {
 
 class FakeProjectComponent : ProjectComponent {
 
-    override val projectState = Loadable<Project>(
+    override val projectState = Loadable(
         data = Project(
             name = "Replica",
             url = "https://github.com/aartikov/Replica",
             starsCount = 605,
             forksCount = 5,
             subscribersCount = 15
-        )
+        ),
+        loading = true
     )
 
     override fun onRefresh() = Unit

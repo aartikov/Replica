@@ -1,0 +1,11 @@
+<resources>
+    <!-- List -->
+    <string name="pokemons_title">Pokemons</string>
+    <string name="pokemons_select_type">Pokemon type:</string>
+    <string name="pokemons_empty_descriptions">Pokemons are not found</string>
+
+    <!-- Details -->
+    <string name="pokemons_types">Types:</string>
+    <string name="pokemons_weight">Weight: %.1f</string>
+    <string name="pokemons_height">Height: %.1f</string>
+</resources>

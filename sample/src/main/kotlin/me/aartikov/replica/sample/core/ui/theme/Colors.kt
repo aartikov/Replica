@@ -3,13 +3,13 @@ package me.aartikov.replica.sample.core.ui.theme
 import androidx.compose.ui.graphics.Color
 
 object RawColors {
-    val orange: Color = Color(0xFFFF9800)
-    val darkOrange: Color = Color(0xFFE48A04)
-    val orangeDesaturated: Color = Color(0xFFE0B676)
+    val mint: Color = Color(0xFF06CEBB)
+    val darkMint: Color = Color(0xFF00B1A0)
+    val desaturatedMint: Color = Color(0xFF8DC5C1)
     val red = Color(0xFFFF5722)
-    val redDesaturated = Color(0xFFE09983)
+    val desaturatedRed = Color(0xFFE09983)
     val white = Color(0xFFFFFFFF)
-    val lightGray = Color(0xFFEFEFEF)
+    val lightGray = Color(0xFFF5F5F5)
     val darkGray = Color(0xFF121212)
     val black = Color(0xFF000000)
 }
