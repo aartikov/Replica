@@ -19,7 +19,9 @@ internal class ClearingBehaviour<T : Any>(
 
     override fun handleEvent(replica: CoreReplica<T>, event: ReplicaEvent<T>) {
         when (event) {
-            is ReplicaEvent.ObserverCountChanged, is ReplicaEvent.LoadingEvent -> {
+            is ReplicaEvent.ObserverCountChanged,
+            is ReplicaEvent.LoadingEvent,
+            is ReplicaEvent.DataChangingEvent.DataSet -> {
                 if (replica.state.canBeCleared) {
                     launchJob(replica)
                 } else {

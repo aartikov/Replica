@@ -1,6 +1,6 @@
 package me.aartikov.replica.simple
 
-data class ReplicaState<T : Any>(
+data class ReplicaState<out T : Any>(
     val data: ReplicaData<T>?,
     val loading: Boolean,
     val error: Exception?,

@@ -1,8 +1,7 @@
 package me.aartikov.replica.simple.internal
 
 import me.aartikov.replica.simple.ReplicaData
-import me.aartikov.replica.simple.ReplicaEvent.FreshnessEvent
-import me.aartikov.replica.simple.ReplicaEvent.LoadingEvent
+import me.aartikov.replica.simple.ReplicaEvent.*
 import me.aartikov.replica.simple.internal.Action.*
 import me.aartikov.sesame.loop.*
 import me.aartikov.replica.simple.ReplicaEvent as Event
@@ -158,17 +157,26 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                             fresh = false
                         )
                     }
+                ),
+                Effect.EmitEvent(
+                    DataChangingEvent.DataSet(action.data)
                 )
             )
         }
         is DataChangingAction.MutateData -> {
-            next(
-                state.copy(
-                    data = state.data?.copy(
-                        value = action.transform(state.data.value)
+            if (state.data != null) {
+                val newData = state.data.copy(
+                    value = action.transform(state.data.value)
+                )
+                next(
+                    state.copy(data = newData),
+                    Effect.EmitEvent(
+                        DataChangingEvent.DataMutated(newData.value)
                     )
                 )
-            )
+            } else {
+                nothing()
+            }
         }
     }
 

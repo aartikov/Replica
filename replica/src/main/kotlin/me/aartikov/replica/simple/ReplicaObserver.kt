@@ -3,7 +3,7 @@ package me.aartikov.replica.simple
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface ReplicaObserver<T : Any> {
+interface ReplicaObserver<out T : Any> {
 
     val stateFlow: StateFlow<Loadable<T>>
 

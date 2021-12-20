@@ -2,7 +2,6 @@ package me.aartikov.replica.sample.core.ui.widget
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -15,7 +14,7 @@ fun StatefulSwipeRefresh(
     onRefresh: () -> Unit,
     content: @Composable (pullToRefreshPulled: Boolean) -> Unit
 ) {
-    var pullToRefreshPulled by rememberSaveable { mutableStateOf(false) }
+    var pullToRefreshPulled by remember { mutableStateOf(false) }
     val state = rememberSwipeRefreshState(pullToRefreshPulled && refreshing)
 
     LaunchedEffect(refreshing) {
