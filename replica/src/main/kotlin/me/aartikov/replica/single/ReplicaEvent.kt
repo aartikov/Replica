@@ -12,6 +12,7 @@ sealed interface ReplicaEvent<out T : Any> {
 
     sealed interface LoadingEvent<out T : Any> : ReplicaEvent<T> {
         object LoadingStarted : LoadingEvent<Nothing>
+        data class DataLoadedFromStorage<out T : Any>(override val data: T) : DataEvent<T>
 
         sealed interface LoadingFinished<out T : Any> : LoadingEvent<T> {
             data class Success<out T : Any>(override val data: T) : LoadingFinished<T>, DataEvent<T>

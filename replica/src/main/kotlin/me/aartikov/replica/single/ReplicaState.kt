@@ -6,7 +6,8 @@ data class ReplicaState<out T : Any>(
     val error: Exception?,
     val observerUuids: Set<String>,
     val activeObserverUuids: Set<String>,
-    val dataRequested: Boolean
+    val dataRequested: Boolean,
+    val storageChecked: Boolean
 ) {
 
     val hasFreshData get() = data != null && data.fresh
@@ -16,13 +17,14 @@ data class ReplicaState<out T : Any>(
     val activeObserverCount get() = activeObserverUuids.size
 
     companion object {
-        fun <T : Any> createEmpty(): ReplicaState<T> = ReplicaState(
+        fun <T : Any> createEmpty(hasStorage: Boolean): ReplicaState<T> = ReplicaState(
             data = null,
             loading = false,
             error = null,
             observerUuids = emptySet(),
             activeObserverUuids = emptySet(),
-            dataRequested = false
+            dataRequested = false,
+            storageChecked = !hasStorage
         )
     }
 }

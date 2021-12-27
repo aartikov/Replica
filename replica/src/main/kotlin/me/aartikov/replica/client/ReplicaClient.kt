@@ -8,11 +8,8 @@ import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.clearAll
 import me.aartikov.replica.keyed.invalidateAll
-import me.aartikov.replica.single.Fetcher
-import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.invalidate
 
 interface ReplicaClient {
 
@@ -23,7 +20,8 @@ interface ReplicaClient {
     fun <T : Any> createReplica(
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
-        fetcher: Fetcher<T>
+        storage: Storage<T>? = null,
+        fetcher: Fetcher<T>,
     ): PhysicalReplica<T>
 
     fun <K : Any, T : Any> createKeyedReplica(

@@ -12,16 +12,17 @@ import me.aartikov.sesame.loop.startIn
 internal class PhysicalReplicaImpl<T : Any>(
     override val coroutineScope: CoroutineScope,
     behaviours: List<ReplicaBehaviour<T>>,
+    storage: Storage<T>?,
     fetcher: Fetcher<T>
 ) : PhysicalReplica<T> {
 
     private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>(extraBufferCapacity = 100)
 
     private val loop: ReplicaLoop<T> = ReplicaLoop(
-        initialState = ReplicaState.createEmpty(),
+        initialState = ReplicaState.createEmpty(hasStorage = storage != null),
         reducer = ReplicaReducer(),
         effectHandlers = listOf(
-            LoadingEffectHandler(fetcher),
+            LoadingEffectHandler(storage, fetcher),
             EventEffectHandler { event -> _eventFlow.emit(event) }
         )
     )

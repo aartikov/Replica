@@ -7,6 +7,7 @@ import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.behaviour.createStandardBehaviours
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
@@ -22,9 +23,10 @@ internal class ReplicaClientImpl(
     override fun <T : Any> createReplica(
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>>,
+        storage: Storage<T>?,
         fetcher: Fetcher<T>
     ): PhysicalReplica<T> {
-        val replica = createReplicaInternal(settings, behaviours, fetcher, coroutineScope)
+        val replica = createReplicaInternal(settings, behaviours, storage, fetcher, coroutineScope)
         replicas.add(replica)
         return replica
     }
@@ -38,6 +40,7 @@ internal class ReplicaClientImpl(
             createReplicaInternal(
                 settings = settings(key),
                 behaviours = behaviours(key),
+                storage = null, // TODO:
                 fetcher = { fetcher.fetch(key) },
                 coroutineScope = childCoroutineScope
             )
@@ -74,13 +77,24 @@ internal class ReplicaClientImpl(
     private fun <T : Any> createReplicaInternal(
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>>,
+        storage: Storage<T>?,
         fetcher: Fetcher<T>,
         coroutineScope: CoroutineScope
     ): PhysicalReplica<T> {
-        return PhysicalReplicaImpl<T>(
+
+        validateSettings(settings, hasStorage = storage != null)
+
+        return PhysicalReplicaImpl(
             coroutineScope,
             behaviours = createStandardBehaviours<T>(settings) + behaviours,
+            storage,
             fetcher
         )
+    }
+
+    private fun validateSettings(settings: ReplicaSettings, hasStorage: Boolean) {
+        if (hasStorage && settings.clearTime != null) {
+            throw IllegalArgumentException("clearTime setting is not supported for a replica with a storage")
+        }
     }
 }

@@ -12,7 +12,9 @@ internal sealed interface Action<out T : Any> {
     sealed interface LoadingAction<out T : Any> : Action<T> {
         data class Load(val dataRequested: Boolean = false) : LoadingAction<Nothing>
         object Cancel : LoadingAction<Nothing>
-        data class DataLoaded<T : Any>(val data: T) : LoadingAction<T>
+        data class DataLoadedFromStorage<T : Any>(val data: T) : LoadingAction<T>
+        object DataMissingInStorage : LoadingAction<Nothing>
+        data class DataLoadedFromFetcher<T : Any>(val data: T) : LoadingAction<T>
         object LoadingCanceled : LoadingAction<Nothing>
         data class LoadingError(val error: Exception) : LoadingAction<Nothing>
     }
@@ -42,7 +44,7 @@ internal sealed interface Action<out T : Any> {
 }
 
 internal sealed class Effect<out T : Any> {
-    object Load : Effect<Nothing>()
+    data class Load(val checkStorage: Boolean) : Effect<Nothing>()
     object CancelLoading : Effect<Nothing>()
     data class EmitEvent<T : Any>(val event: Event<T>) : Effect<T>()
 }
@@ -82,7 +84,7 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
                         loading = true,
                         dataRequested = state.dataRequested || action.dataRequested
                     ),
-                    Effect.Load,
+                    Effect.Load(checkStorage = !state.storageChecked),
                     Effect.EmitEvent(LoadingEvent.LoadingStarted)
                 )
             }
@@ -104,7 +106,30 @@ internal class ReplicaReducer<T : Any> : Reducer<State<T>, Action<T>, Effect<T>>
             }
         }
 
-        is LoadingAction.DataLoaded -> {
+        is LoadingAction.DataLoadedFromStorage -> {
+            if (state.data != null) {
+                nothing()
+            } else {
+                next(
+                    state.copy(
+                        data = ReplicaData(
+                            value = action.data,
+                            fresh = false
+                        ),
+                        storageChecked = true
+                    ),
+                    Effect.EmitEvent(LoadingEvent.DataLoadedFromStorage(action.data))
+                )
+            }
+        }
+
+        is LoadingAction.DataMissingInStorage -> {
+            next(
+                state.copy(storageChecked = true)
+            )
+        }
+
+        is LoadingAction.DataLoadedFromFetcher -> {
             next(
                 state.copy(
                     data = ReplicaData(
