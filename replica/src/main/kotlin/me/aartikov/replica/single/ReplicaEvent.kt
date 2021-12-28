@@ -2,29 +2,14 @@ package me.aartikov.replica.single
 
 sealed interface ReplicaEvent<out T : Any> {
 
-    interface ErrorEvent : ReplicaEvent<Nothing> {
-        val error: Exception
-    }
-
-    interface DataEvent<out T : Any> : ReplicaEvent<T> {
-        val data: T
-    }
-
     sealed interface LoadingEvent<out T : Any> : ReplicaEvent<T> {
         object LoadingStarted : LoadingEvent<Nothing>
-        data class DataLoadedFromStorage<out T : Any>(override val data: T) : DataEvent<T>
 
         sealed interface LoadingFinished<out T : Any> : LoadingEvent<T> {
-            data class Success<out T : Any>(override val data: T) : LoadingFinished<T>, DataEvent<T>
+            data class Success<out T : Any>(val data: T) : LoadingFinished<T>
             object Canceled : LoadingFinished<Nothing>
-            data class Error(override val error: Exception) : LoadingFinished<Nothing>, ErrorEvent
+            data class Error(val exception: Exception) : LoadingFinished<Nothing>
         }
-    }
-
-    sealed interface DataChangingEvent<out T : Any> : ReplicaEvent<T> {
-        data class DataSet<out T : Any>(override val data: T) : DataChangingEvent<T>, DataEvent<T>
-        data class DataMutated<out T : Any>(override val data: T) : DataChangingEvent<T>,
-            DataEvent<T>
     }
 
     sealed interface FreshnessEvent : ReplicaEvent<Nothing> {

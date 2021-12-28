@@ -1,7 +1,7 @@
 <resources>
     <!-- List -->
     <string name="pokemons_title">Pokemons</string>
-    <string name="pokemons_select_type">Pokemon type:</string>
+    <string name="pokemons_select_type">Pokemon type</string>
     <string name="pokemons_empty_descriptions">Pokemons are not found</string>
 
     <!-- Details -->

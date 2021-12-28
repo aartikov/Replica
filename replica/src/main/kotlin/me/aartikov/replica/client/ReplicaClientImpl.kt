@@ -1,5 +1,6 @@
 package me.aartikov.replica.client
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
@@ -9,11 +10,12 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.behaviour.createStandardBehaviours
+import me.aartikov.replica.single.behaviour.standard.createStandardBehaviours
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
 import me.aartikov.replica.utils.concurrentHashSetOf
 
 internal class ReplicaClientImpl(
+    private val coroutineDispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope
 ) : ReplicaClient {
 
@@ -26,7 +28,14 @@ internal class ReplicaClientImpl(
         storage: Storage<T>?,
         fetcher: Fetcher<T>
     ): PhysicalReplica<T> {
-        val replica = createReplicaInternal(settings, behaviours, storage, fetcher, coroutineScope)
+        val replica = createReplicaInternal(
+            settings,
+            behaviours,
+            storage,
+            fetcher,
+            coroutineDispatcher,
+            coroutineScope
+        )
         replicas.add(replica)
         return replica
     }
@@ -36,24 +45,26 @@ internal class ReplicaClientImpl(
         behaviours: (K) -> List<ReplicaBehaviour<T>>,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T> {
-        val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
-            createReplicaInternal(
-                settings = settings(key),
-                behaviours = behaviours(key),
-                storage = null, // TODO:
-                fetcher = { fetcher.fetch(key) },
-                coroutineScope = childCoroutineScope
-            )
-        }
+        val replicaFactory =
+            { childCoroutineScope: CoroutineScope, key: K ->
+                createReplicaInternal(
+                    settings = settings(key),
+                    behaviours = behaviours(key),
+                    storage = null, // TODO:
+                    fetcher = { fetcher.fetch(key) },
+                    coroutineDispatcher = coroutineDispatcher,
+                    coroutineScope = childCoroutineScope
+                )
+            }
 
         val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, replicaFactory)
         keyedReplicas.add(keyedReplica)
         return keyedReplica
     }
 
-    override fun onEachReplica(
+    override suspend fun onEachReplica(
         includeChildrenOfKeyedReplicas: Boolean,
-        action: PhysicalReplica<*>.() -> Unit
+        action: suspend PhysicalReplica<*>.() -> Unit
     ) {
         replicas.forEach {
             it.action()
@@ -68,7 +79,7 @@ internal class ReplicaClientImpl(
         }
     }
 
-    override fun onEachKeyedReplica(action: KeyedPhysicalReplica<*, *>.() -> Unit) {
+    override suspend fun onEachKeyedReplica(action: suspend KeyedPhysicalReplica<*, *>.() -> Unit) {
         keyedReplicas.forEach {
             it.action()
         }
@@ -79,12 +90,14 @@ internal class ReplicaClientImpl(
         behaviours: List<ReplicaBehaviour<T>>,
         storage: Storage<T>?,
         fetcher: Fetcher<T>,
+        coroutineDispatcher: CoroutineDispatcher,
         coroutineScope: CoroutineScope
     ): PhysicalReplica<T> {
 
         validateSettings(settings, hasStorage = storage != null)
 
         return PhysicalReplicaImpl(
+            coroutineDispatcher,
             coroutineScope,
             behaviours = createStandardBehaviours<T>(settings) + behaviours,
             storage,

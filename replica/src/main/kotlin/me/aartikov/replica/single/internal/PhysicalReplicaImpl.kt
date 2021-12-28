@@ -1,133 +1,109 @@
 package me.aartikov.replica.single.internal
 
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.single.*
-import me.aartikov.replica.single.ReplicaEvent.LoadingEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.internal.Action.*
-import me.aartikov.sesame.loop.startIn
+import me.aartikov.replica.single.internal.controllers.*
+
 
 internal class PhysicalReplicaImpl<T : Any>(
-    override val coroutineScope: CoroutineScope,
+    coroutineDispatcher: CoroutineDispatcher,
+    private val coroutineScope: CoroutineScope,
     behaviours: List<ReplicaBehaviour<T>>,
     storage: Storage<T>?,
     fetcher: Fetcher<T>
 ) : PhysicalReplica<T> {
 
-    private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>(extraBufferCapacity = 100)
+    private val _stateFlow = MutableStateFlow(
+        ReplicaState.createEmpty<T>(hasStorage = storage != null)
+    )
+    override val stateFlow: StateFlow<ReplicaState<T>> = _stateFlow.asStateFlow()
 
-    private val loop: ReplicaLoop<T> = ReplicaLoop(
-        initialState = ReplicaState.createEmpty(hasStorage = storage != null),
-        reducer = ReplicaReducer(),
-        effectHandlers = listOf(
-            LoadingEffectHandler(storage, fetcher),
-            EventEffectHandler { event -> _eventFlow.emit(event) }
-        )
+    private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>()
+    override val eventFlow: Flow<ReplicaEvent<T>> = _eventFlow.asSharedFlow()
+
+    private val observersController =
+        ObserversController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
+
+    private val dataLoadingController = DataLoadingController<T>(
+        coroutineDispatcher,
+        coroutineScope,
+        _stateFlow,
+        _eventFlow,
+        DataLoader(coroutineScope, fetcher)
     )
 
-    override val stateFlow: StateFlow<ReplicaState<T>>
-        get() = loop.stateFlow
+    private val dataChangingController = DataChangingController<T>(coroutineDispatcher, _stateFlow)
 
-    override val eventFlow: Flow<ReplicaEvent<T>>
-        get() = _eventFlow
+    private val freshnessController =
+        FreshnessController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
+
+    private val clearingController =
+        ClearingController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
 
     init {
-        initBehaviours(behaviours)
-        loop.startIn(coroutineScope)
-    }
-
-    private fun initBehaviours(behaviours: List<ReplicaBehaviour<T>>) {
         behaviours.forEach { behaviour ->
-            behaviour.setup(this)
+            behaviour.setup(coroutineScope, this)
         }
-        eventFlow
-            .onEach { event ->
-                behaviours.forEach { behaviour ->
-                    behaviour.handleEvent(this, event)
-                }
-            }
-            .launchIn(coroutineScope)
     }
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
     ): ReplicaObserver<T> {
-
         return ReplicaObserverImpl(
             coroutineScope = observerCoroutineScope,
             activeFlow = observerActive,
-            replicaStateFlow = loop.stateFlow,
+            replicaStateFlow = stateFlow,
             replicaEventFlow = eventFlow,
-            dispatchAction = loop::dispatch
+            observersController = observersController
         )
     }
 
     override fun refresh() {
-        loop.dispatch(LoadingAction.Load())
+        dataLoadingController.refresh()
     }
 
     override fun revalidate() {
-        if (!state.hasFreshData) {
-            loop.dispatch(LoadingAction.Load())
-        }
+        dataLoadingController.revalidate()
     }
 
     override suspend fun getData(): T {
-        return getDataInternal(refreshed = false)
+        return dataLoadingController.getData()
     }
 
     override suspend fun getRefreshedData(): T {
-        return getDataInternal(refreshed = true)
-    }
-
-    private suspend fun getDataInternal(refreshed: Boolean): T {
-        val data = state.data
-        if (!refreshed && data != null && data.fresh) {
-            return data.value
-        }
-
-        val event = eventFlow
-            .onStart {
-                loop.dispatch(LoadingAction.Load(dataRequested = true))
-            }
-            .filterIsInstance<LoadingEvent.LoadingFinished<T>>()
-            .first()
-
-        when (event) {
-            is LoadingEvent.LoadingFinished.Success -> return event.data
-            is LoadingEvent.LoadingFinished.Canceled -> throw CancellationException()
-            is LoadingEvent.LoadingFinished.Error -> throw event.error
-        }
-    }
-
-    override fun setData(data: T) {
-        loop.dispatch(DataChangingAction.SetData(data))
-    }
-
-    override fun mutateData(transform: (T) -> T) {
-        loop.dispatch(DataChangingAction.MutateData(transform))
-    }
-
-    override fun makeFresh() {
-        loop.dispatch(FreshnessChangingAction.MakeFresh)
-    }
-
-    override fun makeStale() {
-        loop.dispatch(FreshnessChangingAction.MakeStale)
+        return dataLoadingController.getRefreshedData()
     }
 
     override fun cancelLoading() {
-        loop.dispatch(LoadingAction.Cancel)
+        dataLoadingController.cancelLoading()
     }
 
-    override fun clear() {
-        loop.dispatch(ClearAction.Clear)
+    override suspend fun setData(data: T) {
+        dataChangingController.setData(data)
     }
 
-    override fun clearError() {
-        loop.dispatch(ClearAction.ClearError)
+    override suspend fun mutateData(transform: (T) -> T) {
+        dataChangingController.mutateData(transform)
+    }
+
+    override suspend fun makeFresh() {
+        freshnessController.makeFresh()
+    }
+
+    override suspend fun makeStale() {
+        freshnessController.makeStale()
+    }
+
+    override suspend fun clear() {
+        cancelLoading()
+        clearingController.clear()
+    }
+
+    override suspend fun clearError() {
+        clearingController.clearError()
     }
 }

@@ -1,38 +1,35 @@
 package me.aartikov.replica.single
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface PhysicalReplica<T : Any> : Replica<T> {
 
-    val coroutineScope: CoroutineScope
-
     val stateFlow: StateFlow<ReplicaState<T>>
 
     val eventFlow: Flow<ReplicaEvent<T>>
 
-    fun setData(data: T)
-
-    fun mutateData(transform: (T) -> T)
-
-    fun makeFresh()
-
-    fun makeStale()
-
     fun cancelLoading()
 
-    fun clear() // cancels in progress loading
+    suspend fun setData(data: T)
 
-    fun clearError()
+    suspend fun mutateData(transform: (T) -> T)
+
+    suspend fun makeFresh()
+
+    suspend fun makeStale()
+
+    suspend fun clear() // cancels in progress loading
+
+    suspend fun clearError()
 
 }
 
-val <T : Any> PhysicalReplica<T>.state get() = stateFlow.value
+val <T : Any> PhysicalReplica<T>.currentState get() = stateFlow.value
 
-fun <T : Any> PhysicalReplica<T>.invalidate() {
+suspend fun <T : Any> PhysicalReplica<T>.invalidate() {
     makeStale()
-    if (state.observerCount > 0) {
+    if (currentState.observerCount > 0) {
         refresh()
     }
 }

@@ -1,52 +1,69 @@
 package me.aartikov.replica.single.behaviour.standard
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.state
+import me.aartikov.replica.single.currentState
 import kotlin.time.Duration
 
 internal class ErrorClearingBehaviour<T : Any>(
     private val clearTime: Duration
 ) : ReplicaBehaviour<T> {
 
-    private var job: Job? = null
+    private var clearingJob: Job? = null
 
-    override fun handleEvent(replica: PhysicalReplica<T>, event: ReplicaEvent<T>) {
-        when (event) {
-            is ReplicaEvent.ObserverCountChanged,
-            is ReplicaEvent.ErrorEvent,
-            is ReplicaEvent.LoadingEvent -> {
-                if (replica.state.canBeCleared) {
-                    launchJob(replica)
+    override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
+        replica.stateFlow
+            .map { it.error != null }
+            .distinctUntilChanged()
+            .onEach {
+                if (replica.currentState.canBeCleared) {
+                    coroutineScope.launchClearingJob(replica)
                 } else {
-                    cancelJob()
+                    cancelClearingJob()
                 }
             }
-            else -> Unit
-        }
+            .launchIn(coroutineScope)
+
+        replica.eventFlow
+            .onEach { event ->
+                when (event) {
+                    is ReplicaEvent.ObserverCountChanged,
+                    is ReplicaEvent.LoadingEvent -> {
+                        if (replica.currentState.canBeCleared) {
+                            coroutineScope.launchClearingJob(replica)
+                        } else {
+                            cancelClearingJob()
+                        }
+                    }
+                    else -> Unit
+                }
+            }
+            .launchIn(coroutineScope)
     }
 
     private val ReplicaState<T>.canBeCleared: Boolean get() = error != null && observerCount == 0 && !loading
 
-    private fun launchJob(replica: PhysicalReplica<T>) {
-        cancelJob()
-        if (clearTime.isPositive()) {
-            job = replica.coroutineScope.launch {
-                delay(clearTime.inWholeMilliseconds)
-                replica.clearError()
-            }
-        } else {
-            replica.clearError()
+    private fun CoroutineScope.launchClearingJob(replica: PhysicalReplica<T>) {
+        if (clearingJob?.isActive == true) return
+
+        clearingJob = launch {
+            delay(clearTime.inWholeMilliseconds)
+            replica.clear()
         }
     }
 
-    private fun cancelJob() {
-        job?.cancel()
-        job = null
+    private fun cancelClearingJob() {
+        clearingJob?.cancel()
+        clearingJob = null
     }
 }

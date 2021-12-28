@@ -5,9 +5,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import me.aartikov.replica.single.Loadable
-import me.aartikov.replica.single.ReplicaObserver
-import me.aartikov.replica.single.invalidate
+import me.aartikov.replica.keyed.internal.keepPreviousData
+import me.aartikov.replica.single.*
 
 interface KeyedReplica<K : Any, out T : Any> {
 
@@ -30,14 +29,14 @@ fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
     observerCoroutineScope: CoroutineScope,
     observerActive: StateFlow<Boolean>,
     key: StateFlow<K?>,
-    onError: (Exception, Loadable<T>) -> Unit,
+    onError: (LoadingError, Loadable<T>) -> Unit,
     keepPreviousData: Boolean = false
 ): StateFlow<Loadable<T>> {
     val observer = observe(observerCoroutineScope, observerActive, key)
     observer
-        .errorEventFlow
-        .onEach { exception ->
-            onError(exception, observer.stateFlow.value)
+        .loadingErrorFlow
+        .onEach { error ->
+            onError(error, observer.currentState)
         }
         .launchIn(observerCoroutineScope)
 
@@ -52,7 +51,7 @@ fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
     observerCoroutineScope: CoroutineScope,
     observerActive: StateFlow<Boolean>,
     key: K,
-    onError: (Exception, Loadable<T>) -> Unit,
+    onError: (LoadingError, Loadable<T>) -> Unit,
     keepPreviousData: Boolean = false
 ): StateFlow<Loadable<T>> {
     return observe(
@@ -64,7 +63,14 @@ fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
     )
 }
 
-fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.clearAll() =
-    onEachReplica { clear() } // TODO: move to KeyedReplica interface
+suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.clearAll() {  // TODO: move to KeyedReplica interface
+    onEachReplica {
+        clear()
+    }
+}
 
-fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll() = onEachReplica { invalidate() }
+suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll() {
+    onEachReplica {
+        invalidate()
+    }
+}

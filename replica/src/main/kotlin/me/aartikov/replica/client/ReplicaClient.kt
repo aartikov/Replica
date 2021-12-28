@@ -1,8 +1,10 @@
 package me.aartikov.replica.client
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineDispatcher
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
@@ -14,7 +16,8 @@ import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 interface ReplicaClient {
 
     companion object {
-        val DefaultCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val DefaultCoroutineDispatcher = Dispatchers.Main.immediate
+        val DefaultCoroutineScope = CoroutineScope(SupervisorJob() + DefaultCoroutineDispatcher)
     }
 
     fun <T : Any> createReplica(
@@ -30,38 +33,39 @@ interface ReplicaClient {
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T>
 
-    fun onEachReplica(
+    suspend fun onEachReplica(
         includeChildrenOfKeyedReplicas: Boolean = true,
-        action: PhysicalReplica<*>.() -> Unit
+        action: suspend PhysicalReplica<*>.() -> Unit
     )
 
-    fun onEachKeyedReplica(
-        action: KeyedPhysicalReplica<*, *>.() -> Unit
+    suspend fun onEachKeyedReplica(
+        action: suspend KeyedPhysicalReplica<*, *>.() -> Unit
     )
 }
 
 fun ReplicaClient(
+    coroutineDispatcher: CoroutineDispatcher = DefaultCoroutineDispatcher,
     coroutineScope: CoroutineScope = DefaultCoroutineScope
 ): ReplicaClient {
-    return ReplicaClientImpl(coroutineScope)
+    return ReplicaClientImpl(coroutineDispatcher, coroutineScope)
 }
 
-fun ReplicaClient.clearAll() {
+suspend fun ReplicaClient.clearAll() {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
         clear()
     }
 
     onEachKeyedReplica {
-        clearAll()
+        this.clearAll()
     }
 }
 
-fun ReplicaClient.invalidateAll() {
+suspend fun ReplicaClient.invalidateAll() {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
         invalidate()
     }
 
     onEachKeyedReplica {
-        invalidateAll()
+        this.invalidateAll()
     }
 }

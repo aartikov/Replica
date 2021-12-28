@@ -25,14 +25,12 @@ interface Replica<out T : Any> {
 fun <T : Any> Replica<T>.observe(
     observerCoroutineScope: CoroutineScope,
     observerActive: StateFlow<Boolean>,
-    onError: (Exception, Loadable<T>) -> Unit
+    onError: (LoadingError, Loadable<T>) -> Unit
 ): StateFlow<Loadable<T>> {
     val observer = observe(observerCoroutineScope, observerActive)
     observer
-        .errorEventFlow
-        .onEach { exception ->
-            onError(exception, observer.stateFlow.value)
-        }
+        .loadingErrorFlow
+        .onEach { onError(it, observer.currentState) }
         .launchIn(observerCoroutineScope)
 
     return observer.stateFlow

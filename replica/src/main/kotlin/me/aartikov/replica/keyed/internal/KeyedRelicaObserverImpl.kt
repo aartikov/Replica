@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.single.LoadingError
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
@@ -19,8 +20,8 @@ internal class KeyedReplicaObserverImpl<T : Any, K : Any>(
     private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()
 
-    private val _errorEventFlow = MutableSharedFlow<Exception>()
-    override val errorEventFlow: Flow<Exception> = _errorEventFlow.asSharedFlow()
+    private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
+    override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
 
     private var currentReplica: Replica<T>? = null
     private var currentReplicaObserver: ReplicaObserver<T>? = null
@@ -64,9 +65,9 @@ internal class KeyedReplicaObserverImpl<T : Any, K : Any>(
         }
 
         errorEventsObservingJob = coroutineScope.launch {
-            currentReplicaObserver.errorEventFlow
+            currentReplicaObserver.loadingErrorFlow
                 .collect {
-                    _errorEventFlow.emit(it)
+                    _loadingErrorFlow.emit(it)
                 }
         }
     }

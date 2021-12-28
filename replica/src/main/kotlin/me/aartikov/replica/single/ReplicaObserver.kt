@@ -7,9 +7,9 @@ interface ReplicaObserver<out T : Any> {
 
     val stateFlow: StateFlow<Loadable<T>>
 
-    val errorEventFlow: Flow<Exception>
+    val loadingErrorFlow: Flow<LoadingError>
 
     fun cancelObserving()
 }
 
-val <T : Any> ReplicaObserver<T>.state get() = stateFlow.value
+val <T : Any> ReplicaObserver<T>.currentState get() = stateFlow.value

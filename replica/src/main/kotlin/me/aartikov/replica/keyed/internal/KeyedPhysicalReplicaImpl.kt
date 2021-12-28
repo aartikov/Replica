@@ -11,11 +11,11 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaObserver
 import me.aartikov.replica.single.ReplicaState
-import me.aartikov.replica.single.state
+import me.aartikov.replica.single.currentState
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
-    override val coroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
 
@@ -50,23 +50,23 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         return getOrCreateReplica(key).getRefreshedData()
     }
 
-    override fun getState(key: K): ReplicaState<T>? {
-        return getReplica(key)?.state
+    override fun getCurrentState(key: K): ReplicaState<T>? {
+        return getReplica(key)?.currentState
     }
 
-    override fun setData(key: K, data: T) {
+    override suspend fun setData(key: K, data: T) {
         getOrCreateReplica(key).setData(data)
     }
 
-    override fun mutateData(key: K, transform: (T) -> T) {
+    override suspend fun mutateData(key: K, transform: (T) -> T) {
         getReplica(key)?.mutateData(transform)
     }
 
-    override fun makeFresh(key: K) {
+    override suspend fun makeFresh(key: K) {
         getReplica(key)?.makeFresh()
     }
 
-    override fun makeStale(key: K) {
+    override suspend fun makeStale(key: K) {
         getReplica(key)?.makeStale()
     }
 
@@ -74,23 +74,23 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.cancelLoading()
     }
 
-    override fun clear(key: K) {
+    override suspend fun clear(key: K) {
         getReplica(key)?.clear()
     }
 
-    override fun clearError(key: K) {
+    override suspend fun clearError(key: K) {
         getReplica(key)?.clearError()
     }
 
-    override fun onReplica(key: K, action: PhysicalReplica<T>.() -> Unit) {
-        getOrCreateReplica(key).apply(action)
+    override suspend fun onReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit) {
+        getOrCreateReplica(key).apply { action() }
     }
 
-    override fun onExistingReplica(key: K, action: PhysicalReplica<T>.() -> Unit) {
-        getReplica(key)?.apply(action)
+    override suspend fun onExistingReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit) {
+        getReplica(key)?.apply { action() }
     }
 
-    override fun onEachReplica(action: PhysicalReplica<T>.(K) -> Unit) {
+    override suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit) {
         replicaElements.forEach { (key, element) ->
             element.replica.action(key)
         }
@@ -129,7 +129,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
 }
 
 private val <T : Any> PhysicalReplica<T>.canBeRemoved: Boolean
-    get() = with(state) {
+    get() = with(currentState) {
         data == null && error == null && !loading && observerCount == 0
     }
 

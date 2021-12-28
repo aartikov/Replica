@@ -7,6 +7,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.aartikov.replica.lifecycle.toActivableFlow
 import me.aartikov.replica.single.*
+import me.aartikov.replica.single.internal.controllers.ObserversController
 import java.util.*
 
 internal class ReplicaObserverImpl<T : Any>(
@@ -14,14 +15,14 @@ internal class ReplicaObserverImpl<T : Any>(
     private val activeFlow: StateFlow<Boolean>,
     private val replicaStateFlow: StateFlow<ReplicaState<T>>,
     private val replicaEventFlow: Flow<ReplicaEvent<T>>,
-    private val dispatchAction: (Action.ObserverAction) -> Unit
+    private val observersController: ObserversController<T>
 ) : ReplicaObserver<T> {
 
     private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()
 
-    private val _errorEventFlow = MutableSharedFlow<Exception>()
-    override val errorEventFlow: Flow<Exception> = _errorEventFlow.asSharedFlow()
+    private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
+    override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
 
     private var stateObservingJob: Job? = null
     private var errorEventsObservingJob: Job? = null
@@ -64,9 +65,9 @@ internal class ReplicaObserverImpl<T : Any>(
         errorEventsObservingJob = coroutineScope.launch {
             replicaEventFlow
                 .toActivableFlow(coroutineScope, activeFlow)
-                .filterIsInstance<ReplicaEvent.ErrorEvent>()
+                .filterIsInstance<ReplicaEvent.LoadingEvent.LoadingFinished.Error>()
                 .collect { errorEvent ->
-                    _errorEventFlow.emit(errorEvent.error)
+                    _loadingErrorFlow.emit(LoadingError(errorEvent.exception))
                 }
         }
     }
@@ -75,21 +76,17 @@ internal class ReplicaObserverImpl<T : Any>(
         observerStatusObservingJob = coroutineScope.launch {
             val observerUuid = UUID.randomUUID().toString()
             try {
-                dispatchAction(
-                    Action.ObserverAction.ObserverAdded(observerUuid, activeFlow.value)
-                )
+                observersController.onObserverAdded(observerUuid, activeFlow.value)
                 activeFlow
                     .collect { active ->
                         if (active) {
-                            dispatchAction(Action.ObserverAction.ObserverActive(observerUuid))
+                            observersController.onObserverActive(observerUuid)
                         } else {
-                            dispatchAction(Action.ObserverAction.ObserverInactive(observerUuid))
+                            observersController.onObserverInactive(observerUuid)
                         }
                     }
             } finally {
-                dispatchAction(
-                    Action.ObserverAction.ObserverRemoved(observerUuid)
-                )
+                observersController.onObserverRemoved(observerUuid)
             }
         }
     }

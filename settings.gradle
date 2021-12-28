@@ -15,6 +15,7 @@ dependencyResolutionManagement {
             // Kotlin
             version('kotlin', '1.6.0')
             alias('kotlin-plugin').to('org.jetbrains.kotlin', 'kotlin-gradle-plugin').versionRef('kotlin')
+            alias('kotlin-datetime').to('org.jetbrains.kotlinx', 'kotlinx-datetime').version('0.3.1')
 
             version('coroutines', '1.6.0-RC')
             alias('coroutines-core').to('org.jetbrains.kotlinx', 'kotlinx-coroutines-core').versionRef('coroutines')

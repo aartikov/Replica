@@ -1,4 +1,4 @@
-package me.aartikov.replica.keyed
+package me.aartikov.replica.keyed.internal
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

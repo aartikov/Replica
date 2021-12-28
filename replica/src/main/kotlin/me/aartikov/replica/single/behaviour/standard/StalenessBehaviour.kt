@@ -1,7 +1,10 @@
 package me.aartikov.replica.single.behaviour.standard
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
@@ -12,30 +15,33 @@ internal class StalenessBehaviour<T : Any>(
     private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 
-    private var job: Job? = null
+    private var staleJob: Job? = null
 
-    override fun handleEvent(replica: PhysicalReplica<T>, event: ReplicaEvent<T>) {
-        when (event) {
-            is ReplicaEvent.FreshnessEvent.Freshened -> launchJob(replica)
-            is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> cancelJob()
-            else -> Unit
-        }
+    override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
+        replica.eventFlow
+            .onEach { event ->
+                when (event) {
+                    is ReplicaEvent.FreshnessEvent.Freshened -> {
+                        coroutineScope.relaunchStaleJob(replica)
+                    }
+                    is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> {
+                        cancelStaleJob()
+                    }
+                    else -> Unit;
+                }
+            }.launchIn(coroutineScope)
     }
 
-    private fun launchJob(replica: PhysicalReplica<T>) {
-        cancelJob()
-        if (staleTime.isPositive()) {
-            job = replica.coroutineScope.launch {
-                delay(staleTime.inWholeMilliseconds)
-                replica.makeStale()
-            }
-        } else {
+    private fun CoroutineScope.relaunchStaleJob(replica: PhysicalReplica<T>) {
+        staleJob?.cancel()
+        staleJob = launch {
+            delay(staleTime.inWholeMilliseconds)
             replica.makeStale()
         }
     }
 
-    private fun cancelJob() {
-        job?.cancel()
-        job = null
+    private fun cancelStaleJob() {
+        staleJob?.cancel()
+        staleJob = null
     }
 }

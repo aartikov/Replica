@@ -5,7 +5,7 @@ fun parseId(url: String): String {
 }
 
 fun formatName(name: String): String {
-    return name.replaceFirstChar { it.uppercase() }
+    return name.replace('-', ' ').replaceFirstChar { it.uppercase() }
 }
 
 fun decimetresToMeters(height: Int): Float {
