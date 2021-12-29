@@ -4,7 +4,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
+import me.aartikov.replica.keyed.internal.SingleKeyStorage
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
@@ -43,6 +45,7 @@ internal class ReplicaClientImpl(
     override fun <K : Any, T : Any> createKeyedReplica(
         settings: (K) -> ReplicaSettings,
         behaviours: (K) -> List<ReplicaBehaviour<T>>,
+        storage: KeyedStorage<K, T>?,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T> {
         val replicaFactory =
@@ -50,14 +53,14 @@ internal class ReplicaClientImpl(
                 createReplicaInternal(
                     settings = settings(key),
                     behaviours = behaviours(key),
-                    storage = null, // TODO:
+                    storage = storage?.let { SingleKeyStorage(it, key) },
                     fetcher = { fetcher.fetch(key) },
                     coroutineDispatcher = coroutineDispatcher,
                     coroutineScope = childCoroutineScope
                 )
             }
 
-        val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, replicaFactory)
+        val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, storage, replicaFactory)
         keyedReplicas.add(keyedReplica)
         return keyedReplica
     }
@@ -107,7 +110,7 @@ internal class ReplicaClientImpl(
 
     private fun validateSettings(settings: ReplicaSettings, hasStorage: Boolean) {
         if (hasStorage && settings.clearTime != null) {
-            throw IllegalArgumentException("clearTime setting is not supported for a replica with a storage")
+            throw IllegalArgumentException("clearTime is not supported for replicas with storage")
         }
     }
 }

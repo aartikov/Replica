@@ -18,9 +18,11 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     fun cancelLoading(key: K)
 
-    suspend fun clear(key: K) // cancels in progress loading
+    suspend fun clear(key: K, removeFromStorage: Boolean = true) // cancels in progress loading
 
     suspend fun clearError(key: K)
+
+    suspend fun clearAll()
 
     suspend fun onReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit)
 
@@ -31,6 +33,12 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<K, T>.invalidate(key: K) {
     onExistingReplica(key) {
+        invalidate()
+    }
+}
+
+suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll() {
+    onEachReplica {
         invalidate()
     }
 }

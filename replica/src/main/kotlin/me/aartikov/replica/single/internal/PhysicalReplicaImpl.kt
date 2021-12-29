@@ -32,16 +32,17 @@ internal class PhysicalReplicaImpl<T : Any>(
         coroutineScope,
         _stateFlow,
         _eventFlow,
-        DataLoader(coroutineScope, fetcher)
+        DataLoader(coroutineScope, storage, fetcher)
     )
 
-    private val dataChangingController = DataChangingController<T>(coroutineDispatcher, _stateFlow)
+    private val dataChangingController =
+        DataChangingController<T>(coroutineDispatcher, _stateFlow, storage)
 
     private val freshnessController =
         FreshnessController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
 
     private val clearingController =
-        ClearingController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
+        ClearingController<T>(coroutineDispatcher, _stateFlow, _eventFlow, storage)
 
     init {
         behaviours.forEach { behaviour ->
@@ -98,9 +99,9 @@ internal class PhysicalReplicaImpl<T : Any>(
         freshnessController.makeStale()
     }
 
-    override suspend fun clear() {
+    override suspend fun clear(removeFromStorage: Boolean) {
         cancelLoading()
-        clearingController.clear()
+        clearingController.clear(removeFromStorage)
     }
 
     override suspend fun clearError() {

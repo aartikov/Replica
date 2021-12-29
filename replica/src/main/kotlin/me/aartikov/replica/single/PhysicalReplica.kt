@@ -19,7 +19,7 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     suspend fun makeStale()
 
-    suspend fun clear() // cancels in progress loading
+    suspend fun clear(removeFromStorage: Boolean = true) // cancels in progress loading
 
     suspend fun clearError()
 

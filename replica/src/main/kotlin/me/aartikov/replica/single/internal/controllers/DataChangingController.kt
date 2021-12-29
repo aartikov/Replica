@@ -5,10 +5,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.ReplicaData
 import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.Storage
 
 internal class DataChangingController<T : Any>(
     private val dispatcher: CoroutineDispatcher,
-    private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>
+    private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
+    private val storage: Storage<T>?
 ) {
 
     suspend fun setData(data: T) {
@@ -21,6 +23,7 @@ internal class DataChangingController<T : Any>(
                     ReplicaData(value = data, fresh = false)
                 }
             )
+            storage?.write(data)
         }
     }
 
@@ -28,9 +31,11 @@ internal class DataChangingController<T : Any>(
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
+                val newData = transform(state.data.value)
                 replicaStateFlow.value = state.copy(
-                    data = state.data.copy(value = transform(state.data.value))
+                    data = state.data.copy(value = newData)
                 )
+                storage?.write(newData)
             }
         }
     }

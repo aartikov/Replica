@@ -6,7 +6,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.keyed.internal.keepPreviousData
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.single.LoadingError
+import me.aartikov.replica.single.ReplicaObserver
+import me.aartikov.replica.single.currentState
 
 interface KeyedReplica<K : Any, out T : Any> {
 
@@ -61,16 +64,4 @@ fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
         onError,
         keepPreviousData
     )
-}
-
-suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.clearAll() {  // TODO: move to KeyedReplica interface
-    onEachReplica {
-        clear()
-    }
-}
-
-suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll() {
-    onEachReplica {
-        invalidate()
-    }
 }

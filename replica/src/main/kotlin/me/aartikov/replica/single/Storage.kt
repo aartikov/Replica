@@ -6,5 +6,5 @@ interface Storage<T : Any> {
 
     suspend fun read(): T?
 
-    suspend fun clear()
+    suspend fun remove()
 }

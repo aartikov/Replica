@@ -26,12 +26,12 @@ internal class DataLoadingController<T : Any>(
 
 
     fun refresh() {
-        dataLoader.load()
+        dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
     }
 
     fun revalidate() {
         if (!replicaStateFlow.value.hasFreshData) {
-            dataLoader.load()
+            dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
         }
     }
 
@@ -56,6 +56,20 @@ internal class DataLoadingController<T : Any>(
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
                 }
 
+                is DataLoader.Output.StorageRead.Data -> {
+                    replicaStateFlow.value = state.copy(
+                        data = ReplicaData(
+                            value = output.data,
+                            fresh = false
+                        ),
+                        loadingFromStorageRequired = false
+                    )
+                }
+
+                is DataLoader.Output.StorageRead.Empty -> {
+                    replicaStateFlow.value = state.copy(loadingFromStorageRequired = false)
+                }
+
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
                         data = ReplicaData(
@@ -64,7 +78,8 @@ internal class DataLoadingController<T : Any>(
                         ),
                         error = null,
                         loading = false,
-                        dataRequested = false
+                        dataRequested = false,
+                        loadingFromStorageRequired = false
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Success(output.data))
                     replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.Freshened)
@@ -99,7 +114,7 @@ internal class DataLoadingController<T : Any>(
 
             val output = dataLoader.outputFlow
                 .onStart {
-                    dataLoader.load()
+                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
                     val state = replicaStateFlow.value
                     if (!state.dataRequested) {
                         replicaStateFlow.value = state.copy(dataRequested = true)

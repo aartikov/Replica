@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaObserver
 import me.aartikov.replica.single.ReplicaState
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     private val coroutineScope: CoroutineScope,
+    private val storage: KeyedStorage<K, T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
 
@@ -74,12 +76,24 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.cancelLoading()
     }
 
-    override suspend fun clear(key: K) {
-        getReplica(key)?.clear()
+    override suspend fun clear(key: K, removeFromStorage: Boolean) {
+        val replica = if (storage != null && removeFromStorage) {
+            getOrCreateReplica(key)
+        } else {
+            getReplica(key)
+        }
+        replica?.clear(removeFromStorage)
     }
 
     override suspend fun clearError(key: K) {
         getReplica(key)?.clearError()
+    }
+
+    override suspend fun clearAll() {
+        onEachReplica {
+            clear(removeFromStorage = false)
+        }
+        storage?.removeAll()
     }
 
     override suspend fun onReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit) {

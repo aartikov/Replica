@@ -5,14 +5,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.aartikov.replica.single.Fetcher
+import me.aartikov.replica.single.Storage
 
 internal class DataLoader<T : Any>(
     private val coroutineScope: CoroutineScope,
+    private val storage: Storage<T>?,
     private val fetcher: Fetcher<T>
 ) {
 
     sealed interface Output<out T : Any> {
         object LoadingStarted : Output<Nothing>
+
+        sealed interface StorageRead<out T : Any> : Output<T> {
+            data class Data<out T : Any>(val data: T) : Output<T>
+            object Empty : Output<Nothing>
+        }
 
         sealed interface LoadingFinished<out T : Any> : Output<T> {
             data class Success<out T : Any>(val data: T) : LoadingFinished<T>
@@ -27,14 +34,27 @@ internal class DataLoader<T : Any>(
     private var loadingJob: Job? = null
 
     @Synchronized
-    fun load() {
+    fun load(loadingFromStorageRequired: Boolean) {
         if (loadingJob?.isActive == true) return
 
         loadingJob = coroutineScope.launch {
             try {
                 _outputFlow.emit(Output.LoadingStarted)
 
+                if (storage != null && loadingFromStorageRequired) {
+                    val storageData = storage.read()
+                    if (currentCoroutineContext().isActive) {
+                        if (storageData != null) {
+                            _outputFlow.emit(Output.StorageRead.Data(storageData))
+                        } else {
+                            _outputFlow.emit(Output.StorageRead.Empty)
+                        }
+                    }
+                }
+
                 val data = fetcher.fetch()
+                storage?.write(data)
+
                 if (currentCoroutineContext().isActive) {
                     _outputFlow.emit(Output.LoadingFinished.Success(data))
                 } else {

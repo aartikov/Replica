@@ -8,7 +8,7 @@ import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineDispat
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
-import me.aartikov.replica.keyed.clearAll
+import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.invalidateAll
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
@@ -30,6 +30,7 @@ interface ReplicaClient {
     fun <K : Any, T : Any> createKeyedReplica(
         settings: (K) -> ReplicaSettings,
         behaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },
+        storage: KeyedStorage<K, T>? = null,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T>
 
