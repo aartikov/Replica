@@ -83,7 +83,7 @@ internal class ObserversController<T : Any>(
             || previousState.activeObserverCount != newState.activeObserverCount
         ) {
             replicaEventFlow.emit(
-                ReplicaEvent.ObserverCountChanged(
+                ReplicaEvent.ObserverCountChangedEvent(
                     count = newState.observerCount,
                     activeCount = newState.activeObserverCount,
                     previousCount = previousState.observerCount,

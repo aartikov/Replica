@@ -1,7 +1,6 @@
 package me.aartikov.replica.keyed
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -48,20 +47,4 @@ fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
     } else {
         observer.stateFlow
     }
-}
-
-fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>,
-    key: K,
-    onError: (LoadingError, Loadable<T>) -> Unit,
-    keepPreviousData: Boolean = false
-): StateFlow<Loadable<T>> {
-    return observe(
-        observerCoroutineScope,
-        observerActive,
-        MutableStateFlow(key),
-        onError,
-        keepPreviousData
-    )
 }

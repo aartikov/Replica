@@ -1,4 +1,4 @@
-package me.aartikov.replica.lifecycle
+package me.aartikov.replica.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

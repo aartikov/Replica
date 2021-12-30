@@ -18,7 +18,11 @@ internal class ClearingController<T : Any>(
     suspend fun clear(removeFromStorage: Boolean) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            replicaStateFlow.value = state.copy(data = null, error = null)
+            replicaStateFlow.value = state.copy(
+                data = null,
+                error = null,
+                loadingFromStorageRequired = false
+            )
             replicaEventFlow.emit(ReplicaEvent.ClearedEvent)
             if (removeFromStorage) {
                 storage?.remove()

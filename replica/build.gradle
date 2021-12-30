@@ -23,8 +23,5 @@ compileTestKotlin {
 
 dependencies {
     implementation libs.coroutines.core
-    implementation libs.kotlin.datetime
-    implementation libs.sesame.loop
-
     testImplementation libs.junit
 }

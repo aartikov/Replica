@@ -27,7 +27,7 @@ internal class StalenessBehaviour<T : Any>(
                     is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> {
                         cancelStaleJob()
                     }
-                    else -> Unit;
+                    else -> Unit
                 }
             }.launchIn(coroutineScope)
     }
@@ -36,7 +36,7 @@ internal class StalenessBehaviour<T : Any>(
         staleJob?.cancel()
         staleJob = launch {
             delay(staleTime.inWholeMilliseconds)
-            replica.makeStale()
+            replica.invalidate(refreshIfHasObservers = false)
         }
     }
 

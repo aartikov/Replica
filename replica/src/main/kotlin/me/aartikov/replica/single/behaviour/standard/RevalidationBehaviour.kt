@@ -7,12 +7,12 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
-internal class RevalidateOnActivatedBehaviour<T : Any> : ReplicaBehaviour<T> {
+internal class RevalidationBehaviour<T : Any> : ReplicaBehaviour<T> {
 
     override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
         replica.eventFlow
             .onEach { event ->
-                if (event is ReplicaEvent.ObserverCountChanged
+                if (event is ReplicaEvent.ObserverCountChangedEvent
                     && event.activeCount > event.previousActiveCount
                 ) {
                     replica.revalidate()

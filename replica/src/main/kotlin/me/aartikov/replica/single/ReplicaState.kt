@@ -3,7 +3,7 @@ package me.aartikov.replica.single
 data class ReplicaState<out T : Any>(
     val data: ReplicaData<T>?,
     val loading: Boolean,
-    val error: Exception?,
+    val error: LoadingError?,
     val observerUuids: Set<String>,
     val activeObserverUuids: Set<String>,
     val dataRequested: Boolean,

@@ -1,10 +1,8 @@
 package me.aartikov.replica.single.internal.controllers
 
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
+import me.aartikov.replica.single.LoadingError
 import me.aartikov.replica.single.ReplicaData
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
@@ -12,7 +10,7 @@ import me.aartikov.replica.single.internal.DataLoader
 
 internal class DataLoadingController<T : Any>(
     private val dispatcher: CoroutineDispatcher,
-    coroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
     private val replicaEventFlow: MutableSharedFlow<ReplicaEvent<T>>,
     private val dataLoader: DataLoader<T>
@@ -30,8 +28,12 @@ internal class DataLoadingController<T : Any>(
     }
 
     fun revalidate() {
-        if (!replicaStateFlow.value.hasFreshData) {
-            dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
+        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
+            withContext(dispatcher) {
+                if (!replicaStateFlow.value.hasFreshData) {
+                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
+                }
+            }
         }
     }
 
@@ -64,6 +66,7 @@ internal class DataLoadingController<T : Any>(
                         ),
                         loadingFromStorageRequired = false
                     )
+                    replicaEventFlow.emit(ReplicaEvent.LoadingEvent.DataFromStorageLoaded(output.data))
                 }
 
                 is DataLoader.Output.StorageRead.Empty -> {
@@ -78,8 +81,7 @@ internal class DataLoadingController<T : Any>(
                         ),
                         error = null,
                         loading = false,
-                        dataRequested = false,
-                        loadingFromStorageRequired = false
+                        dataRequested = false
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Success(output.data))
                     replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.Freshened)
@@ -95,7 +97,7 @@ internal class DataLoadingController<T : Any>(
 
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
-                        error = output.exception,
+                        error = LoadingError(output.exception),
                         loading = false,
                         dataRequested = false
                     )

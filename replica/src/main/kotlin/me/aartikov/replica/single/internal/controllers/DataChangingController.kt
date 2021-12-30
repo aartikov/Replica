@@ -21,7 +21,8 @@ internal class DataChangingController<T : Any>(
                     state.data.copy(value = data)
                 } else {
                     ReplicaData(value = data, fresh = false)
-                }
+                },
+                loadingFromStorageRequired = false
             )
             storage?.write(data)
         }
@@ -33,7 +34,8 @@ internal class DataChangingController<T : Any>(
             if (state.data != null) {
                 val newData = transform(state.data.value)
                 replicaStateFlow.value = state.copy(
-                    data = state.data.copy(value = newData)
+                    data = state.data.copy(value = newData),
+                    loadingFromStorageRequired = false
                 )
                 storage?.write(newData)
             }

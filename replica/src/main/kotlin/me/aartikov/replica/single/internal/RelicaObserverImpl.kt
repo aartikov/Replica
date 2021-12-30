@@ -5,9 +5,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import me.aartikov.replica.lifecycle.toActivableFlow
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.internal.controllers.ObserversController
+import me.aartikov.replica.utils.toActivableFlow
 import java.util.*
 
 internal class ReplicaObserverImpl<T : Any>(
@@ -47,7 +47,7 @@ internal class ReplicaObserverImpl<T : Any>(
 
     private fun launchObserving() {
         launchStateObserving()
-        launchErrorEventsObserving()
+        launchLoadingErrorsObserving()
         launchObserverStatusObserving()
     }
 
@@ -61,7 +61,7 @@ internal class ReplicaObserverImpl<T : Any>(
         }
     }
 
-    private fun launchErrorEventsObserving() {
+    private fun launchLoadingErrorsObserving() {
         errorEventsObservingJob = coroutineScope.launch {
             replicaEventFlow
                 .toActivableFlow(coroutineScope, activeFlow)

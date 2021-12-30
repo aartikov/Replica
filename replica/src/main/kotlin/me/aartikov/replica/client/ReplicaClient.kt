@@ -10,7 +10,10 @@ import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.invalidateAll
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.Fetcher
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
 interface ReplicaClient {
@@ -61,12 +64,12 @@ suspend fun ReplicaClient.clearAll() {
     }
 }
 
-suspend fun ReplicaClient.invalidateAll() {
+suspend fun ReplicaClient.invalidateAll(refreshIfHasObservers: Boolean = true) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        invalidate()
+        invalidate(refreshIfHasObservers)
     }
 
     onEachKeyedReplica {
-        this.invalidateAll()
+        this.invalidateAll(refreshIfHasObservers)
     }
 }

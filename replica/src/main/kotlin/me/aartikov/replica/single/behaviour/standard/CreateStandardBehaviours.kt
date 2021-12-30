@@ -8,7 +8,7 @@ internal fun <T : Any> createStandardBehaviours(replicaSettings: ReplicaSettings
     buildList<ReplicaBehaviour<T>> {
 
         if (replicaSettings.revalidateOnActivated) {
-            add(RevalidateOnActivatedBehaviour())
+            add(RevalidationBehaviour())
         }
 
         if (replicaSettings.staleTime != null) {

@@ -23,8 +23,9 @@ internal class CancellationBehaviour<T : Any>(
         replica.eventFlow
             .onEach { event ->
                 when (event) {
-                    is ReplicaEvent.ObserverCountChanged,
-                    is ReplicaEvent.LoadingEvent -> {
+                    is ReplicaEvent.ObserverCountChangedEvent,
+                    is ReplicaEvent.LoadingEvent.LoadingStarted,
+                    is ReplicaEvent.LoadingEvent.LoadingFinished -> {
                         if (replica.currentState.canBeCanceled) {
                             coroutineScope.launchCancellationJob(replica)
                         } else {

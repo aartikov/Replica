@@ -13,7 +13,7 @@ class ProjectRepositoryImpl(
 ) : ProjectRepository {
 
     override val projectReplica: PhysicalReplica<Project> = replicaClient.createReplica(
-        settings = ReplicaSettings(staleTime = 5.seconds),
+        settings = ReplicaSettings(staleTime = 5.seconds)
     ) {
         delay(1000) // Delay, because Github api is too fast
         api.getProject("aartikov", "Replica").toDomain()

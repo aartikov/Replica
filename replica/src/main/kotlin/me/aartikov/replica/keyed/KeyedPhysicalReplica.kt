@@ -2,7 +2,6 @@ package me.aartikov.replica.keyed
 
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
-import me.aartikov.replica.single.invalidate
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
@@ -12,9 +11,9 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     suspend fun mutateData(key: K, transform: (T) -> T)
 
-    suspend fun makeFresh(key: K)
+    suspend fun invalidate(key: K, refreshIfHasObservers: Boolean)
 
-    suspend fun makeStale(key: K)
+    suspend fun makeFresh(key: K)
 
     fun cancelLoading(key: K)
 
@@ -31,14 +30,8 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit)
 }
 
-suspend fun <K : Any, T : Any> KeyedPhysicalReplica<K, T>.invalidate(key: K) {
-    onExistingReplica(key) {
-        invalidate()
-    }
-}
-
-suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll() {
+suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(refreshIfHasObservers: Boolean = true) {
     onEachReplica {
-        invalidate()
+        invalidate(refreshIfHasObservers)
     }
 }

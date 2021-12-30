@@ -13,22 +13,22 @@ internal class FreshnessController<T : Any>(
     private val replicaEventFlow: MutableSharedFlow<ReplicaEvent<T>>
 ) {
 
+    suspend fun invalidate() {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            if (state.data?.fresh == true) {
+                state.copy(data = state.data.copy(fresh = false))
+                replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.BecameStale)
+            }
+        }
+    }
+
     suspend fun makeFresh() {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
                 replicaStateFlow.value = state.copy(data = state.data.copy(fresh = true))
                 replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.Freshened)
-            }
-        }
-    }
-
-    suspend fun makeStale() {
-        withContext(dispatcher) {
-            val state = replicaStateFlow.value
-            if (state.data?.fresh == true) {
-                state.copy(data = state.data.copy(fresh = false))
-                replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.BecameStale)
             }
         }
     }

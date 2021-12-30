@@ -43,23 +43,22 @@ internal class DataLoader<T : Any>(
 
                 if (storage != null && loadingFromStorageRequired) {
                     val storageData = storage.read()
-                    if (currentCoroutineContext().isActive) {
-                        if (storageData != null) {
-                            _outputFlow.emit(Output.StorageRead.Data(storageData))
-                        } else {
-                            _outputFlow.emit(Output.StorageRead.Empty)
-                        }
+                    ensureActive()
+
+                    if (storageData != null) {
+                        _outputFlow.emit(Output.StorageRead.Data(storageData))
+                    } else {
+                        _outputFlow.emit(Output.StorageRead.Empty)
                     }
                 }
 
                 val data = fetcher.fetch()
-                storage?.write(data)
+                ensureActive()
 
-                if (currentCoroutineContext().isActive) {
-                    _outputFlow.emit(Output.LoadingFinished.Success(data))
-                } else {
-                    _outputFlow.emit(Output.LoadingFinished.Canceled)
-                }
+                storage?.write(data)
+                ensureActive()
+
+                _outputFlow.emit(Output.LoadingFinished.Success(data))
 
             } catch (e: CancellationException) {
                 _outputFlow.emit(Output.LoadingFinished.Canceled)

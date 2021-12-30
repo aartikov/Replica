@@ -1,6 +1,7 @@
 package me.aartikov.replica.sample.features.pokemons.data
 
 import me.aartikov.replica.sample.features.pokemons.data.dto.DetailedPokemonResponse
+import me.aartikov.replica.sample.features.pokemons.data.dto.PokemonsByTypeResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 

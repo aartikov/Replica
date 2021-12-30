@@ -20,7 +20,7 @@ fun <T : Any> LceWidget(
         loading -> FullscreenCircularProgress(modifier)
 
         error != null -> ErrorPlaceholder(
-            errorMessage = error.errorMessage.resolve(),
+            errorMessage = error.exception.errorMessage.resolve(),
             onRetryClick = onRetryClick,
             modifier = modifier
         )

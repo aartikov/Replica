@@ -3,13 +3,14 @@ package me.aartikov.replica.single.internal
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.internal.controllers.*
 
 
 internal class PhysicalReplicaImpl<T : Any>(
-    coroutineDispatcher: CoroutineDispatcher,
+    private val dispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope,
     behaviours: List<ReplicaBehaviour<T>>,
     storage: Storage<T>?,
@@ -24,25 +25,21 @@ internal class PhysicalReplicaImpl<T : Any>(
     private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>()
     override val eventFlow: Flow<ReplicaEvent<T>> = _eventFlow.asSharedFlow()
 
-    private val observersController =
-        ObserversController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
+    private val observersController = ObserversController(dispatcher, _stateFlow, _eventFlow)
 
-    private val dataLoadingController = DataLoadingController<T>(
-        coroutineDispatcher,
+    private val dataLoadingController = DataLoadingController(
+        dispatcher,
         coroutineScope,
         _stateFlow,
         _eventFlow,
         DataLoader(coroutineScope, storage, fetcher)
     )
 
-    private val dataChangingController =
-        DataChangingController<T>(coroutineDispatcher, _stateFlow, storage)
+    private val dataChangingController = DataChangingController(dispatcher, _stateFlow, storage)
 
-    private val freshnessController =
-        FreshnessController<T>(coroutineDispatcher, _stateFlow, _eventFlow)
+    private val freshnessController = FreshnessController(dispatcher, _stateFlow, _eventFlow)
 
-    private val clearingController =
-        ClearingController<T>(coroutineDispatcher, _stateFlow, _eventFlow, storage)
+    private val clearingController = ClearingController(dispatcher, _stateFlow, _eventFlow, storage)
 
     init {
         behaviours.forEach { behaviour ->
@@ -91,12 +88,19 @@ internal class PhysicalReplicaImpl<T : Any>(
         dataChangingController.mutateData(transform)
     }
 
-    override suspend fun makeFresh() {
-        freshnessController.makeFresh()
+    override suspend fun invalidate(refreshIfHasObservers: Boolean) {
+        freshnessController.invalidate()
+        if (refreshIfHasObservers) {
+            withContext(dispatcher) {
+                if (currentState.observerCount > 0) {
+                    refresh()
+                }
+            }
+        }
     }
 
-    override suspend fun makeStale() {
-        freshnessController.makeStale()
+    override suspend fun makeFresh() {
+        freshnessController.makeFresh()
     }
 
     override suspend fun clear(removeFromStorage: Boolean) {

@@ -64,12 +64,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.mutateData(transform)
     }
 
-    override suspend fun makeFresh(key: K) {
-        getReplica(key)?.makeFresh()
+    override suspend fun invalidate(key: K, refreshIfHasObservers: Boolean) {
+        getReplica(key)?.invalidate(refreshIfHasObservers)
     }
 
-    override suspend fun makeStale(key: K) {
-        getReplica(key)?.makeStale()
+    override suspend fun makeFresh(key: K) {
+        getReplica(key)?.makeFresh()
     }
 
     override fun cancelLoading(key: K) {

@@ -15,9 +15,9 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     suspend fun mutateData(transform: (T) -> T)
 
-    suspend fun makeFresh()
+    suspend fun invalidate(refreshIfHasObservers: Boolean = true)
 
-    suspend fun makeStale()
+    suspend fun makeFresh()
 
     suspend fun clear(removeFromStorage: Boolean = true) // cancels in progress loading
 
@@ -26,10 +26,3 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 }
 
 val <T : Any> PhysicalReplica<T>.currentState get() = stateFlow.value
-
-suspend fun <T : Any> PhysicalReplica<T>.invalidate() {
-    makeStale()
-    if (currentState.observerCount > 0) {
-        refresh()
-    }
-}

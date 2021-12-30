@@ -17,7 +17,7 @@ import timber.log.Timber
 fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
     lifecycle: Lifecycle,
     errorHandler: ErrorHandler,
-    key: () -> K,
+    key: () -> K?,
     keepPreviousData: Boolean = false
 ): State<Loadable<T>> {
     return observe(
@@ -37,7 +37,7 @@ fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
 fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
     lifecycle: Lifecycle,
     onError: (LoadingError, Loadable<T>) -> Unit,
-    key: () -> K,
+    key: () -> K?,
     keepPreviousData: Boolean = false
 ): State<Loadable<T>> {
     val coroutineScope = lifecycle.coroutineScope()
@@ -54,8 +54,8 @@ fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
 
 private fun <K : Any> keyFlow(
     coroutineScope: CoroutineScope,
-    key: () -> K
-): StateFlow<K> {
+    key: () -> K?
+): StateFlow<K?> {
     return snapshotFlow { key() }.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(),

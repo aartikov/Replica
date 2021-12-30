@@ -1,9 +1,7 @@
-package me.aartikov.replica.sample.features.pokemons.data
+package me.aartikov.replica.sample.features.pokemons.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import me.aartikov.replica.sample.features.pokemons.data.dto.PokemonWrapperResponse
-import me.aartikov.replica.sample.features.pokemons.data.dto.toDomain
 import me.aartikov.replica.sample.features.pokemons.domain.Pokemon
 
 @Serializable
