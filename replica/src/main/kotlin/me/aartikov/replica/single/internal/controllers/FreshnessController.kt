@@ -17,7 +17,7 @@ internal class FreshnessController<T : Any>(
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data?.fresh == true) {
-                state.copy(data = state.data.copy(fresh = false))
+                replicaStateFlow.value = state.copy(data = state.data.copy(fresh = false))
                 replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.BecameStale)
             }
         }
