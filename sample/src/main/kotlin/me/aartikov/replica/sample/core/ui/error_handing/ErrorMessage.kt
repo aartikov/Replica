@@ -7,7 +7,13 @@ import me.aartikov.sesame.localizedstring.LocalizedString
 
 val Exception.errorMessage: LocalizedString
     get() = when (this) {
-        is ServerException, is DeserializationException -> LocalizedString.resource(R.string.error_invalid_response)
+        is ServerException -> if (this.message != null) {
+            LocalizedString.raw(this.message!!)
+        } else {
+            LocalizedString.resource(R.string.error_invalid_response)
+        }
+
+        is DeserializationException -> LocalizedString.resource(R.string.error_invalid_response)
 
         is NoServerResponseException -> LocalizedString.resource(R.string.error_no_server_response)
 

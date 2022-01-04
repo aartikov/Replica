@@ -2,11 +2,12 @@ package me.aartikov.replica.sample.core.domain
 
 import java.io.IOException
 
-abstract class ApplicationException(cause: Throwable) : IOException(cause)
+abstract class ApplicationException(message: String? = null, cause: Throwable?) :
+    IOException(message, cause)
 
-class ServerException(cause: Throwable) : ApplicationException(cause)
+class ServerException(message: String?, cause: Throwable?) : ApplicationException(message, cause)
 
-abstract class TransportException(cause: Throwable) : ApplicationException(cause)
+abstract class TransportException(cause: Throwable) : ApplicationException(null, cause)
 
 class NoInternetException(cause: Throwable) : TransportException(cause)
 
@@ -14,6 +15,6 @@ class NoServerResponseException(cause: Throwable) : TransportException(cause)
 
 class DeserializationException(cause: Throwable) : TransportException(cause)
 
-class MatchingAppNotFoundException(cause: Throwable) : ApplicationException(cause)
+class MatchingAppNotFoundException(cause: Throwable) : ApplicationException(null, cause)
 
-class UnknownException(cause: Throwable, override val message: String) : ApplicationException(cause)
+class UnknownException(message: String?, cause: Throwable) : ApplicationException(message, cause)

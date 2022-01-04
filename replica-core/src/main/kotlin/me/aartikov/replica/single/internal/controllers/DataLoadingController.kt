@@ -127,7 +127,7 @@ internal class DataLoadingController<T : Any>(
         return withContext(dispatcher) {
             val data = replicaStateFlow.value.data
             if (!refreshed && data != null && data.fresh) {
-                return@withContext data.value
+                return@withContext data.valueWithOptimisticUpdates
             }
 
             val output = dataLoader.outputFlow
@@ -141,8 +141,13 @@ internal class DataLoadingController<T : Any>(
                 .filterIsInstance<DataLoader.Output.LoadingFinished<T>>()
                 .first()
 
+
+
             when (output) {
-                is DataLoader.Output.LoadingFinished.Success -> output.data
+                is DataLoader.Output.LoadingFinished.Success -> {
+                    val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates
+                    optimisticUpdates?.applyAll(output.data) ?: output.data
+                }
                 is DataLoader.Output.LoadingFinished.Canceled -> throw CancellationException()
                 is DataLoader.Output.LoadingFinished.Error -> throw output.exception
             }

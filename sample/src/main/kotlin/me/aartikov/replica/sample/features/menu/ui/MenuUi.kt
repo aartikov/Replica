@@ -33,7 +33,7 @@ fun MenuUi(
 
             Box(modifier = Modifier.weight(1.0f)) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .align(Alignment.Center)
                         .width(IntrinsicSize.Max)
@@ -48,6 +48,12 @@ fun MenuUi(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(R.string.pokemons_title),
                         onClick = { component.onMenuItemClick(MenuItem.Pokemons) }
+                    )
+
+                    MenuButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.fruits_title),
+                        onClick = { component.onMenuItemClick(MenuItem.Fruits) }
                     )
                 }
             }

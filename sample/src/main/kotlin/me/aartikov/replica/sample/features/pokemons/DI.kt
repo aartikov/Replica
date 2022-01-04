@@ -19,7 +19,7 @@ import org.koin.core.component.get
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val pokemonModule = module {
+val pokemonsModule = module {
     single<PokemonApi> {
         get<NetworkApiFactory>(named(BaseUrl.Pokemons)).createApi()
     }

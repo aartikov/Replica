@@ -1,0 +1,39 @@
+package me.aartikov.replica.sample.features.fruits.data
+
+import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.sample.features.fruits.data.dto.toDomain
+import me.aartikov.replica.sample.features.fruits.domain.Fruit
+import me.aartikov.replica.sample.features.fruits.domain.FruitId
+import me.aartikov.replica.single.OptimisticUpdate
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.withOptimisticUpdate
+import kotlin.time.Duration.Companion.seconds
+
+class FruitRepositoryImpl(
+    replicaClient: ReplicaClient,
+    private val api: FruitApi
+) : FruitRepository {
+
+    override val fruitsReplica: PhysicalReplica<List<Fruit>> = replicaClient.createReplica(
+        settings = ReplicaSettings(staleTime = 30.seconds)
+    ) {
+        api.getFruits().map { it.toDomain() }
+    }
+
+    override suspend fun setFruitLiked(fruitId: FruitId, liked: Boolean) {
+        val updateFruitLiked = OptimisticUpdate<List<Fruit>> { fruits ->
+            fruits.map {
+                if (it.id == fruitId) it.copy(liked = liked) else it
+            }
+        }
+
+        withOptimisticUpdate(updateFruitLiked, fruitsReplica) {
+            if (liked) {
+                api.likeFruit(fruitId.value)
+            } else {
+                api.dislikeFruit(fruitId.value)
+            }
+        }
+    }
+}

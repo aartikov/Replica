@@ -54,7 +54,7 @@ fun PokemonListUi(
                     )
                 } else {
                     EmptyPlaceholder(
-                        description = stringResource(R.string.pokemons_empty_descriptions)
+                        description = stringResource(R.string.pokemons_empty_description)
                     )
                 }
 

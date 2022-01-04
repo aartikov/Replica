@@ -1,5 +1,8 @@
 package me.aartikov.replica.sample.core
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.sample.core.data.network.BaseUrl
 import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
@@ -19,4 +22,5 @@ val coreModule = module {
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }
+    single { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate) }
 }

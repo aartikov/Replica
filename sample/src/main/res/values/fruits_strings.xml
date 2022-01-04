@@ -1,0 +1,5 @@
+<resources>
+    <string name="fruits_title">Fruits</string>
+    <string name="fruits_like_question">What fruits do you like?</string>
+    <string name="fruits_empty_description">Fruits are not found</string>
+</resources>

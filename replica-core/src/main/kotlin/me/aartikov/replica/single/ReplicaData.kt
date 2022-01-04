@@ -7,6 +7,6 @@ data class ReplicaData<T : Any>(
 ) {
 
     val valueWithOptimisticUpdates by lazy {
-        optimisticUpdates.fold(value, { v, u -> u.apply(v) })
+        optimisticUpdates.applyAll(value)
     }
 }

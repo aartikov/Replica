@@ -30,7 +30,7 @@ class ErrorInterceptor : Interceptor {
             }
         } catch (e: Exception) {
             throw when (e) {
-                is HttpException -> ServerException(e)
+                is HttpException -> ServerException(message = null, cause = e)
 
                 is SerializationException -> DeserializationException(e)
 
@@ -40,7 +40,7 @@ class ErrorInterceptor : Interceptor {
 
                 is IOException -> NoInternetException(e)
 
-                else -> UnknownException(e, e.message.orEmpty())
+                else -> UnknownException(message = e.message, cause = e)
             }
         }
     }

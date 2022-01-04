@@ -6,8 +6,8 @@ import kotlin.time.Duration.Companion.milliseconds
 data class ReplicaSettings(
     val staleTime: Duration?,
     val clearTime: Duration? = null,
-    val clearErrorTime: Duration? = 500.milliseconds,
-    val cancelTime: Duration? = 500.milliseconds,
+    val clearErrorTime: Duration? = 250.milliseconds,
+    val cancelTime: Duration? = 250.milliseconds,
     val revalidateOnActivated: Boolean = true,
     val refreshOnStale: RefreshCondition = RefreshCondition.Never
 ) {
