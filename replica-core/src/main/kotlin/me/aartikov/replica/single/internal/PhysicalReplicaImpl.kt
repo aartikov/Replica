@@ -40,6 +40,8 @@ internal class PhysicalReplicaImpl<T : Any>(
 
     private val clearingController = ClearingController(dispatcher, _stateFlow, _eventFlow, storage)
 
+    private val optimisticUpdatesController = OptimisticUpdatesController(dispatcher, _stateFlow)
+
     init {
         behaviours.forEach { behaviour ->
             behaviour.setup(coroutineScope, this)
@@ -103,5 +105,17 @@ internal class PhysicalReplicaImpl<T : Any>(
 
     override suspend fun clearError() {
         clearingController.clearError()
+    }
+
+    override suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>) {
+        optimisticUpdatesController.beginOptimisticUpdate(update)
+    }
+
+    override suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>) {
+        optimisticUpdatesController.commitOptimisticUpdate(update)
+    }
+
+    override suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>) {
+        optimisticUpdatesController.rollbackOptimisticUpdate(update)
     }
 }

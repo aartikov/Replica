@@ -1,5 +1,6 @@
 package me.aartikov.replica.keyed
 
+import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.RefreshCondition
 import me.aartikov.replica.single.ReplicaState
@@ -26,6 +27,12 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     suspend fun clearError(key: K)
 
     suspend fun clearAll()
+
+    suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
+
+    suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
+
+    suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
 
     suspend fun onReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit)
 

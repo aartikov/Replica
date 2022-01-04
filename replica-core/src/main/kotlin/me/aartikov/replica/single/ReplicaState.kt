@@ -1,6 +1,6 @@
 package me.aartikov.replica.single
 
-data class ReplicaState<out T : Any>(
+data class ReplicaState<T : Any>(
     val data: ReplicaData<T>?,
     val loading: Boolean,
     val error: LoadingError?,
@@ -30,7 +30,7 @@ data class ReplicaState<out T : Any>(
 }
 
 internal fun <T : Any> ReplicaState<T>.toLoadable() = Loadable(
-    data = data?.value,
+    data = data?.valueWithOptimisticUpdates,
     loading = loading,
     error = error
 )

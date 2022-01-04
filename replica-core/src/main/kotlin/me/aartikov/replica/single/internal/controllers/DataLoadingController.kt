@@ -72,14 +72,16 @@ internal class DataLoadingController<T : Any>(
                 }
 
                 is DataLoader.Output.StorageRead.Data -> {
-                    replicaStateFlow.value = state.copy(
-                        data = ReplicaData(
-                            value = output.data,
-                            fresh = false
-                        ),
-                        loadingFromStorageRequired = false
-                    )
-                    replicaEventFlow.emit(ReplicaEvent.LoadingEvent.DataFromStorageLoaded(output.data))
+                    if (state.data == null) {
+                        replicaStateFlow.value = state.copy(
+                            data = ReplicaData(
+                                value = output.data,
+                                fresh = false
+                            ),
+                            loadingFromStorageRequired = false
+                        )
+                        replicaEventFlow.emit(ReplicaEvent.LoadingEvent.DataFromStorageLoaded(output.data))
+                    }
                 }
 
                 is DataLoader.Output.StorageRead.Empty -> {
@@ -88,10 +90,11 @@ internal class DataLoadingController<T : Any>(
 
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
-                        data = ReplicaData(
-                            value = output.data,
-                            fresh = true
-                        ),
+                        data = if (state.data != null) {
+                            state.data.copy(value = output.data, fresh = true)
+                        } else {
+                            ReplicaData(value = output.data, fresh = true)
+                        },
                         error = null,
                         loading = false,
                         dataRequested = false

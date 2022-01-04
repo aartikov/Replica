@@ -23,6 +23,11 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     suspend fun clearError()
 
+    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>)
+
+    suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
+
+    suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>)
 }
 
 val <T : Any> PhysicalReplica<T>.currentState get() = stateFlow.value
