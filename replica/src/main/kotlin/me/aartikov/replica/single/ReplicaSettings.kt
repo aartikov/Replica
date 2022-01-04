@@ -8,7 +8,8 @@ data class ReplicaSettings(
     val clearTime: Duration? = null,
     val clearErrorTime: Duration? = 500.milliseconds,
     val cancelTime: Duration? = 500.milliseconds,
-    val revalidateOnActivated: Boolean = true
+    val revalidateOnActivated: Boolean = true,
+    val refreshOnStale: RefreshCondition = RefreshCondition.Never
 ) {
 
     companion object {

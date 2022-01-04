@@ -3,7 +3,6 @@ package me.aartikov.replica.single.internal
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.internal.controllers.*
@@ -88,15 +87,9 @@ internal class PhysicalReplicaImpl<T : Any>(
         dataChangingController.mutateData(transform)
     }
 
-    override suspend fun invalidate(refreshIfHasObservers: Boolean) {
+    override suspend fun invalidate(refreshCondition: RefreshCondition) {
         freshnessController.invalidate()
-        if (refreshIfHasObservers) {
-            withContext(dispatcher) {
-                if (currentState.observerCount > 0) {
-                    refresh()
-                }
-            }
-        }
+        dataLoadingController.refresh(refreshCondition)
     }
 
     override suspend fun makeFresh() {

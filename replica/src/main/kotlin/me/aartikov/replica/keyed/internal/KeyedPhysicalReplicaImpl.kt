@@ -9,10 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
-import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.ReplicaObserver
-import me.aartikov.replica.single.ReplicaState
-import me.aartikov.replica.single.currentState
+import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
@@ -64,8 +61,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.mutateData(transform)
     }
 
-    override suspend fun invalidate(key: K, refreshIfHasObservers: Boolean) {
-        getReplica(key)?.invalidate(refreshIfHasObservers)
+    override suspend fun invalidate(key: K, refreshCondition: RefreshCondition) {
+        if (refreshCondition == RefreshCondition.Always) {
+            getOrCreateReplica(key).invalidate(refreshCondition)
+        } else {
+            getReplica(key)?.invalidate(refreshCondition)
+        }
     }
 
     override suspend fun makeFresh(key: K) {

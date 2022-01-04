@@ -12,7 +12,9 @@ internal fun <T : Any> createStandardBehaviours(replicaSettings: ReplicaSettings
         }
 
         if (replicaSettings.staleTime != null) {
-            add(StalenessBehaviour(replicaSettings.staleTime))
+            add(
+                StalenessBehaviour(replicaSettings.staleTime, replicaSettings.refreshOnStale)
+            )
         }
 
         if (replicaSettings.clearTime != null) {

@@ -2,10 +2,7 @@ package me.aartikov.replica.single.internal.controllers
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import me.aartikov.replica.single.LoadingError
-import me.aartikov.replica.single.ReplicaData
-import me.aartikov.replica.single.ReplicaEvent
-import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.*
 import me.aartikov.replica.single.internal.DataLoader
 
 internal class DataLoadingController<T : Any>(
@@ -25,6 +22,22 @@ internal class DataLoadingController<T : Any>(
 
     fun refresh() {
         dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
+    }
+
+    suspend fun refresh(refreshCondition: RefreshCondition) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            when (refreshCondition) {
+                RefreshCondition.Never -> Unit
+                RefreshCondition.IfHasObservers -> if (state.observerCount > 0) {
+                    refresh()
+                }
+                RefreshCondition.IfHasActiveObservers -> if (state.activeObserverCount > 0) {
+                    refresh()
+                }
+                RefreshCondition.Always -> refresh()
+            }
+        }
     }
 
     fun revalidate() {
