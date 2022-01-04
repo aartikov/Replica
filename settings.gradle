@@ -1,6 +1,8 @@
 rootProject.name = "Replica"
+
+include ':replica-core'
+include ':replica-algebra'
 include ':sample'
-include ':replica'
 
 enableFeaturePreview('VERSION_CATALOGS')
 

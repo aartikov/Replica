@@ -1,0 +1,28 @@
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+    }
+}
+
+dependencies {
+    implementation project(':replica-core')
+    implementation libs.coroutines.core
+    testImplementation libs.junit
+}

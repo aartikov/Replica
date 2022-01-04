@@ -15,10 +15,6 @@ android {
         versionName "1.0"
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -43,7 +39,8 @@ android {
 dependencies {
     coreLibraryDesugaring libs.android.desugar
 
-    implementation project(':replica')
+    implementation project(':replica-core')
+    implementation project(':replica-algebra')
 
     // Kotlin
     implementation libs.coroutines.core

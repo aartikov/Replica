@@ -70,7 +70,9 @@ private fun PokemonDetailsContent(
         )
 
         Image(
-            painter = rememberImagePainter(pokemon.imageUrl),
+            painter = rememberImagePainter(pokemon.imageUrl) {
+                crossfade(true)
+            },
             contentDescription = null,
             modifier = Modifier
                 .padding(top = 32.dp)
