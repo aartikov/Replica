@@ -1,4 +1,4 @@
-package me.aartikov.replica.sample.core.ui.utils
+package me.aartikov.replica.decompose
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

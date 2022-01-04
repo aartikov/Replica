@@ -1,4 +1,11 @@
 buildscript {
+    ext {
+        androidLibraryConfig = [
+                minSdkVersion    : 21,
+                compileSdkVersion: 31
+        ]
+    }
+
     repositories {
         google()
         mavenCentral()

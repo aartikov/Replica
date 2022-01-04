@@ -8,8 +8,8 @@ import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.push
 import com.arkivanov.decompose.router.router
 import kotlinx.parcelize.Parcelize
+import me.aartikov.replica.decompose.toComposeState
 import me.aartikov.replica.sample.core.ui.ComponentFactory
-import me.aartikov.replica.sample.core.ui.utils.toComposeState
 import me.aartikov.replica.sample.features.menu.createMenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuItem

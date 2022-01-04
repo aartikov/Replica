@@ -2,6 +2,7 @@ rootProject.name = "Replica"
 
 include ':replica-core'
 include ':replica-algebra'
+include ':replica-decompose'
 include ':sample'
 
 enableFeaturePreview('VERSION_CATALOGS')
@@ -27,7 +28,8 @@ dependencyResolutionManagement {
             alias('android-desugar').to('com.android.tools', 'desugar_jdk_libs').version('1.1.5')
 
             // UI
-            version('compose', '1.1.0-beta04')
+            version('compose', '1.1.0-rc01')
+            alias('compose-runtime').to('androidx.compose.runtime', 'runtime').versionRef('compose')
             alias('compose-ui').to('androidx.compose.ui', 'ui').versionRef('compose')
             alias('compose-material').to('androidx.compose.material', 'material').versionRef('compose')
             alias('compose-preview').to('androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
