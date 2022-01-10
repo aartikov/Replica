@@ -93,9 +93,9 @@ internal class PhysicalReplicaImpl<T : Any>(
         dataChangingController.mutateData(transform)
     }
 
-    override suspend fun invalidate(refreshCondition: RefreshCondition) {
+    override suspend fun invalidate(refresh: RefreshAction) {
         freshnessController.invalidate()
-        dataLoadingController.refresh(refreshCondition)
+        dataLoadingController.executeRefreshAction(refresh)
     }
 
     override suspend fun makeFresh() {

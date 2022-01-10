@@ -2,7 +2,7 @@ package me.aartikov.replica.keyed
 
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.RefreshCondition
+import me.aartikov.replica.single.RefreshAction
 import me.aartikov.replica.single.ReplicaState
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
@@ -15,7 +15,7 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     suspend fun invalidate(
         key: K,
-        refreshCondition: RefreshCondition = RefreshCondition.IfHasObservers
+        refresh: RefreshAction = RefreshAction.RefreshIfHasObservers
     )
 
     suspend fun makeFresh(key: K)
@@ -42,9 +42,9 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 }
 
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(
-    refreshCondition: RefreshCondition = RefreshCondition.IfHasObservers
+    refresh: RefreshAction = RefreshAction.RefreshIfHasObservers
 ) {
     onEachReplica {
-        invalidate(refreshCondition)
+        invalidate(refresh)
     }
 }

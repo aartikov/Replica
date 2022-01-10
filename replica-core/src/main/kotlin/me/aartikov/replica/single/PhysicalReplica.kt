@@ -15,7 +15,7 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     suspend fun mutateData(transform: (T) -> T)
 
-    suspend fun invalidate(refreshCondition: RefreshCondition = RefreshCondition.IfHasObservers)
+    suspend fun invalidate(refresh: RefreshAction = RefreshAction.RefreshIfHasObservers)
 
     suspend fun makeFresh()
 

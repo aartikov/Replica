@@ -24,18 +24,18 @@ internal class DataLoadingController<T : Any>(
         dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
     }
 
-    suspend fun refresh(refreshCondition: RefreshCondition) {
+    suspend fun executeRefreshAction(refreshAction: RefreshAction) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            when (refreshCondition) {
-                RefreshCondition.Never -> Unit
-                RefreshCondition.IfHasObservers -> if (state.observerCount > 0) {
+            when (refreshAction) {
+                RefreshAction.Refresh -> refresh()
+                RefreshAction.RefreshIfHasObservers -> if (state.observerCount > 0) {
                     refresh()
                 }
-                RefreshCondition.IfHasActiveObservers -> if (state.activeObserverCount > 0) {
+                RefreshAction.RefreshIfHasActiveObservers -> if (state.activeObserverCount > 0) {
                     refresh()
                 }
-                RefreshCondition.Always -> refresh()
+                RefreshAction.DontRefresh -> Unit
             }
         }
     }

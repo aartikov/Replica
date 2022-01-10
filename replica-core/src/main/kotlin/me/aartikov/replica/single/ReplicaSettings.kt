@@ -9,7 +9,7 @@ data class ReplicaSettings(
     val clearErrorTime: Duration? = 250.milliseconds,
     val cancelTime: Duration? = 250.milliseconds,
     val revalidateOnActivated: Boolean = true,
-    val refreshOnStale: RefreshCondition = RefreshCondition.Never
+    val refreshOnStale: RefreshAction = RefreshAction.DontRefresh
 ) {
 
     companion object {

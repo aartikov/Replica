@@ -62,13 +62,13 @@ suspend fun ReplicaClient.clearAll() {
 }
 
 suspend fun ReplicaClient.invalidateAll(
-    refreshCondition: RefreshCondition = RefreshCondition.IfHasObservers
+    refresh: RefreshAction = RefreshAction.RefreshIfHasObservers
 ) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        invalidate(refreshCondition)
+        invalidate(refresh)
     }
 
     onEachKeyedReplica {
-        this.invalidateAll(refreshCondition)
+        this.invalidateAll(refresh)
     }
 }

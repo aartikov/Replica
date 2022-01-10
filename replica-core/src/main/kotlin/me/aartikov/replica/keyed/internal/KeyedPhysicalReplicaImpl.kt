@@ -61,12 +61,13 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.mutateData(transform)
     }
 
-    override suspend fun invalidate(key: K, refreshCondition: RefreshCondition) {
-        if (refreshCondition == RefreshCondition.Always) {
-            getOrCreateReplica(key).invalidate(refreshCondition)
+    override suspend fun invalidate(key: K, refresh: RefreshAction) {
+        val replica = if (refresh == RefreshAction.Refresh) {
+            getOrCreateReplica(key)
         } else {
-            getReplica(key)?.invalidate(refreshCondition)
+            getReplica(key)
         }
+        replica?.invalidate(refresh)
     }
 
     override suspend fun makeFresh(key: K) {
