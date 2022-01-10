@@ -1,4 +1,4 @@
-package me.aartikov.replica.utils
+package me.aartikov.replica.client.internal
 
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap

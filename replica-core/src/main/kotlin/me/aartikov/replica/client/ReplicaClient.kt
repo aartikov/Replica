@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineDispatcher
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
+import me.aartikov.replica.client.internal.ReplicaClientImpl
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage

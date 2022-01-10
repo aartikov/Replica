@@ -1,7 +1,8 @@
-package me.aartikov.replica.client
+package me.aartikov.replica.client.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
@@ -14,7 +15,6 @@ import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.behaviour.standard.createStandardBehaviours
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
-import me.aartikov.replica.utils.concurrentHashSetOf
 
 internal class ReplicaClientImpl(
     private val coroutineDispatcher: CoroutineDispatcher,
