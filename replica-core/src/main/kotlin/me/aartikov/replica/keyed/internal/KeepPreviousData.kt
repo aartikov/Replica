@@ -10,7 +10,7 @@ internal fun <T : Any> StateFlow<Loadable<T>>.keepPreviousData(
     val result = MutableStateFlow(this.value)
     this
         .debounce { newValue -> // TODO: придумать как сделать без debounce
-            if (newValue.data == null && newValue.error == null && !newValue.loading) {
+            if (newValue.data == null && !newValue.loading) {
                 1
             } else {
                 0
