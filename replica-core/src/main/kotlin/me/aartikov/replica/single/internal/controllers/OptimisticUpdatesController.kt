@@ -1,7 +1,6 @@
 package me.aartikov.replica.single.internal.controllers
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.OptimisticUpdate
@@ -44,7 +43,7 @@ internal class OptimisticUpdatesController<T : Any>(
     }
 
     suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>) {
-        withContext(dispatcher + NonCancellable) {
+        withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
                 replicaStateFlow.value = state.copy(
