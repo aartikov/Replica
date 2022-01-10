@@ -8,6 +8,7 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.keyed.internal.SingleKeyStorage
+import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
@@ -17,6 +18,7 @@ import me.aartikov.replica.single.behaviour.standard.createStandardBehaviours
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
 
 internal class ReplicaClientImpl(
+    override val networkConnectivityProvider: NetworkConnectivityProvider?,
     private val coroutineDispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope
 ) : ReplicaClient {
@@ -99,10 +101,12 @@ internal class ReplicaClientImpl(
 
         validateSettings(settings, hasStorage = storage != null)
 
+        val standardBehaviours = createStandardBehaviours<T>(settings, networkConnectivityProvider)
+
         return PhysicalReplicaImpl(
             coroutineDispatcher,
             coroutineScope,
-            behaviours = createStandardBehaviours<T>(settings) + behaviours,
+            behaviours = standardBehaviours + behaviours,
             storage,
             fetcher
         )

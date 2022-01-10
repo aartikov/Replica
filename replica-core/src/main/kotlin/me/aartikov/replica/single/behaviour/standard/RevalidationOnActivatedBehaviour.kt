@@ -7,7 +7,7 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
-internal class RevalidationBehaviour<T : Any> : ReplicaBehaviour<T> {
+internal class RevalidationOnActivatedBehaviour<T : Any> : ReplicaBehaviour<T> {
 
     override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
         replica.eventFlow

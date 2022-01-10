@@ -2,6 +2,7 @@ rootProject.name = "Replica"
 
 include ':replica-core'
 include ':replica-algebra'
+include ':replica-android-network'
 include ':replica-decompose'
 include ':sample'
 
@@ -26,6 +27,7 @@ dependencyResolutionManagement {
             // Android
             alias('android-plugin').to('com.android.tools.build', 'gradle').version('7.0.3')
             alias('android-desugar').to('com.android.tools', 'desugar_jdk_libs').version('1.1.5')
+            alias('androidx-lifecycle-process').to('androidx.lifecycle', 'lifecycle-process').version('2.4.0')
 
             // UI
             version('compose', '1.1.0-rc01')

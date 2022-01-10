@@ -11,6 +11,7 @@ import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.invalidateAll
+import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
@@ -20,6 +21,8 @@ interface ReplicaClient {
         val DefaultCoroutineDispatcher = Dispatchers.Main.immediate
         val DefaultCoroutineScope = CoroutineScope(SupervisorJob() + DefaultCoroutineDispatcher)
     }
+
+    val networkConnectivityProvider: NetworkConnectivityProvider?
 
     fun <T : Any> createReplica(
         settings: ReplicaSettings,
@@ -46,10 +49,11 @@ interface ReplicaClient {
 }
 
 fun ReplicaClient(
+    networkConnectivityProvider: NetworkConnectivityProvider? = null,
     coroutineDispatcher: CoroutineDispatcher = DefaultCoroutineDispatcher,
     coroutineScope: CoroutineScope = DefaultCoroutineScope
 ): ReplicaClient {
-    return ReplicaClientImpl(coroutineDispatcher, coroutineScope)
+    return ReplicaClientImpl(networkConnectivityProvider, coroutineDispatcher, coroutineScope)
 }
 
 suspend fun ReplicaClient.clearAll() {
