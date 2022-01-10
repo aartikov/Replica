@@ -6,10 +6,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.Storage
 
 internal class OptimisticUpdatesController<T : Any>(
     private val dispatcher: CoroutineDispatcher,
-    private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>
+    private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
+    private val storage: Storage<T>?
 ) {
 
     suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>) {
@@ -29,12 +31,14 @@ internal class OptimisticUpdatesController<T : Any>(
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
+                val newData = update.apply(state.data.value)
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
-                        value = update.apply(state.data.value),
+                        value = newData,
                         optimisticUpdates = state.data.optimisticUpdates - update
                     )
                 )
+                storage?.write(newData)
             }
         }
     }

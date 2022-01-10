@@ -40,7 +40,11 @@ internal class PhysicalReplicaImpl<T : Any>(
 
     private val clearingController = ClearingController(dispatcher, _stateFlow, _eventFlow, storage)
 
-    private val optimisticUpdatesController = OptimisticUpdatesController(dispatcher, _stateFlow)
+    private val optimisticUpdatesController = OptimisticUpdatesController(
+        dispatcher,
+        _stateFlow,
+        storage
+    )
 
     init {
         behaviours.forEach { behaviour ->
