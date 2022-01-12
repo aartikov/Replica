@@ -8,13 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
-import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     private val coroutineScope: CoroutineScope,
-    private val storage: KeyedStorage<K, T>?,
+    private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
 
@@ -79,7 +78,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     }
 
     override suspend fun clear(key: K, removeFromStorage: Boolean) {
-        val replica = if (storage != null && removeFromStorage) {
+        val replica = if (storageCleaner != null && removeFromStorage) {
             getOrCreateReplica(key)
         } else {
             getReplica(key)
@@ -95,7 +94,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         onEachReplica {
             clear(removeFromStorage = false)
         }
-        storage?.removeAll()
+        storageCleaner?.removeAll()
     }
 
     override suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<T>) {

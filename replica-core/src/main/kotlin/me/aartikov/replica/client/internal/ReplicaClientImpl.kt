@@ -6,8 +6,9 @@ import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
+import me.aartikov.replica.keyed.internal.FixedKeyStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
-import me.aartikov.replica.keyed.internal.SingleKeyStorage
+import me.aartikov.replica.keyed.internal.KeyedStorageCleaner
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
@@ -16,6 +17,7 @@ import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.behaviour.standard.createStandardBehaviours
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
+import me.aartikov.replica.single.internal.SequentialStorage
 
 internal class ReplicaClientImpl(
     override val networkConnectivityProvider: NetworkConnectivityProvider?,
@@ -35,7 +37,7 @@ internal class ReplicaClientImpl(
         val replica = createReplicaInternal(
             settings,
             behaviours,
-            storage,
+            storage?.let { SequentialStorage(it) },
             fetcher,
             coroutineDispatcher,
             coroutineScope
@@ -50,19 +52,27 @@ internal class ReplicaClientImpl(
         storage: KeyedStorage<K, T>?,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T> {
+
+        val storageCleaner = storage?.let { KeyedStorageCleaner(it) }
+
         val replicaFactory =
             { childCoroutineScope: CoroutineScope, key: K ->
                 createReplicaInternal(
                     settings = settings(key),
                     behaviours = behaviours(key),
-                    storage = storage?.let { SingleKeyStorage(it, key) },
+                    storage = storage?.let {
+                        SequentialStorage(
+                            FixedKeyStorage(it, key),
+                            additionalMutex = storageCleaner?.mutex
+                        )
+                    },
                     fetcher = { fetcher.fetch(key) },
                     coroutineDispatcher = coroutineDispatcher,
                     coroutineScope = childCoroutineScope
                 )
             }
 
-        val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, storage, replicaFactory)
+        val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, storageCleaner, replicaFactory)
         keyedReplicas.add(keyedReplica)
         return keyedReplica
     }

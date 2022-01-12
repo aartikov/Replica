@@ -3,7 +3,7 @@ package me.aartikov.replica.keyed.internal
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.single.Storage
 
-class SingleKeyStorage<K : Any, T : Any>(
+internal class FixedKeyStorage<K : Any, T : Any>(
     private val keyedStorage: KeyedStorage<K, T>,
     private val key: K
 ) : Storage<T> {
