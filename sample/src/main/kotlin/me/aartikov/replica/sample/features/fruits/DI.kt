@@ -13,7 +13,7 @@ import org.koin.core.component.get
 import org.koin.dsl.module
 
 val fruitsModule = module {
-    single<FruitApi> { FakeFruitApi() }
+    single<FruitApi> { FakeFruitApi(get()) }
     single<FruitRepository> { FruitRepositoryImpl(get(), get()) }
     factory { ToggleFruitLikeInteractor(get()) }
 }

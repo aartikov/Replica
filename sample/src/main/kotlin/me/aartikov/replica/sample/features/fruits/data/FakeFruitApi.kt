@@ -3,10 +3,14 @@ package me.aartikov.replica.sample.features.fruits.data
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import me.aartikov.replica.network.NetworkConnectivityProvider
+import me.aartikov.replica.sample.core.domain.NoInternetException
 import me.aartikov.replica.sample.core.domain.ServerException
 import me.aartikov.replica.sample.features.fruits.data.dto.FruitResponse
 
-class FakeFruitApi : FruitApi {
+class FakeFruitApi(
+    private val networkConnectivityProvider: NetworkConnectivityProvider
+) : FruitApi {
 
     private val names = listOf(
         "Apple", "Banana", "Cherry", "Dragon fruit", "Durian", "Grape", "Kiwi", "Lemon", "Lime",
@@ -19,17 +23,20 @@ class FakeFruitApi : FruitApi {
     private val mutex = Mutex()
 
     override suspend fun getFruits(): List<FruitResponse> {
+        emulateNetworkError()
         delay(800)
         return fruits
     }
 
     override suspend fun likeFruit(fruitId: String) {
+        emulateNetworkError()
         emulateLikeError(fruitId)
         delay(500)
         setLiked(fruitId, true)
     }
 
     override suspend fun dislikeFruit(fruitId: String) {
+        emulateNetworkError()
         delay(500)
         setLiked(fruitId, false)
     }
@@ -42,6 +49,13 @@ class FakeFruitApi : FruitApi {
                 imageUrl = "file:///android_asset/fruits/$name.png",
                 liked = false
             )
+        }
+    }
+
+    private suspend fun emulateNetworkError() {
+        if (!networkConnectivityProvider.connected.value) {
+            delay(100)
+            throw NoInternetException(cause = null)
         }
     }
 
