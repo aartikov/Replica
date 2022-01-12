@@ -10,6 +10,7 @@ import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import me.aartikov.replica.sample.core.ui.theme.AppTheme
 import me.aartikov.replica.sample.core.ui.utils.createFakeRouterState
+import me.aartikov.replica.sample.features.dudes.ui.DudesUi
 import me.aartikov.replica.sample.features.fruits.ui.FruitsUi
 import me.aartikov.replica.sample.features.menu.ui.FakeMenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuUi
@@ -32,6 +33,7 @@ fun RootUi(
             is RootComponent.Child.Project -> ProjectUi(instance.component, modifier)
             is RootComponent.Child.Pokemons -> PokemonsUi(instance.component, modifier)
             is RootComponent.Child.Fruits -> FruitsUi(instance.component, modifier)
+            is RootComponent.Child.Dudes -> DudesUi(instance.component, modifier)
         }
     }
 

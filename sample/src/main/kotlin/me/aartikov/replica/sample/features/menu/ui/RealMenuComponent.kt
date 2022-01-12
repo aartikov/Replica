@@ -8,6 +8,6 @@ class RealMenuComponent(
 ) : ComponentContext by componentContext, MenuComponent {
 
     override fun onMenuItemClick(item: MenuItem) {
-        onOutput(MenuComponent.Output.OpenScreen(item))
+        onOutput(MenuComponent.Output.MenuItemSelected(item))
     }
 }

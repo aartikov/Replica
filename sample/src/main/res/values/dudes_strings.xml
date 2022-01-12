@@ -1,0 +1,5 @@
+<resources>
+    <string name="dudes_title">Dudes</string>
+    <string name="dudes_list_description">This is a long random list</string>
+    <string name="dudes_empty_description">Dudes are not found</string>
+</resources>

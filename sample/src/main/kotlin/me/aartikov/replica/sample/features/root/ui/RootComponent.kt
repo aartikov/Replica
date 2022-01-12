@@ -1,6 +1,7 @@
 package me.aartikov.replica.sample.features.root.ui
 
 import com.arkivanov.decompose.router.RouterState
+import me.aartikov.replica.sample.features.dudes.ui.DudesComponent
 import me.aartikov.replica.sample.features.fruits.ui.FruitsComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.sample.features.message.ui.MessageComponent
@@ -18,5 +19,6 @@ interface RootComponent {
         class Project(val component: ProjectComponent) : Child
         class Pokemons(val component: PokemonsComponent) : Child
         class Fruits(val component: FruitsComponent) : Child
+        class Dudes(val component: DudesComponent) : Child
     }
 }

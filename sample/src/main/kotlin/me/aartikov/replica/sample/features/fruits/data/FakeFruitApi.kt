@@ -6,7 +6,6 @@ import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.sample.core.domain.NoInternetException
 import me.aartikov.replica.sample.core.domain.ServerException
-import me.aartikov.replica.sample.features.fruits.data.dto.FruitResponse
 
 class FakeFruitApi(
     private val networkConnectivityProvider: NetworkConnectivityProvider

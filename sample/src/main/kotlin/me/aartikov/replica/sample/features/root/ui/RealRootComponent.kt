@@ -10,6 +10,7 @@ import com.arkivanov.decompose.router.router
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.decompose.toComposeState
 import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.features.dudes.createDudesComponent
 import me.aartikov.replica.sample.features.fruits.createFruitsComponent
 import me.aartikov.replica.sample.features.menu.createMenuComponent
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
@@ -61,13 +62,20 @@ class RealRootComponent(
                     componentFactory.createFruitsComponent(componentContext)
                 )
             }
+
+            is ChildConfig.Dudes -> {
+                RootComponent.Child.Dudes(
+                    componentFactory.createDudesComponent(componentContext)
+                )
+            }
         }
 
     private fun onMenuOutput(output: MenuComponent.Output): Unit = when (output) {
-        is MenuComponent.Output.OpenScreen -> when (output.menuItem) {
+        is MenuComponent.Output.MenuItemSelected -> when (output.menuItem) {
             MenuItem.Project -> router.push(ChildConfig.Project)
             MenuItem.Pokemons -> router.push(ChildConfig.Pokemons)
             MenuItem.Fruits -> router.push(ChildConfig.Fruits)
+            MenuItem.Dudes -> router.push(ChildConfig.Dudes)
         }
     }
 
@@ -84,6 +92,9 @@ class RealRootComponent(
 
         @Parcelize
         object Fruits : ChildConfig
+
+        @Parcelize
+        object Dudes : ChildConfig
     }
 }
 

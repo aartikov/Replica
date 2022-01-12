@@ -1,6 +1,5 @@
 package me.aartikov.replica.sample.features.fruits.data
 
-import me.aartikov.replica.sample.features.fruits.data.dto.FruitResponse
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path

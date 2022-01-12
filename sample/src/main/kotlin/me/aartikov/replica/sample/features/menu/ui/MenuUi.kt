@@ -55,6 +55,12 @@ fun MenuUi(
                         text = stringResource(R.string.fruits_title),
                         onClick = { component.onMenuItemClick(MenuItem.Fruits) }
                     )
+
+                    MenuButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.dudes_title),
+                        onClick = { component.onMenuItemClick(MenuItem.Dudes) }
+                    )
                 }
             }
         }

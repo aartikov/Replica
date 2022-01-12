@@ -1,7 +1,6 @@
 package me.aartikov.replica.sample.features.fruits.data
 
 import me.aartikov.replica.client.ReplicaClient
-import me.aartikov.replica.sample.features.fruits.data.dto.toDomain
 import me.aartikov.replica.sample.features.fruits.domain.Fruit
 import me.aartikov.replica.sample.features.fruits.domain.FruitId
 import me.aartikov.replica.single.OptimisticUpdate

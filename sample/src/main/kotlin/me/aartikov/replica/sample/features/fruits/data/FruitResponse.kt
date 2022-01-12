@@ -1,4 +1,4 @@
-package me.aartikov.replica.sample.features.fruits.data.dto
+package me.aartikov.replica.sample.features.fruits.data
 
 import me.aartikov.replica.sample.features.fruits.domain.Fruit
 import me.aartikov.replica.sample.features.fruits.domain.FruitId
