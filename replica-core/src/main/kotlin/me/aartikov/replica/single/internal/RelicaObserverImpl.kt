@@ -1,10 +1,7 @@
 package me.aartikov.replica.single.internal
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.internal.controllers.ObserversController
 import me.aartikov.replica.utils.toActivableFlow
@@ -86,7 +83,9 @@ internal class ReplicaObserverImpl<T : Any>(
                         }
                     }
             } finally {
-                observersController.onObserverRemoved(observerUuid)
+                withContext(NonCancellable) {
+                    observersController.onObserverRemoved(observerUuid)
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,7 +15,7 @@ internal class RevalidationOnNetworkConnectionBehaviour<T : Any>(
     private val revalidateOnNetworkConnection: RevalidateAction
 ) : ReplicaBehaviour<T> {
 
-    override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
+    override fun setup(replica: PhysicalReplica<T>) {
         networkConnectivityProvider.connected
             .drop(1)
             .onEach { connected ->
@@ -24,7 +23,7 @@ internal class RevalidationOnNetworkConnectionBehaviour<T : Any>(
                     replica.revalidate()
                 }
             }
-            .launchIn(coroutineScope)
+            .launchIn(replica.coroutineScope)
     }
 
     private val ReplicaState<T>.shouldRevalidate: Boolean

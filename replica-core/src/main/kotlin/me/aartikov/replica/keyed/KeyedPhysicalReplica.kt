@@ -1,11 +1,17 @@
 package me.aartikov.replica.keyed
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.RefreshAction
 import me.aartikov.replica.single.ReplicaState
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
+
+    val coroutineScope: CoroutineScope
+
+    val eventFlow: Flow<KeyedReplicaEvent<K, T>>
 
     fun getCurrentState(key: K): ReplicaState<T>?
 

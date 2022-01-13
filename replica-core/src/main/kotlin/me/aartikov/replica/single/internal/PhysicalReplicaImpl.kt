@@ -9,8 +9,8 @@ import me.aartikov.replica.single.internal.controllers.*
 
 
 internal class PhysicalReplicaImpl<T : Any>(
-    private val dispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope,
+    dispatcher: CoroutineDispatcher,
+    override val coroutineScope: CoroutineScope,
     behaviours: List<ReplicaBehaviour<T>>,
     storage: Storage<T>?,
     fetcher: Fetcher<T>
@@ -48,7 +48,7 @@ internal class PhysicalReplicaImpl<T : Any>(
 
     init {
         behaviours.forEach { behaviour ->
-            behaviour.setup(coroutineScope, this)
+            behaviour.setup(this)
         }
     }
 

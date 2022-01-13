@@ -1,9 +1,12 @@
 package me.aartikov.replica.single
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface PhysicalReplica<T : Any> : Replica<T> {
+
+    val coroutineScope: CoroutineScope
 
     val stateFlow: StateFlow<ReplicaState<T>>
 

@@ -16,26 +16,26 @@ internal class StalenessBehaviour<T : Any>(
 
     private var staleJob: Job? = null
 
-    override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
+    override fun setup(replica: PhysicalReplica<T>) {
         replica.eventFlow
             .onEach { event ->
                 when (event) {
                     is ReplicaEvent.FreshnessEvent.Freshened -> {
-                        coroutineScope.relaunchStaleJob(replica)
+                        replica.coroutineScope.relaunchStaleJob(replica)
                     }
                     is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> {
                         cancelStaleJob()
                     }
                     else -> Unit
                 }
-            }.launchIn(coroutineScope)
+            }.launchIn(replica.coroutineScope)
     }
 
     private fun CoroutineScope.relaunchStaleJob(replica: PhysicalReplica<T>) {
         staleJob?.cancel()
         staleJob = launch {
             delay(staleTime.inWholeMilliseconds)
-            withContext(NonCancellable) {
+            withContext(NonCancellable) { // to prevent refresh cancellation by BecameStale event
                 replica.invalidate(refreshOnStale)
             }
         }

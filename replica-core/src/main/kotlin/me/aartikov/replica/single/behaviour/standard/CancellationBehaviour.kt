@@ -19,7 +19,7 @@ internal class CancellationBehaviour<T : Any>(
 
     private var cancellationJob: Job? = null
 
-    override fun setup(coroutineScope: CoroutineScope, replica: PhysicalReplica<T>) {
+    override fun setup(replica: PhysicalReplica<T>) {
         replica.eventFlow
             .onEach { event ->
                 when (event) {
@@ -27,7 +27,7 @@ internal class CancellationBehaviour<T : Any>(
                     is ReplicaEvent.LoadingEvent.LoadingStarted,
                     is ReplicaEvent.LoadingEvent.LoadingFinished -> {
                         if (replica.currentState.canBeCanceled) {
-                            coroutineScope.launchCancellationJob(replica)
+                            replica.coroutineScope.launchCancellationJob(replica)
                         } else {
                             cancelCancellationJob()
                         }
@@ -35,7 +35,7 @@ internal class CancellationBehaviour<T : Any>(
                     else -> Unit
                 }
             }
-            .launchIn(coroutineScope)
+            .launchIn(replica.coroutineScope)
     }
 
     private val ReplicaState<T>.canBeCanceled: Boolean get() = observerCount == 0 && loading && !dataRequested

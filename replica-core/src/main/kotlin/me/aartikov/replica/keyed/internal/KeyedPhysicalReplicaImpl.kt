@@ -4,20 +4,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
-    private val coroutineScope: CoroutineScope,
+    override val coroutineScope: CoroutineScope,
     private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
 
-    private val replicaElements = ConcurrentHashMap<K, KeyedReplicaElement<T>>()
+    private val _eventFlow = MutableSharedFlow<KeyedReplicaEvent<K, T>>(extraBufferCapacity = 1000)
+    override val eventFlow get() = _eventFlow.asSharedFlow()
+
+    private val replicas = ConcurrentHashMap<K, PhysicalReplica<T>>()
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
@@ -118,47 +120,59 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     }
 
     override suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit) {
-        replicaElements.forEach { (key, element) ->
-            element.replica.action(key)
+        replicas.forEach { (key, replica) ->
+            replica.action(key)
         }
     }
 
     private fun getReplica(key: K): PhysicalReplica<T>? {
-        return replicaElements[key]?.replica
+        return replicas[key]
     }
 
     private fun getOrCreateReplica(key: K): PhysicalReplica<T> {
-        val element = replicaElements.computeIfAbsent(key, ::createReplicaElement)
-        return element.replica
+        var created = false
+        val replica = replicas.computeIfAbsent(key) {
+            createReplica(key).also {
+                created = true
+            }
+        }
+
+        if (created) {
+            _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaCreated(key, replica))
+        }
+
+        return replica
     }
 
-    private fun createReplicaElement(key: K): KeyedReplicaElement<T> {
+    private fun createReplica(key: K): PhysicalReplica<T> {
         val childCoroutineScope = coroutineScope.createChildScope()
         val replica = replicaFactory(childCoroutineScope, key)
-        val element = KeyedReplicaElement(childCoroutineScope, replica)
 
         // setup auto-removing
-        replica.eventFlow
-            .onEach {
-                if (replica.canBeRemoved) {
+        replica.stateFlow
+            .drop(1)
+            .onEach { state ->
+                if (state.canBeRemoved) {
                     removeReplicaElement(key)
                 }
             }
             .launchIn(childCoroutineScope)
 
-        return element
+        return replica
     }
 
     private fun removeReplicaElement(key: K) {
-        val removedElement = replicaElements.remove(key)
-        removedElement?.coroutineScope?.cancel()
+        val removedReplica = replicas.remove(key)
+        if (removedReplica != null) {
+            removedReplica.coroutineScope.cancel()
+            _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaRemoved(key, removedReplica))
+        }
     }
 }
 
-private val <T : Any> PhysicalReplica<T>.canBeRemoved: Boolean
-    get() = with(currentState) {
-        data == null && error == null && !loading && observerCount == 0
-    }
+private val <T : Any> ReplicaState<T>.canBeRemoved: Boolean
+    get() = data == null && error == null && !loading && observerCount == 0
+
 
 private fun CoroutineScope.createChildScope(): CoroutineScope {
     return CoroutineScope(coroutineContext + SupervisorJob(parent = coroutineContext[Job]))
