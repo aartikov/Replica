@@ -22,6 +22,6 @@ compileTestKotlin {
 }
 
 dependencies {
-    implementation libs.coroutines.core
+    api libs.coroutines.core
     testImplementation libs.junit
 }

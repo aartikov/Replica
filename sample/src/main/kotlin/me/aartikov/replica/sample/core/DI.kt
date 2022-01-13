@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.devtools.ReplicaDevTools
 import me.aartikov.replica.network.AndroidNetworkConnectivityProvider
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.sample.core.data.network.BaseUrl
@@ -24,6 +25,7 @@ val coreModule = module {
     single(named(BaseUrl.RandomData)) { NetworkApiFactory(BaseUrl.RandomData.url) }
     single<NetworkConnectivityProvider> { AndroidNetworkConnectivityProvider(androidApplication()) }
     single { ReplicaClient(get()) }
+    single { ReplicaDevTools(get()) }
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }

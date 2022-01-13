@@ -4,6 +4,8 @@ include ':replica-core'
 include ':replica-algebra'
 include ':replica-android-network'
 include ':replica-decompose'
+include ':replica-devtools'
+include ':replica-devtools-noop'
 include ':sample'
 
 enableFeaturePreview('VERSION_CATALOGS')

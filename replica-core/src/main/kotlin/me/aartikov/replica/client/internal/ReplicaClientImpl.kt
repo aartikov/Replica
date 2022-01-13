@@ -2,7 +2,10 @@ package me.aartikov.replica.client.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.client.ReplicaClientEvent
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
@@ -21,9 +24,12 @@ import me.aartikov.replica.single.internal.SequentialStorage
 
 internal class ReplicaClientImpl(
     override val networkConnectivityProvider: NetworkConnectivityProvider?,
-    private val coroutineDispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope
+    private val coroutineDispatcher: CoroutineDispatcher,   // TODO: get from coroutineScope?
+    override val coroutineScope: CoroutineScope
 ) : ReplicaClient {
+
+    private val _eventFlow = MutableSharedFlow<ReplicaClientEvent>(extraBufferCapacity = 1000)
+    override val eventFlow get() = _eventFlow.asSharedFlow()
 
     private val replicas = concurrentHashSetOf<PhysicalReplica<*>>()
     private val keyedReplicas = concurrentHashSetOf<KeyedPhysicalReplica<*, *>>()
@@ -43,6 +49,7 @@ internal class ReplicaClientImpl(
             coroutineScope
         )
         replicas.add(replica)
+        _eventFlow.tryEmit(ReplicaClientEvent.ReplicaCreated(replica))
         return replica
     }
 
@@ -74,6 +81,7 @@ internal class ReplicaClientImpl(
 
         val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, storageCleaner, replicaFactory)
         keyedReplicas.add(keyedReplica)
+        _eventFlow.tryEmit(ReplicaClientEvent.KeyedReplicaCreated(keyedReplica))
         return keyedReplica
     }
 

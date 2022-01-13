@@ -92,6 +92,7 @@ class AndroidNetworkConnectivityProvider(
             val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
             return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
         } else {
+            @Suppress("DEPRECATION")
             return connectivityManager.activeNetworkInfo?.isConnected ?: false
         }
     }

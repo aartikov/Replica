@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineDispatcher
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.client.internal.ReplicaClientImpl
@@ -22,7 +23,11 @@ interface ReplicaClient {
         val DefaultCoroutineScope = CoroutineScope(SupervisorJob() + DefaultCoroutineDispatcher)
     }
 
+    val coroutineScope: CoroutineScope
+
     val networkConnectivityProvider: NetworkConnectivityProvider?
+
+    val eventFlow: Flow<ReplicaClientEvent>
 
     fun <T : Any> createReplica(
         settings: ReplicaSettings,

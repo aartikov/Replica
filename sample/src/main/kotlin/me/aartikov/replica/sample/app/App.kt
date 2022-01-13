@@ -1,6 +1,7 @@
 package me.aartikov.replica.sample.app
 
 import android.app.Application
+import me.aartikov.replica.devtools.ReplicaDevTools
 import me.aartikov.replica.sample.BuildConfig
 import me.aartikov.replica.sample.core.ui.ComponentFactory
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +20,7 @@ class App : Application() {
         koin = createKoin().also {
             it.declare(ComponentFactory(it))
         }
+        launchReplicaDevTools()
     }
 
     private fun initLogger() {
@@ -32,6 +34,11 @@ class App : Application() {
             androidContext(this@App)
             modules(allModules)
         }.koin
+    }
+
+    private fun launchReplicaDevTools() {
+        val devtools = koin.get<ReplicaDevTools>()
+        devtools.launch()
     }
 }
 

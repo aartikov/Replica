@@ -22,7 +22,7 @@ compileTestKotlin {
 }
 
 dependencies {
-    implementation project(':replica-core')
-    implementation libs.coroutines.core
+    api project(':replica-core')
+    api libs.coroutines.core
     testImplementation libs.junit
 }

@@ -25,6 +25,5 @@ android {
 dependencies {
     api project(':replica-core')
     api libs.coroutines.core
-    implementation libs.androidx.lifecycle.process
     testImplementation libs.junit
 }

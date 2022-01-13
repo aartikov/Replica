@@ -31,9 +31,9 @@ android {
 }
 
 dependencies {
-    implementation project(':replica-core')
-    implementation libs.coroutines.core
-    implementation libs.compose.runtime
-    implementation libs.decompose.core
+    api project(':replica-core')
+    api libs.coroutines.core
+    api libs.compose.runtime
+    api libs.decompose.core
     testImplementation libs.junit
 }
