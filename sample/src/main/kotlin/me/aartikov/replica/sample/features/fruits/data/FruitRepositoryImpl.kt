@@ -15,6 +15,7 @@ class FruitRepositoryImpl(
 ) : FruitRepository {
 
     override val fruitsReplica: PhysicalReplica<List<Fruit>> = replicaClient.createReplica(
+        name = "fruits",
         settings = ReplicaSettings(staleTime = 30.seconds)
     ) {
         api.getFruits().map { it.toDomain() }

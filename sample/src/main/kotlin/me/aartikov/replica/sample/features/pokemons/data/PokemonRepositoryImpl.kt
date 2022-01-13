@@ -17,6 +17,8 @@ class PokemonRepositoryImpl(
 
     override val pokemonsByTypeReplica: KeyedPhysicalReplica<PokemonTypeId, List<Pokemon>> =
         replicaClient.createKeyedReplica(
+            name = "pokemonsByType",
+            childName = { typeId -> typeId.value },
             settings = {
                 ReplicaSettings(
                     staleTime = 5.seconds,
@@ -29,6 +31,8 @@ class PokemonRepositoryImpl(
 
     override val pokemonByIdReplica: KeyedPhysicalReplica<PokemonId, DetailedPokemon> =
         replicaClient.createKeyedReplica(
+            name = "pokemonById",
+            childName = { pokemonId -> pokemonId.value },
             settings = {
                 ReplicaSettings(
                     staleTime = 5.seconds,

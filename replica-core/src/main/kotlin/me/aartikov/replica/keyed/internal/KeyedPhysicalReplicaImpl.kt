@@ -7,14 +7,18 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
+import me.aartikov.replica.keyed.KeyedReplicaId
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val coroutineScope: CoroutineScope,
+    override val name: String,
     private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
+
+    override val id: KeyedReplicaId = KeyedReplicaId.random()
 
     private val _eventFlow = MutableSharedFlow<KeyedReplicaEvent<K, T>>(extraBufferCapacity = 1000)
     override val eventFlow get() = _eventFlow.asSharedFlow()

@@ -30,6 +30,7 @@ interface ReplicaClient {
     val eventFlow: Flow<ReplicaClientEvent>
 
     fun <T : Any> createReplica(
+        name: String,
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
         storage: Storage<T>? = null,
@@ -37,6 +38,8 @@ interface ReplicaClient {
     ): PhysicalReplica<T>
 
     fun <K : Any, T : Any> createKeyedReplica(
+        name: String,
+        childName: (K) -> String,
         settings: (K) -> ReplicaSettings,
         behaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },
         storage: KeyedStorage<K, T>? = null,

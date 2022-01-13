@@ -6,6 +6,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface PhysicalReplica<T : Any> : Replica<T> {
 
+    val id: ReplicaId
+
+    val name: String
+
+    val settings: ReplicaSettings
+
     val coroutineScope: CoroutineScope
 
     val stateFlow: StateFlow<ReplicaState<T>>

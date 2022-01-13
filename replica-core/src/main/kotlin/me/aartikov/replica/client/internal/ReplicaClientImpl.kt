@@ -35,12 +35,14 @@ internal class ReplicaClientImpl(
     private val keyedReplicas = concurrentHashSetOf<KeyedPhysicalReplica<*, *>>()
 
     override fun <T : Any> createReplica(
+        name: String,
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>>,
         storage: Storage<T>?,
         fetcher: Fetcher<T>
     ): PhysicalReplica<T> {
         val replica = createReplicaInternal(
+            name,
             settings,
             behaviours,
             storage?.let { SequentialStorage(it) },
@@ -54,6 +56,8 @@ internal class ReplicaClientImpl(
     }
 
     override fun <K : Any, T : Any> createKeyedReplica(
+        name: String,
+        childName: (K) -> String,
         settings: (K) -> ReplicaSettings,
         behaviours: (K) -> List<ReplicaBehaviour<T>>,
         storage: KeyedStorage<K, T>?,
@@ -62,24 +66,25 @@ internal class ReplicaClientImpl(
 
         val storageCleaner = storage?.let { KeyedStorageCleaner(it) }
 
-        val replicaFactory =
-            { childCoroutineScope: CoroutineScope, key: K ->
-                createReplicaInternal(
-                    settings = settings(key),
-                    behaviours = behaviours(key),
-                    storage = storage?.let {
-                        SequentialStorage(
-                            FixedKeyStorage(it, key),
-                            additionalMutex = storageCleaner?.mutex
-                        )
-                    },
-                    fetcher = { fetcher.fetch(key) },
-                    coroutineDispatcher = coroutineDispatcher,
-                    coroutineScope = childCoroutineScope
-                )
-            }
+        val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
+            createReplicaInternal(
+                name = childName(key),
+                settings = settings(key),
+                behaviours = behaviours(key),
+                storage = storage?.let {
+                    SequentialStorage(
+                        FixedKeyStorage(it, key),
+                        additionalMutex = storageCleaner?.mutex
+                    )
+                },
+                fetcher = { fetcher.fetch(key) },
+                coroutineDispatcher = coroutineDispatcher,
+                coroutineScope = childCoroutineScope
+            )
+        }
 
-        val keyedReplica = KeyedPhysicalReplicaImpl(coroutineScope, storageCleaner, replicaFactory)
+        val keyedReplica =
+            KeyedPhysicalReplicaImpl(coroutineScope, name, storageCleaner, replicaFactory)
         keyedReplicas.add(keyedReplica)
         _eventFlow.tryEmit(ReplicaClientEvent.KeyedReplicaCreated(keyedReplica))
         return keyedReplica
@@ -109,6 +114,7 @@ internal class ReplicaClientImpl(
     }
 
     private fun <T : Any> createReplicaInternal(
+        name: String,
         settings: ReplicaSettings,
         behaviours: List<ReplicaBehaviour<T>>,
         storage: Storage<T>?,
@@ -124,6 +130,8 @@ internal class ReplicaClientImpl(
         return PhysicalReplicaImpl(
             coroutineDispatcher,
             coroutineScope,
+            name,
+            settings,
             behaviours = standardBehaviours + behaviours,
             storage,
             fetcher

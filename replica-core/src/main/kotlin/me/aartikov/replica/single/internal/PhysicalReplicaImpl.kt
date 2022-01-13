@@ -11,10 +11,14 @@ import me.aartikov.replica.single.internal.controllers.*
 internal class PhysicalReplicaImpl<T : Any>(
     dispatcher: CoroutineDispatcher,
     override val coroutineScope: CoroutineScope,
+    override val name: String,
+    override val settings: ReplicaSettings,
     behaviours: List<ReplicaBehaviour<T>>,
     storage: Storage<T>?,
     fetcher: Fetcher<T>
 ) : PhysicalReplica<T> {
+
+    override val id: ReplicaId = ReplicaId.random()
 
     private val _stateFlow = MutableStateFlow(
         ReplicaState.createEmpty<T>(hasStorage = storage != null)

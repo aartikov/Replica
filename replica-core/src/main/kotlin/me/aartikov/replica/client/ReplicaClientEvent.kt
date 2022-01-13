@@ -5,5 +5,5 @@ import me.aartikov.replica.single.PhysicalReplica
 
 sealed interface ReplicaClientEvent {
     class ReplicaCreated(val replica: PhysicalReplica<*>) : ReplicaClientEvent
-    class KeyedReplicaCreated(val replica: KeyedPhysicalReplica<*, *>) : ReplicaClientEvent
+    class KeyedReplicaCreated(val keyedReplica: KeyedPhysicalReplica<*, *>) : ReplicaClientEvent
 }
