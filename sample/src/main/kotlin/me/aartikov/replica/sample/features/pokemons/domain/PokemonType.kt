@@ -1,9 +1,13 @@
 package me.aartikov.replica.sample.features.pokemons.domain
 
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 @JvmInline
 value class PokemonTypeId(val value: String)
 
+@Serializable
 data class PokemonType(val id: PokemonTypeId, val name: String) {
     companion object {
         val Fire = PokemonType(id = PokemonTypeId("10"), name = "Fire")

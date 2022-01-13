@@ -13,6 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class PokemonRepositoryImpl(
     replicaClient: ReplicaClient,
+    storage: PokemonStorage,
     api: PokemonApi
 ) : PokemonRepository {
 
@@ -37,7 +38,8 @@ class PokemonRepositoryImpl(
             settings = KeyedReplicaSettings(maxCount = 5),
             childSettings = {
                 ReplicaSettings(staleTime = 10.seconds)
-            }
+            },
+            storage = storage
         ) { pokemonId ->
             api.getPokemonById(pokemonId.value).toDomain()
         }

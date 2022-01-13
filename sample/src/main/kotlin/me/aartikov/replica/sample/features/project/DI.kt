@@ -7,8 +7,10 @@ import me.aartikov.replica.sample.core.ui.ComponentFactory
 import me.aartikov.replica.sample.features.project.data.ProjectApi
 import me.aartikov.replica.sample.features.project.data.ProjectRepository
 import me.aartikov.replica.sample.features.project.data.ProjectRepositoryImpl
+import me.aartikov.replica.sample.features.project.data.ProjectStorage
 import me.aartikov.replica.sample.features.project.ui.ProjectComponent
 import me.aartikov.replica.sample.features.project.ui.RealProjectComponent
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.get
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -18,7 +20,11 @@ val projectModule = module {
         get<NetworkApiFactory>(named(BaseUrl.Github)).createApi()
     }
     single<ProjectRepository> {
-        ProjectRepositoryImpl(get(), get())
+        ProjectRepositoryImpl(
+            get(),
+            ProjectStorage(androidContext()),
+            get()
+        )
     }
 }
 

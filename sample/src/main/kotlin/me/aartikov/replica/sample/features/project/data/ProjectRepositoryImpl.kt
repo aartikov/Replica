@@ -9,12 +9,14 @@ import kotlin.time.Duration.Companion.seconds
 
 class ProjectRepositoryImpl(
     replicaClient: ReplicaClient,
+    storage: ProjectStorage,
     api: ProjectApi
 ) : ProjectRepository {
 
     override val projectReplica: PhysicalReplica<Project> = replicaClient.createReplica(
         name = "project",
-        settings = ReplicaSettings(staleTime = 5.seconds, clearTime = 10.seconds)
+        settings = ReplicaSettings(staleTime = 5.seconds, clearTime = 10.seconds),
+        storage = storage
     ) {
         delay(1000) // Delay, because Github api is too fast
         api.getProject("aartikov", "Replica").toDomain()
