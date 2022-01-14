@@ -25,7 +25,7 @@ internal class PhysicalReplicaImpl<T : Any>(
     )
     override val stateFlow: StateFlow<ReplicaState<T>> = _stateFlow.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>()
+    private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>(extraBufferCapacity = 1000)
     override val eventFlow: Flow<ReplicaEvent<T>> = _eventFlow.asSharedFlow()
 
     private val observersController = ObserversController(dispatcher, _stateFlow, _eventFlow)

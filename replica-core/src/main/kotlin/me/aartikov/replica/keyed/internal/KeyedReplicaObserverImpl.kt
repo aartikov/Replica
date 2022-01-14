@@ -20,7 +20,7 @@ internal class KeyedReplicaObserverImpl<T : Any, K : Any>(
     private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()
 
-    private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
+    private val _loadingErrorFlow = MutableSharedFlow<LoadingError>(extraBufferCapacity = 1000)
     override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
 
     private var currentReplica: Replica<T>? = null

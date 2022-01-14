@@ -1,11 +1,8 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
@@ -45,7 +42,9 @@ internal class CancellationBehaviour<T : Any>(
 
         cancellationJob = launch {
             delay(cancelTime.inWholeMilliseconds)
-            replica.cancelLoading()
+            withContext(NonCancellable) {
+                replica.cancelLoading()
+            }
         }
     }
 

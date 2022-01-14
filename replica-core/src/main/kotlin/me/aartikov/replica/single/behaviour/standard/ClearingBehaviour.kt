@@ -1,10 +1,7 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
@@ -39,7 +36,9 @@ internal class ClearingBehaviour<T : Any>(
 
         clearingJob = launch {
             delay(clearTime.inWholeMilliseconds)
-            replica.clear()
+            withContext(NonCancellable) {
+                replica.clear()
+            }
         }
     }
 

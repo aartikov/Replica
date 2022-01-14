@@ -28,7 +28,7 @@ internal class DataLoader<T : Any>(
         }
     }
 
-    private val _outputFlow = MutableSharedFlow<Output<T>>()
+    private val _outputFlow = MutableSharedFlow<Output<T>>(extraBufferCapacity = 1000)
     val outputFlow: Flow<Output<T>> = _outputFlow.asSharedFlow()
 
     private var loadingJob: Job? = null
@@ -61,13 +61,17 @@ internal class DataLoader<T : Any>(
                 _outputFlow.emit(Output.LoadingFinished.Success(data))
 
             } catch (e: CancellationException) {
-                _outputFlow.emit(Output.LoadingFinished.Canceled)
+                withContext(NonCancellable) {
+                    _outputFlow.emit(Output.LoadingFinished.Canceled)
+                }
                 throw e
             } catch (e: Exception) {
-                if (currentCoroutineContext().isActive) {
-                    _outputFlow.emit(Output.LoadingFinished.Error(e))
-                } else {
-                    _outputFlow.emit(Output.LoadingFinished.Canceled)
+                withContext(NonCancellable) {
+                    if (currentCoroutineContext().isActive) {
+                        _outputFlow.emit(Output.LoadingFinished.Error(e))
+                    } else {
+                        _outputFlow.emit(Output.LoadingFinished.Canceled)
+                    }
                 }
             }
         }
