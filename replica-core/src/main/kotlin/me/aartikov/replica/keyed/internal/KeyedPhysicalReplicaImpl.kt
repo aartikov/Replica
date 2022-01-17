@@ -169,7 +169,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         val removedReplica = replicas.remove(key)
         if (removedReplica != null) {
             removedReplica.coroutineScope.cancel()
-            _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaRemoved(key, removedReplica))
+            _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaRemoved(key, removedReplica.id))
         }
     }
 }

@@ -1,8 +1,12 @@
 package me.aartikov.replica.devtools.internal
 
+import me.aartikov.replica.single.ReplicaId
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.ReplicaState
+
 data class ReplicaInfo(
-    val id: String,
+    val id: ReplicaId,
     val name: String,
-    var details: String = "",
-    val childInfos: MutableMap<String, ReplicaInfo> = mutableMapOf()
+    val settings: ReplicaSettings,
+    var state: ReplicaState<*>
 )
