@@ -5,17 +5,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
-import me.aartikov.replica.keyed.KeyedPhysicalReplica
-import me.aartikov.replica.keyed.KeyedReplicaEvent
-import me.aartikov.replica.keyed.KeyedReplicaId
-import me.aartikov.replica.keyed.KeyedReplicaState
+import me.aartikov.replica.keyed.*
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
+import me.aartikov.replica.keyed.internal.controllers.ChildRemovingController
+import me.aartikov.replica.keyed.internal.controllers.ObserverCountController
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val coroutineScope: CoroutineScope,
     override val name: String,
+    override val settings: KeyedReplicaSettings<K, T>,
     behaviours: List<KeyedReplicaBehaviour<K, T>>,
     private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
@@ -30,6 +30,9 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val eventFlow get() = _eventFlow.asSharedFlow()
 
     private val replicas = ConcurrentHashMap<K, PhysicalReplica<T>>()
+
+    private val childRemovingController = ChildRemovingController<K, T>(this::removeReplica)
+    private val observerCountController = ObserverCountController<T>(_stateFlow)
 
     init {
         behaviours.forEach { behaviour ->
@@ -166,51 +169,13 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     private fun createReplica(key: K): PhysicalReplica<T> {
         val childCoroutineScope = coroutineScope.createChildScope()
         val replica = replicaFactory(childCoroutineScope, key)
-        setupAutoRemoving(key, replica)
-        setupObserversTracking(replica)
+        childRemovingController.setupAutoRemoving(key, replica)
+        observerCountController.setupObserverCounting(replica)
         return replica
     }
 
-    private fun setupAutoRemoving(key: K, replica: PhysicalReplica<T>) {
-        replica.stateFlow
-            .drop(1)
-            .onEach { state ->
-                if (state.canBeRemoved) {
-                    removeReplicaElement(key)
-                }
-            }
-            .launchIn(replica.coroutineScope)
-    }
 
-    private fun setupObserversTracking(replica: PhysicalReplica<T>) {
-        replica.eventFlow
-            .filterIsInstance<ReplicaEvent.ObserverCountChangedEvent>()
-            .onEach { event ->
-                val replicaWithObserversCountDiff = when {
-                    event.count > 0 && event.previousCount == 0 -> 1
-                    event.count == 0 && event.previousCount > 0 -> -1
-                    else -> 0
-                }
-
-                val replicaWithActiveObserversCountDiff = when {
-                    event.activeCount > 0 && event.previousActiveCount == 0 -> 1
-                    event.activeCount == 0 && event.previousActiveCount > 0 -> -1
-                    else -> 0
-                }
-
-                if (replicaWithObserversCountDiff != 0 || replicaWithActiveObserversCountDiff != 0) {
-                    _stateFlow.update { state ->
-                        state.copy(
-                            replicaWithObserversCount = state.replicaWithObserversCount + replicaWithObserversCountDiff,
-                            replicaWithActiveObserversCount = state.replicaWithActiveObserversCount + replicaWithActiveObserversCountDiff
-                        )
-                    }
-                }
-            }
-            .launchIn(replica.coroutineScope)
-    }
-
-    private fun removeReplicaElement(key: K) {
+    private fun removeReplica(key: K) {
         val removedReplica = replicas.remove(key)
         if (removedReplica != null) {
             removedReplica.coroutineScope.cancel()
@@ -221,10 +186,6 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         }
     }
 }
-
-private val <T : Any> ReplicaState<T>.canBeRemoved: Boolean
-    get() = data == null && error == null && !loading && observingStatus == ObservingStatus.None
-
 
 private fun CoroutineScope.createChildScope(): CoroutineScope {
     return CoroutineScope(coroutineContext + SupervisorJob(parent = coroutineContext[Job]))

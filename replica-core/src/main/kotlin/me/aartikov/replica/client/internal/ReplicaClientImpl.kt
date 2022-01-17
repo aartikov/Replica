@@ -8,8 +8,10 @@ import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.ReplicaClientEvent
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
+import me.aartikov.replica.keyed.behaviour.createBehavioursForKeyedReplicaSettings
 import me.aartikov.replica.keyed.internal.FixedKeyStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.keyed.internal.KeyedStorageCleaner
@@ -19,7 +21,7 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.behaviour.createBehavioursForSettings
+import me.aartikov.replica.single.behaviour.createBehavioursForReplicaSettings
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
 import me.aartikov.replica.single.internal.SequentialStorage
 
@@ -59,6 +61,7 @@ internal class ReplicaClientImpl(
     override fun <K : Any, T : Any> createKeyedReplica(
         name: String,
         childName: (K) -> String,
+        settings: KeyedReplicaSettings<K, T>,
         childSettings: (K) -> ReplicaSettings,
         behaviours: List<KeyedReplicaBehaviour<K, T>>,
         childBehaviours: (K) -> List<ReplicaBehaviour<T>>,
@@ -85,13 +88,17 @@ internal class ReplicaClientImpl(
             )
         }
 
+        val behavioursForSettings = createBehavioursForKeyedReplicaSettings<K, T>(settings)
+
         val keyedReplica = KeyedPhysicalReplicaImpl(
             coroutineScope,
             name,
-            behaviours,
+            settings,
+            behavioursForSettings + behaviours,
             storageCleaner,
             replicaFactory
         )
+
         keyedReplicas.add(keyedReplica)
         _eventFlow.tryEmit(ReplicaClientEvent.KeyedReplicaCreated(keyedReplica))
         return keyedReplica
@@ -133,7 +140,7 @@ internal class ReplicaClientImpl(
         validateSettings(settings, hasStorage = storage != null)
 
         val behavioursForSettings =
-            createBehavioursForSettings<T>(settings, networkConnectivityProvider)
+            createBehavioursForReplicaSettings<T>(settings, networkConnectivityProvider)
 
         return PhysicalReplicaImpl(
             coroutineDispatcher,

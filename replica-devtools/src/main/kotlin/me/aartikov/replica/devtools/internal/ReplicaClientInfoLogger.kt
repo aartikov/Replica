@@ -31,13 +31,13 @@ class ReplicaClientInfoLogger {
         if (state.activeObserverCount > 0) details += "a${state.activeObserverCount} "
         if (state.data != null) {
             if (state.data!!.fresh) {
-                details += "f "
+                details += "fresh "
             } else {
-                details += "s "
+                details += "stale "
             }
         }
-        if (state.error != null) details += "e "
-        if (state.loading) details += "L "
+        if (state.error != null) details += "error "
+        if (state.loading) details += "loading "
 
         return details
     }

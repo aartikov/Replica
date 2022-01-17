@@ -79,7 +79,7 @@ internal class DataLoadingController<T : Any>(
                         replicaStateFlow.value = state.copy(
                             data = ReplicaData(
                                 value = output.data,
-                                freshness = Freshness.Stale
+                                fresh = false
                             ),
                             loadingFromStorageRequired = false
                         )
@@ -94,9 +94,9 @@ internal class DataLoadingController<T : Any>(
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
                         data = if (state.data != null) {
-                            state.data.copy(value = output.data, freshness = Freshness.Fresh)
+                            state.data.copy(value = output.data, fresh = true)
                         } else {
-                            ReplicaData(value = output.data, freshness = Freshness.Fresh)
+                            ReplicaData(value = output.data, fresh = true)
                         },
                         error = null,
                         loading = false,

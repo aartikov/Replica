@@ -3,7 +3,6 @@ package me.aartikov.replica.single.internal.controllers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import me.aartikov.replica.single.Freshness
 import me.aartikov.replica.single.ReplicaData
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.Storage
@@ -21,7 +20,7 @@ internal class DataChangingController<T : Any>(
                 data = if (state.data != null) {
                     state.data.copy(value = data)
                 } else {
-                    ReplicaData(value = data, freshness = Freshness.Stale)
+                    ReplicaData(value = data, fresh = false)
                 },
                 loadingFromStorageRequired = false
             )

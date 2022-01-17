@@ -10,6 +10,7 @@ import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.client.internal.ReplicaClientImpl
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.network.NetworkConnectivityProvider
@@ -43,6 +44,7 @@ interface ReplicaClient {
     fun <K : Any, T : Any> createKeyedReplica(
         name: String,
         childName: (K) -> String,
+        settings: KeyedReplicaSettings<K, T> = KeyedReplicaSettings(),
         childSettings: (K) -> ReplicaSettings,
         behaviours: List<KeyedReplicaBehaviour<K, T>> = emptyList(),
         childBehaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },

@@ -10,11 +10,11 @@ class KeyedDoOnEvent<K : Any, T : Any>(
     private val action: suspend KeyedPhysicalReplica<K, T>.(event: KeyedReplicaEvent<K, T>) -> Unit
 ) : KeyedReplicaBehaviour<K, T> {
 
-    override fun setup(replica: KeyedPhysicalReplica<K, T>) {
-        replica.eventFlow
+    override fun setup(keyedReplica: KeyedPhysicalReplica<K, T>) {
+        keyedReplica.eventFlow
             .onEach { event ->
-                replica.action(event)
+                keyedReplica.action(event)
             }
-            .launchIn(replica.coroutineScope)
+            .launchIn(keyedReplica.coroutineScope)
     }
 }

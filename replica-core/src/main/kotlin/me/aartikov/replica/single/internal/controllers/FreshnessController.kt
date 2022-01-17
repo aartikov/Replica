@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import me.aartikov.replica.single.Freshness
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
 
@@ -19,7 +18,7 @@ internal class FreshnessController<T : Any>(
             val state = replicaStateFlow.value
             if (state.data?.fresh == true) {
                 replicaStateFlow.value = state.copy(
-                    data = state.data.copy(freshness = Freshness.Stale)
+                    data = state.data.copy(fresh = false)
                 )
                 replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.BecameStale)
             }
@@ -31,7 +30,7 @@ internal class FreshnessController<T : Any>(
             val state = replicaStateFlow.value
             if (state.data != null) {
                 replicaStateFlow.value = state.copy(
-                    data = state.data.copy(freshness = Freshness.Fresh)
+                    data = state.data.copy(fresh = true)
                 )
                 replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.Freshened)
             }

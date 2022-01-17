@@ -10,9 +10,11 @@ import me.aartikov.replica.single.ReplicaState
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
+    val id: KeyedReplicaId
+
     val name: String
 
-    val id: KeyedReplicaId
+    val settings: KeyedReplicaSettings<K, T>
 
     val coroutineScope: CoroutineScope
 

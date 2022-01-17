@@ -6,32 +6,32 @@ import me.aartikov.replica.single.behaviour.standard.*
 import kotlin.time.Duration
 
 
-internal fun <T : Any> createBehavioursForSettings(
-    replicaSettings: ReplicaSettings,
+internal fun <T : Any> createBehavioursForReplicaSettings(
+    settings: ReplicaSettings,
     networkConnectivityProvider: NetworkConnectivityProvider?
 ) = buildList<ReplicaBehaviour<T>> {
 
-    replicaSettings.staleTime?.let {
+    settings.staleTime?.let {
         add(StaleAfterGivenTime(it))
     }
 
-    replicaSettings.clearTime?.let {
+    settings.clearTime?.let {
         add(createClearingBehaviour(it))
     }
 
-    replicaSettings.clearErrorTime?.let {
+    settings.clearErrorTime?.let {
         add(createErrorClearingBehaviour(it))
     }
 
-    replicaSettings.cancelTime?.let {
+    settings.cancelTime?.let {
         add(createCancellationBehaviour(it))
     }
 
-    if (replicaSettings.revalidateOnActiveObserverAdded) {
+    if (settings.revalidateOnActiveObserverAdded) {
         add(createRevalidationOnActiveObserverAddedBehaviour())
     }
 
-    if (networkConnectivityProvider != null && replicaSettings.revalidateOnNetworkConnection) {
+    if (networkConnectivityProvider != null && settings.revalidateOnNetworkConnection) {
         add(createRevalidationOnNetworkConnectionBehaviour(networkConnectivityProvider))
     }
 }
