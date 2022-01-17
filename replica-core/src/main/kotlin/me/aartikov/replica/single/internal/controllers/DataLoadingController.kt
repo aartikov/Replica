@@ -67,7 +67,10 @@ internal class DataLoadingController<T : Any>(
             val state = replicaStateFlow.value
             when (output) {
                 is DataLoader.Output.LoadingStarted -> {
-                    replicaStateFlow.value = state.copy(loading = true)
+                    replicaStateFlow.value = state.copy(
+                        loading = true,
+                        preloading = state.observingStatus == ObservingStatus.None
+                    )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
                 }
 
@@ -97,6 +100,7 @@ internal class DataLoadingController<T : Any>(
                         },
                         error = null,
                         loading = false,
+                        preloading = false,
                         dataRequested = false
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Success(output.data))
@@ -106,6 +110,7 @@ internal class DataLoadingController<T : Any>(
                 DataLoader.Output.LoadingFinished.Canceled -> {
                     replicaStateFlow.value = state.copy(
                         loading = false,
+                        preloading = false,
                         dataRequested = false
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Canceled)
@@ -115,6 +120,7 @@ internal class DataLoadingController<T : Any>(
                     replicaStateFlow.value = state.copy(
                         error = LoadingError(output.exception),
                         loading = false,
+                        preloading = false,
                         dataRequested = false
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Error(output.exception))

@@ -7,6 +7,7 @@ data class ReplicaState<T : Any>(
     val observerUuids: Set<String>,
     val activeObserverUuids: Set<String>,
     val dataRequested: Boolean,
+    val preloading: Boolean,
     val loadingFromStorageRequired: Boolean
 ) {
 
@@ -31,6 +32,7 @@ data class ReplicaState<T : Any>(
             observerUuids = emptySet(),
             activeObserverUuids = emptySet(),
             dataRequested = false,
+            preloading = false,
             loadingFromStorageRequired = hasStorage
         )
     }

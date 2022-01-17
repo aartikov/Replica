@@ -60,7 +60,8 @@ private fun <T : Any> createErrorClearingBehaviour(clearErrorTime: Duration): Re
 private fun <T : Any> createCancellationBehaviour(cancelTime: Duration): ReplicaBehaviour<T> {
     return DoOnStateCondition(
         condition = {
-            it.loading && !it.dataRequested && it.observingStatus == ObservingStatus.None
+            it.loading && !it.dataRequested && !it.preloading
+                && it.observingStatus == ObservingStatus.None
         },
         startDelay = cancelTime,
         action = PhysicalReplica<T>::cancel
