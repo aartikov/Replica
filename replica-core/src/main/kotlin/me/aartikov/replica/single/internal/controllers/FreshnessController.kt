@@ -17,7 +17,7 @@ internal class FreshnessController<T : Any>(
     suspend fun invalidate() {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            if (state.data?.freshness is Freshness.Fresh) {
+            if (state.data?.fresh == true) {
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(freshness = Freshness.Stale)
                 )

@@ -8,9 +8,8 @@ data class ReplicaSettings(
     val clearTime: Duration? = null,
     val clearErrorTime: Duration? = 250.milliseconds,
     val cancelTime: Duration? = 250.milliseconds,
-    val revalidateOnActivated: Boolean = true,
-    val revalidateOnNetworkConnection: RevalidateAction = RevalidateAction.RevalidateIfHasActiveObservers,
-    val refreshOnStale: RefreshAction = RefreshAction.DontRefresh
+    val revalidateOnActiveObserverAdded: Boolean = true,
+    val revalidateOnNetworkConnection: Boolean = true
 ) {
 
     companion object {
@@ -19,7 +18,8 @@ data class ReplicaSettings(
             clearTime = null,
             clearErrorTime = null,
             cancelTime = null,
-            revalidateOnActivated = false
+            revalidateOnActiveObserverAdded = false,
+            revalidateOnNetworkConnection = false
         )
     }
 }

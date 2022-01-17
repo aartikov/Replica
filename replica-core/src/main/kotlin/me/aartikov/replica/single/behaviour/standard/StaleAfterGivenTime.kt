@@ -3,15 +3,14 @@ package me.aartikov.replica.single.behaviour.standard
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.aartikov.replica.single.InvalidationMode
 import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.RefreshAction
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import kotlin.time.Duration
 
-internal class StalenessBehaviour<T : Any>(
-    private val staleTime: Duration,
-    private val refreshOnStale: RefreshAction
+internal class StaleAfterGivenTime<T : Any>(
+    private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 
     private var staleJob: Job? = null
@@ -35,8 +34,8 @@ internal class StalenessBehaviour<T : Any>(
         staleJob?.cancel()
         staleJob = launch {
             delay(staleTime.inWholeMilliseconds)
-            withContext(NonCancellable) { // to prevent refresh cancellation by BecameStale event
-                replica.invalidate(refreshOnStale)
+            withContext(NonCancellable) {
+                replica.invalidate(InvalidationMode.DontRefresh)
             }
         }
     }

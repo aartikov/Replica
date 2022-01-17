@@ -2,9 +2,9 @@ package me.aartikov.replica.keyed
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import me.aartikov.replica.single.InvalidationMode
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.RefreshAction
 import me.aartikov.replica.single.ReplicaState
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
@@ -25,7 +25,7 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     suspend fun invalidate(
         key: K,
-        refresh: RefreshAction = RefreshAction.RefreshIfHasObservers
+        mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
     )
 
     suspend fun makeFresh(key: K)
@@ -52,9 +52,9 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 }
 
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(
-    refresh: RefreshAction = RefreshAction.RefreshIfHasObservers
+    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
 ) {
     onEachReplica {
-        invalidate(refresh)
+        invalidate(mode)
     }
 }

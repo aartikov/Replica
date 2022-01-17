@@ -10,7 +10,7 @@ data class ReplicaState<T : Any>(
     val loadingFromStorageRequired: Boolean
 ) {
 
-    val hasFreshData get() = data != null && data.freshness is Freshness.Fresh
+    val hasFreshData get() = data?.fresh == true
 
     val observerCount get() = observerUuids.size
 

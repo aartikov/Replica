@@ -6,6 +6,8 @@ data class ReplicaData<T : Any>(
     val optimisticUpdates: List<OptimisticUpdate<T>> = emptyList()
 ) {
 
+    val fresh: Boolean get() = freshness is Freshness.Fresh
+
     val valueWithOptimisticUpdates by lazy {
         optimisticUpdates.applyAll(value)
     }

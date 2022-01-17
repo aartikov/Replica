@@ -24,18 +24,18 @@ internal class DataLoadingController<T : Any>(
         dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
     }
 
-    suspend fun executeRefreshAction(refreshAction: RefreshAction) {
+    suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            when (refreshAction) {
-                RefreshAction.Refresh -> refresh()
-                RefreshAction.RefreshIfHasObservers -> if (state.observingStatus != ObservingStatus.None) {
+            when (invalidationMode) {
+                InvalidationMode.DontRefresh -> Unit
+                InvalidationMode.RefreshIfHasObservers -> if (state.observingStatus != ObservingStatus.None) {
                     refresh()
                 }
-                RefreshAction.RefreshIfHasActiveObservers -> if (state.observingStatus == ObservingStatus.Active) {
+                InvalidationMode.RefreshIfHasActiveObservers -> if (state.observingStatus == ObservingStatus.Active) {
                     refresh()
                 }
-                RefreshAction.DontRefresh -> Unit
+                InvalidationMode.RefreshAlways -> refresh()
             }
         }
     }
@@ -126,7 +126,7 @@ internal class DataLoadingController<T : Any>(
     private suspend fun getDataInternal(refreshed: Boolean): T {
         return withContext(dispatcher) {
             val data = replicaStateFlow.value.data
-            if (!refreshed && data != null && data.freshness is Freshness.Fresh) {
+            if (!refreshed && data?.fresh == true) {
                 return@withContext data.valueWithOptimisticUpdates
             }
 
