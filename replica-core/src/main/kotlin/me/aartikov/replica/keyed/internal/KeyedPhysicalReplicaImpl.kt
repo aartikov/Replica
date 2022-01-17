@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.keyed.KeyedReplicaId
+import me.aartikov.replica.keyed.KeyedReplicaState
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
@@ -21,6 +22,9 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
 ) : KeyedPhysicalReplica<K, T> {
 
     override val id: KeyedReplicaId = KeyedReplicaId.random()
+
+    private val _stateFlow = MutableStateFlow(KeyedReplicaState.Empty)
+    override val stateFlow get() = _stateFlow.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<KeyedReplicaEvent<K, T>>(extraBufferCapacity = 1000)
     override val eventFlow get() = _eventFlow.asSharedFlow()
@@ -150,6 +154,9 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         }
 
         if (created) {
+            _stateFlow.update { state ->
+                state.copy(replicaCount = state.replicaCount + 1)
+            }
             _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaCreated(key, replica))
         }
 
@@ -159,8 +166,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     private fun createReplica(key: K): PhysicalReplica<T> {
         val childCoroutineScope = coroutineScope.createChildScope()
         val replica = replicaFactory(childCoroutineScope, key)
+        setupAutoRemoving(key, replica)
+        setupObserversTracking(replica)
+        return replica
+    }
 
-        // setup auto-removing
+    private fun setupAutoRemoving(key: K, replica: PhysicalReplica<T>) {
         replica.stateFlow
             .drop(1)
             .onEach { state ->
@@ -168,15 +179,44 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
                     removeReplicaElement(key)
                 }
             }
-            .launchIn(childCoroutineScope)
+            .launchIn(replica.coroutineScope)
+    }
 
-        return replica
+    private fun setupObserversTracking(replica: PhysicalReplica<T>) {
+        replica.eventFlow
+            .filterIsInstance<ReplicaEvent.ObserverCountChangedEvent>()
+            .onEach { event ->
+                val replicaWithObserversCountDiff = when {
+                    event.count > 0 && event.previousCount == 0 -> 1
+                    event.count == 0 && event.previousCount > 0 -> -1
+                    else -> 0
+                }
+
+                val replicaWithActiveObserversCountDiff = when {
+                    event.activeCount > 0 && event.previousActiveCount == 0 -> 1
+                    event.activeCount == 0 && event.previousActiveCount > 0 -> -1
+                    else -> 0
+                }
+
+                if (replicaWithObserversCountDiff != 0 || replicaWithActiveObserversCountDiff != 0) {
+                    _stateFlow.update { state ->
+                        state.copy(
+                            replicaWithObserversCount = state.replicaWithObserversCount + replicaWithObserversCountDiff,
+                            replicaWithActiveObserversCount = state.replicaWithActiveObserversCount + replicaWithActiveObserversCountDiff
+                        )
+                    }
+                }
+            }
+            .launchIn(replica.coroutineScope)
     }
 
     private fun removeReplicaElement(key: K) {
         val removedReplica = replicas.remove(key)
         if (removedReplica != null) {
             removedReplica.coroutineScope.cancel()
+            _stateFlow.update { state ->
+                state.copy(replicaCount = state.replicaCount - 1)
+            }
             _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaRemoved(key, removedReplica.id))
         }
     }

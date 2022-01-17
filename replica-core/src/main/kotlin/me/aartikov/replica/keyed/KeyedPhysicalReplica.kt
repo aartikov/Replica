@@ -2,6 +2,7 @@ package me.aartikov.replica.keyed
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.single.InvalidationMode
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
@@ -14,6 +15,8 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     val id: KeyedReplicaId
 
     val coroutineScope: CoroutineScope
+
+    val stateFlow: StateFlow<KeyedReplicaState>
 
     val eventFlow: Flow<KeyedReplicaEvent<K, T>>
 
@@ -50,3 +53,5 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit)
 }
+
+val <K : Any, T : Any> KeyedPhysicalReplica<K, T>.currentState get() = stateFlow.value

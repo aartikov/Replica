@@ -47,6 +47,12 @@ internal class ReplicaDevToolsImpl(
     }
 
     private fun launchKeyedReplicaProcessing(keyedReplica: KeyedPhysicalReplica<*, *>) {
+        keyedReplica.stateFlow
+            .onEach { state ->
+                store.updateKeyedReplicaState(keyedReplica.id, state)
+            }
+            .launchIn(keyedReplica.coroutineScope)
+
         keyedReplica.eventFlow
             .onEach { handleKeyedReplicaEvent(keyedReplica.id, it) }
             .launchIn(keyedReplica.coroutineScope)

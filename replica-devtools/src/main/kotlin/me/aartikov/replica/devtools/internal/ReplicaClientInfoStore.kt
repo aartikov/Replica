@@ -2,6 +2,8 @@ package me.aartikov.replica.devtools.internal
 
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaId
+import me.aartikov.replica.keyed.KeyedReplicaState
+import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaId
 import me.aartikov.replica.single.ReplicaState
@@ -26,7 +28,8 @@ class ReplicaClientInfoStore(
     fun addKeyedReplica(keyedReplica: KeyedPhysicalReplica<*, *>) {
         info.keyedReplicaInfos[keyedReplica.id] = KeyedReplicaInfo(
             id = keyedReplica.id,
-            name = keyedReplica.name
+            name = keyedReplica.name,
+            state = keyedReplica.currentState
         )
         onInfoChanged(info)
     }
@@ -46,6 +49,11 @@ class ReplicaClientInfoStore(
 
     fun updateReplicaState(id: ReplicaId, state: ReplicaState<*>) {
         info.replicaInfos[id]?.state = state
+        onInfoChanged(info)
+    }
+
+    fun updateKeyedReplicaState(id: KeyedReplicaId, state: KeyedReplicaState) {
+        info.keyedReplicaInfos[id]?.state = state
         onInfoChanged(info)
     }
 
