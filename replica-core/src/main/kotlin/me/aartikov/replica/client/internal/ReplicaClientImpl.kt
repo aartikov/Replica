@@ -9,6 +9,7 @@ import me.aartikov.replica.client.ReplicaClientEvent
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
+import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.keyed.internal.FixedKeyStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.keyed.internal.KeyedStorageCleaner
@@ -58,8 +59,9 @@ internal class ReplicaClientImpl(
     override fun <K : Any, T : Any> createKeyedReplica(
         name: String,
         childName: (K) -> String,
-        settings: (K) -> ReplicaSettings,
-        behaviours: (K) -> List<ReplicaBehaviour<T>>,
+        childSettings: (K) -> ReplicaSettings,
+        behaviours: List<KeyedReplicaBehaviour<K, T>>,
+        childBehaviours: (K) -> List<ReplicaBehaviour<T>>,
         storage: KeyedStorage<K, T>?,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T> {
@@ -69,8 +71,8 @@ internal class ReplicaClientImpl(
         val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
             createReplicaInternal(
                 name = childName(key),
-                settings = settings(key),
-                behaviours = behaviours(key),
+                settings = childSettings(key),
+                behaviours = childBehaviours(key),
                 storage = storage?.let {
                     SequentialStorage(
                         FixedKeyStorage(it, key),
@@ -83,8 +85,13 @@ internal class ReplicaClientImpl(
             )
         }
 
-        val keyedReplica =
-            KeyedPhysicalReplicaImpl(coroutineScope, name, storageCleaner, replicaFactory)
+        val keyedReplica = KeyedPhysicalReplicaImpl(
+            coroutineScope,
+            name,
+            behaviours,
+            storageCleaner,
+            replicaFactory
+        )
         keyedReplicas.add(keyedReplica)
         _eventFlow.tryEmit(ReplicaClientEvent.KeyedReplicaCreated(keyedReplica))
         return keyedReplica

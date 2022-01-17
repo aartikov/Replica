@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.keyed.KeyedReplicaId
+import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.single.*
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val coroutineScope: CoroutineScope,
     override val name: String,
+    behaviours: List<KeyedReplicaBehaviour<K, T>>,
     private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
@@ -24,6 +26,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val eventFlow get() = _eventFlow.asSharedFlow()
 
     private val replicas = ConcurrentHashMap<K, PhysicalReplica<T>>()
+
+    init {
+        behaviours.forEach { behaviour ->
+            behaviour.setup(this)
+        }
+    }
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,

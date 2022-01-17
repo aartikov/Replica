@@ -11,6 +11,7 @@ import me.aartikov.replica.client.internal.ReplicaClientImpl
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
+import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
@@ -42,8 +43,9 @@ interface ReplicaClient {
     fun <K : Any, T : Any> createKeyedReplica(
         name: String,
         childName: (K) -> String,
-        settings: (K) -> ReplicaSettings,
-        behaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },
+        childSettings: (K) -> ReplicaSettings,
+        behaviours: List<KeyedReplicaBehaviour<K, T>> = emptyList(),
+        childBehaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },
         storage: KeyedStorage<K, T>? = null,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T>
