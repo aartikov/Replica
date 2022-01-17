@@ -76,7 +76,7 @@ internal class DataLoadingController<T : Any>(
                         replicaStateFlow.value = state.copy(
                             data = ReplicaData(
                                 value = output.data,
-                                fresh = false
+                                freshness = Freshness.Stale
                             ),
                             loadingFromStorageRequired = false
                         )
@@ -91,9 +91,9 @@ internal class DataLoadingController<T : Any>(
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
                         data = if (state.data != null) {
-                            state.data.copy(value = output.data, fresh = true)
+                            state.data.copy(value = output.data, freshness = Freshness.Fresh)
                         } else {
-                            ReplicaData(value = output.data, fresh = true)
+                            ReplicaData(value = output.data, freshness = Freshness.Fresh)
                         },
                         error = null,
                         loading = false,
@@ -126,7 +126,7 @@ internal class DataLoadingController<T : Any>(
     private suspend fun getDataInternal(refreshed: Boolean): T {
         return withContext(dispatcher) {
             val data = replicaStateFlow.value.data
-            if (!refreshed && data != null && data.fresh) {
+            if (!refreshed && data != null && data.freshness is Freshness.Fresh) {
                 return@withContext data.valueWithOptimisticUpdates
             }
 
