@@ -2,6 +2,7 @@ package me.aartikov.replica.single.behaviour.standard
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import me.aartikov.replica.single.ObservingStatus
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
@@ -29,7 +30,7 @@ internal class ClearingBehaviour<T : Any>(
     }
 
     private val ReplicaState<T>.canBeCleared: Boolean
-        get() = (data != null || error != null) && observerCount == 0 && !loading
+        get() = (data != null || error != null) && observingStatus == ObservingStatus.None && !loading
 
     private fun CoroutineScope.launchClearingJob(replica: PhysicalReplica<T>) {
         if (clearingJob?.isActive == true) return

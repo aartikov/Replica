@@ -3,11 +3,8 @@ package me.aartikov.replica.single.behaviour.standard
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.ReplicaEvent
-import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.currentState
 import kotlin.time.Duration
 
 internal class CancellationBehaviour<T : Any>(
@@ -35,7 +32,8 @@ internal class CancellationBehaviour<T : Any>(
             .launchIn(replica.coroutineScope)
     }
 
-    private val ReplicaState<T>.canBeCanceled: Boolean get() = observerCount == 0 && loading && !dataRequested
+    private val ReplicaState<T>.canBeCanceled: Boolean
+        get() = observingStatus == ObservingStatus.None && loading && !dataRequested
 
     private fun CoroutineScope.launchCancellationJob(replica: PhysicalReplica<T>) {
         if (cancellationJob?.isActive == true) return

@@ -175,7 +175,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
 }
 
 private val <T : Any> ReplicaState<T>.canBeRemoved: Boolean
-    get() = data == null && error == null && !loading && observerCount == 0
+    get() = data == null && error == null && !loading && observingStatus == ObservingStatus.None
 
 
 private fun CoroutineScope.createChildScope(): CoroutineScope {

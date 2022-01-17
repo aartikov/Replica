@@ -16,6 +16,13 @@ data class ReplicaState<T : Any>(
 
     val activeObserverCount get() = activeObserverUuids.size
 
+    val observingStatus: ObservingStatus
+        get() = when {
+            activeObserverCount > 0 -> ObservingStatus.Active
+            observerCount > 0 -> ObservingStatus.Inactive
+            else -> ObservingStatus.None
+        }
+
     companion object {
         fun <T : Any> createEmpty(hasStorage: Boolean): ReplicaState<T> = ReplicaState(
             data = null,

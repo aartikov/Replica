@@ -29,10 +29,10 @@ internal class DataLoadingController<T : Any>(
             val state = replicaStateFlow.value
             when (refreshAction) {
                 RefreshAction.Refresh -> refresh()
-                RefreshAction.RefreshIfHasObservers -> if (state.observerCount > 0) {
+                RefreshAction.RefreshIfHasObservers -> if (state.observingStatus != ObservingStatus.None) {
                     refresh()
                 }
-                RefreshAction.RefreshIfHasActiveObservers -> if (state.activeObserverCount > 0) {
+                RefreshAction.RefreshIfHasActiveObservers -> if (state.observingStatus == ObservingStatus.Active) {
                     refresh()
                 }
                 RefreshAction.DontRefresh -> Unit
