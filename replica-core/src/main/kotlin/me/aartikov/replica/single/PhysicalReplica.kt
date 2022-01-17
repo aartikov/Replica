@@ -18,8 +18,6 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     val eventFlow: Flow<ReplicaEvent<T>>
 
-    fun cancelLoading()
-
     suspend fun setData(data: T)
 
     suspend fun mutateData(transform: (T) -> T)
@@ -27,6 +25,8 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     suspend fun invalidate(mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers)
 
     suspend fun makeFresh()
+
+    fun cancel()
 
     suspend fun clear(removeFromStorage: Boolean = true) // cancels in progress loading
 

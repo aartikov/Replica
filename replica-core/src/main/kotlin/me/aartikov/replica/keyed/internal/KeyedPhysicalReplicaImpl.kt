@@ -79,8 +79,8 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.makeFresh()
     }
 
-    override fun cancelLoading(key: K) {
-        getReplica(key)?.cancelLoading()
+    override fun cancel(key: K) {
+        getReplica(key)?.cancel()
     }
 
     override suspend fun clear(key: K, removeFromStorage: Boolean) {

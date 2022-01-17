@@ -30,7 +30,7 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     suspend fun makeFresh(key: K)
 
-    fun cancelLoading(key: K)
+    fun cancel(key: K)
 
     suspend fun clear(key: K, removeFromStorage: Boolean = true) // cancels in progress loading
 
@@ -49,12 +49,4 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     suspend fun onExistingReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit)
 
     suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit)
-}
-
-suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(
-    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
-) {
-    onEachReplica {
-        invalidate(mode)
-    }
 }

@@ -58,8 +58,8 @@ internal class DataLoadingController<T : Any>(
         return getDataInternal(refreshed = true)
     }
 
-    fun cancelLoading() {
-        dataLoader.cancelLoading()
+    fun cancel() {
+        dataLoader.cancel()
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<T>) {

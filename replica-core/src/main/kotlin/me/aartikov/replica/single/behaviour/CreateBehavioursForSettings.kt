@@ -63,7 +63,7 @@ private fun <T : Any> createCancellationBehaviour(cancelTime: Duration): Replica
             it.loading && !it.dataRequested && it.observingStatus == ObservingStatus.None
         },
         startDelay = cancelTime,
-        action = PhysicalReplica<T>::cancelLoading
+        action = PhysicalReplica<T>::cancel
     )
 }
 

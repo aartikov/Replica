@@ -11,9 +11,11 @@ import me.aartikov.replica.client.internal.ReplicaClientImpl
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedStorage
-import me.aartikov.replica.keyed.invalidateAll
 import me.aartikov.replica.network.NetworkConnectivityProvider
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.Fetcher
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
 interface ReplicaClient {
@@ -62,26 +64,4 @@ fun ReplicaClient(
     coroutineScope: CoroutineScope = DefaultCoroutineScope
 ): ReplicaClient {
     return ReplicaClientImpl(networkConnectivityProvider, coroutineDispatcher, coroutineScope)
-}
-
-suspend fun ReplicaClient.clearAll() {
-    onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        clear()
-    }
-
-    onEachKeyedReplica {
-        this.clearAll()
-    }
-}
-
-suspend fun ReplicaClient.invalidateAll(
-    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
-) {
-    onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        invalidate(mode)
-    }
-
-    onEachKeyedReplica {
-        this.invalidateAll(mode)
-    }
 }

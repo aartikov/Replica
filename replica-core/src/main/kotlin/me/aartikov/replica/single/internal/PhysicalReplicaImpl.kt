@@ -85,10 +85,6 @@ internal class PhysicalReplicaImpl<T : Any>(
         return dataLoadingController.getRefreshedData()
     }
 
-    override fun cancelLoading() {
-        dataLoadingController.cancelLoading()
-    }
-
     override suspend fun setData(data: T) {
         dataChangingController.setData(data)
     }
@@ -106,8 +102,12 @@ internal class PhysicalReplicaImpl<T : Any>(
         freshnessController.makeFresh()
     }
 
+    override fun cancel() {
+        dataLoadingController.cancel()
+    }
+
     override suspend fun clear(removeFromStorage: Boolean) {
-        cancelLoading()
+        cancel()
         clearingController.clear(removeFromStorage)
     }
 

@@ -78,7 +78,7 @@ internal class DataLoader<T : Any>(
     }
 
     @Synchronized
-    fun cancelLoading() {
+    fun cancel() {
         loadingJob?.cancel()
         loadingJob = null
     }
