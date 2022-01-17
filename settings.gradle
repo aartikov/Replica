@@ -49,7 +49,7 @@ dependencyResolutionManagement {
             version('sesame', '1.4.0-beta1')
             alias('sesame-localizedString').to('com.github.aartikov', 'sesame-localized-string').versionRef('sesame')
 
-            version('decompose', '0.4.0')
+            version('decompose', '0.5.0')
             alias('decompose-core').to('com.arkivanov.decompose', 'decompose').versionRef('decompose')
             alias('decompose-compose').to('com.arkivanov.decompose', 'extensions-compose-jetpack').versionRef('decompose')
             bundle('decompose', ['decompose-core', 'decompose-compose'])

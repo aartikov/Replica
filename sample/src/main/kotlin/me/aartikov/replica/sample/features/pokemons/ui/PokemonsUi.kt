@@ -15,10 +15,10 @@ fun PokemonsUi(
     component: PokemonsComponent,
     modifier: Modifier = Modifier
 ) {
-    Children(component.routerState) { child ->
+    Children(component.routerState, modifier) { child ->
         when (val instance = child.instance) {
-            is PokemonsComponent.Child.List -> PokemonListUi(instance.component, modifier)
-            is PokemonsComponent.Child.Details -> PokemonDetailsUi(instance.component, modifier)
+            is PokemonsComponent.Child.List -> PokemonListUi(instance.component)
+            is PokemonsComponent.Child.Details -> PokemonDetailsUi(instance.component)
         }
     }
 }

@@ -27,13 +27,13 @@ fun RootUi(
 
     SystemBarColors()
 
-    Children(component.routerState) { child ->
+    Children(component.routerState, modifier) { child ->
         when (val instance = child.instance) {
-            is RootComponent.Child.Menu -> MenuUi(instance.component, modifier)
-            is RootComponent.Child.Project -> ProjectUi(instance.component, modifier)
-            is RootComponent.Child.Pokemons -> PokemonsUi(instance.component, modifier)
-            is RootComponent.Child.Fruits -> FruitsUi(instance.component, modifier)
-            is RootComponent.Child.Dudes -> DudesUi(instance.component, modifier)
+            is RootComponent.Child.Menu -> MenuUi(instance.component)
+            is RootComponent.Child.Project -> ProjectUi(instance.component)
+            is RootComponent.Child.Pokemons -> PokemonsUi(instance.component)
+            is RootComponent.Child.Fruits -> FruitsUi(instance.component)
+            is RootComponent.Child.Dudes -> DudesUi(instance.component)
         }
     }
 
