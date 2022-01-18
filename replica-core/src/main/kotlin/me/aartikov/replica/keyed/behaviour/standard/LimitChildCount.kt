@@ -13,7 +13,7 @@ import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 import kotlin.math.max
 
-class ClearOnMaxCountExceed<K : Any, T : Any>(
+class LimitChildCount<K : Any, T : Any>(
     private val maxCount: Int,
     private val clearPolicy: ClearPolicy<K, T>
 ) : KeyedReplicaBehaviour<K, T> {
@@ -24,14 +24,14 @@ class ClearOnMaxCountExceed<K : Any, T : Any>(
             .onEach { state ->
                 mutex.withLock {
                     if (state.replicaCount > maxCount) {
-                        clear(keyedReplica)
+                        clearReplicas(keyedReplica)
                     }
                 }
             }
             .launchIn(keyedReplica.coroutineScope)
     }
 
-    private suspend fun clear(keyedReplica: KeyedPhysicalReplica<K, T>) {
+    private suspend fun clearReplicas(keyedReplica: KeyedPhysicalReplica<K, T>) {
         val totalCount = keyedReplica.currentState.replicaCount
         val countForRemoving = max(0, totalCount - maxCount)
         if (countForRemoving == 0) return
@@ -40,7 +40,8 @@ class ClearOnMaxCountExceed<K : Any, T : Any>(
         keyedReplica.onEachReplica { key ->
             val state = currentState
             val justCreatedReplica = state.data == null && state.error == null && !state.loading
-            val removableReplica = !state.loading && state.observingStatus == ObservingStatus.None
+            val removableReplica =
+                !state.loading && state.observingState.status == ObservingStatus.None
             if (!justCreatedReplica && removableReplica) {
                 keysWithStateForRemoving.add(key to state)
             }

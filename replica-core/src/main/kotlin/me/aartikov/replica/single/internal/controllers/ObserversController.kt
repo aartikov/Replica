@@ -4,10 +4,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
+import me.aartikov.replica.single.ObservingState
+import me.aartikov.replica.single.ObservingTime
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.time.TimeProvider
 
 internal class ObserversController<T : Any>(
+    private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
     private val replicaEventFlow: MutableSharedFlow<ReplicaEvent<T>>
@@ -16,18 +20,26 @@ internal class ObserversController<T : Any>(
     suspend fun onObserverAdded(observerUuid: String, active: Boolean) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+            val observingState = state.observingState
             replicaStateFlow.value = state.copy(
-                observerUuids = state.observerUuids + observerUuid,
-                activeObserverUuids = if (active) {
-                    state.activeObserverUuids + observerUuid
-                } else {
-                    state.activeObserverUuids
-                }
+                observingState = observingState.copy(
+                    observerUuids = observingState.observerUuids + observerUuid,
+                    activeObserverUuids = if (active) {
+                        observingState.activeObserverUuids + observerUuid
+                    } else {
+                        observingState.activeObserverUuids
+                    },
+                    observingTime = if (active) {
+                        ObservingTime.Now
+                    } else {
+                        observingState.observingTime
+                    }
+                )
             )
 
             emitObserverCountChangedEventIfRequired(
-                previousState = state,
-                newState = replicaStateFlow.value
+                previousObservingState = observingState,
+                newObservingState = replicaStateFlow.value.observingState
             )
         }
     }
@@ -35,14 +47,26 @@ internal class ObserversController<T : Any>(
     suspend fun onObserverRemoved(observerUuid: String) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+            val observingState = state.observingState
+
+            val lastActiveObserver = observingState.activeObserverUuids.size == 1
+                && observingState.activeObserverUuids.contains(observerUuid)
+
             replicaStateFlow.value = state.copy(
-                observerUuids = state.observerUuids - observerUuid,
-                activeObserverUuids = state.activeObserverUuids - observerUuid
+                observingState = observingState.copy(
+                    observerUuids = observingState.observerUuids - observerUuid,
+                    activeObserverUuids = observingState.activeObserverUuids - observerUuid,
+                    observingTime = if (lastActiveObserver) {
+                        ObservingTime.TimeInPast(timeProvider.currentTime)
+                    } else {
+                        observingState.observingTime
+                    }
+                )
             )
 
             emitObserverCountChangedEventIfRequired(
-                previousState = state,
-                newState = replicaStateFlow.value
+                previousObservingState = observingState,
+                newObservingState = replicaStateFlow.value.observingState
             )
         }
     }
@@ -50,13 +74,17 @@ internal class ObserversController<T : Any>(
     suspend fun onObserverActive(observerUuid: String) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+            val observingState = state.observingState
             replicaStateFlow.value = state.copy(
-                activeObserverUuids = state.activeObserverUuids + observerUuid
+                observingState = observingState.copy(
+                    activeObserverUuids = observingState.activeObserverUuids + observerUuid,
+                    observingTime = ObservingTime.Now
+                )
             )
 
             emitObserverCountChangedEventIfRequired(
-                previousState = state,
-                newState = replicaStateFlow.value
+                previousObservingState = observingState,
+                newObservingState = replicaStateFlow.value.observingState
             )
         }
     }
@@ -64,30 +92,42 @@ internal class ObserversController<T : Any>(
     suspend fun onObserverInactive(observerUuid: String) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+            val observingState = state.observingState
+
+            val lastActiveObserver = observingState.activeObserverUuids.size == 1
+                && observingState.activeObserverUuids.contains(observerUuid)
+
             replicaStateFlow.value = state.copy(
-                activeObserverUuids = state.activeObserverUuids - observerUuid
+                observingState = observingState.copy(
+                    activeObserverUuids = observingState.activeObserverUuids - observerUuid,
+                    observingTime = if (lastActiveObserver) {
+                        ObservingTime.TimeInPast(timeProvider.currentTime)
+                    } else {
+                        observingState.observingTime
+                    }
+                )
             )
 
             emitObserverCountChangedEventIfRequired(
-                previousState = state,
-                newState = replicaStateFlow.value
+                previousObservingState = observingState,
+                newObservingState = replicaStateFlow.value.observingState
             )
         }
     }
 
     private suspend fun emitObserverCountChangedEventIfRequired(
-        previousState: ReplicaState<T>,
-        newState: ReplicaState<T>
+        previousObservingState: ObservingState,
+        newObservingState: ObservingState
     ) {
-        if (previousState.observerCount != newState.observerCount
-            || previousState.activeObserverCount != newState.activeObserverCount
+        if (previousObservingState.observerCount != newObservingState.observerCount
+            || previousObservingState.activeObserverCount != newObservingState.activeObserverCount
         ) {
             replicaEventFlow.emit(
                 ReplicaEvent.ObserverCountChangedEvent(
-                    count = newState.observerCount,
-                    activeCount = newState.activeObserverCount,
-                    previousCount = previousState.observerCount,
-                    previousActiveCount = previousState.activeObserverCount
+                    count = newObservingState.observerCount,
+                    activeCount = newObservingState.activeObserverCount,
+                    previousCount = previousObservingState.observerCount,
+                    previousActiveCount = previousObservingState.activeObserverCount
                 )
             )
         }

@@ -24,9 +24,11 @@ import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.behaviour.createBehavioursForReplicaSettings
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
 import me.aartikov.replica.single.internal.SequentialStorage
+import me.aartikov.replica.time.TimeProvider
 
 internal class ReplicaClientImpl(
     override val networkConnectivityProvider: NetworkConnectivityProvider?,
+    private val timeProvider: TimeProvider,
     private val coroutineDispatcher: CoroutineDispatcher,   // TODO: get from coroutineScope?
     override val coroutineScope: CoroutineScope
 ) : ReplicaClient {
@@ -143,6 +145,7 @@ internal class ReplicaClientImpl(
             createBehavioursForReplicaSettings<T>(settings, networkConnectivityProvider)
 
         return PhysicalReplicaImpl(
+            timeProvider,
             coroutineDispatcher,
             coroutineScope,
             name,

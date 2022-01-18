@@ -180,6 +180,8 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         if (removedReplica != null) {
             removedReplica.coroutineScope.cancel()
             _stateFlow.update { state ->
+                // don't change replicaWithObserversCount and replicaWithActiveObserversCount
+                // because only replicas with ObservingStatus.None can be removed
                 state.copy(replicaCount = state.replicaCount - 1)
             }
             _eventFlow.tryEmit(KeyedReplicaEvent.ReplicaRemoved(key, removedReplica.id))

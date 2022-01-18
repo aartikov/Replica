@@ -41,6 +41,6 @@ internal class ChildRemovingController<K : Any, T : Any>(
     }
 
     private val <T : Any> ReplicaState<T>.canBeRemoved: Boolean
-        get() = data == null && error == null && !loading && observingStatus == ObservingStatus.None
+        get() = data == null && error == null && !loading && observingState.status == ObservingStatus.None
 
 }

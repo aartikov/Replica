@@ -1,7 +1,7 @@
 package me.aartikov.replica.keyed.behaviour
 
 import me.aartikov.replica.keyed.KeyedReplicaSettings
-import me.aartikov.replica.keyed.behaviour.standard.ClearOnMaxCountExceed
+import me.aartikov.replica.keyed.behaviour.standard.LimitChildCount
 
 
 internal fun <K : Any, T : Any> createBehavioursForKeyedReplicaSettings(
@@ -10,7 +10,7 @@ internal fun <K : Any, T : Any> createBehavioursForKeyedReplicaSettings(
 
     if (settings.maxCount != Int.MAX_VALUE) {
         add(
-            ClearOnMaxCountExceed(settings.maxCount, settings.clearPolicy)
+            LimitChildCount(settings.maxCount, settings.clearPolicy)
         )
     }
 }

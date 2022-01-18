@@ -27,15 +27,15 @@ class ReplicaClientInfoLogger {
     private fun formatDetails(state: ReplicaState<*>): String {
         var details = ""
 
-        if (state.observerCount > 0) details += "o${state.observerCount} "
-        if (state.activeObserverCount > 0) details += "a${state.activeObserverCount} "
-        if (state.data != null) {
-            if (state.data!!.fresh) {
-                details += "fresh "
-            } else {
-                details += "stale "
-            }
+        val observingState = state.observingState
+        if (observingState.observerCount > 0) details += "o${observingState.observerCount} "
+        if (observingState.activeObserverCount > 0) details += "a${observingState.activeObserverCount} "
+
+        val data = state.data
+        if (data != null) {
+            details += if (data.fresh) "fresh " else "stale "
         }
+
         if (state.error != null) details += "error "
         if (state.loading) details += "loading "
 

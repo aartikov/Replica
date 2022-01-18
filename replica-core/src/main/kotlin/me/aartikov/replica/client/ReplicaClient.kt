@@ -19,6 +19,8 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
+import me.aartikov.replica.time.RealTimeProvider
+import me.aartikov.replica.time.TimeProvider
 
 interface ReplicaClient {
 
@@ -64,8 +66,14 @@ interface ReplicaClient {
 
 fun ReplicaClient(
     networkConnectivityProvider: NetworkConnectivityProvider? = null,
+    timeProvider: TimeProvider = RealTimeProvider(),
     coroutineDispatcher: CoroutineDispatcher = DefaultCoroutineDispatcher,
     coroutineScope: CoroutineScope = DefaultCoroutineScope
 ): ReplicaClient {
-    return ReplicaClientImpl(networkConnectivityProvider, coroutineDispatcher, coroutineScope)
+    return ReplicaClientImpl(
+        networkConnectivityProvider,
+        timeProvider,
+        coroutineDispatcher,
+        coroutineScope
+    )
 }

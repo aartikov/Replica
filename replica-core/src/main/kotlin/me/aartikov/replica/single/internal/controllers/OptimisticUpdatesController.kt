@@ -6,8 +6,10 @@ import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.Storage
+import me.aartikov.replica.time.TimeProvider
 
 internal class OptimisticUpdatesController<T : Any>(
+    private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
     private val storage: Storage<T>?
@@ -34,7 +36,8 @@ internal class OptimisticUpdatesController<T : Any>(
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
                         value = newData,
-                        optimisticUpdates = state.data.optimisticUpdates - update
+                        optimisticUpdates = state.data.optimisticUpdates - update,
+                        changingTime = timeProvider.currentTime
                     )
                 )
                 storage?.write(newData)

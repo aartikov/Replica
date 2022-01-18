@@ -4,8 +4,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.internal.DataLoader
+import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<T : Any>(
+    private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
@@ -29,12 +31,15 @@ internal class DataLoadingController<T : Any>(
             val state = replicaStateFlow.value
             when (invalidationMode) {
                 InvalidationMode.DontRefresh -> Unit
-                InvalidationMode.RefreshIfHasObservers -> if (state.observingStatus != ObservingStatus.None) {
-                    refresh()
+
+                InvalidationMode.RefreshIfHasObservers -> {
+                    if (state.observingState.status != ObservingStatus.None) refresh()
                 }
-                InvalidationMode.RefreshIfHasActiveObservers -> if (state.observingStatus == ObservingStatus.Active) {
-                    refresh()
+
+                InvalidationMode.RefreshIfHasActiveObservers -> {
+                    if (state.observingState.status == ObservingStatus.Active) refresh()
                 }
+
                 InvalidationMode.RefreshAlways -> refresh()
             }
         }
@@ -69,7 +74,7 @@ internal class DataLoadingController<T : Any>(
                 is DataLoader.Output.LoadingStarted -> {
                     replicaStateFlow.value = state.copy(
                         loading = true,
-                        preloading = state.observingStatus == ObservingStatus.None
+                        preloading = state.observingState.status == ObservingStatus.None
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
                 }
@@ -79,7 +84,8 @@ internal class DataLoadingController<T : Any>(
                         replicaStateFlow.value = state.copy(
                             data = ReplicaData(
                                 value = output.data,
-                                fresh = false
+                                fresh = false,
+                                changingTime = timeProvider.currentTime
                             ),
                             loadingFromStorageRequired = false
                         )
@@ -94,9 +100,17 @@ internal class DataLoadingController<T : Any>(
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
                         data = if (state.data != null) {
-                            state.data.copy(value = output.data, fresh = true)
+                            state.data.copy(
+                                value = output.data,
+                                fresh = true,
+                                changingTime = timeProvider.currentTime
+                            )
                         } else {
-                            ReplicaData(value = output.data, fresh = true)
+                            ReplicaData(
+                                value = output.data,
+                                fresh = true,
+                                changingTime = timeProvider.currentTime
+                            )
                         },
                         error = null,
                         loading = false,

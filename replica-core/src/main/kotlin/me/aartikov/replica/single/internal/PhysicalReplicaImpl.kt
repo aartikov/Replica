@@ -6,9 +6,11 @@ import kotlinx.coroutines.flow.*
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.internal.controllers.*
+import me.aartikov.replica.time.TimeProvider
 
 
 internal class PhysicalReplicaImpl<T : Any>(
+    timeProvider: TimeProvider,
     dispatcher: CoroutineDispatcher,
     override val coroutineScope: CoroutineScope,
     override val name: String,
@@ -28,27 +30,23 @@ internal class PhysicalReplicaImpl<T : Any>(
     private val _eventFlow = MutableSharedFlow<ReplicaEvent<T>>(extraBufferCapacity = 1000)
     override val eventFlow: Flow<ReplicaEvent<T>> = _eventFlow.asSharedFlow()
 
-    private val observersController = ObserversController(dispatcher, _stateFlow, _eventFlow)
+    private val observersController =
+        ObserversController(timeProvider, dispatcher, _stateFlow, _eventFlow)
 
     private val dataLoadingController = DataLoadingController(
-        dispatcher,
-        coroutineScope,
-        _stateFlow,
-        _eventFlow,
+        timeProvider, dispatcher, coroutineScope, _stateFlow, _eventFlow,
         DataLoader(coroutineScope, storage, fetcher)
     )
 
-    private val dataChangingController = DataChangingController(dispatcher, _stateFlow, storage)
+    private val dataChangingController =
+        DataChangingController(timeProvider, dispatcher, _stateFlow, storage)
 
     private val freshnessController = FreshnessController(dispatcher, _stateFlow, _eventFlow)
 
     private val clearingController = ClearingController(dispatcher, _stateFlow, _eventFlow, storage)
 
-    private val optimisticUpdatesController = OptimisticUpdatesController(
-        dispatcher,
-        _stateFlow,
-        storage
-    )
+    private val optimisticUpdatesController =
+        OptimisticUpdatesController(timeProvider, dispatcher, _stateFlow, storage)
 
     init {
         behaviours.forEach { behaviour ->

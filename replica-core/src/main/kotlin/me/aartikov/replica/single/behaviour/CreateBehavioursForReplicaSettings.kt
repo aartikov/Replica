@@ -40,7 +40,7 @@ private fun <T : Any> createClearingBehaviour(clearTime: Duration): ReplicaBehav
     return DoOnStateCondition(
         condition = {
             (it.data != null || it.error != null) && !it.loading
-                && it.observingStatus == ObservingStatus.None
+                && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearTime,
         action = PhysicalReplica<T>::clear
@@ -50,7 +50,7 @@ private fun <T : Any> createClearingBehaviour(clearTime: Duration): ReplicaBehav
 private fun <T : Any> createErrorClearingBehaviour(clearErrorTime: Duration): ReplicaBehaviour<T> {
     return DoOnStateCondition(
         condition = {
-            it.error != null && !it.loading && it.observingStatus == ObservingStatus.None
+            it.error != null && !it.loading && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearErrorTime,
         action = PhysicalReplica<T>::clearError
@@ -61,7 +61,7 @@ private fun <T : Any> createCancellationBehaviour(cancelTime: Duration): Replica
     return DoOnStateCondition(
         condition = {
             it.loading && !it.dataRequested && !it.preloading
-                && it.observingStatus == ObservingStatus.None
+                && it.observingState.status == ObservingStatus.None
         },
         startDelay = cancelTime,
         action = PhysicalReplica<T>::cancel
@@ -82,7 +82,7 @@ private fun <T : Any> createRevalidationOnNetworkConnectionBehaviour(
     networkConnectivityProvider: NetworkConnectivityProvider
 ): ReplicaBehaviour<T> {
     return DoOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
-        if (connected && currentState.observingStatus == ObservingStatus.Active) {
+        if (connected && currentState.observingState.status == ObservingStatus.Active) {
             revalidate()
         }
     }
