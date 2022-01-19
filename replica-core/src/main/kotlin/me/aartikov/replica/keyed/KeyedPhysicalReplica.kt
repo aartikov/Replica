@@ -18,6 +18,8 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     val settings: KeyedReplicaSettings<K, T>
 
+    val tags: Set<ReplicaTag>
+
     val coroutineScope: CoroutineScope
 
     val stateFlow: StateFlow<KeyedReplicaState>

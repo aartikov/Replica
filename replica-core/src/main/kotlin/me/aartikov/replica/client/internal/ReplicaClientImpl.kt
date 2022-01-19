@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.ReplicaClientEvent
+import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
@@ -42,6 +43,7 @@ internal class ReplicaClientImpl(
     override fun <T : Any> createReplica(
         name: String,
         settings: ReplicaSettings,
+        tags: Set<ReplicaTag>,
         behaviours: List<ReplicaBehaviour<T>>,
         storage: Storage<T>?,
         fetcher: Fetcher<T>
@@ -49,6 +51,7 @@ internal class ReplicaClientImpl(
         val replica = createReplicaInternal(
             name,
             settings,
+            tags,
             behaviours,
             storage?.let { SequentialStorage(it) },
             fetcher,
@@ -65,6 +68,8 @@ internal class ReplicaClientImpl(
         childName: (K) -> String,
         settings: KeyedReplicaSettings<K, T>,
         childSettings: (K) -> ReplicaSettings,
+        tags: Set<ReplicaTag>,
+        childTags: (K) -> Set<ReplicaTag>,
         behaviours: List<KeyedReplicaBehaviour<K, T>>,
         childBehaviours: (K) -> List<ReplicaBehaviour<T>>,
         storage: KeyedStorage<K, T>?,
@@ -77,6 +82,7 @@ internal class ReplicaClientImpl(
             createReplicaInternal(
                 name = childName(key),
                 settings = childSettings(key),
+                tags = childTags(key),
                 behaviours = childBehaviours(key),
                 storage = storage?.let {
                     SequentialStorage(
@@ -96,6 +102,7 @@ internal class ReplicaClientImpl(
             coroutineScope,
             name,
             settings,
+            tags,
             behavioursForSettings + behaviours,
             storageCleaner,
             replicaFactory
@@ -132,6 +139,7 @@ internal class ReplicaClientImpl(
     private fun <T : Any> createReplicaInternal(
         name: String,
         settings: ReplicaSettings,
+        tags: Set<ReplicaTag>,
         behaviours: List<ReplicaBehaviour<T>>,
         storage: Storage<T>?,
         fetcher: Fetcher<T>,
@@ -150,6 +158,7 @@ internal class ReplicaClientImpl(
             coroutineScope,
             name,
             settings,
+            tags,
             behaviours = behavioursForSettings + behaviours,
             storage,
             fetcher

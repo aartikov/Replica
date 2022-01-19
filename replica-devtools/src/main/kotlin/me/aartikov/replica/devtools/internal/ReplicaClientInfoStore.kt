@@ -19,6 +19,7 @@ class ReplicaClientInfoStore(
             id = replica.id,
             name = replica.name,
             settings = replica.settings,
+            tags = replica.tags,
             state = replica.currentState
         )
         onInfoChanged(info)
@@ -28,6 +29,8 @@ class ReplicaClientInfoStore(
         info.keyedReplicaInfos[keyedReplica.id] = KeyedReplicaInfo(
             id = keyedReplica.id,
             name = keyedReplica.name,
+            settings = keyedReplica.settings,
+            tags = keyedReplica.tags,
             state = keyedReplica.currentState
         )
         onInfoChanged(info)
@@ -40,6 +43,7 @@ class ReplicaClientInfoStore(
                 id = replica.id,
                 name = replica.name,
                 settings = replica.settings,
+                tags = replica.tags,
                 state = replica.currentState
             )
         )

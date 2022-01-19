@@ -26,6 +26,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     override val coroutineScope: CoroutineScope,
     override val name: String,
     override val settings: KeyedReplicaSettings<K, T>,
+    override val tags: Set<ReplicaTag>,
     behaviours: List<KeyedReplicaBehaviour<K, T>>,
     private val storageCleaner: KeyedStorageCleaner<T>?,
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>

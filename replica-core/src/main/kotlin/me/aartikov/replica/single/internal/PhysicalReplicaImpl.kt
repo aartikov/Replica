@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.*
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.internal.controllers.*
@@ -18,6 +19,7 @@ internal class PhysicalReplicaImpl<T : Any>(
     override val coroutineScope: CoroutineScope,
     override val name: String,
     override val settings: ReplicaSettings,
+    override val tags: Set<ReplicaTag>,
     behaviours: List<ReplicaBehaviour<T>>,
     storage: Storage<T>?,
     fetcher: Fetcher<T>

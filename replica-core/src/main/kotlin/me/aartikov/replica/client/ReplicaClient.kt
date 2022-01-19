@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineDispatcher
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.client.internal.ReplicaClientImpl
+import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
@@ -38,6 +39,7 @@ interface ReplicaClient {
     fun <T : Any> createReplica(
         name: String,
         settings: ReplicaSettings,
+        tags: Set<ReplicaTag> = emptySet(),
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
         storage: Storage<T>? = null,
         fetcher: Fetcher<T>,
@@ -48,6 +50,8 @@ interface ReplicaClient {
         childName: (K) -> String,
         settings: KeyedReplicaSettings<K, T> = KeyedReplicaSettings(),
         childSettings: (K) -> ReplicaSettings,
+        tags: Set<ReplicaTag> = emptySet(),
+        childTags: (K) -> Set<ReplicaTag> = { emptySet() },
         behaviours: List<KeyedReplicaBehaviour<K, T>> = emptyList(),
         childBehaviours: (K) -> List<ReplicaBehaviour<T>> = { emptyList() },
         storage: KeyedStorage<K, T>? = null,

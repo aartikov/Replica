@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaTag
 
 interface PhysicalReplica<T : Any> : Replica<T> {
 
@@ -14,6 +15,8 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     val name: String
 
     val settings: ReplicaSettings
+
+    val tags: Set<ReplicaTag>
 
     val coroutineScope: CoroutineScope
 
