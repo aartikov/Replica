@@ -132,6 +132,7 @@ fun DudesUiPreview() {
 
 class FakeDudesComponent : DudesComponent {
     override val dudesState: Loadable<List<Dude>> = Loadable(
+        loading = true,
         data = listOf(
             Dude(
                 id = DudeId("1"),
@@ -148,8 +149,7 @@ class FakeDudesComponent : DudesComponent {
                 name = "Clementine Bauch",
                 photoUrl = ""
             )
-        ),
-        loading = true
+        )
     )
 
     override fun onRefresh() = Unit

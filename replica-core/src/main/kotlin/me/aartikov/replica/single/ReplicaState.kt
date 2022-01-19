@@ -1,11 +1,12 @@
 package me.aartikov.replica.single
 
+import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.ObservingState
 
 data class ReplicaState<T : Any>(
-    val data: ReplicaData<T>?,
     val loading: Boolean,
+    val data: ReplicaData<T>?,
     val error: LoadingError?,
     val observingState: ObservingState,
     val dataRequested: Boolean,
@@ -17,8 +18,8 @@ data class ReplicaState<T : Any>(
 
     companion object {
         fun <T : Any> createEmpty(hasStorage: Boolean): ReplicaState<T> = ReplicaState(
-            data = null,
             loading = false,
+            data = null,
             error = null,
             observingState = ObservingState(),
             dataRequested = false,
@@ -29,7 +30,7 @@ data class ReplicaState<T : Any>(
 }
 
 internal fun <T : Any> ReplicaState<T>.toLoadable() = Loadable(
-    data = data?.valueWithOptimisticUpdates,
     loading = loading,
-    error = error
+    data = data?.valueWithOptimisticUpdates,
+    error = error?.let { CombinedLoadingError(it.exception) }
 )

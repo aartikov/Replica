@@ -148,6 +148,7 @@ fun FruitsUiPreview() {
 
 class FakeFruitsComponent : FruitsComponent {
     override val fruitsState: Loadable<List<Fruit>> = Loadable(
+        loading = true,
         data = listOf(
             Fruit(
                 id = FruitId("1"),
@@ -167,8 +168,7 @@ class FakeFruitsComponent : FruitsComponent {
                 imageUrl = "",
                 liked = false
             )
-        ),
-        loading = true
+        )
     )
 
     override fun onFruitClick(fruitId: FruitId) = Unit

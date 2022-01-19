@@ -24,7 +24,7 @@ internal class ReplicaObserverImpl<T : Any>(
 
     private var observerControllingJob: Job? = null
     private var stateObservingJob: Job? = null
-    private var errorEventsObservingJob: Job? = null
+    private var errorsObservingJob: Job? = null
 
     init {
         if (coroutineScope.isActive) {
@@ -41,8 +41,8 @@ internal class ReplicaObserverImpl<T : Any>(
         stateObservingJob?.cancel()
         stateObservingJob = null
 
-        errorEventsObservingJob?.cancel()
-        errorEventsObservingJob = null
+        errorsObservingJob?.cancel()
+        errorsObservingJob = null
     }
 
     private fun launchObserverControlling() {
@@ -67,23 +67,21 @@ internal class ReplicaObserverImpl<T : Any>(
     }
 
     private fun launchStateObserving() {
-        stateObservingJob = coroutineScope.launch {
-            replicaStateFlow
-                .toActivableFlow(coroutineScope, activeFlow)
-                .collect { replicaState ->
-                    _stateFlow.value = replicaState.toLoadable()
-                }
-        }
+        stateObservingJob = replicaStateFlow
+            .toActivableFlow(coroutineScope, activeFlow)
+            .onEach { replicaState ->
+                _stateFlow.value = replicaState.toLoadable()
+            }
+            .launchIn(coroutineScope)
     }
 
     private fun launchLoadingErrorsObserving() {
-        errorEventsObservingJob = coroutineScope.launch {
-            replicaEventFlow
-                .toActivableFlow(coroutineScope, activeFlow)
-                .filterIsInstance<ReplicaEvent.LoadingEvent.LoadingFinished.Error>()
-                .collect { errorEvent ->
-                    _loadingErrorFlow.emit(LoadingError(errorEvent.exception))
-                }
-        }
+        errorsObservingJob = replicaEventFlow
+            .toActivableFlow(coroutineScope, activeFlow)
+            .filterIsInstance<ReplicaEvent.LoadingEvent.LoadingFinished.Error>()
+            .onEach { errorEvent ->
+                _loadingErrorFlow.emit(LoadingError(errorEvent.exception))
+            }
+            .launchIn(coroutineScope)
     }
 }

@@ -6,7 +6,6 @@ import me.aartikov.replica.decompose.observe
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
 import me.aartikov.replica.single.Loadable
-import timber.log.Timber
 
 fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
     lifecycle: Lifecycle,
@@ -17,11 +16,10 @@ fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
     return observe(
         lifecycle,
         onError = { error, state ->
-            if (state.data != null) { // show error only if fullscreen error is not shown
-                errorHandler.handleError(error.exception)
-            } else {
-                Timber.e(error.exception)
-            }
+            errorHandler.handleError(
+                error.exception,
+                showError = state.data != null  // show error only if fullscreen error is not shown
+            )
         },
         key,
         keepPreviousData

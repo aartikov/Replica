@@ -33,20 +33,3 @@ fun <T : Any> SwipeRefreshLceWidget(
         }
     }
 }
-
-@Composable
-fun <T : Any> SwipeRefreshLceWidget(
-    state: Loadable<T>,
-    onRefresh: () -> Unit,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable (data: T) -> Unit
-) {
-    SwipeRefreshLceWidget(
-        state = state,
-        onRefresh = onRefresh,
-        onRetryClick = onRetryClick,
-        modifier = modifier,
-        content = { data, _ -> content(data) }
-    )
-}

@@ -111,14 +111,14 @@ fun ProjectUiPreview() {
 class FakeProjectComponent : ProjectComponent {
 
     override val projectState = Loadable(
+        loading = true,
         data = Project(
             name = "Replica",
             url = "https://github.com/aartikov/Replica",
             starsCount = 605,
             forksCount = 5,
             subscribersCount = 15
-        ),
-        loading = true
+        )
     )
 
     override fun onRefresh() = Unit

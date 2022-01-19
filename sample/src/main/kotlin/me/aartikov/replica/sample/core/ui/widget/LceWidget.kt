@@ -13,14 +13,14 @@ fun <T : Any> LceWidget(
     modifier: Modifier = Modifier,
     content: @Composable (data: T, refreshing: Boolean) -> Unit
 ) {
-    val (data, loading, error) = state
+    val (loading, data, error) = state
     when {
         data != null -> content(data, loading)
 
         loading -> FullscreenCircularProgress(modifier)
 
         error != null -> ErrorPlaceholder(
-            errorMessage = error.exception.errorMessage.resolve(),
+            errorMessage = error.firstException.errorMessage.resolve(),
             onRetryClick = onRetryClick,
             modifier = modifier
         )

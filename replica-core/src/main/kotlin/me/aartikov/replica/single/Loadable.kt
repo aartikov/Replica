@@ -1,17 +1,17 @@
 package me.aartikov.replica.single
 
-import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.CombinedLoadingError
 
 data class Loadable<out T : Any>(
-    val data: T? = null,
     val loading: Boolean = false,
-    val error: LoadingError? = null
+    val data: T? = null,
+    val error: CombinedLoadingError? = null
 )
 
 fun <T : Any, R : Any> Loadable<T>.mapData(transform: (T) -> R): Loadable<R> {
     return Loadable(
-        data = data?.let { transform(it) },
         loading = loading,
+        data = data?.let { transform(it) },
         error = error
     )
 }

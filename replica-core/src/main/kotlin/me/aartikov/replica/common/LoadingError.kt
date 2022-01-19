@@ -1,3 +1,3 @@
 package me.aartikov.replica.common
 
-class LoadingError(val exception: Exception)
+data class LoadingError(val exception: Exception)

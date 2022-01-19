@@ -7,8 +7,11 @@ import timber.log.Timber
 class ErrorHandler(
     private val messageService: MessageService
 ) {
-    fun handleError(exception: Exception) {
+    fun handleError(exception: Exception, showError: Boolean) {
         Timber.e(exception)
-        messageService.showMessage(MessageData(text = exception.errorMessage))
+
+        if (showError) {
+            messageService.showMessage(MessageData(text = exception.errorMessage))
+        }
     }
 }

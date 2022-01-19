@@ -7,17 +7,19 @@ import kotlinx.coroutines.launch
 
 fun safeRun(
     errorHandler: ErrorHandler,
+    showError: Boolean = true,
     block: () -> Unit
 ) {
     try {
         block()
     } catch (e: Exception) {
-        errorHandler.handleError(e)
+        errorHandler.handleError(e, showError)
     }
 }
 
 fun CoroutineScope.safeLaunch(
     errorHandler: ErrorHandler,
+    showError: Boolean = true,
     block: suspend () -> Unit
 ): Job {
     return launch {
@@ -26,7 +28,7 @@ fun CoroutineScope.safeLaunch(
         } catch (e: CancellationException) {
             // do nothing
         } catch (e: Exception) {
-            errorHandler.handleError(e)
+            errorHandler.handleError(e, showError)
         }
     }
 }

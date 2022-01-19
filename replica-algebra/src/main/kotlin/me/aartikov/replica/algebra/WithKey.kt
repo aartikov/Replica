@@ -7,7 +7,11 @@ import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
-internal class WithKeyReplica<K : Any, T : Any>(
+fun <K : Any, T : Any> KeyedReplica<K, T>.withKey(key: K): Replica<T> {
+    return WithKeyReplica(this, key)
+}
+
+private class WithKeyReplica<K : Any, T : Any>(
     private val keyedReplica: KeyedReplica<K, T>,
     private val key: K
 ) : Replica<T> {
@@ -38,8 +42,4 @@ internal class WithKeyReplica<K : Any, T : Any>(
     override suspend fun getRefreshedData(): T {
         return keyedReplica.getRefreshedData(key)
     }
-}
-
-fun <K : Any, T : Any> KeyedReplica<K, T>.withKey(key: K): Replica<T> {
-    return WithKeyReplica(this, key)
 }

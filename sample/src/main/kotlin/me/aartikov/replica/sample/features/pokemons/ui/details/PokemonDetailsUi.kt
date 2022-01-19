@@ -121,6 +121,7 @@ fun PokemonDetailsUiPreview() {
 class FakePokemonDetailsComponent : PokemonDetailsComponent {
 
     override val pokemonState = Loadable(
+        loading = true,
         data = DetailedPokemon(
             id = PokemonId("1"),
             name = "Bulbasaur",

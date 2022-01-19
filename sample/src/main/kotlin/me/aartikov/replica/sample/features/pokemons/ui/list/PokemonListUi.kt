@@ -164,6 +164,7 @@ class FakePokemonListComponent : PokemonListComponent {
     override val selectedTypeId = types[0].id
 
     override val pokemonsState = Loadable(
+        loading = true,
         data = listOf(
             Pokemon(
                 id = PokemonId("1"),

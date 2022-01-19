@@ -1,15 +1,54 @@
-package me.aartikov.replica.keyed.internal
+package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
-internal class KeyedReplicaObserverImpl<T : Any, K : Any>(
+fun <K : Any, T : Any> associate(replicaProvider: (K) -> Replica<T>): KeyedReplica<K, T> {
+    return AssociatedKeyedReplica(replicaProvider)
+}
+
+private class AssociatedKeyedReplica<K : Any, T : Any>(
+    private val replicaProvider: (K) -> Replica<T>
+) : KeyedReplica<K, T> {
+
+    override fun observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>,
+        key: StateFlow<K?>
+    ): ReplicaObserver<T> {
+        return AssociatedReplicaObserver(
+            observerCoroutineScope,
+            observerActive,
+            key,
+            replicaProvider
+        )
+    }
+
+    override fun refresh(key: K) {
+        replicaProvider(key).refresh()
+    }
+
+    override fun revalidate(key: K) {
+        replicaProvider(key).revalidate()
+    }
+
+    override suspend fun getData(key: K): T {
+        return replicaProvider(key).getData()
+    }
+
+    override suspend fun getRefreshedData(key: K): T {
+        return replicaProvider(key).getRefreshedData()
+    }
+}
+
+private class AssociatedReplicaObserver<T : Any, K : Any>(
     private val coroutineScope: CoroutineScope,
     private val activeFlow: StateFlow<Boolean>,
     private val key: StateFlow<K?>,
