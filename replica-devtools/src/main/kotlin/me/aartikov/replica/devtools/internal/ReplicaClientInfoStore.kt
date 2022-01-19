@@ -1,11 +1,10 @@
 package me.aartikov.replica.devtools.internal
 
+import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
-import me.aartikov.replica.keyed.KeyedReplicaId
 import me.aartikov.replica.keyed.KeyedReplicaState
 import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.ReplicaId
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 
@@ -34,8 +33,8 @@ class ReplicaClientInfoStore(
         onInfoChanged(info)
     }
 
-    fun addChildReplica(replica: PhysicalReplica<*>, parentId: KeyedReplicaId) {
-        info.keyedReplicaInfos[parentId]?.childInfos?.put(
+    fun addKeyedReplicaChild(replica: PhysicalReplica<*>, keyedReplicaId: ReplicaId) {
+        info.keyedReplicaInfos[keyedReplicaId]?.childInfos?.put(
             replica.id,
             ReplicaInfo(
                 id = replica.id,
@@ -52,18 +51,22 @@ class ReplicaClientInfoStore(
         onInfoChanged(info)
     }
 
-    fun updateKeyedReplicaState(id: KeyedReplicaId, state: KeyedReplicaState) {
+    fun updateKeyedReplicaState(id: ReplicaId, state: KeyedReplicaState) {
         info.keyedReplicaInfos[id]?.state = state
         onInfoChanged(info)
     }
 
-    fun updateChildReplicaState(id: ReplicaId, parentId: KeyedReplicaId, state: ReplicaState<*>) {
-        info.keyedReplicaInfos[parentId]?.childInfos?.get(id)?.state = state
+    fun updateKeyedReplicaChildState(
+        childId: ReplicaId,
+        parentId: ReplicaId,
+        state: ReplicaState<*>
+    ) {
+        info.keyedReplicaInfos[parentId]?.childInfos?.get(childId)?.state = state
         onInfoChanged(info)
     }
 
-    fun removeChildReplica(id: ReplicaId, parentId: KeyedReplicaId) {
-        info.keyedReplicaInfos[parentId]?.childInfos?.remove(id)
+    fun removeKeyedReplicaChild(childId: ReplicaId, parentId: ReplicaId) {
+        info.keyedReplicaInfos[parentId]?.childInfos?.remove(childId)
         onInfoChanged(info)
     }
 }

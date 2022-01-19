@@ -1,4 +1,4 @@
-package me.aartikov.replica.single
+package me.aartikov.replica.common
 
 enum class InvalidationMode {
     DontRefresh, RefreshIfHasObservers, RefreshIfHasActiveObservers, RefreshAlways

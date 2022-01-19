@@ -1,4 +1,4 @@
-package me.aartikov.replica.utils
+package me.aartikov.replica.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-internal fun <T> Flow<T>.toActivableFlow(
+fun <T> Flow<T>.toActivableFlow(
     coroutineScope: CoroutineScope,
     activeFlow: Flow<Boolean>
 ): Flow<T> {

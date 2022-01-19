@@ -1,5 +1,8 @@
 package me.aartikov.replica.single
 
+import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ObservingState
+
 data class ReplicaState<T : Any>(
     val data: ReplicaData<T>?,
     val loading: Boolean,

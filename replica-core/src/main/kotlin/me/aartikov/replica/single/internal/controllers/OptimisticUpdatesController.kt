@@ -3,7 +3,7 @@ package me.aartikov.replica.single.internal.controllers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import me.aartikov.replica.single.OptimisticUpdate
+import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.time.TimeProvider

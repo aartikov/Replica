@@ -5,8 +5,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
-import me.aartikov.replica.single.LoadingError
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 

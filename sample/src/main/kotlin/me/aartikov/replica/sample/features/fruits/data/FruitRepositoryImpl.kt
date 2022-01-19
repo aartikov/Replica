@@ -1,12 +1,12 @@
 package me.aartikov.replica.sample.features.fruits.data
 
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.common.OptimisticUpdate
+import me.aartikov.replica.common.withOptimisticUpdate
 import me.aartikov.replica.sample.features.fruits.domain.Fruit
 import me.aartikov.replica.sample.features.fruits.domain.FruitId
-import me.aartikov.replica.single.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
-import me.aartikov.replica.single.withOptimisticUpdate
 import kotlin.time.Duration.Companion.seconds
 
 class FruitRepositoryImpl(

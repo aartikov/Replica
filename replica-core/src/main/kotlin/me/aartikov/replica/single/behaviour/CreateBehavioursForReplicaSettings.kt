@@ -1,5 +1,6 @@
 package me.aartikov.replica.single.behaviour
 
+import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.standard.*

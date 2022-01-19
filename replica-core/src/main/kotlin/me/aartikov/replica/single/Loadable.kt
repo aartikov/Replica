@@ -1,5 +1,7 @@
 package me.aartikov.replica.single
 
+import me.aartikov.replica.common.LoadingError
+
 data class Loadable<out T : Any>(
     val data: T? = null,
     val loading: Boolean = false,

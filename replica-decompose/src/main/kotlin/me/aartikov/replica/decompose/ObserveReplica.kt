@@ -2,8 +2,8 @@ package me.aartikov.replica.decompose
 
 import androidx.compose.runtime.State
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
-import me.aartikov.replica.single.LoadingError
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.observe
 

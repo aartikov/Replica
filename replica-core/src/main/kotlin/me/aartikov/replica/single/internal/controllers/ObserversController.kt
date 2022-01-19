@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import me.aartikov.replica.single.ObservingState
-import me.aartikov.replica.single.ObservingTime
+import me.aartikov.replica.common.ObservingState
+import me.aartikov.replica.common.ObservingTime
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.time.TimeProvider

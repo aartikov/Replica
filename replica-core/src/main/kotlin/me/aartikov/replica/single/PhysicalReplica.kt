@@ -3,6 +3,9 @@ package me.aartikov.replica.single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.InvalidationMode
+import me.aartikov.replica.common.OptimisticUpdate
+import me.aartikov.replica.common.ReplicaId
 
 interface PhysicalReplica<T : Any> : Replica<T> {
 

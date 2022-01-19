@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import me.aartikov.replica.single.ObservingStatus
+import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState

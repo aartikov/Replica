@@ -3,14 +3,16 @@ package me.aartikov.replica.keyed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import me.aartikov.replica.single.InvalidationMode
-import me.aartikov.replica.single.OptimisticUpdate
+import me.aartikov.replica.common.InvalidationMode
+import me.aartikov.replica.common.OptimisticUpdate
+import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 
 interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
-    val id: KeyedReplicaId
+    val id: ReplicaId
 
     val name: String
 

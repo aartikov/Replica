@@ -4,10 +4,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.ReplicaClientEvent
+import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.devtools.ReplicaDevTools
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
-import me.aartikov.replica.keyed.KeyedReplicaId
 import me.aartikov.replica.single.PhysicalReplica
 
 internal class ReplicaDevToolsImpl(
@@ -59,27 +59,27 @@ internal class ReplicaDevToolsImpl(
     }
 
     private fun handleKeyedReplicaEvent(
-        keyedReplicaId: KeyedReplicaId,
+        keyedReplicaId: ReplicaId,
         event: KeyedReplicaEvent<*, *>
     ) {
         when (event) {
             is KeyedReplicaEvent.ReplicaCreated -> {
-                store.addChildReplica(event.replica, keyedReplicaId)
-                launchChildReplicaProcessing(event.replica, keyedReplicaId)
+                store.addKeyedReplicaChild(event.replica, keyedReplicaId)
+                launchKeyedReplicaChildProcessing(event.replica, keyedReplicaId)
             }
             is KeyedReplicaEvent.ReplicaRemoved -> {
-                store.removeChildReplica(event.replicaId, keyedReplicaId)
+                store.removeKeyedReplicaChild(event.replicaId, keyedReplicaId)
             }
         }
     }
 
-    private fun launchChildReplicaProcessing(
+    private fun launchKeyedReplicaChildProcessing(
         replica: PhysicalReplica<*>,
-        parentId: KeyedReplicaId
+        parentId: ReplicaId
     ) {
         replica.stateFlow
             .onEach { state ->
-                store.updateChildReplicaState(replica.id, parentId, state)
+                store.updateKeyedReplicaChildState(replica.id, parentId, state)
             }
             .launchIn(replica.coroutineScope)
     }

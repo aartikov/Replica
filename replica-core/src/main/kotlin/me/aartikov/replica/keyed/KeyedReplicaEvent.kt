@@ -1,7 +1,7 @@
 package me.aartikov.replica.keyed
 
+import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.single.PhysicalReplica
-import me.aartikov.replica.single.ReplicaId
 
 sealed interface KeyedReplicaEvent<K : Any, T : Any> {
 

@@ -1,9 +1,10 @@
-package me.aartikov.replica.single
+package me.aartikov.replica.common
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.single.PhysicalReplica
 
 fun interface OptimisticUpdate<T : Any> {
     fun apply(data: T): T

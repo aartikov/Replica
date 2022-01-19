@@ -1,8 +1,8 @@
 package me.aartikov.replica.client
 
+import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.keyed.cancelAll
 import me.aartikov.replica.keyed.invalidateAll
-import me.aartikov.replica.single.InvalidationMode
 
 suspend fun ReplicaClient.cancelAll() {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {

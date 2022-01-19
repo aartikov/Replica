@@ -3,6 +3,9 @@ package me.aartikov.replica.single.internal
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import me.aartikov.replica.common.InvalidationMode
+import me.aartikov.replica.common.OptimisticUpdate
+import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import me.aartikov.replica.single.internal.controllers.*

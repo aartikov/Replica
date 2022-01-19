@@ -2,6 +2,7 @@ package me.aartikov.replica.single
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.LoadingError
 
 interface ReplicaObserver<out T : Any> {
 

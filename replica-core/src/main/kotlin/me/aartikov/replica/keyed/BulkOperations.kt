@@ -1,6 +1,6 @@
 package me.aartikov.replica.keyed
 
-import me.aartikov.replica.single.InvalidationMode
+import me.aartikov.replica.common.InvalidationMode
 
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.cancelAll() {
     onEachReplica {

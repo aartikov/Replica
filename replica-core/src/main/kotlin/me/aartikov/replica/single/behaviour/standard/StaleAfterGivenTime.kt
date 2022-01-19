@@ -3,7 +3,7 @@ package me.aartikov.replica.single.behaviour.standard
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import me.aartikov.replica.single.InvalidationMode
+import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour

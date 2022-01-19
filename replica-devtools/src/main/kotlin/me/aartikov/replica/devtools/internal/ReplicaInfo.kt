@@ -1,6 +1,6 @@
 package me.aartikov.replica.devtools.internal
 
-import me.aartikov.replica.single.ReplicaId
+import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.ReplicaState
 

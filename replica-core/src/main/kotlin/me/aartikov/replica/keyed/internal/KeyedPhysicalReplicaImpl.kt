@@ -5,11 +5,21 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
-import me.aartikov.replica.keyed.*
+import me.aartikov.replica.common.InvalidationMode
+import me.aartikov.replica.common.OptimisticUpdate
+import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaTag
+import me.aartikov.replica.keyed.KeyedPhysicalReplica
+import me.aartikov.replica.keyed.KeyedReplicaEvent
+import me.aartikov.replica.keyed.KeyedReplicaSettings
+import me.aartikov.replica.keyed.KeyedReplicaState
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.keyed.internal.controllers.ChildRemovingController
 import me.aartikov.replica.keyed.internal.controllers.ObserverCountController
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaObserver
+import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.currentState
 import java.util.concurrent.ConcurrentHashMap
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
@@ -21,7 +31,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     private val replicaFactory: (CoroutineScope, K) -> PhysicalReplica<T>
 ) : KeyedPhysicalReplica<K, T> {
 
-    override val id: KeyedReplicaId = KeyedReplicaId.random()
+    override val id: ReplicaId = ReplicaId.random()
 
     private val _stateFlow = MutableStateFlow(KeyedReplicaState.Empty)
     override val stateFlow get() = _stateFlow.asStateFlow()

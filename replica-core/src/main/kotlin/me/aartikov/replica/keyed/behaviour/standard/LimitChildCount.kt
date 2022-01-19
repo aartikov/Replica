@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.keyed.ClearPolicy
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.keyed.currentState
-import me.aartikov.replica.single.ObservingStatus
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 import kotlin.math.max
