@@ -15,8 +15,10 @@ kotlin {
             resources.srcDir('src/main/resources')
 
             dependencies {
+                implementation project(':replica-devtools-dto')
                 implementation compose.web.core
                 implementation compose.runtime
+                implementation libs.serialization.json
             }
         }
     }

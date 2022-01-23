@@ -24,6 +24,8 @@ android {
 
 dependencies {
     api project(':replica-core')
+    implementation project(':replica-devtools-dto')
     api libs.coroutines.core
+    implementation libs.serialization.json
     testImplementation libs.junit
 }
