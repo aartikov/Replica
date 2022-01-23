@@ -9,14 +9,15 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
+        maven {
+            url "https://maven.pkg.jetbrains.space/public/p/compose/dev"
+        }
     }
     dependencies {
         classpath libs.kotlin.plugin
         classpath libs.android.plugin
         classpath libs.serialization.plugin
+        classpath libs.jetbrains.compose.plugin
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
