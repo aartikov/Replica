@@ -6,12 +6,19 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
 fun <T : Any, R : Any> Replica<T>.map(transform: (T) -> R): Replica<R> {
     return MappedReplica(this, transform)
+}
+
+fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (T) -> R): KeyedReplica<K, R> {
+    return associate { key ->
+        withKey(key).map(transform)
+    }
 }
 
 private class MappedReplica<T : Any, R : Any>(
