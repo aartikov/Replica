@@ -25,7 +25,7 @@ val coreModule = module {
     single(named(BaseUrl.RandomData)) { NetworkApiFactory(BaseUrl.RandomData.url) }
     single<NetworkConnectivityProvider> { AndroidNetworkConnectivityProvider(androidApplication()) }
     single { ReplicaClient(get()) }
-    single { ReplicaDevTools(get()) }
+    single { ReplicaDevTools(get(), androidApplication()) }
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }

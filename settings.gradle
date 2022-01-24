@@ -85,7 +85,8 @@ dependencyResolutionManagement {
             version('ktor', '1.6.7')
             alias('ktor-core').to('io.ktor','ktor-server-core').versionRef('ktor')
             alias('ktor-netty').to('io.ktor','ktor-server-netty').versionRef('ktor')
-            bundle('ktor', ['ktor-core', 'ktor-netty'])
+            alias('ktor-websockets').to('io.ktor','ktor-websockets').versionRef('ktor')
+            bundle('ktor', ['ktor-core', 'ktor-netty', 'ktor-websockets'])
         }
     }
 }

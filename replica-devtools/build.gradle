@@ -31,4 +31,5 @@ dependencies {
 
     implementation libs.ktor.core
     implementation libs.ktor.netty
+    implementation libs.ktor.websockets
 }
