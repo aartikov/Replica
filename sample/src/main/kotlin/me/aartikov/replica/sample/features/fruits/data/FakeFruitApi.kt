@@ -4,6 +4,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.network.NetworkConnectivityProvider
+import me.aartikov.replica.network.connected
 import me.aartikov.replica.sample.core.domain.NoInternetException
 import me.aartikov.replica.sample.core.domain.ServerException
 
@@ -52,7 +53,7 @@ class FakeFruitApi(
     }
 
     private suspend fun emulateNetworkError() {
-        if (!networkConnectivityProvider.connected.value) {
+        if (!networkConnectivityProvider.connected) {
             delay(100)
             throw NoInternetException(cause = null)
         }

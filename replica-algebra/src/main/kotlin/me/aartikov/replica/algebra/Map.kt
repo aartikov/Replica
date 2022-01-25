@@ -6,12 +6,19 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
 fun <T : Any, R : Any> Replica<T>.map(transform: (T) -> R): Replica<R> {
     return MappedReplica(this, transform)
+}
+
+fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (T) -> R): KeyedReplica<K, R> {
+    return associate { key ->
+        withKey(key).map(transform)
+    }
 }
 
 private class MappedReplica<T : Any, R : Any>(
@@ -48,6 +55,12 @@ private class MappedReplica<T : Any, R : Any>(
     }
 }
 
+private class MappingResult<T : Any, R : Any>(
+    val originalData: T?,
+    val data: R?,
+    val error: Exception?
+)
+
 private class MappedReplicaObserver<T : Any, R : Any>(
     private val coroutineScope: CoroutineScope,
     activeFlow: StateFlow<Boolean>,
@@ -74,32 +87,44 @@ private class MappedReplicaObserver<T : Any, R : Any>(
     }
 
     private fun launchStateObserving() {
+        var cachedMappingResult: MappingResult<T, R>? = null
         stateObservingJob = originalObserver.stateFlow
             .onEach { state ->
-                var mappedData: R? = null
-                var mappingError: Exception? = null
-
-                try {
-                    mappedData = state.data?.let(transform)
-                } catch (e: Exception) {
-                    mappingError = e
-                }
+                val mappingResult = mapState(state, cachedMappingResult)
+                cachedMappingResult = mappingResult
 
                 _stateFlow.value = Loadable(
                     loading = state.loading,
-                    data = mappedData,
-                    error = if (mappingError != null) {
-                        CombinedLoadingError(mappingError)
+                    data = mappingResult.data,
+                    error = if (mappingResult.error != null) {
+                        CombinedLoadingError(mappingResult.error)
                     } else {
                         state.error
                     }
                 )
 
-                if (mappingError != null && !state.loading) {
-                    _loadingErrorFlow.emit(LoadingError(mappingError))
+                if (mappingResult.error != null && !state.loading) {
+                    _loadingErrorFlow.emit(LoadingError(mappingResult.error))
                 }
             }
             .launchIn(coroutineScope)
+    }
+
+    private fun mapState(
+        state: Loadable<T>,
+        cachedResult: MappingResult<T, R>?
+    ): MappingResult<T, R> {
+        val originalData = state.data
+        if (cachedResult != null && originalData == cachedResult.originalData) {
+            return cachedResult
+        }
+
+        return try {
+            val mappedData = originalData?.let(transform)
+            MappingResult(originalData, mappedData, null)
+        } catch (e: Exception) {
+            MappingResult(originalData, null, e)
+        }
     }
 
     private fun launchLoadingErrorsObserving() {

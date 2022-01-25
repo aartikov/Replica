@@ -186,6 +186,12 @@ private class CombinedReplica<R : Any>(
     }
 }
 
+private class CombiningResult<R : Any>(
+    val originalData: List<Any?>,
+    val data: R?,
+    val error: Exception?
+)
+
 private class CombinedReplicaObserver<R : Any>(
     private val coroutineScope: CoroutineScope,
     activeFlow: StateFlow<Boolean>,
@@ -215,32 +221,21 @@ private class CombinedReplicaObserver<R : Any>(
     }
 
     private fun launchStateObserving() {
+        var cachedCombiningResult: CombiningResult<R>? = null
         stateObservingJob = combine(
             originalObservers.map { it.stateFlow },
             transform = { it.asList() }
         )
             .onEach { states ->
+                val combiningResult = combineStates(states, eager, cachedCombiningResult)
+                cachedCombiningResult = combiningResult
                 val combinedLoading = states.any { it.loading }
-                var combinedData: R? = null
-                var combiningError: Exception? = null
-
-                try {
-                    combinedData = if (eager) {
-                        val dataList = states.map { it.data }
-                        if (dataList.any { it != null }) transform(dataList) else null
-                    } else {
-                        val dataList = states.mapNotNull { it.data }
-                        if (dataList.size == states.size) transform(dataList) else null
-                    }
-                } catch (e: Exception) {
-                    combiningError = e
-                }
 
                 _stateFlow.value = Loadable(
                     loading = combinedLoading,
-                    data = combinedData,
-                    error = if (combiningError != null) {
-                        CombinedLoadingError(combiningError)
+                    data = combiningResult.data,
+                    error = if (combiningResult.error != null) {
+                        CombinedLoadingError(combiningResult.error)
                     } else {
                         val exceptions = states.mapNotNull { it.error }.flatMap { it.exceptions }
                         if (exceptions.isNotEmpty()) {
@@ -251,11 +246,38 @@ private class CombinedReplicaObserver<R : Any>(
                     }
                 )
 
-                if (combiningError != null && !combinedLoading) {
-                    _loadingErrorFlow.emit(LoadingError(combiningError))
+                if (combiningResult.error != null && !combinedLoading) {
+                    _loadingErrorFlow.emit(LoadingError(combiningResult.error))
                 }
             }
             .launchIn(coroutineScope)
+    }
+
+    private fun combineStates(
+        states: List<Loadable<Any>>,
+        eager: Boolean,
+        cachedResult: CombiningResult<R>?
+    ): CombiningResult<R> {
+        val originalData = if (eager) {
+            states.map { it.data }
+        } else {
+            states.mapNotNull { it.data }
+        }
+
+        if (originalData == cachedResult?.originalData) {
+            return cachedResult
+        }
+
+        return try {
+            val combinedData = if (eager) {
+                if (originalData.any { it != null }) transform(originalData) else null
+            } else {
+                if (originalData.size == states.size) transform(originalData) else null
+            }
+            CombiningResult(originalData, combinedData, null)
+        } catch (e: Exception) {
+            CombiningResult(originalData, null, e)
+        }
     }
 
     private fun launchLoadingErrorsObserving() {

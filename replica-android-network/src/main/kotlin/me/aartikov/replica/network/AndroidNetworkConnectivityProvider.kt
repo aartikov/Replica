@@ -28,8 +28,8 @@ class AndroidNetworkConnectivityProvider(
 
     private val availableNetworks = mutableSetOf<Network>()
 
-    private val _connected = MutableStateFlow(isConnected())
-    override val connected: StateFlow<Boolean> get() = _connected
+    private val _connectedFlow = MutableStateFlow(isConnected())
+    override val connectedFlow: StateFlow<Boolean> get() = _connectedFlow
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -74,13 +74,13 @@ class AndroidNetworkConnectivityProvider(
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
-    private val setDisconnectedRunnable = Runnable { _connected.value = false }
+    private val setDisconnectedRunnable = Runnable { _connectedFlow.value = false }
 
     private fun setConnected(value: Boolean, debounceIfDisconnected: Boolean) {
         handler.removeCallbacks(setDisconnectedRunnable)
 
         if (value || !debounceIfDisconnected) {
-            _connected.value = value
+            _connectedFlow.value = value
         } else {
             handler.postDelayed(setDisconnectedRunnable, disconnectionDebounce.inWholeMilliseconds)
         }

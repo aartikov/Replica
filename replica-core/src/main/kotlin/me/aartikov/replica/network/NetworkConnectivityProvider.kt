@@ -3,5 +3,7 @@ package me.aartikov.replica.network
 import kotlinx.coroutines.flow.StateFlow
 
 interface NetworkConnectivityProvider {
-    val connected: StateFlow<Boolean>
+    val connectedFlow: StateFlow<Boolean>
 }
+
+val NetworkConnectivityProvider.connected: Boolean get() = connectedFlow.value
