@@ -2,10 +2,12 @@ package me.aartikov.replica.devtools.internal
 
 import android.content.Context
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.devtools.DevToolsSettings
 import me.aartikov.replica.devtools.ReplicaDevTools
 
 internal class ReplicaDevToolsImpl(
     replicaClient: ReplicaClient,
+    settings: DevToolsSettings,
     context: Context
 ) : ReplicaDevTools {
 
@@ -16,6 +18,7 @@ internal class ReplicaDevToolsImpl(
     private val webServer = WebServer(
         coroutineContext = replicaClient.coroutineScope.coroutineContext,
         ipAddressProvider = IpAddressProvider(context),
+        port = settings.port,
         dtoStore = store
     )
 

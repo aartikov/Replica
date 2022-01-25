@@ -9,6 +9,10 @@ interface ReplicaDevTools {
     fun launch()
 }
 
-fun ReplicaDevTools(replicaClient: ReplicaClient, context: Context): ReplicaDevTools {
-    return ReplicaDevToolsImpl(replicaClient, context)
+fun ReplicaDevTools(
+    replicaClient: ReplicaClient,
+    settings: DevToolsSettings,
+    context: Context
+): ReplicaDevTools {
+    return ReplicaDevToolsImpl(replicaClient, settings, context)
 }

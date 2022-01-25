@@ -25,6 +25,7 @@ import kotlin.coroutines.CoroutineContext
 class WebServer(
     coroutineContext: CoroutineContext,
     private val ipAddressProvider: IpAddressProvider,
+    private val port: Int,
     private val dtoStore: DtoStore
 ) {
     private val sessions = Collections.synchronizedSet<WebSocketSession?>(LinkedHashSet())
@@ -32,11 +33,11 @@ class WebServer(
 
     private val coroutineScope = CoroutineScope(coroutineContext + Dispatchers.IO)
 
-    //TODO Установка порта
+    //TODO Установка порта, остановка сервера
     private val server by lazy {
         embeddedServer(
             factory = Netty,
-            port = 8080,
+            port = port,
             host = ipAddressProvider.getLocalIpAddress()
         ) {
             install(WebSockets)
