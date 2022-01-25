@@ -1,16 +1,14 @@
 package me.aartikov.replica.devtools.internal
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.text.format.Formatter
 
-class IpAddressProvider(context: Context) {
-
-    @SuppressLint("WifiManagerPotentialLeak")
-    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+class IpAddressProvider(private val context: Context) {
 
     fun getLocalIpAddress(): String {
+        val wifiManager =
+            context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
     }
 }

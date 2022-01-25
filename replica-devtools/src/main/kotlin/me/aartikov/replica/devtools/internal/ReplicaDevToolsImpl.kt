@@ -16,7 +16,7 @@ internal class ReplicaDevToolsImpl(
         onDtoChanged = { logger.log(it) }
     )
     private val webServer = WebServer(
-        coroutineContext = replicaClient.coroutineScope.coroutineContext,
+        coroutineScope = replicaClient.coroutineScope,
         ipAddressProvider = IpAddressProvider(context),
         port = settings.port,
         dtoStore = store
@@ -24,12 +24,11 @@ internal class ReplicaDevToolsImpl(
 
     private val clientListener = ReplicaClientListener(
         replicaClient = replicaClient,
-        store = store,
-        webServer = webServer
+        store = store
     )
 
     override fun launch() {
-        webServer.start()
         clientListener.launch()
+        webServer.launch()
     }
 }

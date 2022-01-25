@@ -1,7 +1,10 @@
 package me.aartikov.replica.devtools.internal
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import me.aartikov.replica.common.ReplicaId
-import me.aartikov.replica.devtools.dto.ReplicaClientDto
+import me.aartikov.replica.devtools.dto.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaState
 import me.aartikov.replica.single.PhysicalReplica
@@ -13,16 +16,23 @@ class DtoStore(
 
     private val dto = ReplicaClientDto()
 
+    private val _eventFlow = MutableSharedFlow<DevToolsEventDto>(extraBufferCapacity = 1000)
+    val eventFlow: Flow<DevToolsEventDto> = _eventFlow.asSharedFlow()
+
     val lastState
         get() = dto
 
     fun addReplica(replica: PhysicalReplica<*>) {
-        dto.replicas[replica.id.value] = replica.toDto()
+        val dtoReplica = replica.toDto()
+        dto.replicas[replica.id.value] = dtoReplica
+        _eventFlow.tryEmit(ReplicaCreated(dtoReplica))
         onDtoChanged(dto)
     }
 
     fun addKeyedReplica(keyedReplica: KeyedPhysicalReplica<*, *>) {
-        dto.keyedReplicas[keyedReplica.id.value] = keyedReplica.toDto()
+        val dtoReplica = keyedReplica.toDto()
+        dto.keyedReplicas[keyedReplica.id.value] = dtoReplica
+        _eventFlow.tryEmit(KeyedReplicaCreated(dtoReplica))
         onDtoChanged(dto)
     }
 
@@ -35,12 +45,16 @@ class DtoStore(
     }
 
     fun updateReplicaState(replicaId: ReplicaId, state: ReplicaState<*>) {
-        dto.replicas[replicaId.value]?.state = state.toDto()
+        val dtoState = state.toDto()
+        dto.replicas[replicaId.value]?.state = dtoState
+        _eventFlow.tryEmit(ReplicaUpdated(replicaId.value, dtoState))
         onDtoChanged(dto)
     }
 
     fun updateKeyedReplicaState(keyedReplicaId: ReplicaId, state: KeyedReplicaState) {
-        dto.keyedReplicas[keyedReplicaId.value]?.state = state.toDto()
+        val dtoState = state.toDto()
+        dto.keyedReplicas[keyedReplicaId.value]?.state = dtoState
+        _eventFlow.tryEmit(KeyedReplicaUpdated(keyedReplicaId.value, dtoState))
         onDtoChanged(dto)
     }
 
@@ -49,8 +63,16 @@ class DtoStore(
         childReplicaId: ReplicaId,
         state: ReplicaState<*>
     ) {
+        val dtoState = state.toDto()
         dto.keyedReplicas[keyedReplicaId.value]
-            ?.childReplicas?.get(childReplicaId.value)?.state = state.toDto()
+            ?.childReplicas?.get(childReplicaId.value)?.state = dtoState
+        _eventFlow.tryEmit(
+            KeyedReplicaChildUpdated(
+                keyedReplicaId.value,
+                childReplicaId.value,
+                dtoState
+            )
+        )
         onDtoChanged(dto)
     }
 
