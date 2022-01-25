@@ -12,7 +12,7 @@ interface ReplicaDevTools {
 fun ReplicaDevTools(
     replicaClient: ReplicaClient,
     settings: DevToolsSettings,
-    context: Context
+    applicationContext: Context
 ): ReplicaDevTools {
-    return ReplicaDevToolsImpl(replicaClient, settings, context)
+    return ReplicaDevToolsImpl(replicaClient, settings, applicationContext)
 }
