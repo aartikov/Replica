@@ -9,9 +9,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.aartikov.replica.decompose.componentCoroutineScope
 import me.aartikov.replica.sample.core.ui.message.MessageData
 import me.aartikov.replica.sample.core.ui.message.MessageService
+import me.aartikov.replica.sample.core.ui.utils.componentCoroutineScope
 
 class RealMessageComponent(
     componentContext: ComponentContext,

@@ -7,8 +7,8 @@ import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.push
 import com.arkivanov.decompose.router.router
 import kotlinx.parcelize.Parcelize
-import me.aartikov.replica.decompose.toComposeState
 import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ui.utils.toComposeState
 import me.aartikov.replica.sample.features.pokemons.createPokemonDetailsComponent
 import me.aartikov.replica.sample.features.pokemons.createPokemonListComponent
 import me.aartikov.replica.sample.features.pokemons.domain.PokemonId
