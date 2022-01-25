@@ -1,0 +1,16 @@
+public final class me/aartikov/replica/decompose/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class me/aartikov/replica/decompose/ObserveKeyedReplicaKt {
+	public static final fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Z)Landroidx/compose/runtime/State;
+	public static synthetic fun observe$default (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ZILjava/lang/Object;)Landroidx/compose/runtime/State;
+}
+
+public final class me/aartikov/replica/decompose/ObserveReplicaKt {
+	public static final fun observe (Lme/aartikov/replica/single/Replica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;)Landroidx/compose/runtime/State;
+}
+
