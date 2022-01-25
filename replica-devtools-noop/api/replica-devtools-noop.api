@@ -1,0 +1,15 @@
+public final class me/aartikov/replica/devtools/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public abstract interface class me/aartikov/replica/devtools/ReplicaDevTools {
+	public abstract fun launch ()V
+}
+
+public final class me/aartikov/replica/devtools/ReplicaDevToolsKt {
+	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;)Lme/aartikov/replica/devtools/ReplicaDevTools;
+}
+
