@@ -14,33 +14,34 @@ import io.ktor.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
-import me.aartikov.replica.devtools.dto.ReplicaClientDto
+import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.devtools.dto.*
 import java.util.*
 import kotlin.collections.LinkedHashSet
+import kotlin.coroutines.CoroutineContext
 
-internal class WebServer(
-    private val coroutineScope: CoroutineScope,
-    private val ipAddressProvider: IpAddressProvider
+class WebServer(
+    coroutineContext: CoroutineContext,
+    private val ipAddressProvider: IpAddressProvider,
+    private val dtoStore: DtoStore
 ) {
-
-    companion object {
-        private const val TAG = "Replica WebServer"
-    }
-
     private val sessions = Collections.synchronizedSet<WebSocketSession?>(LinkedHashSet())
+    private val json = Json
+
+    private val coroutineScope = CoroutineScope(coroutineContext + Dispatchers.IO)
 
     //TODO Установка порта
     private val server by lazy {
-        embeddedServer(Netty, port = 8080, host = ipAddressProvider.getLocalIpAddress()) {
-            install(WebSockets) {
-            }
+        embeddedServer(
+            factory = Netty,
+            port = 8080,
+            host = ipAddressProvider.getLocalIpAddress()
+        ) {
+            install(WebSockets)
             routing {
-                webSocket("/ws") {
-                    sessions += this
-                    this.send(Frame.Text("Hello"))
-                }
+                webSocket("/ws") { processNewSession(this) }
                 get("/") {
                     call.respondText("Hello to Replica dev tool!")
                 }
@@ -48,13 +49,38 @@ internal class WebServer(
         }
     }
 
-    fun start() = coroutineScope.launch(Dispatchers.IO) {
+    fun start() = coroutineScope.launch {
         server.start(true)
     }
 
-    fun sendEvent(dto: ReplicaClientDto) = coroutineScope.launch(Dispatchers.IO) {
-        sessions.forEach { session ->
-            session.send(Frame.Text(Json.encodeToString(dto)))
-        }
+    fun sendUpdateReplicaEvent(id: ReplicaId, dto: ReplicaStateDto) {
+        broadcast(frame(ReplicaEventDto.serializer(), ReplicaUpdated(id.value, dto)))
+    }
+
+    fun sendUpdateKeyedReplicaEvent(id: ReplicaId, dto: KeyedReplicaStateDto) {
+        broadcast(frame(ReplicaEventDto.serializer(), KeyedReplicaUpdated(id.value, dto)))
+    }
+
+    fun sendReplicaCreatedEvent(dto: ReplicaDto) {
+        broadcast(frame(ReplicaEventDto.serializer(), ReplicaCreated(dto)))
+    }
+
+    fun sendKeyedReplicaCreatedEvent(dto: KeyedReplicaDto) {
+        broadcast(frame(ReplicaEventDto.serializer(), KeyedReplicaCreated(dto)))
+    }
+
+    private fun broadcast(frame: Frame) = coroutineScope.launch {
+        sessions.forEach { session -> session.send(frame) }
+    }
+
+    private fun <T> frame(serializer: SerializationStrategy<T>, value: T): Frame.Text {
+        return Frame.Text(json.encodeToString(serializer, value))
+    }
+
+    private suspend fun processNewSession(session: WebSocketSession) {
+        sessions += session
+        val frame = frame(ReplicaEventDto.serializer(), ReplaceAll(dtoStore.lastState))
+        session.send(frame)
     }
 }
+

@@ -13,6 +13,9 @@ class DtoStore(
 
     private val dto = ReplicaClientDto()
 
+    val lastState
+        get() = dto
+
     fun addReplica(replica: PhysicalReplica<*>) {
         dto.replicas[replica.id.value] = replica.toDto()
         onDtoChanged(dto)

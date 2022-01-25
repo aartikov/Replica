@@ -1,7 +1,6 @@
 package me.aartikov.replica.devtools.internal
 
 import android.content.Context
-import kotlinx.coroutines.Job
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.devtools.ReplicaDevTools
 
@@ -12,21 +11,22 @@ internal class ReplicaDevToolsImpl(
 
     private val logger = Logger()
     private val store = DtoStore(
-        onDtoChanged = {
-            logger.log(it)
-            webServer.sendEvent(it)
-        }
+        onDtoChanged = { logger.log(it) }
     )
     private val webServer = WebServer(
-        coroutineScope = replicaClient.coroutineScope,
-        ipAddressProvider = IpAddressProvider(context)
+        coroutineContext = replicaClient.coroutineScope.coroutineContext,
+        ipAddressProvider = IpAddressProvider(context),
+        dtoStore = store
     )
 
-    private var webServerJob: Job? = null
-    private val clientListener = ReplicaClientListener(replicaClient, store)
+    private val clientListener = ReplicaClientListener(
+        replicaClient = replicaClient,
+        store = store,
+        webServer = webServer
+    )
 
     override fun launch() {
-        webServerJob = webServer.start()
+        webServer.start()
         clientListener.launch()
     }
 }

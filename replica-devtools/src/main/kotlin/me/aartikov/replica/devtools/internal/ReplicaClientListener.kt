@@ -11,7 +11,8 @@ import me.aartikov.replica.single.PhysicalReplica
 
 class ReplicaClientListener(
     private val replicaClient: ReplicaClient,
-    private val store: DtoStore
+    private val store: DtoStore,
+    private val webServer: WebServer
 ) {
 
     fun launch() {
@@ -24,10 +25,12 @@ class ReplicaClientListener(
         when (event) {
             is ReplicaClientEvent.ReplicaCreated -> {
                 store.addReplica(event.replica)
+                webServer.sendReplicaCreatedEvent(event.replica.toDto())
                 launchReplicaProcessing(event.replica)
             }
             is ReplicaClientEvent.KeyedReplicaCreated -> {
                 store.addKeyedReplica(event.keyedReplica)
+                webServer.sendKeyedReplicaCreatedEvent(event.keyedReplica.toDto())
                 launchKeyedReplicaProcessing(event.keyedReplica)
             }
         }
@@ -37,6 +40,7 @@ class ReplicaClientListener(
         replica.stateFlow
             .onEach { state ->
                 store.updateReplicaState(replica.id, state)
+                webServer.sendUpdateReplicaEvent(replica.id, state.toDto())
             }
             .launchIn(replica.coroutineScope)
     }
@@ -45,6 +49,7 @@ class ReplicaClientListener(
         keyedReplica.stateFlow
             .onEach { state ->
                 store.updateKeyedReplicaState(keyedReplica.id, state)
+                webServer.sendUpdateKeyedReplicaEvent(keyedReplica.id, state.toDto())
             }
             .launchIn(keyedReplica.coroutineScope)
 
