@@ -13,7 +13,7 @@ class DoOnNetworkConnectivityChanged<T : Any>(
 ) : ReplicaBehaviour<T> {
 
     override fun setup(replica: PhysicalReplica<T>) {
-        networkConnectivityProvider.connected
+        networkConnectivityProvider.connectedFlow
             .drop(1)
             .onEach {
                 replica.action(it)
