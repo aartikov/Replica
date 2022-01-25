@@ -81,7 +81,7 @@ dependencyResolutionManagement {
             // Testing
             alias('junit').to('junit', 'junit').version('4.13.2')
 
-            // Ktorc
+            // Ktor
             version('ktor', '1.6.7')
             alias('ktor-core').to('io.ktor', 'ktor-server-core').versionRef('ktor')
             alias('ktor-netty').to('io.ktor', 'ktor-server-netty').versionRef('ktor')

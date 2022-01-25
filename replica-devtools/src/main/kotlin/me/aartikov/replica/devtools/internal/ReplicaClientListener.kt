@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.ReplicaClientEvent
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.devtools.dto.DtoStore
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.single.PhysicalReplica
@@ -23,11 +24,11 @@ class ReplicaClientListener(
     private fun handleReplicaClientEvent(event: ReplicaClientEvent) {
         when (event) {
             is ReplicaClientEvent.ReplicaCreated -> {
-                store.addReplica(event.replica)
+                store.addReplica(event.replica.toDto())
                 launchReplicaProcessing(event.replica)
             }
             is ReplicaClientEvent.KeyedReplicaCreated -> {
-                store.addKeyedReplica(event.keyedReplica)
+                store.addKeyedReplica(event.keyedReplica.toDto())
                 launchKeyedReplicaProcessing(event.keyedReplica)
             }
         }
@@ -36,7 +37,7 @@ class ReplicaClientListener(
     private fun launchReplicaProcessing(replica: PhysicalReplica<*>) {
         replica.stateFlow
             .onEach { state ->
-                store.updateReplicaState(replica.id, state)
+                store.updateReplicaState(replica.id.value, state.toDto())
             }
             .launchIn(replica.coroutineScope)
     }
@@ -44,7 +45,7 @@ class ReplicaClientListener(
     private fun launchKeyedReplicaProcessing(keyedReplica: KeyedPhysicalReplica<*, *>) {
         keyedReplica.stateFlow
             .onEach { state ->
-                store.updateKeyedReplicaState(keyedReplica.id, state)
+                store.updateKeyedReplicaState(keyedReplica.id.value, state.toDto())
             }
             .launchIn(keyedReplica.coroutineScope)
 
@@ -59,11 +60,11 @@ class ReplicaClientListener(
     ) {
         when (event) {
             is KeyedReplicaEvent.ReplicaCreated -> {
-                store.addKeyedReplicaChild(keyedReplicaId, event.replica)
+                store.addKeyedReplicaChild(keyedReplicaId.value, event.replica.toDto())
                 launchKeyedReplicaChildProcessing(keyedReplicaId, event.replica)
             }
             is KeyedReplicaEvent.ReplicaRemoved -> {
-                store.removeKeyedReplicaChild(keyedReplicaId, event.replicaId)
+                store.removeKeyedReplicaChild(keyedReplicaId.value, event.replicaId.value)
             }
         }
     }
@@ -74,7 +75,11 @@ class ReplicaClientListener(
     ) {
         childReplica.stateFlow
             .onEach { state ->
-                store.updateKeyedReplicaChildState(keyedReplicaId, childReplica.id, state)
+                store.updateKeyedReplicaChildState(
+                    keyedReplicaId.value,
+                    childReplica.id.value,
+                    state.toDto()
+                )
             }
             .launchIn(childReplica.coroutineScope)
     }

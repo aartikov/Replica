@@ -14,6 +14,7 @@ kotlin {
             kotlin.srcDir('src/main/kotlin')
             dependencies {
                 implementation libs.serialization.core
+                api libs.coroutines.core
             }
         }
     }
