@@ -28,4 +28,8 @@ dependencies {
     api libs.coroutines.core
     implementation libs.serialization.json
     testImplementation libs.junit
+
+    implementation libs.ktor.core
+    implementation libs.ktor.netty
+    implementation libs.ktor.websockets
 }
