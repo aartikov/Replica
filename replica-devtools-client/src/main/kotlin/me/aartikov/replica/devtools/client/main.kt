@@ -10,7 +10,6 @@ import io.ktor.http.cio.websocket.readText
 import kotlinx.browser.document
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.client.components.Card
-import me.aartikov.replica.devtools.client.components.Crossfade
 import me.aartikov.replica.devtools.client.components.NavBar
 import me.aartikov.replica.devtools.dto.*
 import org.jetbrains.compose.web.css.*
@@ -90,23 +89,24 @@ private fun Body(state: ReplicaClientDto) {
             }
         }
     ) {
-        Crossfade(
-            target = state,
+        Div(
             attrs = {
                 style {
                     width(100.percent)
                     height(100.percent)
-                    position(Position.Relative)
-                    left(0.px)
+                    position(Position.Absolute)
                     top(0.px)
+                    left(0.px)
                 }
             }
-        ) { state -> Content(state) }
+        ) {
+            Content(state)
+        }
     }
 }
 
 @Composable
-fun Content(dto: ReplicaClientDto) {
+fun Content(state: ReplicaClientDto) {
     Div(
         attrs = {
             style {
@@ -134,10 +134,10 @@ fun Content(dto: ReplicaClientDto) {
                 }
             }
         ) {
-            dto.replicas.values.forEach { replica ->
+            state.replicas.values.forEach { replica ->
                 ReplicaItemUi(item = replica)
             }
-            dto.keyedReplicas.values.forEach { replica ->
+            state.keyedReplicas.values.forEach { replica ->
                 KeyedReplicaItem(item = replica)
             }
         }

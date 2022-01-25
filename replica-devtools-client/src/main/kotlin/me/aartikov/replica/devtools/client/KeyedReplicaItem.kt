@@ -53,7 +53,11 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
     Divider()
     if (isExpanded) {
         item.childReplicas.values.forEach {
-            ReplicaItemUi(it)
+            Div(
+                attrs = { style { paddingLeft(48.px) } }
+            ) {
+                ReplicaItemUi(it)
+            }
         }
     }
 }
