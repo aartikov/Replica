@@ -27,7 +27,7 @@ fun StatusItem(type: StatusItemType) {
                 overflow("hidden")
                 display(DisplayStyle.Flex)
                 alignItems(AlignItems.Center)
-                padding(4.px, 12.px)
+                padding(12.px, 4.px)
             }
         }
     ) { Text(type.name) }

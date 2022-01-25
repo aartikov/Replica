@@ -106,7 +106,7 @@ private fun Body(state: ReplicaClientDto) {
 }
 
 @Composable
-fun Content(replicaClientDto: ReplicaClientDto) {
+fun Content(dto: ReplicaClientDto) {
     Div(
         attrs = {
             style {
@@ -114,6 +114,7 @@ fun Content(replicaClientDto: ReplicaClientDto) {
                 height(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Column, FlexWrap.Nowrap)
+                overflowY("scroll")
             }
         }
     ) {
@@ -124,21 +125,20 @@ fun Content(replicaClientDto: ReplicaClientDto) {
                     property("flex", "0 1 auto")
                 }
             }
-        ) {
-            NavBar(title = "Replica dev tool")
-        }
+        ) { NavBar(title = "Replica dev tool") }
         Ul(
             attrs = {
                 style {
                     width(100.percent)
                     margin(0.px)
-                    property("flex", "1 1 auto")
-                    property("overflow-y", "scroll")
                 }
             }
         ) {
-            replicaClientDto.replicas.values.forEach { replica ->
+            dto.replicas.values.forEach { replica ->
                 ReplicaItemUi(item = replica)
+            }
+            dto.keyedReplicas.values.forEach { replica ->
+                KeyedReplicaItem(item = replica)
             }
         }
     }

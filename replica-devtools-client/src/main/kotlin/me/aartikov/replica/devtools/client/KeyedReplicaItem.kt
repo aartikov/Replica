@@ -1,28 +1,36 @@
 package me.aartikov.replica.devtools.client
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import me.aartikov.replica.devtools.client.components.Divider
 import me.aartikov.replica.devtools.client.components.ImageButton
-import me.aartikov.replica.devtools.dto.ReplicaDto
+import me.aartikov.replica.devtools.dto.KeyedReplicaDto
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun ReplicaItemUi(item: ReplicaDto) {
+fun KeyedReplicaItem(item: KeyedReplicaDto) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     Li(
         attrs = {
             style {
+                classes("waves-effect", "waves-teal", "btn-flat")
                 width(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
                 justifyContent(JustifyContent.SpaceBetween)
                 alignItems(AlignItems.Center)
                 padding(2.px, 16.px)
+                onClick { isExpanded = !isExpanded }
             }
         }
     ) {
-        StatusItem(item.state.toStatusItemType())
+        ImageButton(
+            onClick = null,
+            iconName = if (isExpanded) "keyboard_arrow_down" else "keyboard_arrow_right"
+        )
         Div(
             attrs = {
                 style {
@@ -37,19 +45,15 @@ fun ReplicaItemUi(item: ReplicaDto) {
         ) {
             Text(value = item.name)
         }
-
         ImageButton(
             onClick = null,
-            iconName = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off"
+            iconName = if (item.state.replicaWithActiveObserversCount > 0) "visibility" else "visibility_off"
         )
     }
-    Li(
-        attrs = {
-            classes("divider")
-            style {
-                height(1.px)
-                width(100.percent)
-            }
+    Divider()
+    if (isExpanded) {
+        item.childReplicas.values.forEach {
+            ReplicaItemUi(it)
         }
-    )
+    }
 }

@@ -149,3 +149,16 @@ class NavBarIcon(
     val name: String,
     val onClick: () -> Unit
 )
+
+@Composable
+fun Divider() {
+    Div(
+        attrs = {
+            classes("divider")
+            style {
+                height(1.px)
+                width(100.percent)
+            }
+        }
+    )
+}
