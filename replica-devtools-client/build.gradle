@@ -19,6 +19,9 @@ kotlin {
                 implementation compose.web.core
                 implementation compose.runtime
                 implementation libs.serialization.json
+
+                api libs.coroutines.core
+                implementation libs.ktor.client.websockets
             }
         }
     }
