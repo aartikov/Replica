@@ -70,10 +70,14 @@ class DtoStore(
     }
 
     fun updateState(state: ReplicaClientDto) {
-        dto.keyedReplicas.clear()
-        dto.keyedReplicas.putAll(state.keyedReplicas)
-        dto.replicas.clear()
-        dto.replicas.putAll(state.replicas)
+        dto.keyedReplicas.apply {
+            clear()
+            putAll(state.keyedReplicas)
+        }
+        dto.replicas.apply {
+            clear()
+            putAll(state.replicas)
+        }
         onDtoChanged(dto)
     }
 }
