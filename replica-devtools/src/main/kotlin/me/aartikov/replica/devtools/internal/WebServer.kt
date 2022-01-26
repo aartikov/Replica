@@ -1,5 +1,6 @@
 package me.aartikov.replica.devtools.internal
 
+import android.util.Log
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
@@ -22,17 +23,18 @@ import me.aartikov.replica.devtools.dto.ReplaceAll
 
 class WebServer(
     private val coroutineScope: CoroutineScope,
-    private val ipAddressProvider: IpAddressProvider,
+    ipAddressProvider: IpAddressProvider,
     private val port: Int,
     private val dtoStore: DtoStore
 ) {
     private val json = Json
+    private val ipAddress = ipAddressProvider.getLocalIpAddress()
 
     private val server by lazy {
         embeddedServer(
             factory = Netty,
             port = port,
-            host = ipAddressProvider.getLocalIpAddress()
+            host = ipAddress
         ) {
             install(WebSockets)
             routing {
@@ -54,6 +56,10 @@ class WebServer(
     }
 
     fun launch() = coroutineScope.launch(Dispatchers.IO) {
+        Log.d(
+            "ReplicaServer",
+            "Devtool is available with address: http://$ipAddress:$port/index.html"
+        )
         server.start(true)
     }
 

@@ -8,6 +8,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.*
 import org.jetbrains.compose.web.css.*
@@ -33,12 +34,11 @@ fun main() {
     }
 }
 
-// TODO() Установка ip, порта
 private suspend fun listenSocket(dtoStore: DtoStore) {
     client.webSocket(
         method = HttpMethod.Get,
-        host = "192.168.0.8",
-        port = 8080,
+        host = window.location.hostname,
+        port = window.location.port.toIntOrNull() ?: 8080,
         path = "/ws"
     ) {
         for (frame in this.incoming) {
