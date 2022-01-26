@@ -9,8 +9,6 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import kotlinx.browser.document
 import kotlinx.serialization.json.Json
-import me.aartikov.replica.devtools.client.components.Card
-import me.aartikov.replica.devtools.client.components.NavBar
 import me.aartikov.replica.devtools.dto.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto

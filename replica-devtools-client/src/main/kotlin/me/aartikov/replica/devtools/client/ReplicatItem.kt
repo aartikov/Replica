@@ -1,8 +1,6 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.Composable
-import me.aartikov.replica.devtools.client.components.Divider
-import me.aartikov.replica.devtools.client.components.ImageButton
 import me.aartikov.replica.devtools.dto.ReplicaDto
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
