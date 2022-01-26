@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'kotlin'
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
 java {
@@ -10,13 +11,14 @@ java {
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '1.8'
+        kotlinOptions.freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         useIR = true
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '1.8'
         useIR = true
     }
 }

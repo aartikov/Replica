@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
-fun <T> snapshotStateFlow(
+internal fun <T> snapshotStateFlow(
     coroutineScope: CoroutineScope,
     block: () -> T
 ): StateFlow<T> {

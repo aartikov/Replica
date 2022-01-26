@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-fun <T> StateFlow<T>.toComposeState(coroutineScope: CoroutineScope): State<T> {
+internal fun <T> StateFlow<T>.toComposeState(coroutineScope: CoroutineScope): State<T> {
     val state: MutableState<T> = mutableStateOf(this.value)
     coroutineScope.launch {
         this@toComposeState.collect {

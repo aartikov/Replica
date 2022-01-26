@@ -1,9 +1,9 @@
 package me.aartikov.replica.keyed.behaviour.standard
 
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.keyed.ClearPolicy
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
@@ -12,20 +12,24 @@ import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 import kotlin.math.max
+import kotlin.time.Duration.Companion.milliseconds
 
 class LimitChildCount<K : Any, T : Any>(
     private val maxCount: Int,
     private val clearPolicy: ClearPolicy<K, T>
 ) : KeyedReplicaBehaviour<K, T> {
 
+    companion object {
+        private val ClearingDebounceTime = 100.milliseconds
+    }
+
+    @OptIn(FlowPreview::class)
     override fun setup(keyedReplica: KeyedPhysicalReplica<K, T>) {
-        val mutex = Mutex()
         keyedReplica.stateFlow
+            .debounce(ClearingDebounceTime.inWholeMilliseconds)  // Debounce is used to wait until a just created replica will change state
             .onEach { state ->
-                mutex.withLock {
-                    if (state.replicaCount > maxCount) {
-                        clearReplicas(keyedReplica)
-                    }
+                if (state.replicaCount > maxCount) {
+                    clearReplicas(keyedReplica)
                 }
             }
             .launchIn(keyedReplica.coroutineScope)
@@ -39,10 +43,8 @@ class LimitChildCount<K : Any, T : Any>(
         val keysWithStateForRemoving = mutableListOf<Pair<K, ReplicaState<T>>>()
         keyedReplica.onEachReplica { key ->
             val state = currentState
-            val justCreatedReplica = state.data == null && state.error == null && !state.loading
-            val removableReplica =
-                !state.loading && state.observingState.status == ObservingStatus.None
-            if (!justCreatedReplica && removableReplica) {
+            val removable = !state.loading && state.observingState.status == ObservingStatus.None
+            if (removable) {
                 keysWithStateForRemoving.add(key to state)
             }
         }

@@ -13,6 +13,7 @@ import kotlin.time.Duration
 class DoOnStateCondition<T : Any>(
     private val condition: (ReplicaState<T>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,
+    private val repeatInterval: Duration? = null,
     private val action: suspend PhysicalReplica<T>.() -> Unit
 ) : ReplicaBehaviour<T> {
 
@@ -37,8 +38,15 @@ class DoOnStateCondition<T : Any>(
 
         job = launch {
             delay(startDelay.inWholeMilliseconds)
-            withContext(NonCancellable) {
-                replica.action()
+            while (true) {
+                withContext(NonCancellable) {
+                    replica.action()
+                }
+                if (repeatInterval != null) {
+                    delay(repeatInterval.inWholeMilliseconds)
+                } else {
+                    break
+                }
             }
         }
     }

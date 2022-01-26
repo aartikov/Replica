@@ -27,6 +27,7 @@ dependencyResolutionManagement {
             version('kotlin', '1.6.10')
             alias('kotlin-plugin').to('org.jetbrains.kotlin', 'kotlin-gradle-plugin').versionRef('kotlin')
             alias('kotlin-datetime').to('org.jetbrains.kotlinx', 'kotlinx-datetime').version('0.3.2')
+            alias('kotlin-binaryCompatibilityValidator').to('org.jetbrains.kotlinx.binary-compatibility-validator', 'org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin').version('0.8.0')
 
             version('coroutines', '1.6.0-RC')
             alias('coroutines-core').to('org.jetbrains.kotlinx', 'kotlinx-coroutines-core').versionRef('coroutines')

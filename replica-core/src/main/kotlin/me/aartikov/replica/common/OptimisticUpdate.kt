@@ -3,8 +3,6 @@ package me.aartikov.replica.common
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
-import me.aartikov.replica.keyed.KeyedPhysicalReplica
-import me.aartikov.replica.single.PhysicalReplica
 
 fun interface OptimisticUpdate<T : Any> {
     fun apply(data: T): T
@@ -44,47 +42,4 @@ suspend inline fun <R> performOptimisticUpdate(
         onCompleted?.invoke()
         throw e
     }
-}
-
-suspend inline fun <T : Any, R> withOptimisticUpdate(
-    update: OptimisticUpdate<T>,
-    replica: PhysicalReplica<T>,
-    noinline onSuccess: (suspend () -> Unit)? = null,
-    noinline onError: (suspend (Exception) -> Unit)? = null,
-    noinline onCanceled: (suspend () -> Unit)? = null,
-    noinline onCompleted: (suspend () -> Unit)? = null,
-    block: () -> R
-): R {
-    return performOptimisticUpdate(
-        begin = { replica.beginOptimisticUpdate(update) },
-        commit = { replica.commitOptimisticUpdate(update) },
-        rollback = { replica.rollbackOptimisticUpdate(update) },
-        onSuccess = onSuccess,
-        onError = onError,
-        onCanceled = onCanceled,
-        onCompleted = onCompleted,
-        block = block
-    )
-}
-
-suspend inline fun <K : Any, T : Any, R> withOptimisticUpdate(
-    update: OptimisticUpdate<T>,
-    replica: KeyedPhysicalReplica<K, T>,
-    key: K,
-    noinline onSuccess: (suspend () -> Unit)? = null,
-    noinline onError: (suspend (Exception) -> Unit)? = null,
-    noinline onCanceled: (suspend () -> Unit)? = null,
-    noinline onCompleted: (suspend () -> Unit)? = null,
-    block: () -> R
-): R {
-    return performOptimisticUpdate(
-        begin = { replica.beginOptimisticUpdate(key, update) },
-        commit = { replica.commitOptimisticUpdate(key, update) },
-        rollback = { replica.rollbackOptimisticUpdate(key, update) },
-        onSuccess = onSuccess,
-        onError = onError,
-        onCanceled = onCanceled,
-        onCompleted = onCompleted,
-        block = block
-    )
 }
