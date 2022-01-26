@@ -9,11 +9,11 @@ import org.jetbrains.compose.web.dom.Ul
 
 @Composable
 fun Body(state: ReplicaClientDto) {
-    Card(
+    Div(
         attrs = {
             style {
                 position(Position.Absolute)
-                width(90.percent)
+                width(100.percent)
                 height(100.percent)
                 top(0.px)
                 bottom(0.px)
@@ -52,14 +52,6 @@ fun Content(state: ReplicaClientDto) {
             }
         }
     ) {
-        Div(
-            attrs = {
-                style {
-                    width(100.percent)
-                    property("flex", "0 1 auto")
-                }
-            }
-        ) { NavBar(title = "Replica dev tool") }
         Ul(
             attrs = {
                 style {
@@ -69,7 +61,7 @@ fun Content(state: ReplicaClientDto) {
             }
         ) {
             state.replicas.values.forEach { replica ->
-                ReplicaItemUi(item = replica)
+                ReplicaItem(item = replica)
             }
             state.keyedReplicas.values.forEach { replica ->
                 KeyedReplicaItem(item = replica)

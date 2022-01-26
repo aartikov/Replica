@@ -40,35 +40,15 @@ fun ImageButton(
 }
 
 @Composable
-fun MaterialIcon(name: String) {
-    I(attrs = { classes("material-icons") }) { Text(value = name) }
-}
-
-@Composable
-fun NavBar(
-    title: String,
-    navigationIcon: NavBarIcon? = null
+fun MaterialIcon(
+    name: String,
+    attrs: AttrBuilderContext<*> = {}
 ) {
-    Nav {
-        Div(attrs = { classes("nav-wrapper") }) {
-            if (navigationIcon != null) {
-                Ul(attrs = { classes("left") }) {
-                    NavBarIcon(icon = navigationIcon)
-                }
-            }
-
-            A(
-                attrs = {
-                    classes("brand-logo")
-                    style {
-                        paddingLeft(16.px)
-                    }
-                }
-            ) {
-                Text(value = title)
-            }
-        }
+    I(attrs = {
+        classes("material-icons")
+        attrs()
     }
+    ) { Text(value = name) }
 }
 
 @Composable
@@ -90,14 +70,13 @@ class NavBarIcon(
 )
 
 @Composable
-fun Divider() {
+fun Divider(
+    attrs: AttrBuilderContext<*> = {}
+) {
     Div(
         attrs = {
             classes("divider")
-            style {
-                height(1.px)
-                width(100.percent)
-            }
+            attrs()
         }
     )
 }

@@ -20,12 +20,11 @@ fun StatusItem(type: StatusItemType) {
     Div(
         attrs = {
             style {
-                classes("card")
+                classes("card", "center-align")
                 backgroundColor(type.backgroundColor)
-                height(48.px)
+                minWidth(72.px)
                 whiteSpace("nowrap")
                 overflow("hidden")
-                padding(12.px, 16.px)
                 color(type.textColor)
             }
         }

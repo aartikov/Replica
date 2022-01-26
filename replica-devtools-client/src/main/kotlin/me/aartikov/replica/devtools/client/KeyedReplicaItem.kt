@@ -14,7 +14,7 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
     Li(
         attrs = {
             style {
-                classes("waves-effect", "waves-teal", "btn-flat")
+                classes("waves-effect", "waves-teal")
                 width(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
@@ -24,9 +24,8 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
             }
         }
     ) {
-        ImageButton(
-            onClick = null,
-            iconName = if (isExpanded) "keyboard_arrow_down" else "keyboard_arrow_right"
+        MaterialIcon(
+            name = if (isExpanded) "keyboard_arrow_down" else "keyboard_arrow_right"
         )
         Div(
             attrs = {
@@ -34,7 +33,6 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
                     height(48.px)
                     overflow("hidden")
                     flexGrow(1)
-                    whiteSpace("nowrap")
                     property("text-overflow", "ellipsis")
                     display(DisplayStyle.Flex)
                     alignItems(AlignItems.Center)
@@ -43,18 +41,18 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
         ) {
             Text(value = item.name)
         }
-        ImageButton(
-            onClick = null,
-            iconName = if (item.state.replicaWithActiveObserversCount > 0) "visibility" else "visibility_off"
+        MaterialIcon(
+            name = if (item.state.replicaWithActiveObserversCount > 0) "visibility" else "visibility_off",
+            attrs = { style { marginLeft(16.px) } }
         )
     }
-    Divider()
+    Divider(attrs = { style { marginLeft(16.px) } })
     if (isExpanded) {
         item.childReplicas.values.forEach {
             Div(
                 attrs = { style { paddingLeft(48.px) } }
             ) {
-                ReplicaItemUi(it)
+                ReplicaItem(it)
             }
         }
     }

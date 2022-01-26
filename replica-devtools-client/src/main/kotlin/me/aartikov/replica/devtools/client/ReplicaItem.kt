@@ -8,7 +8,7 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun ReplicaItemUi(item: ReplicaDto) {
+fun ReplicaItem(item: ReplicaDto) {
     Li(
         attrs = {
             style {
@@ -24,7 +24,6 @@ fun ReplicaItemUi(item: ReplicaDto) {
             attrs = {
                 style {
                     flexGrow(1)
-                    height(48.px)
                     overflow("hidden")
                     whiteSpace("nowrap")
                     property("text-overflow", "ellipsis")
@@ -34,10 +33,14 @@ fun ReplicaItemUi(item: ReplicaDto) {
             }
         ) { Text(value = item.name) }
         StatusItem(item.state.toStatusItemType())
-        ImageButton(
-            onClick = null,
-            iconName = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off"
+        MaterialIcon(
+            name = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off",
+            attrs = {
+                style {
+                    marginLeft(16.px)
+                }
+            }
         )
     }
-    Divider()
+    Divider(attrs = { style { marginLeft(16.px) } })
 }
