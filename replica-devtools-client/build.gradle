@@ -5,7 +5,11 @@ plugins {
 
 kotlin {
     js(IR) {
-        browser()
+        browser {
+            distribution {
+                directory = file("$projectDir/../replica-devtools/src/main/resources/")
+            }
+        }
         binaries.executable()
     }
 

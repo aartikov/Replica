@@ -1,11 +1,10 @@
 package me.aartikov.replica.devtools.internal
 
-import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.WebSocketSession
-import io.ktor.response.respondText
-import io.ktor.routing.get
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -38,10 +37,11 @@ class WebServer(
             install(WebSockets)
             routing {
                 webSocket("/ws") { processSession(this) }
-                get("/") {
-                    call.respondText("Hello to Replica dev tool!")
+                static("/") {
+                    resources()
                 }
             }
+
         }
     }
 
