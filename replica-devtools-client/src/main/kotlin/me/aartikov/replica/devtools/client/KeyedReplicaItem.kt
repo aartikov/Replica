@@ -20,7 +20,6 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
                 width(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
-                justifyContent(JustifyContent.SpaceBetween)
                 alignItems(AlignItems.Center)
                 padding(2.px, 16.px)
                 onClick { isExpanded = !isExpanded }
@@ -36,6 +35,7 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
                 style {
                     height(48.px)
                     overflow("hidden")
+                    flexGrow(1)
                     whiteSpace("nowrap")
                     property("text-overflow", "ellipsis")
                     display(DisplayStyle.Flex)

@@ -32,7 +32,6 @@ fun ImageButton(
                 height(48.px)
                 display(DisplayStyle.Flex)
                 alignItems(AlignItems.Center)
-                justifyContent(JustifyContent.Center)
             }
             onClick?.let { this.onClick { it() } }
             attrs()

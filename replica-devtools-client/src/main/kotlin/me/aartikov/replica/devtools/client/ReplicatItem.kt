@@ -17,7 +17,6 @@ fun ReplicaItemUi(item: ReplicaDto) {
                 width(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
-                justifyContent(JustifyContent.SpaceBetween)
                 alignItems(AlignItems.Center)
                 padding(2.px, 16.px)
             }
@@ -26,6 +25,7 @@ fun ReplicaItemUi(item: ReplicaDto) {
         Div(
             attrs = {
                 style {
+                    flexGrow(1)
                     height(48.px)
                     overflow("hidden")
                     whiteSpace("nowrap")
@@ -34,11 +34,8 @@ fun ReplicaItemUi(item: ReplicaDto) {
                     alignItems(AlignItems.Center)
                 }
             }
-        ) {
-            Text(value = item.name)
-        }
+        ) { Text(value = item.name) }
         StatusItem(item.state.toStatusItemType())
-
         ImageButton(
             onClick = null,
             iconName = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off"

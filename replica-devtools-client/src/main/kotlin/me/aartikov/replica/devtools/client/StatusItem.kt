@@ -6,13 +6,13 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
-enum class StatusItemType(val color: CSSColorValue) {
-    Fresh(Color.green),
-    Stale(Color.gray),
-    Error(Color.red),
-    Loading(Color.blue),
-    Refresh(Color.blue),
-    Empty(Color.white)
+enum class StatusItemType(val backgroundColor: CSSColorValue, val textColor: CSSColorValue) {
+    Fresh(Color.green, Color.white),
+    Stale(Color.slategray, Color.white),
+    Error(Color.red, Color.white),
+    Loading(Color.blue, Color.white),
+    Refresh(Color.blue, Color.white),
+    Empty(Color.white, Color.black)
 }
 
 @Composable
@@ -21,13 +21,12 @@ fun StatusItem(type: StatusItemType) {
         attrs = {
             style {
                 classes("card")
-                backgroundColor(type.color)
+                backgroundColor(type.backgroundColor)
                 height(48.px)
                 whiteSpace("nowrap")
                 overflow("hidden")
-                display(DisplayStyle.Flex)
-                alignItems(AlignItems.Center)
-                padding(12.px, 4.px)
+                padding(12.px, 16.px)
+                color(type.textColor)
             }
         }
     ) { Text(type.name) }
