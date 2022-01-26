@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.DevToolsEventDto
+import me.aartikov.replica.devtools.dto.DtoStore
 import me.aartikov.replica.devtools.dto.ReplaceAll
 
 class WebServer(

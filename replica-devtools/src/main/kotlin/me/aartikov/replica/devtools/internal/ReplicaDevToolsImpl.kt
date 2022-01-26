@@ -4,6 +4,7 @@ import android.content.Context
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.devtools.DevToolsSettings
 import me.aartikov.replica.devtools.ReplicaDevTools
+import me.aartikov.replica.devtools.dto.DtoStore
 
 internal class ReplicaDevToolsImpl(
     replicaClient: ReplicaClient,
