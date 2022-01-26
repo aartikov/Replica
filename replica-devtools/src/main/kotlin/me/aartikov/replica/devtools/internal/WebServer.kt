@@ -57,7 +57,7 @@ class WebServer(
 
     fun launch() = coroutineScope.launch(Dispatchers.IO) {
         Log.d(
-            "ReplicaServer",
+            "ReplicaDevTools",
             "Devtool is available with address: http://$ipAddress:$port/index.html"
         )
         server.start(true)
