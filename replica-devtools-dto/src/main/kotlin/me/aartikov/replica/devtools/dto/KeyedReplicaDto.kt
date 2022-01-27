@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 data class KeyedReplicaDto(
     val id: String,
     val name: String,
-    var state: KeyedReplicaStateDto,
-    val childReplicas: MutableMap<String, ReplicaDto> = mutableMapOf()
+    val state: KeyedReplicaStateDto,
+    val childReplicas: Map<String, ReplicaDto> = emptyMap()
 )
 
 @Serializable

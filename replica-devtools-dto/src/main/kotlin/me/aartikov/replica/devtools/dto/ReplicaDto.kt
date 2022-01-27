@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class ReplicaDto(
     val id: String,
     val name: String,
-    var state: ReplicaStateDto
+    val state: ReplicaStateDto
 )
 
 @Serializable
