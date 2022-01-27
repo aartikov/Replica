@@ -25,6 +25,7 @@ class WebClient {
         ) {
             for (frame in this.incoming) {
                 if (frame is Frame.Text) {
+
                     val event = Json.decodeFromString(
                         DevToolsEventDto.serializer(),
                         frame.readText()
@@ -49,6 +50,14 @@ class WebClient {
                 event.keyedReplicaId,
                 event.childReplicaId,
                 event.state
+            )
+            is KeyedReplicaChildRemoved -> removeKeyedReplicaChild(
+                keyedReplicaId = event.keyedReplicaId,
+                childReplicaId = event.childReplicaId
+            )
+            is KeyedReplicaChildCreated -> addKeyedReplicaChild(
+                event.keyedReplicaId,
+                event.childReplica
             )
         }
     }

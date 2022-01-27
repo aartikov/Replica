@@ -1,74 +1,56 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.CSSColorValue
+import org.jetbrains.compose.web.css.backgroundColor
+import org.jetbrains.compose.web.css.color
+import org.jetbrains.compose.web.css.overflow
 import org.jetbrains.compose.web.dom.*
 
 @Composable
-fun Card(attrs: AttrBuilderContext<*> = {}, content: @Composable () -> Unit) {
+fun Container(
+    attrs: AttrBuilderContext<*> = {},
+    color: CSSColorValue = LocalTheme.current.background,
+    content: @Composable () -> Unit
+) {
+    Div(attrs = {
+        attrs()
+        style { backgroundColor(color) }
+    }) { content() }
+}
+
+@Composable
+fun RText(
+    value: String,
+    attrs: AttrBuilderContext<*> = {},
+    color: CSSColorValue = LocalTheme.current.onBackground
+) {
     Div(
         attrs = {
-            classes("card")
-            attrs()
-        }
-    ) {
-        content()
-    }
-}
-
-@Composable
-fun ImageButton(
-    onClick: (() -> Unit?)? = null,
-    iconName: String,
-    attrs: AttrBuilderContext<*> = {}
-) {
-    A(
-        attrs = {
-            classes("waves-effect", "waves-teal", "btn-flat")
             style {
-                width(48.px)
-                height(48.px)
-                display(DisplayStyle.Flex)
-                alignItems(AlignItems.Center)
+                color(color)
+                property("text-overflow", "ellipsis")
+                overflow("hidden")
             }
-            onClick?.let { this.onClick { it() } }
             attrs()
         }
     ) {
-        MaterialIcon(name = iconName)
+        Text(value = value)
     }
 }
 
 @Composable
-fun MaterialIcon(name: String) {
-    I(attrs = { classes("material-icons") }) { Text(value = name) }
-}
-
-@Composable
-fun NavBar(
-    title: String,
-    navigationIcon: NavBarIcon? = null
+fun MaterialIcon(
+    name: String,
+    attrs: AttrBuilderContext<*> = {},
+    color: CSSColorValue = LocalTheme.current.onBackground
 ) {
-    Nav {
-        Div(attrs = { classes("nav-wrapper") }) {
-            if (navigationIcon != null) {
-                Ul(attrs = { classes("left") }) {
-                    NavBarIcon(icon = navigationIcon)
-                }
-            }
-
-            A(
-                attrs = {
-                    classes("brand-logo")
-                    style {
-                        paddingLeft(16.px)
-                    }
-                }
-            ) {
-                Text(value = title)
-            }
-        }
+    I(attrs = {
+        classes("material-icons")
+        attrs()
+        style { color(color) }
     }
+    ) { Text(value = name) }
 }
 
 @Composable
@@ -90,14 +72,35 @@ class NavBarIcon(
 )
 
 @Composable
-fun Divider() {
+fun Divider(
+    attrs: AttrBuilderContext<*> = {}
+) {
     Div(
         attrs = {
             classes("divider")
-            style {
-                height(1.px)
-                width(100.percent)
-            }
+            attrs()
         }
     )
+}
+
+@Composable
+fun FabButton(
+    name: String,
+    color: CSSColorValue = LocalTheme.current.primary,
+    iconColor: CSSColorValue = LocalTheme.current.onPrimary,
+    onClick: () -> Unit,
+) {
+    A(
+        attrs = {
+            classes("btn-floating", "btn-small", "waves-effect")
+            style {
+                backgroundColor(color)
+            }
+            onClick {
+                onClick()
+            }
+        }
+    ) {
+        MaterialIcon(name = name, color = iconColor)
+    }
 }
