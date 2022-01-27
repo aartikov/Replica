@@ -1,50 +1,60 @@
 package me.aartikov.replica.devtools.dto
 
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.*
 
-class DtoStore(
-    val onDtoChanged: (ReplicaClientDto) -> Unit
-) {
+class DtoStore {
 
-    private val dto = ReplicaClientDto()
+    private val mutableStateDto = MutableStateFlow(ReplicaClientDto())
+    val stateDto: StateFlow<ReplicaClientDto> = mutableStateDto.asStateFlow()
 
-    private val _eventFlow =
-        kotlinx.coroutines.flow.MutableSharedFlow<DevToolsEventDto>(extraBufferCapacity = 1000)
-    val eventFlow: kotlinx.coroutines.flow.Flow<DevToolsEventDto> = _eventFlow.asSharedFlow()
-
-    val lastState
-        get() = dto
+    private val _eventFlow = MutableSharedFlow<DevToolsEventDto>(extraBufferCapacity = 1000)
+    val eventFlow: Flow<DevToolsEventDto> = _eventFlow.asSharedFlow()
 
     fun addReplica(replica: ReplicaDto) {
-        dto.replicas[replica.id] = replica
+        mutableStateDto.update {
+            it.copy(replicas = it.replicas.plus(replica.id to replica))
+        }
         _eventFlow.tryEmit(ReplicaCreated(replica))
-        onDtoChanged(dto)
     }
 
     fun addKeyedReplica(keyedReplica: KeyedReplicaDto) {
-        dto.keyedReplicas[keyedReplica.id] = keyedReplica
+        mutableStateDto.update {
+            it.copy(keyedReplicas = it.keyedReplicas.plus(keyedReplica.id to keyedReplica))
+        }
         _eventFlow.tryEmit(KeyedReplicaCreated(keyedReplica))
-        onDtoChanged(dto)
     }
 
     fun addKeyedReplicaChild(keyedReplicaId: String, childReplica: ReplicaDto) {
-        dto.keyedReplicas[keyedReplicaId]?.childReplicas?.put(
-            childReplica.id,
-            childReplica
-        )
-        onDtoChanged(dto)
+        mutableStateDto.update {
+            val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
+            val updatedKeyedReplica = keyedReplica.copy(
+                childReplicas = keyedReplica.childReplicas.plus(childReplica.id to childReplica)
+            )
+
+            it.copy(
+                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
+            )
+        }
     }
 
     fun updateReplicaState(replicaId: String, state: ReplicaStateDto) {
-        dto.replicas[replicaId]?.state = state
+        mutableStateDto.update {
+            val updatedReplica = it.replicas[replicaId]?.copy(state = state) ?: return
+            it.copy(
+                replicas = it.replicas.plus(replicaId to updatedReplica)
+            )
+        }
         _eventFlow.tryEmit(ReplicaUpdated(replicaId, state))
-        onDtoChanged(dto)
     }
 
     fun updateKeyedReplicaState(keyedReplicaId: String, state: KeyedReplicaStateDto) {
-        dto.keyedReplicas[keyedReplicaId]?.state = state
+        mutableStateDto.update {
+            val updatedReplica = it.keyedReplicas[keyedReplicaId]?.copy(state = state) ?: return
+            it.copy(
+                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedReplica)
+            )
+        }
         _eventFlow.tryEmit(KeyedReplicaUpdated(keyedReplicaId, state))
-        onDtoChanged(dto)
     }
 
     fun updateKeyedReplicaChildState(
@@ -52,8 +62,18 @@ class DtoStore(
         childReplicaId: String,
         state: ReplicaStateDto
     ) {
-        dto.keyedReplicas[keyedReplicaId]
-            ?.childReplicas?.get(childReplicaId)?.state = state
+        mutableStateDto.update {
+            val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
+            val updatedChildReplica =
+                keyedReplica.childReplicas[childReplicaId]?.copy(state = state)
+                    ?: return
+            val updatedKeyedReplica = keyedReplica.copy(
+                childReplicas = keyedReplica.childReplicas.plus(
+                    childReplicaId to updatedChildReplica
+                )
+            )
+            it.copy(keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica))
+        }
         _eventFlow.tryEmit(
             KeyedReplicaChildUpdated(
                 keyedReplicaId,
@@ -61,23 +81,21 @@ class DtoStore(
                 state
             )
         )
-        onDtoChanged(dto)
     }
 
     fun removeKeyedReplicaChild(keyedReplicaId: String, childReplicaId: String) {
-        dto.keyedReplicas[keyedReplicaId]?.childReplicas?.remove(childReplicaId)
-        onDtoChanged(dto)
+        mutableStateDto.update {
+            val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
+            val updatedKeyedReplica = keyedReplica.copy(
+                childReplicas = keyedReplica.childReplicas.minus(childReplicaId)
+            )
+            it.copy(
+                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
+            )
+        }
     }
 
     fun updateState(state: ReplicaClientDto) {
-        dto.keyedReplicas.apply {
-            clear()
-            putAll(state.keyedReplicas)
-        }
-        dto.replicas.apply {
-            clear()
-            putAll(state.replicas)
-        }
-        onDtoChanged(dto)
+        mutableStateDto.update { state }
     }
 }
