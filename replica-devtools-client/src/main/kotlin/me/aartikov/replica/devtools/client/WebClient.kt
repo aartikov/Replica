@@ -51,6 +51,14 @@ class WebClient {
                 event.childReplicaId,
                 event.state
             )
+            is KeyedReplicaChildRemoved -> removeKeyedReplicaChild(
+                keyedReplicaId = event.keyedReplicaId,
+                childReplicaId = event.childReplicaId
+            )
+            is KeyedReplicaChildCreated -> addKeyedReplicaChild(
+                event.keyedReplicaId,
+                event.childReplica
+            )
         }
     }
 }
