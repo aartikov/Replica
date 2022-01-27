@@ -37,8 +37,8 @@ class Theme(
             onPrimary = Color.black,
             secondaryColor = rgb(3, 218, 198),
             onSecondaryColor = Color.black,
-            background = rgb(18, 18, 18),
-            onBackground = Color.white,
+            background = rgb(40, 42, 54),
+            onBackground = rgb(248, 248, 242),
             error = rgb(207, 102, 121),
             onError = Color.black
         )
