@@ -26,11 +26,13 @@ class DtoStore {
 
     fun addKeyedReplicaChild(keyedReplicaId: String, childReplica: ReplicaDto) {
         mutableStateDto.update {
-            val keyedReplica = it.keyedReplicas[keyedReplicaId]
-                ?.apply { childReplicas.plus(childReplica.id to childReplica) }
-                ?: return
+            val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
+            val updatedKeyedReplica = keyedReplica.copy(
+                childReplicas = keyedReplica.childReplicas.plus(childReplica.id to childReplica)
+            )
+
             it.copy(
-                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to keyedReplica)
+                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
             )
         }
     }
@@ -83,11 +85,12 @@ class DtoStore {
 
     fun removeKeyedReplicaChild(keyedReplicaId: String, childReplicaId: String) {
         mutableStateDto.update {
-            val keyedReplica = it.keyedReplicas[keyedReplicaId]
-                ?.apply { childReplicas.minus(childReplicaId) }
-                ?: return
+            val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
+            val updatedKeyedReplica = keyedReplica.copy(
+                childReplicas = keyedReplica.childReplicas.minus(childReplicaId)
+            )
             it.copy(
-                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to keyedReplica)
+                keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
             )
         }
     }
