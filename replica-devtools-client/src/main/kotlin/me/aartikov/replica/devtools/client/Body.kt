@@ -52,8 +52,8 @@ fun Content(state: ReplicaClientDto, onChangeThemeClick: () -> Unit) {
         attrs = {
             style {
                 position(Position.Fixed)
-                bottom(50.px)
-                right(50.px)
+                bottom(10.px)
+                right(10.px)
                 color(localTheme.primary)
                 property("z-index", 999)
             }

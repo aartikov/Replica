@@ -92,7 +92,7 @@ fun FabButton(
 ) {
     A(
         attrs = {
-            classes("btn-floating", "btn-large", "waves-effect")
+            classes("btn-floating", "btn-small", "waves-effect")
             style {
                 backgroundColor(color)
             }

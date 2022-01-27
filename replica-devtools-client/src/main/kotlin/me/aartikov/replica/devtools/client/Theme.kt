@@ -34,13 +34,13 @@ class Theme(
         val darkTheme = Theme(
             isDark = true,
             primary = rgb(187, 134, 252),
-            onPrimary = Color.black,
+            onPrimary = rgb(36, 36, 36),
             secondaryColor = rgb(3, 218, 198),
-            onSecondaryColor = Color.black,
-            background = rgb(40, 42, 54),
+            onSecondaryColor = rgb(36, 36, 36),
+            background = rgb(36, 36, 36),
             onBackground = rgb(248, 248, 242),
             error = rgb(207, 102, 121),
-            onError = Color.black
+            onError = rgb(36, 36, 36)
         )
     }
 }
