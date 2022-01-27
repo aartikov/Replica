@@ -30,11 +30,11 @@ class DtoStore {
             val updatedKeyedReplica = keyedReplica.copy(
                 childReplicas = keyedReplica.childReplicas.plus(childReplica.id to childReplica)
             )
-
             it.copy(
                 keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
             )
         }
+        _eventFlow.tryEmit(KeyedReplicaChildCreated(keyedReplicaId, childReplica))
     }
 
     fun updateReplicaState(replicaId: String, state: ReplicaStateDto) {
@@ -64,9 +64,9 @@ class DtoStore {
     ) {
         mutableStateDto.update {
             val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
-            val updatedChildReplica =
-                keyedReplica.childReplicas[childReplicaId]?.copy(state = state)
-                    ?: return
+            val updatedChildReplica = keyedReplica.childReplicas[childReplicaId]
+                ?.copy(state = state)
+                ?: return
             val updatedKeyedReplica = keyedReplica.copy(
                 childReplicas = keyedReplica.childReplicas.plus(
                     childReplicaId to updatedChildReplica
@@ -93,6 +93,7 @@ class DtoStore {
                 keyedReplicas = it.keyedReplicas.plus(keyedReplicaId to updatedKeyedReplica)
             )
         }
+        _eventFlow.tryEmit(KeyedReplicaChildRemoved(keyedReplicaId, childReplicaId))
     }
 
     fun updateState(state: ReplicaClientDto) {
