@@ -14,6 +14,7 @@ import io.ktor.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
@@ -48,8 +49,11 @@ class WebServer(
     }
 
     private suspend fun processSession(session: WebSocketSession) {
-        val frame = frame(DevToolsEventDto.serializer(), ReplaceAll(dtoStore.lastState))
-        session.send(frame)
+        val lastState = dtoStore.stateDto.firstOrNull()
+        lastState?.let {
+            val frame = frame(DevToolsEventDto.serializer(), ReplaceAll(lastState))
+            session.send(frame)
+        }
         dtoStore.eventFlow.collect { event ->
             session.send(frame(DevToolsEventDto.serializer(), event))
         }
