@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReplicaClientDto(
-    val replicas: MutableMap<String, ReplicaDto> = mutableMapOf(),
-    val keyedReplicas: MutableMap<String, KeyedReplicaDto> = mutableMapOf()
+    val replicas: Map<String, ReplicaDto> = emptyMap(),
+    val keyedReplicas: Map<String, KeyedReplicaDto> = emptyMap()
 )
