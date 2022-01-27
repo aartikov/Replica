@@ -3,13 +3,10 @@ package me.aartikov.replica.devtools.client
 import androidx.compose.runtime.Composable
 import me.aartikov.replica.devtools.dto.ReplicaDto
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Li
-import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun ReplicaItem(item: ReplicaDto) {
-    Li(
+    Container(
         attrs = {
             style {
                 width(100.percent)
@@ -20,18 +17,18 @@ fun ReplicaItem(item: ReplicaDto) {
             }
         }
     ) {
-        Div(
+        RText(
             attrs = {
                 style {
                     flexGrow(1)
                     overflow("hidden")
                     whiteSpace("nowrap")
-                    property("text-overflow", "ellipsis")
                     display(DisplayStyle.Flex)
                     alignItems(AlignItems.Center)
                 }
-            }
-        ) { Text(value = item.name) }
+            },
+            value = item.name
+        )
         StatusItem(item.state.toStatusItemType())
         MaterialIcon(
             name = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off",

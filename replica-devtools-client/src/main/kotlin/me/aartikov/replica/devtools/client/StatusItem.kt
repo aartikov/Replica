@@ -6,26 +6,40 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
-enum class StatusItemType(val backgroundColor: CSSColorValue, val textColor: CSSColorValue) {
-    Fresh(Color.green, Color.white),
-    Stale(Color.slategray, Color.white),
-    Error(Color.red, Color.white),
-    Loading(Color.blue, Color.white),
-    Refresh(Color.blue, Color.white),
-    Empty(Color.white, Color.black)
+enum class StatusItemType {
+    Fresh,
+    Stale,
+    Error,
+    Loading,
+    Refresh,
+    Empty;
+
+    fun getColors(theme: Theme): Pair<CSSColorValue, CSSColorValue> {
+        return when (this) {
+            Loading -> theme.primary to theme.onPrimary
+            Fresh -> theme.secondaryColor to Color.white
+            Error -> theme.error to theme.onError
+            Refresh -> theme.primary to theme.onPrimary
+            Empty -> theme.onBackground to theme.background
+            Stale -> Color.slategray to Color.white
+        }
+    }
 }
 
 @Composable
 fun StatusItem(type: StatusItemType) {
+    val theme = LocalTheme.current
+    val (color, textColor) = type.getColors(theme)
+
     Div(
         attrs = {
             style {
                 classes("card", "center-align")
-                backgroundColor(type.backgroundColor)
+                backgroundColor(color)
                 minWidth(72.px)
                 whiteSpace("nowrap")
                 overflow("hidden")
-                color(type.textColor)
+                color(textColor)
             }
         }
     ) { Text(type.name) }

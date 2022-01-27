@@ -24,7 +24,6 @@ class WebClient {
         ) {
             for (frame in this.incoming) {
                 if (frame is Frame.Text) {
-                    println("frame $frame")
 
                     val event = Json.decodeFromString(
                         DevToolsEventDto.serializer(),
