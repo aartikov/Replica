@@ -6,7 +6,6 @@ import io.ktor.client.features.websocket.webSocket
 import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
-import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.*
 
@@ -19,8 +18,8 @@ class WebClient {
     suspend fun listenSocket(dtoStore: DtoStore) {
         client.webSocket(
             method = HttpMethod.Get,
-            host = window.location.hostname,
-            port = window.location.port.toIntOrNull() ?: 8080,
+            host = "192.168.0.8",
+            port = 8080,
             path = "/ws"
         ) {
             for (frame in this.incoming) {
