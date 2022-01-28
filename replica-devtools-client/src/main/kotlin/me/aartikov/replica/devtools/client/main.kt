@@ -8,8 +8,10 @@ import kotlinx.browser.document
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import me.aartikov.replica.devtools.client.view_data.SortType
+import me.aartikov.replica.devtools.client.view_data.ViewData
 import me.aartikov.replica.devtools.client.view_data.toViewData
 import me.aartikov.replica.devtools.dto.DtoStore
 import org.jetbrains.compose.web.renderComposable
@@ -25,7 +27,15 @@ fun main() {
 
     renderComposable(root = rootElement) {
         val sortType by remember { mutableStateOf(SortType.ByObservingTime) }
-        val state by dtoStore.stateDto.collectAsState()
-        Body(state.toViewData(sortType))
+
+        val viewData by combine(
+            dtoStore.stateDto, webClient.connectionStatus
+        ) { state, connectionStatus ->
+            state.toViewData(sortType, connectionStatus)
+        }.collectAsState(initial = ViewData.empty)
+
+        val connectionStatus by webClient.connectionStatus.collectAsState()
+
+        Body(viewData, connectionStatus)
     }
 }

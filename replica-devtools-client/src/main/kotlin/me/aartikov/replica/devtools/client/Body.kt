@@ -10,7 +10,7 @@ import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Ul
 
 @Composable
-fun Body(viewData: ViewData) {
+fun Body(viewData: ViewData, connectionStatus: ConnectionStatus) {
     var isDarkTheme by remember {
         val localStorageTheme = window.localStorage.getItem(LocalStorageThemeKey)
         mutableStateOf(localStorageTheme == Theme.darkTheme.name)
@@ -65,7 +65,31 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
             }
         }
     ) {
-        FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
+        Container(
+            attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                }
+            }
+        ) {
+            RText(
+                viewData.connectionStatusType.text,
+                attrs = {
+                    style {
+                        border {
+                            width = 2.px
+                            color = localTheme.onBackground
+                            style = LineStyle.Solid
+                        }
+                        borderRadius(8.px)
+                        padding(4.px, 16.px)
+                        marginRight(16.px)
+                    }
+                }
+            )
+            FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
+        }
     }
     Container(
         attrs = {

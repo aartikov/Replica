@@ -10,15 +10,16 @@ import io.ktor.http.cio.websocket.readText
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.*
 
 class WebClient {
 
     private val mutableConnectionStatus = MutableStateFlow<ConnectionStatus>(
-        ConnectionStatus.ConnectionAttempt
+        ConnectionStatus.Attempt
     )
-    val connectionStatus
+    val connectionStatus: StateFlow<ConnectionStatus>
         get() = mutableConnectionStatus
 
     private val client = HttpClient {
@@ -31,10 +32,10 @@ class WebClient {
 
     private suspend fun listenSocket(dtoStore: DtoStore) {
         try {
-            mutableConnectionStatus.emit(ConnectionStatus.ConnectionAttempt)
+            mutableConnectionStatus.emit(ConnectionStatus.Attempt)
             connectToSocket(dtoStore)
         } catch (e: WebSocketException) {
-            mutableConnectionStatus.emit(ConnectionStatus.ConnectionFailed)
+            mutableConnectionStatus.emit(ConnectionStatus.Failed)
             delay(3000L)
             listenSocket(dtoStore)
         }
@@ -60,8 +61,7 @@ class WebClient {
                     }
                 }
             } catch (e: ClosedReceiveChannelException) {
-                mutableConnectionStatus.emit(ConnectionStatus.ConnectionFailed)
-                println("onClose ${closeReason.await()}")
+                mutableConnectionStatus.emit(ConnectionStatus.Failed)
                 listenSocket(dtoStore)
             }
         }
@@ -96,6 +96,6 @@ class WebClient {
 
 sealed interface ConnectionStatus {
     object Connected : ConnectionStatus
-    object ConnectionFailed : ConnectionStatus
-    object ConnectionAttempt : ConnectionStatus
+    object Failed : ConnectionStatus
+    object Attempt : ConnectionStatus
 }

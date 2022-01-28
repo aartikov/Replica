@@ -88,7 +88,7 @@ fun FabButton(
     name: String,
     color: CSSColorValue = LocalTheme.current.primary,
     iconColor: CSSColorValue = LocalTheme.current.onPrimary,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     A(
         attrs = {
@@ -96,9 +96,7 @@ fun FabButton(
             style {
                 backgroundColor(color)
             }
-            onClick {
-                onClick()
-            }
+            onClick?.let { this.onClick { it() } }
         }
     ) {
         MaterialIcon(name = name, color = iconColor)
