@@ -21,7 +21,7 @@ fun main() {
     val dtoStore = DtoStore()
     val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    coroutineScope.launch { webClient.listenSocket(dtoStore) }
+    coroutineScope.launch { webClient.startListenSocket(dtoStore) }
 
     renderComposable(root = rootElement) {
         val sortType by remember { mutableStateOf(SortType.ByObservingTime) }
