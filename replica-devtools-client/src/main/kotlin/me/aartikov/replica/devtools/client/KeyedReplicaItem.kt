@@ -1,11 +1,11 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.*
-import me.aartikov.replica.devtools.dto.KeyedReplicaDto
+import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
 import org.jetbrains.compose.web.css.*
 
 @Composable
-fun KeyedReplicaItem(item: KeyedReplicaDto) {
+fun KeyedReplicaItem(item: KeyedReplicaViewData) {
     var isExpanded by remember { mutableStateOf(false) }
 
     Container(
@@ -34,17 +34,11 @@ fun KeyedReplicaItem(item: KeyedReplicaDto) {
             },
             value = item.name
         )
-        MaterialIcon(
-            name = if (item.state.replicaWithActiveObserversCount > 0) "visibility" else "visibility_off",
-            attrs = { style { marginLeft(16.px) } }
-        )
     }
     Divider(attrs = { style { marginLeft(16.px) } })
     if (isExpanded) {
-        item.childReplicas.values.forEach {
-            Container(
-                attrs = { style { paddingLeft(48.px) } }
-            ) {
+        item.childReplicas.forEach {
+            Container(attrs = { style { paddingLeft(48.px) } }) {
                 ReplicaItem(it)
             }
         }
