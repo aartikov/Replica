@@ -3,6 +3,7 @@ package me.aartikov.replica.devtools.client
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.rgb
@@ -16,7 +17,8 @@ class Theme(
     val background: CSSColorValue,
     val onBackground: CSSColorValue,
     val error: CSSColorValue,
-    val onError: CSSColorValue
+    val onError: CSSColorValue,
+    val name: String
 ) {
 
     companion object {
@@ -29,7 +31,8 @@ class Theme(
             background = Color.white,
             onBackground = Color.black,
             error = rgb(176, 0, 32),
-            onError = Color.white
+            onError = Color.white,
+            name = "light"
         )
         val darkTheme = Theme(
             isDark = true,
@@ -40,12 +43,14 @@ class Theme(
             background = rgb(36, 36, 36),
             onBackground = rgb(248, 248, 242),
             error = rgb(207, 102, 121),
-            onError = rgb(36, 36, 36)
+            onError = rgb(36, 36, 36),
+            name = "dark"
         )
     }
 }
 
 val LocalTheme = staticCompositionLocalOf { Theme.lightTheme }
+const val LocalStorageThemeKey = "theme"
 
 @Composable
 fun Theme(
@@ -57,6 +62,7 @@ fun Theme(
     } else {
         Theme.lightTheme
     }
+    window.localStorage.setItem(LocalStorageThemeKey, theme.name)
 
     CompositionLocalProvider(LocalTheme provides theme) {
         content()
