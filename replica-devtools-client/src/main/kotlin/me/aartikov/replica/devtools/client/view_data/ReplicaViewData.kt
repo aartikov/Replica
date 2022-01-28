@@ -37,19 +37,19 @@ fun ReplicaDto.toViewData(): SimpleReplicaViewData {
 }
 
 fun KeyedReplicaDto.toViewData(type: SortType): KeyedReplicaViewData {
+    val childReplicasViewData = childReplicas.values.map { it.toViewData() }
+
     return KeyedReplicaViewData(
         id = id,
         name = name,
-        childReplicas = childReplicas.values
-            .map { it.toViewData() }
+        childReplicas = childReplicasViewData
             .sortedByDescending {
                 when (type) {
                     SortType.ByObservingTime -> it.observingTime
                 }
             },
-        observingTime = childReplicas.values
-            .maxOfOrNull { it.state.observingTime }
-            ?.toViewData()
+        observingTime = childReplicasViewData
+            .maxOfOrNull { it.observingTime }
             ?: ObservingTime.Never
     )
 }
