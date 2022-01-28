@@ -1,13 +1,15 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.*
-import me.aartikov.replica.devtools.dto.ReplicaClientDto
+import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
+import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
+import me.aartikov.replica.devtools.client.view_data.ViewData
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Ul
 
 @Composable
-fun Body(state: ReplicaClientDto) {
+fun Body(viewData: ViewData) {
     var isDarkTheme by remember { mutableStateOf(false) }
 
     Theme(isDarkTheme) {
@@ -36,7 +38,7 @@ fun Body(state: ReplicaClientDto) {
                     }
                 }
             ) {
-                Content(state = state) {
+                Content(viewData = viewData) {
                     isDarkTheme = !isDarkTheme
                 }
             }
@@ -45,7 +47,7 @@ fun Body(state: ReplicaClientDto) {
 }
 
 @Composable
-fun Content(state: ReplicaClientDto, onChangeThemeClick: () -> Unit) {
+fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
     val localTheme = LocalTheme.current
 
     Container(
@@ -80,11 +82,11 @@ fun Content(state: ReplicaClientDto, onChangeThemeClick: () -> Unit) {
                 }
             }
         ) {
-            state.replicas.values.forEach { replica ->
-                ReplicaItem(item = replica)
-            }
-            state.keyedReplicas.values.forEach { replica ->
-                KeyedReplicaItem(item = replica)
+            viewData.items.forEach {
+                when (it) {
+                    is SimpleReplicaViewData -> ReplicaItem(item = it)
+                    is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+                }
             }
         }
     }

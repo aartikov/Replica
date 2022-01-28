@@ -1,11 +1,11 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.Composable
-import me.aartikov.replica.devtools.dto.ReplicaDto
+import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
 import org.jetbrains.compose.web.css.*
 
 @Composable
-fun ReplicaItem(item: ReplicaDto) {
+fun ReplicaItem(item: SimpleReplicaViewData) {
     Container(
         attrs = {
             style {
@@ -29,15 +29,8 @@ fun ReplicaItem(item: ReplicaDto) {
             },
             value = item.name
         )
-        StatusItem(item.state.toStatusItemType())
-        MaterialIcon(
-            name = if (item.state.activeObserverCount > 0) "visibility" else "visibility_off",
-            attrs = {
-                style {
-                    marginLeft(16.px)
-                }
-            }
-        )
+        StatusItem(item.status)
+        ObserverIcon(item.observerType)
     }
     Divider(attrs = { style { marginLeft(16.px) } })
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import me.aartikov.replica.devtools.client.view_data.toViewData
 import me.aartikov.replica.devtools.dto.DtoStore
 import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.HTMLElement
@@ -21,6 +22,6 @@ fun main() {
 
     renderComposable(root = rootElement) {
         val state by dtoStore.stateDto.collectAsState()
-        Body(state)
+        Body(state.toViewData())
     }
 }
