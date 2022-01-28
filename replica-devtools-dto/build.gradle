@@ -15,6 +15,7 @@ kotlin {
             dependencies {
                 implementation libs.serialization.core
                 api libs.coroutines.core
+                api libs.kotlin.datetime
             }
         }
     }

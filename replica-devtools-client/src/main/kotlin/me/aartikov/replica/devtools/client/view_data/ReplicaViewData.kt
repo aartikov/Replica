@@ -5,35 +5,52 @@ import me.aartikov.replica.devtools.dto.KeyedReplicaDto
 import me.aartikov.replica.devtools.dto.ReplicaDto
 import me.aartikov.replica.devtools.dto.ReplicaStateDto
 
-sealed interface ItemViewData
+sealed class ItemViewData(
+    open val id: String,
+    open val name: String,
+    open val observingTime: ObservingTime
+)
 
 data class SimpleReplicaViewData(
-    val id: String,
-    val name: String,
+    override val id: String,
+    override val name: String,
     val status: StatusItemType,
-    val observerType: ObserverType
-) : ItemViewData
+    val observerType: ObserverType,
+    override val observingTime: ObservingTime
+) : ItemViewData(id, name, observingTime)
 
 data class KeyedReplicaViewData(
-    val id: String,
-    val name: String,
-    val childReplicas: List<SimpleReplicaViewData>
-) : ItemViewData
+    override val id: String,
+    override val name: String,
+    val childReplicas: List<SimpleReplicaViewData>,
+    override val observingTime: ObservingTime
+) : ItemViewData(id, name, observingTime)
 
 fun ReplicaDto.toViewData(): SimpleReplicaViewData {
     return SimpleReplicaViewData(
         id = id,
         name = name,
         status = state.toStatusItemType(),
-        observerType = state.toObserverType()
+        observerType = state.toObserverType(),
+        observingTime = state.observingTime.toViewData()
     )
 }
 
-fun KeyedReplicaDto.toViewData(): KeyedReplicaViewData {
+fun KeyedReplicaDto.toViewData(type: SortType): KeyedReplicaViewData {
     return KeyedReplicaViewData(
         id = id,
         name = name,
-        childReplicas = childReplicas.values.map { it.toViewData() }
+        childReplicas = childReplicas.values
+            .map { it.toViewData() }
+            .sortedByDescending {
+                when (type) {
+                    SortType.ByObservingTime -> it.observingTime
+                }
+            },
+        observingTime = childReplicas.values
+            .maxOfOrNull { it.state.observingTime }
+            ?.toViewData()
+            ?: ObservingTime.Never
     )
 }
 

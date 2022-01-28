@@ -1,9 +1,7 @@
 package me.aartikov.replica.devtools.internal
 
-import me.aartikov.replica.devtools.dto.KeyedReplicaDto
-import me.aartikov.replica.devtools.dto.KeyedReplicaStateDto
-import me.aartikov.replica.devtools.dto.ReplicaDto
-import me.aartikov.replica.devtools.dto.ReplicaStateDto
+import me.aartikov.replica.common.ObservingTime
+import me.aartikov.replica.devtools.dto.*
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaState
 import me.aartikov.replica.keyed.currentState
@@ -26,7 +24,8 @@ fun ReplicaState<*>.toDto(): ReplicaStateDto {
         hasError = error != null,
         dataIsFresh = data?.fresh == true,
         observerCount = observingState.observerCount,
-        activeObserverCount = observingState.activeObserverCount
+        activeObserverCount = observingState.activeObserverCount,
+        observingTime = observingState.observingTime.toDto()
     )
 }
 
@@ -44,4 +43,12 @@ fun KeyedReplicaState.toDto(): KeyedReplicaStateDto {
         replicaWithObserversCount = replicaWithObserversCount,
         replicaWithActiveObserversCount = replicaWithActiveObserversCount
     )
+}
+
+fun ObservingTime.toDto(): ObservingTimeDto {
+    return when (this) {
+        is ObservingTime.Now -> ObservingTimeDto.Now
+        is ObservingTime.Never -> ObservingTimeDto.Never
+        is ObservingTime.TimeInPast -> ObservingTimeDto.TimeInPast(time)
+    }
 }
