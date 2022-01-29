@@ -7,7 +7,7 @@ kotlin {
     js(IR) {
         browser {
             distribution {
-                directory = file("$projectDir/../replica-devtools/src/main/resources/")
+                directory = file("$projectDir/../replica-devtools/src/main/resources/replica-devtools/")
             }
         }
         binaries.executable()
