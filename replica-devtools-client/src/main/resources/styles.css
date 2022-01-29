@@ -32,3 +32,19 @@
     font-feature-settings: 'liga';
 }
 
+/* Custom scroll bars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(190, 190, 190, 0.35);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(190, 190, 190, 0.45);
+}
