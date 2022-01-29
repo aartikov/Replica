@@ -8,6 +8,8 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.websocket.*
+import io.netty.util.internal.logging.InternalLoggerFactory
+import io.netty.util.internal.logging.JdkLoggerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -61,6 +63,7 @@ class WebServer(
             "ReplicaDevTools",
             "Devtool is available with address: http://$ipAddress:$port/index.html"
         )
+        InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE)
         server.start(true)
     }
 
