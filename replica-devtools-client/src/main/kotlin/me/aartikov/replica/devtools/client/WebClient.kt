@@ -11,16 +11,16 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.*
 
 class WebClient {
 
-    private val mutableConnectionStatus = MutableStateFlow<ConnectionStatus>(
+    private val _connectionStatusFlow = MutableStateFlow<ConnectionStatus>(
         ConnectionStatus.Attempt
     )
-    val connectionStatus: StateFlow<ConnectionStatus>
-        get() = mutableConnectionStatus
+    val connectionStatusFlow: StateFlow<ConnectionStatus> = _connectionStatusFlow.asStateFlow()
 
     private val client = HttpClient {
         install(WebSockets)
@@ -32,10 +32,10 @@ class WebClient {
 
     private suspend fun listenSocket(dtoStore: DtoStore) {
         try {
-            mutableConnectionStatus.emit(ConnectionStatus.Attempt)
+            _connectionStatusFlow.emit(ConnectionStatus.Attempt)
             connectToSocket(dtoStore)
         } catch (e: WebSocketException) {
-            mutableConnectionStatus.emit(ConnectionStatus.Failed)
+            _connectionStatusFlow.emit(ConnectionStatus.Failed)
             delay(3000L)
             listenSocket(dtoStore)
         }
@@ -44,12 +44,12 @@ class WebClient {
     private suspend fun connectToSocket(dtoStore: DtoStore) {
         client.webSocket(
             method = HttpMethod.Get,
-            host = "10.0.1.207",
+            host = "192.168.0.8",
             port = 8080,
             path = "/ws"
         ) {
             try {
-                mutableConnectionStatus.emit(ConnectionStatus.Connected)
+                _connectionStatusFlow.emit(ConnectionStatus.Connected)
                 while (true) {
                     val frame = incoming.receive()
                     if (frame is Frame.Text) {
@@ -61,7 +61,7 @@ class WebClient {
                     }
                 }
             } catch (e: ClosedReceiveChannelException) {
-                mutableConnectionStatus.emit(ConnectionStatus.Failed)
+                _connectionStatusFlow.emit(ConnectionStatus.Failed)
                 listenSocket(dtoStore)
             }
         }

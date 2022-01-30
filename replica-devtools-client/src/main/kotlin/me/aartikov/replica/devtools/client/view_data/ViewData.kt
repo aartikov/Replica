@@ -15,13 +15,13 @@ data class ViewData(
     }
 }
 
-fun ReplicaClientDto.toViewData(type: SortType, connectionStatus: ConnectionStatus): ViewData {
+fun ReplicaClientDto.toViewData(sortType: SortType, connectionStatus: ConnectionStatus): ViewData {
     val replicas = replicas.values.map { it.toViewData() }
-    val keyedReplicas = keyedReplicas.values.map { it.toViewData(type) }
+    val keyedReplicas = keyedReplicas.values.map { it.toViewData(sortType) }
     val allReplicas = replicas
         .plus(keyedReplicas)
         .sortedByDescending { viewData ->
-            when (type) {
+            when (sortType) {
                 SortType.ByObservingTime -> viewData.observingTime
             }
         }

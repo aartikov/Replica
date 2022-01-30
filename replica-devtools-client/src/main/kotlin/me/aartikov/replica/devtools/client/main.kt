@@ -29,13 +29,11 @@ fun main() {
         val sortType by remember { mutableStateOf(SortType.ByObservingTime) }
 
         val viewData by combine(
-            dtoStore.stateDto, webClient.connectionStatus
+            dtoStore.dtoFlow, webClient.connectionStatusFlow
         ) { state, connectionStatus ->
             state.toViewData(sortType, connectionStatus)
         }.collectAsState(initial = ViewData.empty)
 
-        val connectionStatus by webClient.connectionStatus.collectAsState()
-
-        Body(viewData, connectionStatus)
+        Body(viewData)
     }
 }

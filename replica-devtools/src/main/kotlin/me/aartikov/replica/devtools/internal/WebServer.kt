@@ -49,7 +49,7 @@ class WebServer(
     }
 
     private suspend fun processSession(session: WebSocketSession) {
-        val lastState = dtoStore.stateDto.firstOrNull()
+        val lastState = dtoStore.dtoFlow.firstOrNull()
         lastState?.let {
             val frame = frame(DevToolsEventDto.serializer(), ReplaceAll(lastState))
             session.send(frame)
