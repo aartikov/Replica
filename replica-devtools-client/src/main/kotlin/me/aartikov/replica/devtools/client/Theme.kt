@@ -2,6 +2,7 @@ package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.browser.window
 import org.jetbrains.compose.web.css.CSSColorValue
@@ -62,7 +63,9 @@ fun Theme(
     } else {
         Theme.lightTheme
     }
-    window.localStorage.setItem(LocalStorageThemeKey, theme.name)
+    SideEffect {
+        window.localStorage.setItem(LocalStorageThemeKey, theme.name)
+    }
 
     CompositionLocalProvider(LocalTheme provides theme) {
         content()
