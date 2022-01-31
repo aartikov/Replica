@@ -32,7 +32,7 @@ fun main() {
             dtoStore.dtoFlow, webClient.connectionStatusFlow
         ) { state, connectionStatus ->
             state.toViewData(sortType, connectionStatus)
-        }.collectAsState(initial = ViewData.empty)
+        }.collectAsState(initial = ViewData.Empty)
 
         Body(viewData)
     }

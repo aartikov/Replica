@@ -8,9 +8,9 @@ data class ViewData(
     val connectionStatusType: ConnectionStatusType
 ) {
     companion object {
-        val empty = ViewData(
+        val Empty = ViewData(
             items = emptyList(),
-            connectionStatusType = ConnectionStatusType.Loading
+            connectionStatusType = ConnectionStatusType.Connecting
         )
     }
 }
