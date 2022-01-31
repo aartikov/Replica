@@ -1,16 +1,15 @@
 package me.aartikov.replica.devtools.internal
 
 import android.util.Log
-import io.ktor.application.install
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.WebSocketSession
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.websocket.WebSockets
-import io.ktor.websocket.webSocket
+import io.ktor.application.*
+import io.ktor.http.cio.websocket.*
+import io.ktor.http.content.*
+import io.ktor.routing.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.websocket.*
+import io.netty.util.internal.logging.InternalLoggerFactory
+import io.netty.util.internal.logging.JdkLoggerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -41,7 +40,7 @@ class WebServer(
             routing {
                 webSocket("/ws") { processSession(this) }
                 static("/") {
-                    resources()
+                    resources("replica-devtools")
                 }
             }
 
@@ -64,6 +63,7 @@ class WebServer(
             "ReplicaDevTools",
             "Devtool is available with address: http://$ipAddress:$port/index.html"
         )
+        InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE)
         server.start(true)
     }
 

@@ -23,6 +23,11 @@ android {
     }
 }
 
+afterEvaluate {
+    tasks.findByPath(':replica-devtools:preBuild')
+            .dependsOn(tasks.findByPath(':replica-devtools-client:jsBrowserProductionWebpack'))
+}
+
 dependencies {
     api project(':replica-core')
     implementation project(':replica-devtools-dto')
