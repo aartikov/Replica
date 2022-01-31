@@ -25,7 +25,7 @@ fun RText(
     attrs: AttrBuilderContext<*> = {},
     color: CSSColorValue = LocalTheme.current.onBackground
 ) {
-    Div(
+    Container(
         attrs = {
             style {
                 color(color)
@@ -54,24 +54,6 @@ fun MaterialIcon(
 }
 
 @Composable
-private fun NavBarIcon(icon: NavBarIcon) {
-    Li {
-        A(
-            attrs = {
-                onClick { icon.onClick() }
-            }
-        ) {
-            MaterialIcon(name = icon.name)
-        }
-    }
-}
-
-class NavBarIcon(
-    val name: String,
-    val onClick: () -> Unit
-)
-
-@Composable
 fun Divider(
     attrs: AttrBuilderContext<*> = {}
 ) {
@@ -96,9 +78,7 @@ fun FabButton(
             style {
                 backgroundColor(color)
             }
-            onClick {
-                onClick()
-            }
+            onClick { onClick() }
         }
     ) {
         MaterialIcon(name = name, color = iconColor)

@@ -2,6 +2,7 @@ package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.*
 import kotlinx.browser.window
+import me.aartikov.replica.devtools.client.view_data.ConnectionStatusType
 import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.ViewData
@@ -31,20 +32,8 @@ fun Body(viewData: ViewData) {
                 }
             }
         ) {
-            Container(
-                attrs = {
-                    style {
-                        width(100.percent)
-                        height(100.percent)
-                        position(Position.Absolute)
-                        top(0.px)
-                        left(0.px)
-                    }
-                }
-            ) {
-                Content(viewData = viewData) {
-                    isDarkTheme = !isDarkTheme
-                }
+            Content(viewData = viewData) {
+                isDarkTheme = !isDarkTheme
             }
         }
     }
@@ -52,21 +41,7 @@ fun Body(viewData: ViewData) {
 
 @Composable
 fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
-    val localTheme = LocalTheme.current
-
-    Container(
-        attrs = {
-            style {
-                position(Position.Fixed)
-                bottom(10.px)
-                right(10.px)
-                color(localTheme.primary)
-                property("z-index", 999)
-            }
-        }
-    ) {
-        FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
-    }
+    BottomBar(viewData.connectionStatusType, onChangeThemeClick)
     Container(
         attrs = {
             style {
@@ -78,20 +53,88 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
             }
         }
     ) {
-        Ul(
-            attrs = {
-                style {
-                    width(100.percent)
-                    margin(0.px)
+        if (viewData.items.isEmpty()) {
+            ContentPlaceholder()
+        } else {
+            Ul(
+                attrs = {
+                    style {
+                        width(100.percent)
+                        margin(0.px)
+                    }
                 }
-            }
-        ) {
-            viewData.items.forEach {
-                when (it) {
-                    is SimpleReplicaViewData -> ReplicaItem(item = it)
-                    is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+            ) {
+                viewData.items.forEach {
+                    when (it) {
+                        is SimpleReplicaViewData -> ReplicaItem(item = it)
+                        is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun BottomBar(
+    connectionStatusType: ConnectionStatusType,
+    onChangeThemeClick: () -> Unit
+) {
+    val localTheme = LocalTheme.current
+
+    Container(
+        attrs = {
+            style {
+                position(Position.Fixed)
+                bottom(10.px)
+                right(10.px)
+                color(localTheme.primary)
+                property("z-index", 999)
+            }
+        },
+        color = Color.transparent
+    ) {
+        Container(
+            attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                }
+            },
+            color = Color.transparent
+        ) {
+            RText(
+                connectionStatusType.text,
+                attrs = {
+                    style {
+                        border {
+                            width = 2.px
+                            color = localTheme.onBackground
+                            style = LineStyle.Solid
+                        }
+                        borderRadius(8.px)
+                        padding(4.px, 16.px)
+                        marginRight(16.px)
+                    }
+                }
+            )
+            FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
+        }
+    }
+}
+
+@Composable
+fun ContentPlaceholder() {
+    RText(
+        value = "No replicas",
+        attrs = {
+            style {
+                position(Position.Absolute)
+                top(50.percent)
+                left(50.percent)
+                property("font-size", "x-large")
+                textAlign("center")
+            }
+        }
+    )
 }

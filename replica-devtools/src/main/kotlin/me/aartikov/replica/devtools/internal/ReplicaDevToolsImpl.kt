@@ -37,7 +37,7 @@ internal class ReplicaDevToolsImpl(
 
     private fun launchLogger() {
         replicaClient.coroutineScope.launch {
-            store.stateDto.collect { logger.log(it) }
+            store.dtoFlow.collect { logger.log(it) }
         }
     }
 }
