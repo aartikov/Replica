@@ -126,7 +126,7 @@ private fun BottomBar(
 @Composable
 fun ContentPlaceholder() {
     RText(
-        value = "Empty data",
+        value = "No replicas",
         attrs = {
             style {
                 position(Position.Absolute)
