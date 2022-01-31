@@ -34,6 +34,9 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
             },
             value = item.name
         )
+        if (!isExpanded) {
+            ObserverIcon(item.observerType)
+        }
     }
     Divider(attrs = { style { marginLeft(16.px) } })
     if (isExpanded) {

@@ -21,7 +21,8 @@ data class KeyedReplicaViewData(
     override val id: String,
     override val name: String,
     val childReplicas: List<SimpleReplicaViewData>,
-    override val observingTime: ObservingTime
+    override val observingTime: ObservingTime,
+    val observerType: ObserverType,
 ) : ItemViewData(id, name, observingTime)
 
 fun ReplicaDto.toViewData(): SimpleReplicaViewData {
@@ -48,6 +49,7 @@ fun KeyedReplicaDto.toViewData(type: SortType): KeyedReplicaViewData {
             },
         observingTime = childReplicasViewData
             .maxOfOrNull { it.observingTime }
-            ?: ObservingTime.Never
+            ?: ObservingTime.Never,
+        observerType = state.toObserverType()
     )
 }
