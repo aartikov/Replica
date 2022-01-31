@@ -1,6 +1,7 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.*
+import kotlinx.browser.window
 import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.ViewData
@@ -10,7 +11,10 @@ import org.jetbrains.compose.web.dom.Ul
 
 @Composable
 fun Body(viewData: ViewData) {
-    var isDarkTheme by remember { mutableStateOf(false) }
+    var isDarkTheme by remember {
+        val localStorageTheme = window.localStorage.getItem(LocalStorageThemeKey)
+        mutableStateOf(localStorageTheme == Theme.darkTheme.name)
+    }
 
     Theme(isDarkTheme) {
         Container(
