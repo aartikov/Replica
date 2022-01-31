@@ -1,37 +1,69 @@
 package me.aartikov.replica.devtools.client
 
 import io.ktor.client.HttpClient
+import io.ktor.client.features.websocket.WebSocketException
 import io.ktor.client.features.websocket.WebSockets
 import io.ktor.client.features.websocket.webSocket
 import io.ktor.http.HttpMethod
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
 import kotlinx.browser.window
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
 import me.aartikov.replica.devtools.dto.*
 
 class WebClient {
 
+    private val _connectionStatusFlow = MutableStateFlow<ConnectionStatus>(
+        ConnectionStatus.Attempt
+    )
+    val connectionStatusFlow: StateFlow<ConnectionStatus> = _connectionStatusFlow.asStateFlow()
+
     private val client = HttpClient {
         install(WebSockets)
     }
 
-    suspend fun listenSocket(dtoStore: DtoStore) {
+    suspend fun startListenSocket(dtoStore: DtoStore) {
+        listenSocket(dtoStore)
+    }
+
+    private suspend fun listenSocket(dtoStore: DtoStore) {
+        try {
+            _connectionStatusFlow.emit(ConnectionStatus.Attempt)
+            connectToSocket(dtoStore)
+        } catch (e: WebSocketException) {
+            _connectionStatusFlow.emit(ConnectionStatus.Failed)
+            delay(3000L)
+            listenSocket(dtoStore)
+        }
+    }
+
+    private suspend fun connectToSocket(dtoStore: DtoStore) {
         client.webSocket(
             method = HttpMethod.Get,
             host = window.location.hostname,
             port = window.location.port.toIntOrNull() ?: 8080,
             path = "/ws"
         ) {
-            for (frame in this.incoming) {
-                if (frame is Frame.Text) {
-
-                    val event = Json.decodeFromString(
-                        DevToolsEventDto.serializer(),
-                        frame.readText()
-                    )
-                    dtoStore.updateStore(event)
+            try {
+                _connectionStatusFlow.emit(ConnectionStatus.Connected)
+                while (true) {
+                    val frame = incoming.receive()
+                    if (frame is Frame.Text) {
+                        val event = Json.decodeFromString(
+                            DevToolsEventDto.serializer(),
+                            frame.readText()
+                        )
+                        dtoStore.updateStore(event)
+                    }
                 }
+            } catch (e: ClosedReceiveChannelException) {
+                _connectionStatusFlow.emit(ConnectionStatus.Failed)
+                listenSocket(dtoStore)
             }
         }
     }
@@ -61,4 +93,10 @@ class WebClient {
             )
         }
     }
+}
+
+sealed interface ConnectionStatus {
+    object Connected : ConnectionStatus
+    object Failed : ConnectionStatus
+    object Attempt : ConnectionStatus
 }

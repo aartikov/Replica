@@ -1,9 +1,7 @@
 package me.aartikov.replica.devtools.client.view_data
 
-import me.aartikov.replica.devtools.client.StatusItemType
 import me.aartikov.replica.devtools.dto.KeyedReplicaDto
 import me.aartikov.replica.devtools.dto.ReplicaDto
-import me.aartikov.replica.devtools.dto.ReplicaStateDto
 
 sealed class ItemViewData(
     open val id: String,
@@ -52,16 +50,4 @@ fun KeyedReplicaDto.toViewData(type: SortType): KeyedReplicaViewData {
             .maxOfOrNull { it.observingTime }
             ?: ObservingTime.Never
     )
-}
-
-fun ReplicaStateDto.toStatusItemType(): StatusItemType {
-    return when {
-        hasData && !loading && dataIsFresh -> StatusItemType.Fresh
-        hasData && !loading && !dataIsFresh -> StatusItemType.Stale
-        !hasData && hasError && !loading -> StatusItemType.Error
-        !hasData && loading -> StatusItemType.Loading
-        hasData && loading -> StatusItemType.Refresh
-        !hasData && !hasError && !loading -> StatusItemType.Empty
-        else -> throw IllegalArgumentException()
-    }
 }
