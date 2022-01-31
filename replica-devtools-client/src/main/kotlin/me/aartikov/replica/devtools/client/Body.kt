@@ -53,18 +53,22 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
             }
         }
     ) {
-        Ul(
-            attrs = {
-                style {
-                    width(100.percent)
-                    margin(0.px)
+        if (viewData.items.isEmpty()) {
+            ContentPlaceholder()
+        } else {
+            Ul(
+                attrs = {
+                    style {
+                        width(100.percent)
+                        margin(0.px)
+                    }
                 }
-            }
-        ) {
-            viewData.items.forEach {
-                when (it) {
-                    is SimpleReplicaViewData -> ReplicaItem(item = it)
-                    is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+            ) {
+                viewData.items.forEach {
+                    when (it) {
+                        is SimpleReplicaViewData -> ReplicaItem(item = it)
+                        is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+                    }
                 }
             }
         }
@@ -117,4 +121,20 @@ private fun BottomBar(
             FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
         }
     }
+}
+
+@Composable
+fun ContentPlaceholder() {
+    RText(
+        value = "Empty data",
+        attrs = {
+            style {
+                position(Position.Absolute)
+                top(50.percent)
+                left(50.percent)
+                property("font-size", "x-large")
+                textAlign("center")
+            }
+        }
+    )
 }

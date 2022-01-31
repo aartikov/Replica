@@ -37,10 +37,28 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
     }
     Divider(attrs = { style { marginLeft(16.px) } })
     if (isExpanded) {
-        item.childReplicas.forEach {
-            Container(attrs = { style { paddingLeft(48.px) } }) {
-                ReplicaItem(it)
+        if (item.childReplicas.isEmpty()) {
+            ChildReplicaPlaceholder()
+        } else {
+            item.childReplicas.forEach {
+                Container(attrs = { style { paddingLeft(48.px) } }) {
+                    ReplicaItem(it)
+                }
             }
         }
     }
+}
+
+@Composable
+fun ChildReplicaPlaceholder() {
+    RText(
+        "No child replicas",
+        attrs = {
+            style {
+                width(100.percent)
+                padding(16.px, 16.px, 16.px, 64.px)
+            }
+        }
+    )
+    Divider(attrs = { style { marginLeft(64.px) } })
 }
