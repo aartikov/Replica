@@ -11,40 +11,40 @@ import org.jetbrains.compose.web.css.rgb
 
 class Theme(
     val isDark: Boolean,
-    val primary: CSSColorValue,
-    val onPrimary: CSSColorValue,
-    val secondaryColor: CSSColorValue,
-    val onSecondaryColor: CSSColorValue,
-    val background: CSSColorValue,
-    val onBackground: CSSColorValue,
-    val error: CSSColorValue,
-    val onError: CSSColorValue,
+    val backgroundColor: CSSColorValue,
+    val textColor: CSSColorValue,
+    val defaultStatusColor: CSSColorValue,
+    val statusTextColor: CSSColorValue,
+    val errorStatusColor: CSSColorValue,
+    val freshStatusColor: CSSColorValue,
+    val bottomBarColor: CSSColorValue,
+    val dividerColor: CSSColorValue,
     val name: String
 ) {
 
     companion object {
         val lightTheme = Theme(
             isDark = false,
-            primary = rgb(98, 0, 238),
-            onPrimary = Color.white,
-            secondaryColor = rgb(3, 218, 198),
-            onSecondaryColor = Color.black,
-            background = Color.white,
-            onBackground = Color.black,
-            error = rgb(176, 0, 32),
-            onError = Color.white,
-            name = "light"
+            defaultStatusColor = rgb(98, 0, 238),
+            statusTextColor = Color.white,
+            freshStatusColor = rgb(3, 218, 198),
+            backgroundColor = Color.white,
+            textColor = Color.black,
+            errorStatusColor = rgb(176, 0, 32),
+            name = "light",
+            bottomBarColor = Color.whitesmoke,
+            dividerColor = Color.lightgray
         )
         val darkTheme = Theme(
             isDark = true,
-            primary = rgb(187, 134, 252),
-            onPrimary = rgb(36, 36, 36),
-            secondaryColor = rgb(3, 218, 198),
-            onSecondaryColor = rgb(36, 36, 36),
-            background = rgb(36, 36, 36),
-            onBackground = rgb(248, 248, 242),
-            error = rgb(207, 102, 121),
-            onError = rgb(36, 36, 36),
+            defaultStatusColor = rgb(187, 134, 252),
+            statusTextColor = rgb(36, 36, 36),
+            freshStatusColor = rgb(3, 218, 198),
+            backgroundColor = rgb(36, 36, 36),
+            textColor = rgb(248, 248, 242),
+            errorStatusColor = rgb(207, 102, 121),
+            bottomBarColor = Color.gray,
+            dividerColor = rgb(248, 248, 242),
             name = "dark"
         )
     }

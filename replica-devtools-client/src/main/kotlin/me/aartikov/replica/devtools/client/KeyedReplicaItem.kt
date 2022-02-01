@@ -2,6 +2,7 @@ package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.*
 import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 
 @Composable
@@ -11,18 +12,15 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
     Container(
         attrs = {
             style {
-                width(100.percent)
                 display(DisplayStyle.Flex)
-                flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                flexFlow(FlexDirection.Row, FlexWrap.Wrap)
                 alignItems(AlignItems.Center)
                 padding(2.px, 16.px)
                 onClick { isExpanded = !isExpanded }
             }
         }
     ) {
-        MaterialIcon(
-            name = if (isExpanded) "keyboard_arrow_down" else "keyboard_arrow_right"
-        )
+        ExpandableImg(isExpanded)
         RText(
             attrs = {
                 style {
@@ -30,6 +28,7 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
                     flexGrow(1)
                     display(DisplayStyle.Flex)
                     alignItems(AlignItems.Center)
+                    marginLeft(8.px)
                 }
             },
             value = item.name
@@ -44,7 +43,7 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
             ChildReplicaPlaceholder()
         } else {
             item.childReplicas.forEach {
-                Container(attrs = { style { paddingLeft(48.px) } }) {
+                Container(attrs = { style { paddingLeft(32.px) } }) {
                     ReplicaItem(it)
                 }
             }
@@ -64,4 +63,21 @@ fun ChildReplicaPlaceholder() {
         }
     )
     Divider(attrs = { style { marginLeft(64.px) } })
+}
+
+@OptIn(ExperimentalComposeWebApi::class)
+@Composable
+fun ExpandableImg(isExpanded: Boolean) {
+    ThemedImg(
+        src = "arrow_forward_24_black.png",
+        attrs = {
+            style {
+                width(14.px)
+                height(14.px)
+                if (isExpanded) {
+                    transform { rotate(90.deg) }
+                }
+            }
+        }
+    )
 }

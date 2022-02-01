@@ -6,7 +6,6 @@ import org.jetbrains.compose.web.css.height
 import org.jetbrains.compose.web.css.marginLeft
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.width
-import org.jetbrains.compose.web.dom.Img
 
 @Composable
 fun ObserverIcon(type: ObserverType) {
@@ -19,14 +18,9 @@ fun ObserverIcon(type: ObserverType) {
             }
         }
     ) {
-        val isDarkTheme = LocalTheme.current.isDark
         when (type) {
-            ObserverType.Active -> Img(
-                src = if (isDarkTheme) "ic_eye_24_white.png" else "ic_eye_24_black.png"
-            )
-            ObserverType.Inactive -> Img(
-                src = if (isDarkTheme) "ic_closed_eye_24_white.png" else "ic_closed_eye_24_black.png"
-            )
+            ObserverType.Active -> ThemedImg("ic_eye_24_black.png")
+            ObserverType.Inactive -> ThemedImg("ic_closed_eye_24_black.png")
             ObserverType.None -> {
                 // Nothing
             }

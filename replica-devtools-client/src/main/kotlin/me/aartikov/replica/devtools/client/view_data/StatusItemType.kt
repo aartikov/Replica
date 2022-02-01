@@ -15,11 +15,11 @@ enum class StatusItemType {
 
     fun getColors(theme: Theme): Pair<CSSColorValue, CSSColorValue> {
         return when (this) {
-            Loading -> theme.primary to theme.onPrimary
-            Fresh -> theme.secondaryColor to Color.white
-            Error -> theme.error to theme.onError
-            Refresh -> theme.primary to theme.onPrimary
-            Empty -> theme.onBackground to theme.background
+            Loading -> theme.defaultStatusColor to theme.statusTextColor
+            Fresh -> theme.freshStatusColor to Color.white
+            Error -> theme.errorStatusColor to theme.statusTextColor
+            Refresh -> theme.defaultStatusColor to theme.statusTextColor
+            Empty -> theme.textColor to theme.backgroundColor
             Stale -> Color.slategray to Color.white
         }
     }
