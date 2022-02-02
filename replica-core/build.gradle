@@ -26,5 +26,7 @@ compileTestKotlin {
 dependencies {
     api libs.coroutines.core
     api libs.kotlin.datetime
+
     testImplementation libs.junit
+    testImplementation libs.coroutinesTest
 }
