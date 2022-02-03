@@ -8,7 +8,6 @@ import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.ViewData
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
-import org.jetbrains.compose.web.dom.Ul
 
 @Composable
 fun Body(viewData: ViewData) {
@@ -41,7 +40,6 @@ fun Body(viewData: ViewData) {
 
 @Composable
 fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
-    BottomBar(viewData.connectionStatusType, onChangeThemeClick)
     Container(
         attrs = {
             style {
@@ -49,21 +47,22 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
                 height(100.percent)
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Column, FlexWrap.Nowrap)
-                overflowY("scroll")
             }
         }
     ) {
-        if (viewData.items.isEmpty()) {
-            ContentPlaceholder()
-        } else {
-            Ul(
-                attrs = {
-                    style {
-                        width(100.percent)
-                        margin(0.px)
-                    }
+        Container(
+            attrs = {
+                style {
+                    property("flex-grow", 1)
+                    display(DisplayStyle.Flex)
+                    flexFlow(FlexDirection.Column, FlexWrap.Nowrap)
+                    overflowY("scroll")
                 }
-            ) {
+            }
+        ) {
+            if (viewData.items.isEmpty()) {
+                ContentPlaceholder()
+            } else {
                 viewData.items.forEach {
                     when (it) {
                         is SimpleReplicaViewData -> ReplicaItem(item = it)
@@ -72,6 +71,7 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
                 }
             }
         }
+        BottomBar(viewData.connectionStatusType, onChangeThemeClick)
     }
 }
 
@@ -85,41 +85,33 @@ private fun BottomBar(
     Container(
         attrs = {
             style {
-                position(Position.Fixed)
-                bottom(10.px)
-                right(10.px)
-                color(localTheme.primary)
-                property("z-index", 999)
+                right(0.px)
+                left(0.px)
+                paddingRight(8.px)
+                paddingLeft(8.px)
+                display(DisplayStyle.Flex)
+                height(24.px)
+                flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                justifyContent(JustifyContent.SpaceBetween)
+                alignItems(AlignItems.Center)
             }
         },
-        color = Color.transparent
+        color = localTheme.bottomBarColor
     ) {
-        Container(
+        RText(
+            value = connectionStatusType.text,
+            backgroundColor = localTheme.bottomBarColor
+        )
+        ThemedImg(
+            src = if (localTheme.isDark) "sun_24_black.png" else "moon_24_black.png",
             attrs = {
                 style {
-                    display(DisplayStyle.Flex)
-                    flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                    width(20.px)
+                    height(20.px)
+                    onClick { onChangeThemeClick() }
                 }
-            },
-            color = Color.transparent
-        ) {
-            RText(
-                connectionStatusType.text,
-                attrs = {
-                    style {
-                        border {
-                            width = 2.px
-                            color = localTheme.onBackground
-                            style = LineStyle.Solid
-                        }
-                        borderRadius(8.px)
-                        padding(4.px, 16.px)
-                        marginRight(16.px)
-                    }
-                }
-            )
-            FabButton(if (localTheme.isDark) "dark_mode" else "light_mode") { onChangeThemeClick() }
-        }
+            }
+        )
     }
 }
 

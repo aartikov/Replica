@@ -1,16 +1,18 @@
 package me.aartikov.replica.devtools.client
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.web.css.CSSColorValue
-import org.jetbrains.compose.web.css.backgroundColor
-import org.jetbrains.compose.web.css.color
-import org.jetbrains.compose.web.css.overflow
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.AttrBuilderContext
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLImageElement
 
 @Composable
 fun Container(
     attrs: AttrBuilderContext<*> = {},
-    color: CSSColorValue = LocalTheme.current.background,
+    color: CSSColorValue = LocalTheme.current.backgroundColor,
     content: @Composable () -> Unit
 ) {
     Div(attrs = {
@@ -23,64 +25,58 @@ fun Container(
 fun RText(
     value: String,
     attrs: AttrBuilderContext<*> = {},
-    color: CSSColorValue = LocalTheme.current.onBackground
+    color: CSSColorValue = LocalTheme.current.textColor,
+    backgroundColor: CSSColorValue = LocalTheme.current.backgroundColor
 ) {
     Container(
         attrs = {
             style {
+                fontFamily("Fira Sans", "sans-serif")
                 color(color)
+                fontSize(0.9.em)
                 property("text-overflow", "ellipsis")
                 overflow("hidden")
             }
             attrs()
-        }
+        },
+        color = backgroundColor
     ) {
         Text(value = value)
     }
 }
 
 @Composable
-fun MaterialIcon(
-    name: String,
-    attrs: AttrBuilderContext<*> = {},
-    color: CSSColorValue = LocalTheme.current.onBackground
-) {
-    I(attrs = {
-        classes("material-icons")
-        attrs()
-        style { color(color) }
-    }
-    ) { Text(value = name) }
-}
-
-@Composable
 fun Divider(
     attrs: AttrBuilderContext<*> = {}
 ) {
+    val localTheme = LocalTheme.current
     Div(
         attrs = {
-            classes("divider")
+            style {
+                left(0.px)
+                right(0.px)
+                height(1.px)
+                backgroundColor(localTheme.dividerColor)
+            }
             attrs()
         }
     )
 }
 
+@OptIn(ExperimentalComposeWebApi::class)
 @Composable
-fun FabButton(
-    name: String,
-    color: CSSColorValue = LocalTheme.current.primary,
-    iconColor: CSSColorValue = LocalTheme.current.onPrimary,
-    onClick: () -> Unit,
+fun ThemedImg(
+    src: String,
+    attrs: AttrBuilderContext<HTMLImageElement> = {},
 ) {
-    A(
+    val localTheme = LocalTheme.current
+    Img(
+        src = src,
         attrs = {
-            classes("btn-floating", "btn-small", "waves-effect")
+            attrs()
             style {
-                backgroundColor(color)
+                if (localTheme.isDark) filter { invert(100.percent) }
             }
-            onClick { onClick() }
         }
-    ) {
-        MaterialIcon(name = name, color = iconColor)
-    }
+    )
 }

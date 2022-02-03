@@ -9,11 +9,10 @@ fun ReplicaItem(item: SimpleReplicaViewData) {
     Container(
         attrs = {
             style {
-                width(100.percent)
                 display(DisplayStyle.Flex)
-                flexFlow(FlexDirection.Row, FlexWrap.Nowrap)
+                flexFlow(FlexDirection.Row, FlexWrap.Wrap)
                 alignItems(AlignItems.Center)
-                padding(2.px, 16.px)
+                padding(4.px, 16.px)
             }
         }
     ) {
