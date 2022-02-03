@@ -5,7 +5,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -30,9 +29,9 @@ class ObserverCountTest {
     fun `has no observers initially`() = runTest {
         val replica = testPhysicalReplica()
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(0, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(0, state.observerCount)
     }
 
     @Test
@@ -71,9 +70,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(1, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(1, state.observerCount)
     }
 
     @Test
@@ -88,9 +87,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(1, state?.activeObserverCount)
-        assertEquals(1, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(1, state.activeObserverCount)
+        assertEquals(1, state.observerCount)
     }
 
     @Test
@@ -104,9 +103,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(0, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(0, state.observerCount)
     }
 
     @Test
@@ -121,9 +120,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(0, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(0, state.observerCount)
     }
 
     @Test
@@ -138,9 +137,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(activeObserversCount, state?.activeObserverCount)
-        assertEquals(observersCount + activeObserversCount, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(activeObserversCount, state.activeObserverCount)
+        assertEquals(observersCount + activeObserversCount, state.observerCount)
     }
 
     @Test
@@ -155,9 +154,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(0, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(0, state.observerCount)
     }
 
     @Test
@@ -176,9 +175,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(0, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(0, state.observerCount)
     }
 
     @Test
@@ -196,9 +195,9 @@ class ObserverCountTest {
         }
         delay(DEFAULT_DELAY * 2)
 
-        val state = replica.stateFlow.firstOrNull()?.observingState
-        assertEquals(2, state?.observerCount)
-        assertEquals(1, state?.activeObserverCount)
+        val state = replica.currentState.observingState
+        assertEquals(2, state.observerCount)
+        assertEquals(1, state.activeObserverCount)
     }
 
     private fun testPhysicalReplica(): PhysicalReplica<Any> {
