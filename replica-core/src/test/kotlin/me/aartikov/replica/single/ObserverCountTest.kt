@@ -27,7 +27,7 @@ class ObserverCountTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `has initially no active observers`() = runTest {
+    fun `has no observers initially`() = runTest {
         val replica = testPhysicalReplica()
 
         val state = replica.stateFlow.firstOrNull()?.observingState
