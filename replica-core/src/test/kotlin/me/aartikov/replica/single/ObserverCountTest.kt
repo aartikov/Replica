@@ -2,8 +2,11 @@ package me.aartikov.replica.single
 
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -24,40 +27,40 @@ class ObserverCountTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `is initially no active observers`() = runTest {
+    fun `has initially no active observers`() = runTest {
         val replica = testPhysicalReplica()
 
-        val activeObserverCount = replica.stateFlow.firstOrNull()
-            ?.observingState
-            ?.activeObserverCount
-
-        assertEquals(0, activeObserverCount)
+        val state = replica.stateFlow.firstOrNull()?.observingState
+        assertEquals(0, state?.activeObserverCount)
+        assertEquals(0, state?.observerCount)
     }
 
     @Test
-    fun `is observer when observe is called`() = runTest {
+    fun `has observer when observe has called`() = runTest {
         val replica = testPhysicalReplica()
 
         replica.observe(TestScope(), MutableStateFlow(false))
+        delay(DEFAULT_DELAY)
 
-        val state = replica.stateFlow.take(2).lastOrNull()?.observingState
-        assertEquals(0, state?.activeObserverCount)
-        assertEquals(1, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(0, state.activeObserverCount)
+        assertEquals(1, state.observerCount)
     }
 
     @Test
-    fun `is active observer when active observe is called`() = runTest {
+    fun `has active observer when active observe has called`() = runTest {
         val replica = testPhysicalReplica()
 
         replica.observe(TestScope(), MutableStateFlow(true))
+        delay(DEFAULT_DELAY)
 
-        val state = replica.stateFlow.take(2).lastOrNull()?.observingState
-        assertEquals(1, state?.activeObserverCount)
-        assertEquals(1, state?.observerCount)
+        val state = replica.currentState.observingState
+        assertEquals(1, state.activeObserverCount)
+        assertEquals(1, state.observerCount)
     }
 
     @Test
-    fun `is observer when observer became inactive`() = runTest {
+    fun `has observer when observer became inactive`() = runTest {
         val replica = testPhysicalReplica()
 
         launch {
@@ -74,7 +77,7 @@ class ObserverCountTest {
     }
 
     @Test
-    fun `is active observer when observer became active`() = runTest {
+    fun `has active observer when observer became active`() = runTest {
         val replica = testPhysicalReplica()
 
         launch {
@@ -91,7 +94,7 @@ class ObserverCountTest {
     }
 
     @Test
-    fun `is no observers when observer canceled`() = runTest {
+    fun `has no observers when observer canceled`() = runTest {
         val replica = testPhysicalReplica()
 
         launch {
@@ -107,7 +110,24 @@ class ObserverCountTest {
     }
 
     @Test
-    fun `is multiple observers when multiple observers observe`() = runTest {
+    fun `has no observers when observer scope canceled`() = runTest {
+        val replica = testPhysicalReplica()
+
+        launch {
+            val observerScope = TestScope()
+            replica.observe(observerScope, MutableStateFlow(true))
+            delay(DEFAULT_DELAY)
+            observerScope.cancel()
+        }
+        delay(DEFAULT_DELAY * 2)
+
+        val state = replica.stateFlow.firstOrNull()?.observingState
+        assertEquals(0, state?.activeObserverCount)
+        assertEquals(0, state?.observerCount)
+    }
+
+    @Test
+    fun `has multiple observers when multiple observers observe`() = runTest {
         val replica = testPhysicalReplica()
         val observersCount = 5
         val activeObserversCount = 3
@@ -124,7 +144,7 @@ class ObserverCountTest {
     }
 
     @Test
-    fun `is no observers when multiple observers canceled observing`() = runTest {
+    fun `has no observers when multiple observers canceled observing`() = runTest {
         val replica = testPhysicalReplica()
 
         launch {
@@ -141,7 +161,28 @@ class ObserverCountTest {
     }
 
     @Test
-    fun `is active observer when two observers change active state`() = runTest {
+    fun `has no observers when scopes of multiple observers canceled`() = runTest {
+        val replica = testPhysicalReplica()
+
+        launch {
+            val observerScopes = (0 until 10)
+                .map {
+                    val observerScope = TestScope()
+                    replica.observe(observerScope, MutableStateFlow(true))
+                    observerScope
+                }
+            delay(DEFAULT_DELAY)
+            observerScopes.forEach { it.cancel() }
+        }
+        delay(DEFAULT_DELAY * 2)
+
+        val state = replica.stateFlow.firstOrNull()?.observingState
+        assertEquals(0, state?.activeObserverCount)
+        assertEquals(0, state?.observerCount)
+    }
+
+    @Test
+    fun `has active observer when two observers change active state`() = runTest {
         val replica = testPhysicalReplica()
 
         launch {
