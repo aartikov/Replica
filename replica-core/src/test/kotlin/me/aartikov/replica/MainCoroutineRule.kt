@@ -1,4 +1,4 @@
-package me.aartikov.replica.single
+package me.aartikov.replica
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
