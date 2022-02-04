@@ -45,7 +45,7 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `observer doesn't observe loading, error`() = runTest {
+    fun `inactive observer doesn't observe loading, error`() = runTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
@@ -101,7 +101,7 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `observer observes loading state when became active`() = runTest {
+    fun `inactive observer observes loading state when became active`() = runTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
@@ -171,7 +171,7 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `observer observes multiple errors when became active`() = runTest {
+    fun `inactive observer observes multiple errors when became active`() = runTest {
         val error = LoadingFailedException()
         val errorsCount = 10
         val replica = replicaProvider.replica(

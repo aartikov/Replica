@@ -37,7 +37,7 @@ class StateObservingTest {
     }
 
     @Test
-    fun `observer doesn't observe data initially`() = runTest {
+    fun `inactive observer doesn't observe data initially`() = runTest {
         val replica = replicaProvider.replica()
         val newData = ("new data")
 
@@ -49,7 +49,7 @@ class StateObservingTest {
     }
 
     @Test
-    fun `observer doesn't observe data when became inactive`() = runTest {
+    fun `active observer doesn't observe data when became inactive`() = runTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY * 2)
@@ -59,8 +59,8 @@ class StateObservingTest {
 
         val activeObserver = MutableStateFlow(true)
         val observer = replica.observe(TestScope(), activeObserver)
-        delay(DEFAULT_DELAY)
         activeObserver.update { false }
+        replica.refresh()
 
         val state = observer.currentState
         assertEquals(Loadable<Any>(), state)
@@ -81,7 +81,7 @@ class StateObservingTest {
     }
 
     @Test
-    fun `observer doesn't observe new data`() = runTest {
+    fun `inactive observer doesn't observe new data`() = runTest {
         val replica = replicaProvider.replica()
         val newData = "new data"
 
@@ -95,7 +95,7 @@ class StateObservingTest {
     }
 
     @Test
-    fun `observer observes new data when became active`() = runTest {
+    fun `inactive observer observes new data when became active`() = runTest {
         val replica = replicaProvider.replica()
         val newData = "new data"
 

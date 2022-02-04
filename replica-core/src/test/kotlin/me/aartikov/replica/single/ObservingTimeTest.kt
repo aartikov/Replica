@@ -189,11 +189,11 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         launch {
-            val observerScope2 = TestScope()
+            val observerScope = TestScope()
             replica.observe(TestScope(), MutableStateFlow(true))
-            replica.observe(observerScope2, MutableStateFlow(true))
+            replica.observe(observerScope, MutableStateFlow(true))
             delay(DEFAULT_DELAY)
-            observerScope2.cancel()
+            observerScope.cancel()
         }
         delay(DEFAULT_DELAY * 2)
 
