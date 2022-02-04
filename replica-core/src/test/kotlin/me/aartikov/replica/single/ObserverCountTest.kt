@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
-import me.aartikov.replica.client.ReplicaClient
 import org.junit.Rule
 import org.junit.Test
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserverCountTest {
+
+    private val replicaProvider = ReplicaProvider()
 
     companion object {
         const val DEFAULT_DELAY = 100L
@@ -27,7 +27,7 @@ class ObserverCountTest {
 
     @Test
     fun `has no observers initially`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -36,7 +36,7 @@ class ObserverCountTest {
 
     @Test
     fun `has observer when observe has called`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(false))
         delay(DEFAULT_DELAY)
@@ -48,7 +48,7 @@ class ObserverCountTest {
 
     @Test
     fun `has active observer when active observe has called`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(true))
         delay(DEFAULT_DELAY)
@@ -60,7 +60,7 @@ class ObserverCountTest {
 
     @Test
     fun `has observer when observer became inactive`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observerActive = MutableStateFlow(true)
@@ -77,7 +77,7 @@ class ObserverCountTest {
 
     @Test
     fun `has active observer when observer became active`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observerActive = MutableStateFlow(false)
@@ -94,7 +94,7 @@ class ObserverCountTest {
 
     @Test
     fun `has no observers when observer canceled`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observer = replica.observe(TestScope(), MutableStateFlow(true))
@@ -110,7 +110,7 @@ class ObserverCountTest {
 
     @Test
     fun `has no observers when observer scope canceled`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observerScope = TestScope()
@@ -127,7 +127,7 @@ class ObserverCountTest {
 
     @Test
     fun `has multiple observers when multiple observers observe`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
         val observersCount = 5
         val activeObserversCount = 3
 
@@ -144,7 +144,7 @@ class ObserverCountTest {
 
     @Test
     fun `has no observers when multiple observers canceled observing`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observers = (0 until 10)
@@ -161,7 +161,7 @@ class ObserverCountTest {
 
     @Test
     fun `has no observers when scopes of multiple observers canceled`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observerScopes = (0 until 10)
@@ -182,7 +182,7 @@ class ObserverCountTest {
 
     @Test
     fun `has active observer when two observers change active state`() = runTest {
-        val replica = testPhysicalReplica()
+        val replica = replicaProvider.replica()
 
         launch {
             val observerActive1 = MutableStateFlow(false)
@@ -198,13 +198,5 @@ class ObserverCountTest {
         val state = replica.currentState.observingState
         assertEquals(2, state.observerCount)
         assertEquals(1, state.activeObserverCount)
-    }
-
-    private fun testPhysicalReplica(): PhysicalReplica<Any> {
-        val replicaClient = ReplicaClient()
-        return replicaClient.createReplica(
-            name = "test",
-            settings = ReplicaSettings(staleTime = 1.seconds)
-        ) { Any() }
     }
 }
