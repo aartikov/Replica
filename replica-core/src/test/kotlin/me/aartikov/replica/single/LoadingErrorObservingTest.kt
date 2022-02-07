@@ -45,7 +45,7 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `inactive observer doesn't observe loading, error`() = runTest {
+    fun `inactive observer doesn't observe loading, error state`() = runTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
@@ -120,7 +120,7 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `active observer observes error`() = runTest {
+    fun `active observer observes error event`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             fetcher = {
@@ -143,7 +143,25 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `active observer observes multiple errors`() = runTest {
+    fun `inactive observer doesn't observe error event`() = runTest {
+        val error = LoadingFailedException()
+        val replica = replicaProvider.replica(
+            fetcher = {
+                delay(DEFAULT_DELAY)
+                throw  error
+            }
+        )
+
+        replica.refresh()
+        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        delay(DEFAULT_DELAY * 2)
+
+        val state = observer.currentState
+        assertEquals(Loadable<String>(), state)
+    }
+
+    @Test
+    fun `active observer observes multiple error events`() = runTest {
         val error = LoadingFailedException()
         val errorsCount = 10
         val replica = replicaProvider.replica(
@@ -171,19 +189,21 @@ class LoadingErrorObservingTest {
     }
 
     @Test
-    fun `inactive observer observes multiple errors when became active`() = runTest {
-        val error = LoadingFailedException()
-        val errorsCount = 10
+    fun `observer observes error events only when active`() = runTest {
+        var counter = 0
+        val error = { num: Int -> LoadingFailedException(num.toString()) }
+        val errorsCount = 30
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  error
+                throw  error(counter)
             }
         )
 
         launch {
             repeat(errorsCount) {
                 replica.refresh()
+                counter++
                 delay(DEFAULT_DELAY * 2)
             }
         }
@@ -195,10 +215,13 @@ class LoadingErrorObservingTest {
 
         val errorEvents = observer.loadingErrorFlow.take(errorsCount / 2).toList()
         val state = observer.currentState
-        assertEquals(
-            List(errorsCount / 2) { LoadingError(error) },
-            errorEvents
+        val expectedErrorsEvents = ((errorsCount / 2 + 1)..errorsCount).map {
+            LoadingError(LoadingFailedException(it.toString()))
+        }
+        val expectedState = Loadable<String>(
+            error = CombinedLoadingError(LoadingFailedException(errorsCount.toString()))
         )
-        assertEquals(Loadable<String>(error = CombinedLoadingError(error)), state)
+        assertEquals(expectedErrorsEvents, errorEvents)
+        assertEquals(expectedState, state)
     }
 }
