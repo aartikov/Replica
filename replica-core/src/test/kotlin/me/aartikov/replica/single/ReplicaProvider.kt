@@ -6,14 +6,14 @@ import me.aartikov.replica.time.TimeProvider
 
 class ReplicaProvider {
 
-    private val defaultTimeProvider = FakeTimeProvider()
+    val timeProvider = FakeTimeProvider()
 
     private val defaultReplicaSettings = ReplicaSettings.WithoutBehaviour
 
     private val defaultFetcher = Fetcher { "test" }
 
     fun replica(
-        timeProvider: TimeProvider = defaultTimeProvider,
+        timeProvider: TimeProvider = this.timeProvider,
         fetcher: Fetcher<String> = defaultFetcher,
         replicaSettings: ReplicaSettings = defaultReplicaSettings
     ): PhysicalReplica<String> {
@@ -30,5 +30,5 @@ class ReplicaProvider {
 }
 
 class FakeTimeProvider : TimeProvider {
-    override val currentTime: Instant = Instant.DISTANT_PAST
+    override var currentTime: Instant = Instant.DISTANT_PAST
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import me.aartikov.replica.MainCoroutineRule
 import me.aartikov.replica.common.ObservingTime
 import org.junit.Assert.assertEquals
@@ -19,10 +20,11 @@ import org.junit.Test
 class ObservingTimeTest {
 
     private val replicaProvider = ReplicaProvider()
-    private val fakeTime = FakeTimeProvider().currentTime
+    private val fakeTimeProvider = replicaProvider.timeProvider
 
     companion object {
         private const val DEFAULT_DELAY = 100L
+        private val TEST_TIME = Instant.fromEpochMilliseconds(1000)
     }
 
     @get:Rule
@@ -62,6 +64,7 @@ class ObservingTimeTest {
     fun `is in past when observer became inactive`() = runTest {
         val replica = replicaProvider.replica()
 
+        fakeTimeProvider.currentTime = TEST_TIME
         val observerActive = MutableStateFlow(true)
         replica.observe(TestScope(), observerActive)
         runCurrent()
@@ -69,7 +72,7 @@ class ObservingTimeTest {
         runCurrent()
 
         val state = replica.currentState.observingState
-        assertEquals(ObservingTime.TimeInPast(fakeTime), state.observingTime)
+        assertEquals(ObservingTime.TimeInPast(TEST_TIME), state.observingTime)
     }
 
     @Test
@@ -107,6 +110,7 @@ class ObservingTimeTest {
     fun `is in past when active observer canceled`() = runTest {
         val replica = replicaProvider.replica()
 
+        fakeTimeProvider.currentTime = TEST_TIME
         launch {
             val observer = replica.observe(TestScope(), MutableStateFlow(true))
             delay(DEFAULT_DELAY)
@@ -115,7 +119,7 @@ class ObservingTimeTest {
         delay(DEFAULT_DELAY * 2)
 
         val state = replica.currentState.observingState
-        assertEquals(ObservingTime.TimeInPast(fakeTime), state.observingTime)
+        assertEquals(ObservingTime.TimeInPast(TEST_TIME), state.observingTime)
     }
 
     @Test
@@ -138,6 +142,7 @@ class ObservingTimeTest {
     fun `is in past when active observer scope canceled`() = runTest {
         val replica = replicaProvider.replica()
 
+        fakeTimeProvider.currentTime = TEST_TIME
         launch {
             val observerScope = TestScope()
             replica.observe(observerScope, MutableStateFlow(true))
@@ -147,7 +152,7 @@ class ObservingTimeTest {
         delay(DEFAULT_DELAY * 2)
 
         val state = replica.currentState.observingState
-        assertEquals(ObservingTime.TimeInPast(fakeTime), state.observingTime)
+        assertEquals(ObservingTime.TimeInPast(TEST_TIME), state.observingTime)
     }
 
     @Test
