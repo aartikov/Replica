@@ -1,15 +1,14 @@
 package me.aartikov.replica.single
 
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -39,7 +38,7 @@ class ObserverCountTest {
         val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(false))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -51,7 +50,7 @@ class ObserverCountTest {
         val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(1, state.activeObserverCount)
@@ -62,13 +61,10 @@ class ObserverCountTest {
     fun `has observer when observer became inactive`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive = MutableStateFlow(true)
-            replica.observe(TestScope(), observerActive)
-            delay(DEFAULT_DELAY)
-            observerActive.update { false }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive = MutableStateFlow(true)
+        replica.observe(TestScope(), observerActive)
+        observerActive.update { false }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -79,13 +75,10 @@ class ObserverCountTest {
     fun `has active observer when observer became active`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive = MutableStateFlow(false)
-            replica.observe(TestScope(), observerActive)
-            delay(DEFAULT_DELAY)
-            observerActive.update { true }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive = MutableStateFlow(false)
+        replica.observe(TestScope(), observerActive)
+        observerActive.update { true }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(1, state.activeObserverCount)
@@ -96,12 +89,9 @@ class ObserverCountTest {
     fun `has no observers when observer canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observer = replica.observe(TestScope(), MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observer.cancelObserving()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        observer.cancelObserving()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -112,13 +102,10 @@ class ObserverCountTest {
     fun `has no observers when observer scope canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerScope = TestScope()
-            replica.observe(observerScope, MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observerScope.cancel()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerScope = TestScope()
+        replica.observe(observerScope, MutableStateFlow(true))
+        observerScope.cancel()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -131,11 +118,9 @@ class ObserverCountTest {
         val observersCount = 5
         val activeObserversCount = 3
 
-        launch {
-            repeat(observersCount) { replica.observe(TestScope(), MutableStateFlow(false)) }
-            repeat(activeObserversCount) { replica.observe(TestScope(), MutableStateFlow(true)) }
-        }
-        delay(DEFAULT_DELAY)
+        repeat(observersCount) { replica.observe(TestScope(), MutableStateFlow(false)) }
+        repeat(activeObserversCount) { replica.observe(TestScope(), MutableStateFlow(true)) }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(activeObserversCount, state.activeObserverCount)
@@ -146,13 +131,10 @@ class ObserverCountTest {
     fun `has no observers when multiple observers canceled observing`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observers = (0 until 10)
-                .map { replica.observe(TestScope(), MutableStateFlow(true)) }
-            delay(DEFAULT_DELAY)
-            observers.forEach { it.cancelObserving() }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observers = (0 until 10)
+            .map { replica.observe(TestScope(), MutableStateFlow(true)) }
+        observers.forEach { it.cancelObserving() }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -163,17 +145,14 @@ class ObserverCountTest {
     fun `has no observers when scopes of multiple observers canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerScopes = (0 until 10)
-                .map {
-                    val observerScope = TestScope()
-                    replica.observe(observerScope, MutableStateFlow(true))
-                    observerScope
-                }
-            delay(DEFAULT_DELAY)
-            observerScopes.forEach { it.cancel() }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerScopes = (0 until 10)
+            .map {
+                val observerScope = TestScope()
+                replica.observe(observerScope, MutableStateFlow(true))
+                observerScope
+            }
+        observerScopes.forEach { it.cancel() }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(0, state.activeObserverCount)
@@ -184,16 +163,13 @@ class ObserverCountTest {
     fun `has active observer when two observers change active state`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive1 = MutableStateFlow(false)
-            val observerActive2 = MutableStateFlow(true)
-            replica.observe(TestScope(), observerActive1)
-            replica.observe(TestScope(), observerActive2)
-            delay(DEFAULT_DELAY)
-            observerActive1.update { true }
-            observerActive2.update { false }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive1 = MutableStateFlow(false)
+        val observerActive2 = MutableStateFlow(true)
+        replica.observe(TestScope(), observerActive1)
+        replica.observe(TestScope(), observerActive2)
+        observerActive1.update { true }
+        observerActive2.update { false }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(2, state.observerCount)

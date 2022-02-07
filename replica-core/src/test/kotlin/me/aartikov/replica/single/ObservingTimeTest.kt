@@ -2,10 +2,8 @@ package me.aartikov.replica.single
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -23,7 +21,6 @@ class ObservingTimeTest {
     private val fakeTimeProvider = replicaProvider.timeProvider
 
     companion object {
-        private const val DEFAULT_DELAY = 100L
         private val TEST_TIME = Instant.fromEpochMilliseconds(1000)
     }
 
@@ -79,13 +76,10 @@ class ObservingTimeTest {
     fun `is now when observer became active`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive = MutableStateFlow(false)
-            replica.observe(TestScope(), observerActive)
-            delay(DEFAULT_DELAY)
-            observerActive.update { true }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive = MutableStateFlow(false)
+        replica.observe(TestScope(), observerActive)
+        observerActive.update { true }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Now, state.observingTime)
@@ -95,12 +89,9 @@ class ObservingTimeTest {
     fun `is never when observer canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observer = replica.observe(TestScope(), MutableStateFlow(false))
-            delay(DEFAULT_DELAY)
-            observer.cancelObserving()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        observer.cancelObserving()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Never, state.observingTime)
@@ -111,12 +102,10 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         fakeTimeProvider.currentTime = TEST_TIME
-        launch {
-            val observer = replica.observe(TestScope(), MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observer.cancelObserving()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        runCurrent()
+        observer.cancelObserving()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.TimeInPast(TEST_TIME), state.observingTime)
@@ -126,13 +115,10 @@ class ObservingTimeTest {
     fun `is never when observer scope canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerScope = TestScope()
-            replica.observe(observerScope, MutableStateFlow(false))
-            delay(DEFAULT_DELAY)
-            observerScope.cancel()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerScope = TestScope()
+        replica.observe(observerScope, MutableStateFlow(false))
+        observerScope.cancel()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Never, state.observingTime)
@@ -143,13 +129,11 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         fakeTimeProvider.currentTime = TEST_TIME
-        launch {
-            val observerScope = TestScope()
-            replica.observe(observerScope, MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observerScope.cancel()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerScope = TestScope()
+        replica.observe(observerScope, MutableStateFlow(true))
+        runCurrent()
+        observerScope.cancel()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.TimeInPast(TEST_TIME), state.observingTime)
@@ -159,14 +143,11 @@ class ObservingTimeTest {
     fun `is now when second active observer became inactive`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive = MutableStateFlow(true)
-            replica.observe(TestScope(), MutableStateFlow(true))
-            replica.observe(TestScope(), observerActive)
-            delay(DEFAULT_DELAY)
-            observerActive.update { false }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive = MutableStateFlow(true)
+        replica.observe(TestScope(), MutableStateFlow(true))
+        replica.observe(TestScope(), observerActive)
+        observerActive.update { false }
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Now, state.observingTime)
@@ -176,13 +157,10 @@ class ObservingTimeTest {
     fun `is now when second active observer canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            replica.observe(TestScope(), MutableStateFlow(true))
-            val observer2 = replica.observe(TestScope(), MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observer2.cancelObserving()
-        }
-        delay(DEFAULT_DELAY * 2)
+        replica.observe(TestScope(), MutableStateFlow(true))
+        val observer2 = replica.observe(TestScope(), MutableStateFlow(true))
+        observer2.cancelObserving()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Now, state.observingTime)
@@ -192,14 +170,11 @@ class ObservingTimeTest {
     fun `is now when second active observer scope canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerScope = TestScope()
-            replica.observe(TestScope(), MutableStateFlow(true))
-            replica.observe(observerScope, MutableStateFlow(true))
-            delay(DEFAULT_DELAY)
-            observerScope.cancel()
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerScope = TestScope()
+        replica.observe(TestScope(), MutableStateFlow(true))
+        replica.observe(observerScope, MutableStateFlow(true))
+        observerScope.cancel()
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Now, state.observingTime)
