@@ -86,7 +86,7 @@ class ObservingTimeTest {
     }
 
     @Test
-    fun `is never when observer canceled`() = runTest {
+    fun `is never when observer canceled and was not active yet`() = runTest {
         val replica = replicaProvider.replica()
 
         val observer = replica.observe(TestScope(), MutableStateFlow(false))
@@ -112,7 +112,7 @@ class ObservingTimeTest {
     }
 
     @Test
-    fun `is never when observer scope canceled`() = runTest {
+    fun `is never when observer scope canceled and observer was not active yet`() = runTest {
         val replica = replicaProvider.replica()
 
         val observerScope = TestScope()
