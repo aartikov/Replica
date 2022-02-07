@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
 import org.junit.Assert.assertEquals
@@ -30,7 +31,7 @@ class StateObservingTest {
 
         replica.setData(newData)
         val observer = replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         val state = observer.currentState
         assertEquals(Loadable<Any>(data = newData), state)
@@ -50,17 +51,12 @@ class StateObservingTest {
 
     @Test
     fun `active observer doesn't observe data when became inactive`() = runTest {
-        val replica = replicaProvider.replica(
-            fetcher = {
-                delay(DEFAULT_DELAY * 2)
-                "test"
-            }
-        )
+        val replica = replicaProvider.replica()
 
         val activeObserver = MutableStateFlow(true)
         val observer = replica.observe(TestScope(), activeObserver)
         activeObserver.update { false }
-        replica.refresh()
+        replica.setData("test")
 
         val state = observer.currentState
         assertEquals(Loadable<Any>(), state)
