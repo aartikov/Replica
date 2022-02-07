@@ -43,7 +43,7 @@ class ReplicaProvider {
 }
 
 class FakeTimeProvider : TimeProvider {
-    override var currentTime: Instant = Instant.DISTANT_PAST
+    override var currentTime: Instant = Instant.fromEpochMilliseconds(1000)
 }
 
 class FakeNetworkConnectivityProvider(
