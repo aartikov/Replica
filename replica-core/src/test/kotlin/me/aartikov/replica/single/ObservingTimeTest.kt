@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
 import me.aartikov.replica.common.ObservingTime
@@ -40,18 +41,18 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Now, state.observingTime)
     }
 
     @Test
-    fun `is never when observer observe`() = runTest {
+    fun `is never when inactive observer is added`() = runTest {
         val replica = replicaProvider.replica()
 
         replica.observe(TestScope(), MutableStateFlow(false))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.Never, state.observingTime)
@@ -61,13 +62,11 @@ class ObservingTimeTest {
     fun `is in past when observer became inactive`() = runTest {
         val replica = replicaProvider.replica()
 
-        launch {
-            val observerActive = MutableStateFlow(true)
-            replica.observe(TestScope(), observerActive)
-            delay(DEFAULT_DELAY)
-            observerActive.update { false }
-        }
-        delay(DEFAULT_DELAY * 2)
+        val observerActive = MutableStateFlow(true)
+        replica.observe(TestScope(), observerActive)
+        runCurrent()
+        observerActive.value = false
+        runCurrent()
 
         val state = replica.currentState.observingState
         assertEquals(ObservingTime.TimeInPast(fakeTime), state.observingTime)
