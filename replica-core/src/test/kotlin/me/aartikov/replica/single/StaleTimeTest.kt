@@ -2,6 +2,7 @@ package me.aartikov.replica.single
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
 import org.junit.Assert.assertFalse
@@ -30,7 +31,7 @@ class StaleTimeTest {
         val replica = replicaProvider.replica()
 
         replica.refresh()
-        delay(30.seconds)
+        runCurrent()
 
         assertTrue(replica.currentState.hasFreshData)
     }
@@ -55,7 +56,7 @@ class StaleTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         assertTrue(replica.currentState.hasFreshData)
     }
@@ -69,7 +70,7 @@ class StaleTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // stale time is passed
 
         assertFalse(replica.currentState.hasFreshData)
     }
@@ -83,9 +84,9 @@ class StaleTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY)
+        runCurrent()
         replica.clear()
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         assertFalse(replica.currentState.hasFreshData)
     }
@@ -99,9 +100,9 @@ class StaleTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // stale time is passed
         replica.refresh()
-        delay(DEFAULT_DELAY / 2)
+        runCurrent()
 
         assertTrue(replica.currentState.hasFreshData)
     }
