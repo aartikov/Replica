@@ -209,6 +209,7 @@ class LoadingErrorObservingTest {
                 delay(DEFAULT_DELAY * 2)
             }
         }
+
         val observerActive = MutableStateFlow(false)
         val observer = replica.observe(TestScope(), observerActive)
         delay(DEFAULT_DELAY * errorsCount)
@@ -224,36 +225,5 @@ class LoadingErrorObservingTest {
         )
         assertEquals(expectedErrorsEvents, errorEvents)
         assertEquals(expectedState, state)
-    }
-
-    @Test
-    fun `active observer doesn't observe errors when became inactive`() = runTest {
-        val error = LoadingFailedException()
-        val errorsCount = 10
-        val replica = replicaProvider.replica(
-            fetcher = {
-                delay(DEFAULT_DELAY)
-                throw  error
-            }
-        )
-
-        launch {
-            repeat(errorsCount) {
-                replica.refresh()
-                delay(DEFAULT_DELAY * 2)
-            }
-        }
-        val observerActive = MutableStateFlow(true)
-        val observer = replica.observe(TestScope(), observerActive)
-        delay(DEFAULT_DELAY * errorsCount)
-        observerActive.update { false }
-
-        val errorEvents = observer.loadingErrorFlow.take(errorsCount / 2).toList()
-        val state = observer.currentState
-        assertEquals(
-            List(errorsCount / 2) { LoadingError(error) },
-            errorEvents
-        )
-        assertEquals(Loadable<String>(error = CombinedLoadingError(error)), state)
     }
 }

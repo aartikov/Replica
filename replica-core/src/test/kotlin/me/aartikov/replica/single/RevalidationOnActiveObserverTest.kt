@@ -5,9 +5,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -25,7 +29,7 @@ class RevalidationOnActiveObserverTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `refreshing on first active observer`() = runTest {
+    fun `refreshing when active observer starts observing and revalidation turn on`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = null,
@@ -34,60 +38,65 @@ class RevalidationOnActiveObserverTest {
         )
 
         replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         assertNotNull(replica.currentState.data)
     }
 
     @Test
-    fun `no refreshing on first active observer`() = runTest {
-        val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = null,
-                revalidateOnActiveObserverAdded = false
-            ),
-        )
+    fun `no refreshing when active observer starts observing and revalidation turn off`() =
+        runTest {
+            val replica = replicaProvider.replica(
+                replicaSettings = ReplicaSettings(
+                    staleTime = null,
+                    revalidateOnActiveObserverAdded = false
+                ),
+            )
 
-        replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+            replica.observe(TestScope(), MutableStateFlow(true))
+            runCurrent()
 
-        assertNull(replica.currentState.data)
-    }
-
-    @Test
-    fun `revalidation if stale time is passed`() = runTest {
-        val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = true
-            ),
-        )
-
-        delay(DEFAULT_DELAY + 1)
-        replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY - 1)
-
-        assertTrue(replica.currentState.hasFreshData)
-    }
+            assertNull(replica.currentState.data)
+        }
 
     @Test
-    fun `no revalidation if stale time is passed`() = runTest {
-        val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = false
-            ),
-        )
+    fun `refreshing if stale time is passed, active observer starts observing, revalidation turn on`() =
+        runTest {
+            val replica = replicaProvider.replica(
+                replicaSettings = ReplicaSettings(
+                    staleTime = DEFAULT_DELAY.milliseconds,
+                    revalidateOnActiveObserverAdded = true
+                ),
+            )
 
-        delay(DEFAULT_DELAY + 1)
-        replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY - 1)
+            replica.refresh()
+            delay(DEFAULT_DELAY + 1) // stale time is passed
+            replica.observe(TestScope(), MutableStateFlow(true))
+            delay(DEFAULT_DELAY - 1) // stale time isn't passed yet
 
-        assertFalse(replica.currentState.hasFreshData)
-    }
+            assertTrue(replica.currentState.hasFreshData)
+        }
 
     @Test
-    fun `no refresh if inactive observer observes`() = runTest {
+    fun `no refreshing if stale time is passed, active observer starts observing, revalidation turn off`() =
+        runTest {
+            val replica = replicaProvider.replica(
+                replicaSettings = ReplicaSettings(
+                    staleTime = DEFAULT_DELAY.milliseconds,
+                    revalidateOnActiveObserverAdded = false
+                ),
+            )
+
+            replica.refresh()
+            delay(DEFAULT_DELAY + 1) // stale time is passed
+            replica.observe(TestScope(), MutableStateFlow(true))
+            delay(DEFAULT_DELAY - 1) // stale time isn't passed yet
+
+            assertFalse(replica.currentState.hasFreshData)
+        }
+
+    @Test
+    fun `no refreshing if inactive observer is added, revalidation turn on`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = DEFAULT_DELAY.milliseconds,
@@ -96,13 +105,13 @@ class RevalidationOnActiveObserverTest {
         )
 
         replica.observe(TestScope(), MutableStateFlow(false))
-        delay(DEFAULT_DELAY)
+        runCurrent()
 
         assertFalse(replica.currentState.hasFreshData)
     }
 
     @Test
-    fun `refreshing if inactive observer became active`() = runTest {
+    fun `refreshing if inactive observer became active, revalidation turn on`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = DEFAULT_DELAY.milliseconds,
@@ -113,13 +122,13 @@ class RevalidationOnActiveObserverTest {
         val observerActive = MutableStateFlow(false)
         replica.observe(TestScope(), observerActive)
         observerActive.update { true }
-        delay(DEFAULT_DELAY - 1)
+        runCurrent()
 
         assertTrue(replica.currentState.hasFreshData)
     }
 
     @Test
-    fun `revalidation if inactive observer became active`() = runTest {
+    fun `revalidation if inactive observer became active, revalidation turn on`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = DEFAULT_DELAY.milliseconds,
@@ -127,11 +136,12 @@ class RevalidationOnActiveObserverTest {
             ),
         )
 
-        delay(DEFAULT_DELAY + 1)
+        replica.refresh()
+        delay(DEFAULT_DELAY + 1) // waiting until stale time passed
         val observerActive = MutableStateFlow(false)
         replica.observe(TestScope(), observerActive)
         observerActive.update { true }
-        delay(DEFAULT_DELAY - 1)
+        runCurrent()
 
         assertTrue(replica.currentState.hasFreshData)
     }

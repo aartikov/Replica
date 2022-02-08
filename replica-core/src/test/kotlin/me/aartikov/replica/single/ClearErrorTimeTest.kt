@@ -29,7 +29,7 @@ class ClearErrorTimeTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `is clear after clear time is passed`() = runTest {
+    fun `is clear after clear error time is passed`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
@@ -40,13 +40,13 @@ class ClearErrorTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
         assertNull(replica.currentState.error)
     }
 
     @Test
-    fun `isn't clear before clear time is passed`() = runTest {
+    fun `isn't clear before clear error time is passed`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
@@ -57,14 +57,14 @@ class ClearErrorTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY - 1)
+        delay(DEFAULT_DELAY - 1) // clear error time isn't passed yet
 
         assertNotNull(replica.currentState.error)
     }
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun `not clearing if no clear time is set`() = runTest {
+    fun `not clearing if no clear error time is set`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings.WithoutBehaviour,
@@ -78,7 +78,7 @@ class ClearErrorTimeTest {
     }
 
     @Test
-    fun `isn't clear after second refreshing`() = runTest {
+    fun `not clearing after second refreshing`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
@@ -89,15 +89,15 @@ class ClearErrorTimeTest {
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
         replica.refresh()
-        delay(DEFAULT_DELAY - 1)
+        delay(DEFAULT_DELAY - 1) // clear error time isn't passed yet
 
         assertNotNull(replica.currentState.error)
     }
 
     @Test
-    fun `isn't clear if active observer observes`() = runTest {
+    fun `not clearing if clear error time is passed and active observer observes`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
@@ -108,15 +108,14 @@ class ClearErrorTimeTest {
         )
 
         replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
         assertNotNull(replica.currentState.error)
     }
 
     @Test
-    fun `isn't clear if inactive observer observes`() = runTest {
+    fun `not clearing if clear error time is passed and inactive observer is added`() = runTest {
         val error = LoadingFailedException()
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
@@ -127,32 +126,30 @@ class ClearErrorTimeTest {
         )
 
         replica.observe(TestScope(), MutableStateFlow(false))
-        delay(DEFAULT_DELAY)
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
         assertNotNull(replica.currentState.error)
     }
 
     @Test
-    fun `is clear if observer is canceled`() = runTest {
-        val error = LoadingFailedException()
-        val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = 30.seconds,
-                clearErrorTime = DEFAULT_DELAY.milliseconds
-            ),
-            fetcher = { throw error }
-        )
+    fun `clearing if observer is canceled observing and then clear error time is passed`() =
+        runTest {
+            val error = LoadingFailedException()
+            val replica = replicaProvider.replica(
+                replicaSettings = ReplicaSettings(
+                    staleTime = 30.seconds,
+                    clearErrorTime = DEFAULT_DELAY.milliseconds
+                ),
+                fetcher = { throw error }
+            )
 
-        val observerScope = TestScope()
-        replica.observe(observerScope, MutableStateFlow(false))
-        delay(DEFAULT_DELAY)
-        replica.refresh()
-        delay(DEFAULT_DELAY + 1)
-        observerScope.cancel()
-        delay(DEFAULT_DELAY)
+            val observerScope = TestScope()
+            replica.observe(observerScope, MutableStateFlow(true))
+            replica.refresh()
+            observerScope.cancel()
+            delay(DEFAULT_DELAY + 1) // waiting until error time is passed
 
-        assertNull(replica.currentState.error)
-    }
+            assertNull(replica.currentState.error)
+        }
 }

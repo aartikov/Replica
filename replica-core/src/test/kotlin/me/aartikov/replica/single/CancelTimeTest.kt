@@ -7,9 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.MainCoroutineRule
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -28,46 +31,45 @@ class CancelTimeTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `loading canceled if cancel time is passed`() = runTest {
+    fun `loading cancels if cancel time is passed`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
-                cancelTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = true
+                cancelTime = DEFAULT_DELAY.milliseconds
             ),
             fetcher = {
-                delay(DEFAULT_DELAY * 3)
+                delay(DEFAULT_DELAY * 2)
                 "test"
             }
         )
 
         val observerScope = TestScope()
         replica.observe(observerScope, MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        replica.refresh()
+        runCurrent()
         observerScope.cancel()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 
         assertFalse(replica.currentState.loading)
         assertNull(replica.currentState.data)
     }
 
     @Test
-    fun `loading not canceled if cancel time is not passed`() = runTest {
+    fun `loading doesn't cancel when cancel time is not passed yet`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
-                cancelTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = true
+                cancelTime = DEFAULT_DELAY.milliseconds
             ),
             fetcher = {
-                delay(DEFAULT_DELAY * 3)
+                delay(DEFAULT_DELAY * 2)
                 "test"
             }
         )
 
         val observerScope = TestScope()
         replica.observe(observerScope, MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        replica.refresh()
         observerScope.cancel()
         delay(DEFAULT_DELAY - 1)
 
@@ -76,20 +78,20 @@ class CancelTimeTest {
     }
 
     @Test
-    fun `loading not canceled if it's preloading`() = runTest {
+    fun `loading doesn't cancel when cancel time is passed and no observers cancel observes`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
                 cancelTime = DEFAULT_DELAY.milliseconds
             ),
             fetcher = {
-                delay(DEFAULT_DELAY * 3)
+                delay(DEFAULT_DELAY * 2)
                 "test"
             }
         )
 
         replica.refresh()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 
         assertTrue(replica.currentState.loading)
         assertTrue(replica.currentState.preloading)
@@ -97,12 +99,11 @@ class CancelTimeTest {
     }
 
     @Test
-    fun `loading not canceled if active observer became inactive`() = runTest {
+    fun `loading doesn't cancel when cancel time is passed and active observer became inactive`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
                 cancelTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = true
             ),
             fetcher = {
                 delay(DEFAULT_DELAY * 3)
@@ -113,15 +114,15 @@ class CancelTimeTest {
         val observerScope = TestScope()
         val observerActive = MutableStateFlow(true)
         replica.observe(observerScope, observerActive)
-        delay(DEFAULT_DELAY)
+        replica.refresh()
         observerActive.update { false }
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 
         assertTrue(replica.currentState.loading)
     }
 
     @Test
-    fun `loading canceled if cancel time is passed and observer was inactive`() = runTest {
+    fun `loading cancels when cancel time is passed and inactive observer cancels`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
@@ -135,22 +136,22 @@ class CancelTimeTest {
 
         val observer = replica.observe(TestScope(), MutableStateFlow(false))
         replica.refresh()
-        delay(DEFAULT_DELAY)
+        runCurrent()
         observer.cancelObserving()
-        delay(DEFAULT_DELAY + 1)
+        delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 
         assertFalse(replica.currentState.loading)
     }
 
     @Test
-    fun `loading not canceled if new observer starts observing`() = runTest {
+    fun `loading doesn't cancels when cancel time isn't passed and second observer starts observing`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
                 cancelTime = DEFAULT_DELAY.milliseconds,
             ),
             fetcher = {
-                delay(DEFAULT_DELAY * 3)
+                delay(DEFAULT_DELAY * 2)
                 "test"
             }
         )
@@ -158,34 +159,32 @@ class CancelTimeTest {
         val observerScope = TestScope()
         replica.observe(observerScope, MutableStateFlow(true))
         replica.refresh()
-        delay(DEFAULT_DELAY)
         observerScope.cancel()
-        delay(DEFAULT_DELAY - 1)
+        delay(DEFAULT_DELAY - 1) // cancel time is not passed yet
         replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        delay(2) // in sum, cancel time is passed
 
         assertTrue(replica.currentState.loading)
     }
 
     @Test
-    fun `loading not canceled if data requested`() = runTest {
+    fun `loading doesn't cancel if data requested`() = runTest {
         val replica = replicaProvider.replica(
             replicaSettings = ReplicaSettings(
                 staleTime = 30.seconds,
-                cancelTime = DEFAULT_DELAY.milliseconds,
-                revalidateOnActiveObserverAdded = true
+                cancelTime = DEFAULT_DELAY.milliseconds
             ),
             fetcher = {
-                delay(DEFAULT_DELAY * 3)
+                delay(DEFAULT_DELAY * 2)
                 "test"
             }
         )
 
         val observer = replica.observe(TestScope(), MutableStateFlow(true))
-        delay(DEFAULT_DELAY)
+        replica.refresh()
         launch { replica.getRefreshedData() }
         observer.cancelObserving()
-        delay(DEFAULT_DELAY * 2)
+        delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 
         assertTrue(replica.currentState.loading)
     }
