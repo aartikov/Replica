@@ -4,8 +4,9 @@ import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
-import me.aartikov.replica.LoadingFailedException
-import me.aartikov.replica.MainCoroutineRule
+import me.aartikov.replica.single.utils.LoadingFailedException
+import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.single.utils.ReplicaProvider
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds

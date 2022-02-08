@@ -1,4 +1,4 @@
-package me.aartikov.replica.single
+package me.aartikov.replica.single.settings
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -6,8 +6,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import me.aartikov.replica.LoadingFailedException
-import me.aartikov.replica.MainCoroutineRule
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.currentState
+import me.aartikov.replica.single.utils.LoadingFailedException
+import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.single.utils.ReplicaProvider
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule

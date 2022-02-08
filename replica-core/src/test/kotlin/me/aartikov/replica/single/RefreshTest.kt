@@ -7,7 +7,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import me.aartikov.replica.MainCoroutineRule
+import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.single.utils.ReplicaProvider
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
