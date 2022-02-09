@@ -81,6 +81,7 @@ dependencyResolutionManagement {
 
             // Testing
             alias('junit').to('junit', 'junit').version('4.13.2')
+            alias('coroutinesTest').to('org.jetbrains.kotlinx','kotlinx-coroutines-test' ).version('kotlin')
 
             // Ktor
             version('ktor', '1.6.7')
