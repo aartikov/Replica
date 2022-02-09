@@ -1,5 +1,6 @@
 package me.aartikov.replica.devtools
 
+import android.content.Context
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.devtools.internal.ReplicaDevToolsImpl
 
@@ -8,6 +9,10 @@ interface ReplicaDevTools {
     fun launch()
 }
 
-fun ReplicaDevTools(replicaClient: ReplicaClient): ReplicaDevTools {
-    return ReplicaDevToolsImpl(replicaClient)
+fun ReplicaDevTools(
+    replicaClient: ReplicaClient,
+    settings: DevToolsSettings,
+    applicationContext: Context
+): ReplicaDevTools {
+    return ReplicaDevToolsImpl(replicaClient, settings, applicationContext)
 }
