@@ -1,0 +1,32 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'org.jetbrains.compose'
+}
+
+kotlin {
+    js(IR) {
+        browser {
+            distribution {
+                directory = file("$projectDir/../replica-devtools/src/main/resources/replica-devtools/")
+            }
+        }
+        binaries.executable()
+    }
+
+    sourceSets {
+        jsMain {
+            kotlin.srcDir('src/main/kotlin')
+            resources.srcDir('src/main/resources')
+
+            dependencies {
+                implementation project(':replica-devtools-dto')
+                implementation compose.web.core
+                implementation compose.runtime
+                implementation libs.serialization.json
+
+                api libs.coroutines.core
+                implementation libs.ktor.client.websockets
+            }
+        }
+    }
+}
