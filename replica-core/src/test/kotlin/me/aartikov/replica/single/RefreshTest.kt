@@ -48,7 +48,7 @@ class RefreshTest {
         replica.refresh()
         runCurrent()
         replica.cancel()
-        runCurrent()
+        delay(DEFAULT_DELAY * 2) // waiting until loading time is complete
 
         assertNull(replica.currentState.data)
     }
@@ -70,12 +70,12 @@ class RefreshTest {
 
         replica.refresh()
         runCurrent()
-        val previousData = replica.currentState
+        val previousState = replica.currentState
         replica.refresh()
         runCurrent()
 
-        assertEquals(ReplicaProvider.TEST_DATA, previousData.data?.value)
-        assertTrue(previousData.hasFreshData)
+        assertEquals(ReplicaProvider.TEST_DATA, previousState.data?.value)
+        assertTrue(previousState.hasFreshData)
         val currentState = replica.currentState
         assertEquals(newData, currentState.data?.value)
         assertTrue(currentState.hasFreshData)

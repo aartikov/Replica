@@ -48,8 +48,9 @@ class RevalidateTest {
         )
 
         replica.revalidate()
-        replica.cancel()
         runCurrent()
+        replica.cancel()
+        delay(DEFAULT_DELAY * 2) // waiting until loading time is complete
 
         assertNull(replica.currentState.data)
     }
@@ -71,12 +72,12 @@ class RevalidateTest {
 
         replica.revalidate()
         runCurrent()
-        val previousData = replica.currentState
+        val previousState = replica.currentState
         replica.revalidate()
         runCurrent()
 
-        assertEquals(ReplicaProvider.TEST_DATA, previousData.data?.value)
-        assertTrue(previousData.hasFreshData)
+        assertEquals(ReplicaProvider.TEST_DATA, previousState.data?.value)
+        assertTrue(previousState.hasFreshData)
         val currentState = replica.currentState
         assertEquals(ReplicaProvider.TEST_DATA, currentState.data?.value)
     }
