@@ -63,7 +63,7 @@ class MutateDataTest {
     }
 
     @Test
-    fun `mutates data call doesn't cancel loading`() = runTest {
+    fun `mutate data call doesn't cancel loading`() = runTest {
         val newData = "new data"
         val replica = replicaProvider.replica(
             fetcher = {
