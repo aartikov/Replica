@@ -1,0 +1,22 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'kotlinx-serialization'
+}
+
+kotlin {
+    jvm()
+    js(IR) {
+        browser()
+    }
+
+    sourceSets {
+        commonMain {
+            kotlin.srcDir('src/main/kotlin')
+            dependencies {
+                implementation libs.serialization.core
+                api libs.coroutines.core
+                api libs.kotlin.datetime
+            }
+        }
+    }
+}
