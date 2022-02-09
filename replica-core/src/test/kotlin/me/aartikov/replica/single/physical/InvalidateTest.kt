@@ -38,7 +38,7 @@ class InvalidateTest {
 
         replica.refresh()
         runCurrent()
-        replica.invalidate()
+        replica.invalidate(InvalidationMode.DontRefresh)
 
         assertEquals(ReplicaProvider.TEST_DATA, replica.currentState.data?.value)
         assertFalse(replica.currentState.hasFreshData)
@@ -48,7 +48,7 @@ class InvalidateTest {
     fun `no data after invalidate call if there is no data`() = runTest {
         val replica = replicaProvider.replica()
 
-        replica.invalidate()
+        replica.invalidate(InvalidationMode.DontRefresh)
 
         assertFalse(replica.currentState.hasFreshData)
         assertNull(replica.currentState.data?.value)
@@ -112,7 +112,7 @@ class InvalidateTest {
     }
 
     @Test
-    fun `data isn't refreshed after invalidate call with RefreshIfHasObservers mode and no observers `() =
+    fun `data isn't refreshed after invalidate call with RefreshIfHasObservers mode and no observers`() =
         runTest {
             var counter = 0
             val replica = replicaProvider.replica(
