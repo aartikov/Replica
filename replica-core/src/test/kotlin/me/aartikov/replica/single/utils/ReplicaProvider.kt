@@ -1,10 +1,13 @@
-package me.aartikov.replica.single
+package me.aartikov.replica.single.utils
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.Instant
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.network.NetworkConnectivityProvider
+import me.aartikov.replica.single.Fetcher
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.time.TimeProvider
 
 class ReplicaProvider {
