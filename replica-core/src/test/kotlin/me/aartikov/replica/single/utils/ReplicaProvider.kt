@@ -1,14 +1,14 @@
 package me.aartikov.replica.single.utils
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.Instant
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.time.TimeProvider
+import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
+import me.aartikov.replica.utils.FakeTimeProvider
 
 class ReplicaProvider {
 
@@ -44,11 +44,3 @@ class ReplicaProvider {
         )
     }
 }
-
-class FakeTimeProvider : TimeProvider {
-    override var currentTime: Instant = Instant.fromEpochMilliseconds(1000)
-}
-
-class FakeNetworkConnectivityProvider(
-    override val connectedFlow: StateFlow<Boolean>
-) : NetworkConnectivityProvider
