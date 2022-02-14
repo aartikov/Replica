@@ -36,7 +36,8 @@ class KeyedReplicaProvider {
         fetcher: KeyedFetcher<Int, String> = defaultFetcher,
         replicaSettings: KeyedReplicaSettings<Int, String> = defaultReplicaSettings,
         networkConnectivityProvider: NetworkConnectivityProvider = defaultNetworkConnectivityProvider,
-        childReplicaSettings: (Int) -> ReplicaSettings = defaultChildReplicaSettings
+        childReplicaSettings: (Int) -> ReplicaSettings = defaultChildReplicaSettings,
+        storage: KeyedFakeStorage? = null
     ): KeyedPhysicalReplica<Int, String> {
         val replicaClient = clientProvider.client(
             timeProvider = timeProvider,
@@ -49,6 +50,7 @@ class KeyedReplicaProvider {
             childName = { "child_replica_$it" },
             childSettings = childReplicaSettings,
             fetcher = fetcher,
+            storage = storage
         )
     }
 }

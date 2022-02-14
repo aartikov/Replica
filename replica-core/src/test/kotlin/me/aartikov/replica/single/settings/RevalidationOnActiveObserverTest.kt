@@ -9,12 +9,9 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds

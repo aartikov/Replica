@@ -5,6 +5,7 @@ import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.Storage
 import me.aartikov.replica.time.TimeProvider
 import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
 import me.aartikov.replica.utils.FakeTimeProvider
@@ -32,7 +33,8 @@ class ReplicaProvider {
         timeProvider: TimeProvider = this.timeProvider,
         fetcher: Fetcher<String> = defaultFetcher,
         replicaSettings: ReplicaSettings = defaultReplicaSettings,
-        networkConnectivityProvider: NetworkConnectivityProvider = defaultNetworkConnectivityProvider
+        networkConnectivityProvider: NetworkConnectivityProvider = defaultNetworkConnectivityProvider,
+        storage: Storage<String>? = null
     ): PhysicalReplica<String> {
         val replicaClient = clientProvider.client(
             timeProvider = timeProvider,
@@ -42,7 +44,8 @@ class ReplicaProvider {
         return replicaClient.createReplica(
             name = "test",
             settings = replicaSettings,
-            fetcher = fetcher
+            fetcher = fetcher,
+            storage = storage
         )
     }
 }

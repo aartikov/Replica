@@ -4,8 +4,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
-import me.aartikov.replica.single.utils.LoadingFailedException
-import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.utils.LoadingFailedException
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test

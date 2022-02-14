@@ -5,12 +5,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.LoadingFailedException
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
+import me.aartikov.replica.utils.LoadingFailedException
+import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,7 +38,7 @@ class MutateDataTest {
     fun `doesn't mutate empty data with error state`() = runTest {
         val newData = "new data"
         val replica = replicaProvider.replica(
-            fetcher = { throw LoadingFailedException()}
+            fetcher = { throw LoadingFailedException() }
         )
 
         replica.refresh()

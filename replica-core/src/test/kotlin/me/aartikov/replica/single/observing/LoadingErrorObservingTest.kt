@@ -3,11 +3,7 @@ package me.aartikov.replica.single.observing
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
@@ -16,9 +12,9 @@ import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.LoadingFailedException
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.utils.LoadingFailedException
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

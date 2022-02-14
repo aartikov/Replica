@@ -10,8 +10,8 @@ import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule

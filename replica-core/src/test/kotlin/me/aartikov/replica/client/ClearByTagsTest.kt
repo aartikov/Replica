@@ -5,7 +5,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.utils.MainCoroutineRule
 import me.aartikov.replica.utils.ReplicaClientProvider
 import me.aartikov.replica.utils.TestReplicaTag
 import org.junit.Assert.assertNotNull
