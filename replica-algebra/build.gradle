@@ -12,6 +12,7 @@ java {
 compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
+        kotlinOptions.freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
         useIR = true
     }
 }
@@ -25,5 +26,7 @@ compileTestKotlin {
 dependencies {
     api project(':replica-core')
     api libs.coroutines.core
+
     testImplementation libs.junit
+    testImplementation libs.coroutinesTest
 }
