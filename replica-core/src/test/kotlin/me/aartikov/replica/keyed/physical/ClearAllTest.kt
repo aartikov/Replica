@@ -3,10 +3,11 @@ package me.aartikov.replica.keyed.physical
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.assertNull
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -51,5 +52,18 @@ class ClearAllTest {
         repeat(numOfReplicas) { i ->
             assertNull(replica.getCurrentState(i)?.error)
         }
+    }
+
+    @Test
+    fun `if child replica clears it is removed from keyed replica`() = runTest {
+        val numOfReplicas = 10
+        val replica = replicaProvider.replica()
+
+        repeat(numOfReplicas) { i ->
+            replica.setData(i, KeyedReplicaProvider.testData(i))
+        }
+        replica.clearAll()
+
+        assertEquals(0, replica.currentState.replicaCount)
     }
 }

@@ -8,7 +8,8 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.utils.MainCoroutineRule
 import me.aartikov.replica.utils.ReplicaClientProvider
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -41,13 +42,9 @@ class ClearAllTest {
         runCurrent()
         client.clearAll()
 
-        var replicasWithData = 0
         client.onEachReplica {
-            if (currentState.data != null) {
-                replicasWithData++
-            }
+            assertNull(currentState.data)
         }
-        assertEquals(0, replicasWithData)
     }
 
     @Test
@@ -70,13 +67,9 @@ class ClearAllTest {
         runCurrent()
         client.clearAll()
 
-        var replicasWithData = 0
         client.onEachReplica {
-            if (currentState.data != null) {
-                replicasWithData++
-            }
+            assertNotNull(currentState.data)
         }
-        assertEquals(0, replicasWithData)
     }
 
     @Test
@@ -95,15 +88,11 @@ class ClearAllTest {
             )
             replica.refresh()
         }
-        delay(DEFAULT_DELAY - 1)
+        delay(DEFAULT_DELAY - 1) // loading not complete yet
         client.clearAll()
 
-        var replicasWithData = 0
         client.onEachReplica {
-            if (currentState.data != null) {
-                replicasWithData++
-            }
+            assertNull(currentState.data)
         }
-        assertEquals(0, replicasWithData)
     }
 }
