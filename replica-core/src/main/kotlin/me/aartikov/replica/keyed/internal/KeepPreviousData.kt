@@ -13,7 +13,7 @@ internal fun <T : Any> StateFlow<Loadable<T>>.keepPreviousData(
     this
         .debounce { newValue ->
             if (newValue.data == null && !newValue.loading) {
-                100 // wait util loading will started for a just created replica
+                100 // wait until loading will started for a just created replica
             } else {
                 0
             }

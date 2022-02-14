@@ -1,7 +1,6 @@
 package me.aartikov.replica.keyed.utils
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
@@ -10,10 +9,11 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.time.TimeProvider
 import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
 import me.aartikov.replica.utils.FakeTimeProvider
+import me.aartikov.replica.utils.ReplicaClientProvider
 
 class KeyedReplicaProvider {
 
-    val timeProvider = FakeTimeProvider()
+    private val timeProvider = FakeTimeProvider()
 
     private val defaultReplicaSettings = KeyedReplicaSettings<Int, String>()
 
@@ -24,6 +24,8 @@ class KeyedReplicaProvider {
     private val defaultNetworkConnectivityProvider = FakeNetworkConnectivityProvider(
         MutableStateFlow(true)
     )
+
+    private val clientProvider = ReplicaClientProvider()
 
     companion object {
         val testData = { id: Int -> "test_$id" }
@@ -36,7 +38,7 @@ class KeyedReplicaProvider {
         networkConnectivityProvider: NetworkConnectivityProvider = defaultNetworkConnectivityProvider,
         childReplicaSettings: (Int) -> ReplicaSettings = defaultChildReplicaSettings
     ): KeyedPhysicalReplica<Int, String> {
-        val replicaClient = ReplicaClient(
+        val replicaClient = clientProvider.client(
             timeProvider = timeProvider,
             networkConnectivityProvider = networkConnectivityProvider
         )
