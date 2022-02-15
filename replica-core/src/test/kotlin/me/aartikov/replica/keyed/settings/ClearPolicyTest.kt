@@ -8,11 +8,9 @@ import me.aartikov.replica.keyed.ClearPolicy
 import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
-import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.utils.MainCoroutineRule
 import me.aartikov.replica.utils.VirtualTimeProvider
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 

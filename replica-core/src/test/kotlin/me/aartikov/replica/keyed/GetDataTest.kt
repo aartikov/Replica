@@ -5,8 +5,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.ReplicaSettings
-import me.aartikov.replica.single.utils.LoadingFailedException
-import me.aartikov.replica.single.utils.MainCoroutineRule
+import me.aartikov.replica.utils.LoadingFailedException
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

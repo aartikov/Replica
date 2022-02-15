@@ -1,14 +1,12 @@
 package me.aartikov.replica.single
 
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertNull
+import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test

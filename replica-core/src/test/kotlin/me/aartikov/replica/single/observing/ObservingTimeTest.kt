@@ -10,8 +10,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import me.aartikov.replica.common.ObservingTime
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

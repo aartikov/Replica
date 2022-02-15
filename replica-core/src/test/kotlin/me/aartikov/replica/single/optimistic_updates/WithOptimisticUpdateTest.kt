@@ -11,12 +11,10 @@ import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.keyed.withOptimisticUpdate
 import me.aartikov.replica.single.currentState
-import me.aartikov.replica.single.utils.LoadingFailedException
-import me.aartikov.replica.single.utils.MainCoroutineRule
 import me.aartikov.replica.single.utils.ReplicaProvider
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import me.aartikov.replica.utils.LoadingFailedException
+import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import kotlin.random.Random
