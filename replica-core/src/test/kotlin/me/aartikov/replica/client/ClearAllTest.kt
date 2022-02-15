@@ -4,12 +4,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.utils.MainCoroutineRule
 import me.aartikov.replica.utils.ReplicaClientProvider
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 
@@ -38,7 +39,6 @@ class ClearAllTest {
             )
             replica.refresh()
         }
-
         runCurrent()
         client.clearAll()
 
@@ -67,9 +67,12 @@ class ClearAllTest {
         runCurrent()
         client.clearAll()
 
-        client.onEachReplica {
-            assertNotNull(currentState.data)
+        var replicaCount = 0
+        client.onEachReplica { replicaCount++ }
+        client.onEachKeyedReplica {
+            assertEquals(0, currentState.replicaCount)
         }
+        assertEquals(0, replicaCount)
     }
 
     @Test
@@ -90,6 +93,7 @@ class ClearAllTest {
         }
         delay(DEFAULT_DELAY - 1) // loading not complete yet
         client.clearAll()
+        delay(2) // loading completed
 
         client.onEachReplica {
             assertNull(currentState.data)
