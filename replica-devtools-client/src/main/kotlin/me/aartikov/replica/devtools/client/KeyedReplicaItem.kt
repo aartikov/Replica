@@ -28,7 +28,7 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
                     flexGrow(1)
                     display(DisplayStyle.Flex)
                     alignItems(AlignItems.Center)
-                    marginLeft(8.px)
+                    marginLeft(16.px)
                 }
             },
             value = item.name
@@ -37,7 +37,11 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
             ObserverIcon(item.observerType)
         }
     }
-    Divider(attrs = { style { marginLeft(16.px) } })
+    Divider(attrs = {
+        style {
+            marginLeft(8.px)
+        }
+    })
     if (isExpanded) {
         if (item.childReplicas.isEmpty()) {
             ChildReplicaPlaceholder()
@@ -57,12 +61,15 @@ fun ChildReplicaPlaceholder() {
         "No child replicas",
         attrs = {
             style {
-                width(100.percent)
-                padding(16.px, 16.px, 16.px, 64.px)
+                padding(16.px, 16.px, 16.px, 48.px)
             }
         }
     )
-    Divider(attrs = { style { marginLeft(64.px) } })
+    Divider(attrs = {
+        style {
+            marginLeft(40.px)
+        }
+    })
 }
 
 @OptIn(ExperimentalComposeWebApi::class)
@@ -74,6 +81,7 @@ fun ExpandableImg(isExpanded: Boolean) {
             style {
                 width(14.px)
                 height(14.px)
+                padding(1.px)
                 if (isExpanded) {
                     transform { rotate(90.deg) }
                 }

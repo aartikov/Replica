@@ -3,10 +3,7 @@ package me.aartikov.replica.devtools.client
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.AttrBuilderContext
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 import org.w3c.dom.HTMLImageElement
 
 @Composable
@@ -50,13 +47,11 @@ fun Divider(
     attrs: AttrBuilderContext<*> = {}
 ) {
     val localTheme = LocalTheme.current
-    Div(
+    Hr(
         attrs = {
             style {
-                left(0.px)
-                right(0.px)
-                height(1.px)
-                backgroundColor(localTheme.dividerColor)
+                margin(0.px)
+                color(localTheme.dividerColor)
             }
             attrs()
         }
@@ -75,7 +70,12 @@ fun ThemedImg(
         attrs = {
             attrs()
             style {
-                if (localTheme.isDark) filter { invert(100.percent) }
+                if (localTheme.isDark) {
+                    filter {
+                        invert(100.percent)
+                        brightness(80.percent)
+                    }
+                }
             }
         }
     )

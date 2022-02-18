@@ -7,22 +7,22 @@ import org.jetbrains.compose.web.css.*
 @Composable
 fun StatusItem(type: StatusItemType) {
     val theme = LocalTheme.current
-    val (color, textColor) = type.getColors(theme)
+    val statusColor = type.getColor(theme)
 
     RText(
         value = type.name,
         attrs = {
             style {
                 borderRadius(4.px)
-                padding(2.px, 4.px)
+                padding(4.px, 4.px)
                 textAlign("center")
-                backgroundColor(color)
+                backgroundColor(statusColor.background)
                 minWidth(72.px)
                 whiteSpace("nowrap")
                 overflow("hidden")
             }
         },
-        color = textColor,
-        backgroundColor = color
+        color = statusColor.text,
+        backgroundColor = statusColor.background
     )
 }

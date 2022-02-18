@@ -6,6 +6,7 @@ import me.aartikov.replica.devtools.client.view_data.ConnectionStatusType
 import me.aartikov.replica.devtools.client.view_data.KeyedReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.SimpleReplicaViewData
 import me.aartikov.replica.devtools.client.view_data.ViewData
+import org.jetbrains.compose.web.ExperimentalComposeWebApi
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.keywords.auto
 
@@ -64,9 +65,11 @@ fun Content(viewData: ViewData, onChangeThemeClick: () -> Unit) {
                 ContentPlaceholder()
             } else {
                 viewData.items.forEach {
-                    when (it) {
-                        is SimpleReplicaViewData -> ReplicaItem(item = it)
-                        is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+                    key(it.id) {
+                        when (it) {
+                            is SimpleReplicaViewData -> ReplicaItem(item = it)
+                            is KeyedReplicaViewData -> KeyedReplicaItem(item = it)
+                        }
                     }
                 }
             }
@@ -115,6 +118,7 @@ private fun BottomBar(
     }
 }
 
+@OptIn(ExperimentalComposeWebApi::class)
 @Composable
 fun ContentPlaceholder() {
     RText(
@@ -124,8 +128,9 @@ fun ContentPlaceholder() {
                 position(Position.Absolute)
                 top(50.percent)
                 left(50.percent)
+                marginRight((-50).percent)
+                transform { translate((-50).percent, (-50).percent) }
                 property("font-size", "x-large")
-                textAlign("center")
             }
         }
     )
