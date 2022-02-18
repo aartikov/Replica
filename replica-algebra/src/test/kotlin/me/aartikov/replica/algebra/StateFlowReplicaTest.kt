@@ -30,6 +30,17 @@ class StateFlowReplicaTest {
     }
 
     @Test
+    fun `observes data initially`() = runTest {
+        val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
+
+        val stateFlowReplica = stateFlowReplica(stateFlow)
+        val observer = stateFlowReplica.observe(TestScope(), MutableStateFlow(true))
+        runCurrent()
+
+        assertEquals(Loadable(data = ReplicaProvider.TEST_DATA), observer.currentState)
+    }
+
+    @Test
     fun `observes new data when in stateFlow changed data`() = runTest {
         val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
         val newData = "newData"
@@ -40,16 +51,5 @@ class StateFlowReplicaTest {
         runCurrent()
 
         assertEquals(newData, observer.currentState.data)
-    }
-
-    @Test
-    fun `observes data initially`() = runTest {
-        val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
-
-        val stateFlowReplica = stateFlowReplica(stateFlow)
-        val observer = stateFlowReplica.observe(TestScope(), MutableStateFlow(true))
-        runCurrent()
-
-        assertEquals(Loadable(data = ReplicaProvider.TEST_DATA), observer.currentState)
     }
 }

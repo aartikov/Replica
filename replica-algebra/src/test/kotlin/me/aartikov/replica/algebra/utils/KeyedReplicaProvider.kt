@@ -1,10 +1,8 @@
 package me.aartikov.replica.algebra.utils
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
-import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.time.TimeProvider
 
@@ -18,10 +16,6 @@ class KeyedReplicaProvider {
 
     private val defaultFetcher = KeyedFetcher<Int, String> { id -> testData(id) }
 
-    private val defaultNetworkConnectivityProvider = FakeNetworkConnectivityProvider(
-        MutableStateFlow(true)
-    )
-
     private val clientProvider = ReplicaClientProvider()
 
     companion object {
@@ -32,13 +26,10 @@ class KeyedReplicaProvider {
         timeProvider: TimeProvider = this.timeProvider,
         fetcher: KeyedFetcher<Int, String> = defaultFetcher,
         replicaSettings: KeyedReplicaSettings<Int, String> = defaultReplicaSettings,
-        networkConnectivityProvider: NetworkConnectivityProvider = defaultNetworkConnectivityProvider,
-        childReplicaSettings: (Int) -> ReplicaSettings = defaultChildReplicaSettings,
-        storage: KeyedFakeStorage? = null
+        childReplicaSettings: (Int) -> ReplicaSettings = defaultChildReplicaSettings
     ): KeyedPhysicalReplica<Int, String> {
         val replicaClient = clientProvider.client(
-            timeProvider = timeProvider,
-            networkConnectivityProvider = networkConnectivityProvider
+            timeProvider = timeProvider
         )
 
         return replicaClient.createKeyedReplica(
@@ -46,8 +37,7 @@ class KeyedReplicaProvider {
             settings = replicaSettings,
             childName = { "child_replica_$it" },
             childSettings = childReplicaSettings,
-            fetcher = fetcher,
-            storage = storage
+            fetcher = fetcher
         )
     }
 }

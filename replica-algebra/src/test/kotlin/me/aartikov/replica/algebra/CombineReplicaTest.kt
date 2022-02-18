@@ -45,7 +45,7 @@ class CombineReplicaTest {
     }
 
     @Test
-    fun `no data if one of replicas no data`() = runTest {
+    fun `no data if one of replicas has no data`() = runTest {
         val data1 = "test1"
         val data2 = "test2"
         val replica1 = replicaProvider.replica(fetcher = { data1 })
@@ -62,7 +62,7 @@ class CombineReplicaTest {
     }
 
     @Test
-    fun `part of data if one of replicas no data and replica combined eagerly`() = runTest {
+    fun `part of data if one of replicas has no data and replica combined eagerly`() = runTest {
         val data1 = "test1"
         val data2 = "test2"
         val replica1 = replicaProvider.replica(fetcher = { data1 })
