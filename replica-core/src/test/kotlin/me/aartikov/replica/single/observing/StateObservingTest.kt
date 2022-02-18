@@ -1,4 +1,4 @@
-package me.aartikov.replica.single
+package me.aartikov.replica.single.observing
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -7,7 +7,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import me.aartikov.replica.MainCoroutineRule
+import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.single.currentState
+import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

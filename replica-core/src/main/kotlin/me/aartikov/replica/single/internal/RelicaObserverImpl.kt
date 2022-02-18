@@ -3,7 +3,7 @@ package me.aartikov.replica.single.internal
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.common.LoadingError
-import me.aartikov.replica.common.toActivableFlow
+import me.aartikov.replica.common.internal.toActivableFlow
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.internal.controllers.ObserversController
 import java.util.*
