@@ -10,7 +10,7 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.single.PhysicalReplica
 
-class ReplicaClientListener(
+internal class ReplicaClientListener(
     private val replicaClient: ReplicaClient,
     private val store: DtoStore
 ) {

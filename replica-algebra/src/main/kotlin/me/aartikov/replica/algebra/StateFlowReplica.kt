@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
+import me.aartikov.replica.algebra.internal.toActivableFlow
 import me.aartikov.replica.common.LoadingError
-import me.aartikov.replica.common.internal.toActivableFlow
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver

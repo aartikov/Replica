@@ -5,86 +5,24 @@ public final class me/aartikov/replica/devtools/BuildConfig {
 	public fun <init> ()V
 }
 
+public final class me/aartikov/replica/devtools/DevToolsSettings {
+	public fun <init> ()V
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun copy (I)Lme/aartikov/replica/devtools/DevToolsSettings;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/DevToolsSettings;IILjava/lang/Object;)Lme/aartikov/replica/devtools/DevToolsSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPort ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class me/aartikov/replica/devtools/ReplicaDevTools {
 	public abstract fun launch ()V
 }
 
 public final class me/aartikov/replica/devtools/ReplicaDevToolsKt {
-	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;)Lme/aartikov/replica/devtools/ReplicaDevTools;
-}
-
-public final class me/aartikov/replica/devtools/internal/KeyedReplicaInfo {
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/keyed/KeyedReplicaState;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/keyed/KeyedReplicaState;Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-iSKwjsg ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lme/aartikov/replica/keyed/KeyedReplicaSettings;
-	public final fun component4 ()Ljava/util/Set;
-	public final fun component5 ()Lme/aartikov/replica/keyed/KeyedReplicaState;
-	public final fun component6 ()Ljava/util/Map;
-	public final fun copy-ppHncTc (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/keyed/KeyedReplicaState;Ljava/util/Map;)Lme/aartikov/replica/devtools/internal/KeyedReplicaInfo;
-	public static synthetic fun copy-ppHncTc$default (Lme/aartikov/replica/devtools/internal/KeyedReplicaInfo;Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/keyed/KeyedReplicaState;Ljava/util/Map;ILjava/lang/Object;)Lme/aartikov/replica/devtools/internal/KeyedReplicaInfo;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getChildInfos ()Ljava/util/Map;
-	public final fun getId-iSKwjsg ()Ljava/lang/String;
-	public final fun getName ()Ljava/lang/String;
-	public final fun getSettings ()Lme/aartikov/replica/keyed/KeyedReplicaSettings;
-	public final fun getState ()Lme/aartikov/replica/keyed/KeyedReplicaState;
-	public final fun getTags ()Ljava/util/Set;
-	public fun hashCode ()I
-	public final fun setState (Lme/aartikov/replica/keyed/KeyedReplicaState;)V
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class me/aartikov/replica/devtools/internal/ReplicaClientInfo {
-	public fun <init> ()V
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
-	public synthetic fun <init> (Ljava/util/Map;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/util/Map;
-	public final fun component2 ()Ljava/util/Map;
-	public final fun copy (Ljava/util/Map;Ljava/util/Map;)Lme/aartikov/replica/devtools/internal/ReplicaClientInfo;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/internal/ReplicaClientInfo;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lme/aartikov/replica/devtools/internal/ReplicaClientInfo;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getKeyedReplicaInfos ()Ljava/util/Map;
-	public final fun getReplicaInfos ()Ljava/util/Map;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class me/aartikov/replica/devtools/internal/ReplicaClientInfoLogger {
-	public fun <init> ()V
-	public final fun log (Lme/aartikov/replica/devtools/internal/ReplicaClientInfo;)V
-}
-
-public final class me/aartikov/replica/devtools/internal/ReplicaClientInfoStore {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final fun addKeyedReplica (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
-	public final fun addKeyedReplicaChild-5ReIQu8 (Lme/aartikov/replica/single/PhysicalReplica;Ljava/lang/String;)V
-	public final fun addReplica (Lme/aartikov/replica/single/PhysicalReplica;)V
-	public final fun getOnInfoChanged ()Lkotlin/jvm/functions/Function1;
-	public final fun removeKeyedReplicaChild-vrcOzaI (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun updateKeyedReplicaChildState-xx5_s0A (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaState;)V
-	public final fun updateKeyedReplicaState-WWcyYoI (Ljava/lang/String;Lme/aartikov/replica/keyed/KeyedReplicaState;)V
-	public final fun updateReplicaState-WWcyYoI (Ljava/lang/String;Lme/aartikov/replica/single/ReplicaState;)V
-}
-
-public final class me/aartikov/replica/devtools/internal/ReplicaInfo {
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/single/ReplicaState;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-iSKwjsg ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lme/aartikov/replica/single/ReplicaSettings;
-	public final fun component4 ()Ljava/util/Set;
-	public final fun component5 ()Lme/aartikov/replica/single/ReplicaState;
-	public final fun copy-wgLnhbM (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/single/ReplicaState;)Lme/aartikov/replica/devtools/internal/ReplicaInfo;
-	public static synthetic fun copy-wgLnhbM$default (Lme/aartikov/replica/devtools/internal/ReplicaInfo;Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Lme/aartikov/replica/single/ReplicaState;ILjava/lang/Object;)Lme/aartikov/replica/devtools/internal/ReplicaInfo;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId-iSKwjsg ()Ljava/lang/String;
-	public final fun getName ()Ljava/lang/String;
-	public final fun getSettings ()Lme/aartikov/replica/single/ReplicaSettings;
-	public final fun getState ()Lme/aartikov/replica/single/ReplicaState;
-	public final fun getTags ()Ljava/util/Set;
-	public fun hashCode ()I
-	public final fun setState (Lme/aartikov/replica/single/ReplicaState;)V
-	public fun toString ()Ljava/lang/String;
+	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/devtools/DevToolsSettings;Landroid/content/Context;)Lme/aartikov/replica/devtools/ReplicaDevTools;
 }
 

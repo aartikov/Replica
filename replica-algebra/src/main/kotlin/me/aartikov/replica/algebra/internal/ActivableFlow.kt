@@ -1,4 +1,4 @@
-package me.aartikov.replica.common.internal
+package me.aartikov.replica.algebra.internal
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

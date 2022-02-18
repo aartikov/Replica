@@ -8,5 +8,5 @@ data class CombinedLoadingError(val exceptions: List<Exception>) {
         check(exceptions.isNotEmpty()) { "Attempt to create empty CombinedLoadingError" }
     }
 
-    val firstException get() = exceptions[0]
+    val exception get() = exceptions[0]
 }

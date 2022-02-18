@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.kotlin.multiplatform'
     id 'kotlinx-serialization'
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
 kotlin {

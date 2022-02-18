@@ -9,7 +9,7 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 
-fun PhysicalReplica<*>.toDto(): ReplicaDto {
+internal fun PhysicalReplica<*>.toDto(): ReplicaDto {
     return ReplicaDto(
         id = id.value,
         name = name,
@@ -17,7 +17,7 @@ fun PhysicalReplica<*>.toDto(): ReplicaDto {
     )
 }
 
-fun ReplicaState<*>.toDto(): ReplicaStateDto {
+internal fun ReplicaState<*>.toDto(): ReplicaStateDto {
     return ReplicaStateDto(
         loading = loading,
         hasData = data != null,
@@ -29,7 +29,7 @@ fun ReplicaState<*>.toDto(): ReplicaStateDto {
     )
 }
 
-fun KeyedPhysicalReplica<*, *>.toDto(): KeyedReplicaDto {
+internal fun KeyedPhysicalReplica<*, *>.toDto(): KeyedReplicaDto {
     return KeyedReplicaDto(
         id = id.value,
         name = name,
@@ -37,7 +37,7 @@ fun KeyedPhysicalReplica<*, *>.toDto(): KeyedReplicaDto {
     )
 }
 
-fun KeyedReplicaState.toDto(): KeyedReplicaStateDto {
+internal fun KeyedReplicaState.toDto(): KeyedReplicaStateDto {
     return KeyedReplicaStateDto(
         replicaCount = replicaCount,
         replicaWithObserversCount = replicaWithObserversCount,
@@ -45,7 +45,7 @@ fun KeyedReplicaState.toDto(): KeyedReplicaStateDto {
     )
 }
 
-fun ObservingTime.toDto(): ObservingTimeDto {
+internal fun ObservingTime.toDto(): ObservingTimeDto {
     return when (this) {
         is ObservingTime.Now -> ObservingTimeDto.Now
         is ObservingTime.Never -> ObservingTimeDto.Never

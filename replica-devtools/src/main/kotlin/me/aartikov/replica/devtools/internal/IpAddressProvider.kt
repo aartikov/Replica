@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.wifi.WifiManager
 import android.text.format.Formatter
 
-class IpAddressProvider(private val context: Context) {
+internal class IpAddressProvider(private val context: Context) {
 
     fun getLocalIpAddress(): String {
         val wifiManager =

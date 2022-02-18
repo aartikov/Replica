@@ -21,7 +21,7 @@ import me.aartikov.replica.devtools.dto.DevToolsEventDto
 import me.aartikov.replica.devtools.dto.DtoStore
 import me.aartikov.replica.devtools.dto.ReplaceAll
 
-class WebServer(
+internal class WebServer(
     private val coroutineScope: CoroutineScope,
     ipAddressProvider: IpAddressProvider,
     private val port: Int,
