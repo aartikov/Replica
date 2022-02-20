@@ -12,7 +12,7 @@ fun ReplicaItem(item: SimpleReplicaViewData) {
                 display(DisplayStyle.Flex)
                 flexFlow(FlexDirection.Row, FlexWrap.Wrap)
                 alignItems(AlignItems.Center)
-                padding(4.px, 16.px)
+                padding(6.px, 16.px)
             }
         }
     ) {
@@ -31,5 +31,9 @@ fun ReplicaItem(item: SimpleReplicaViewData) {
         StatusItem(item.status)
         ObserverIcon(item.observerType)
     }
-    Divider(attrs = { style { marginLeft(16.px) } })
+    Divider(attrs = {
+        style {
+            marginLeft(8.px)
+        }
+    })
 }

@@ -1,9 +1,8 @@
 package me.aartikov.replica.devtools.client.view_data
 
+import me.aartikov.replica.devtools.client.StatusColor
 import me.aartikov.replica.devtools.client.Theme
 import me.aartikov.replica.devtools.dto.ReplicaStateDto
-import org.jetbrains.compose.web.css.CSSColorValue
-import org.jetbrains.compose.web.css.Color
 
 enum class StatusItemType {
     Fresh,
@@ -13,14 +12,14 @@ enum class StatusItemType {
     Refresh,
     Empty;
 
-    fun getColors(theme: Theme): Pair<CSSColorValue, CSSColorValue> {
+    fun getColor(theme: Theme): StatusColor {
         return when (this) {
-            Loading -> theme.defaultStatusColor to theme.statusTextColor
-            Fresh -> theme.freshStatusColor to Color.white
-            Error -> theme.errorStatusColor to theme.statusTextColor
-            Refresh -> theme.defaultStatusColor to theme.statusTextColor
-            Empty -> theme.textColor to theme.backgroundColor
-            Stale -> Color.slategray to Color.white
+            Loading -> theme.loadingStatusColor
+            Fresh -> theme.freshStatusColor
+            Error -> theme.errorStatusColor
+            Refresh -> theme.loadingStatusColor
+            Empty -> theme.emptyStatusColor
+            Stale -> theme.staleStatusColor
         }
     }
 }
@@ -32,7 +31,6 @@ fun ReplicaStateDto.toStatusItemType(): StatusItemType {
         !hasData && hasError && !loading -> StatusItemType.Error
         !hasData && loading -> StatusItemType.Loading
         hasData && loading -> StatusItemType.Refresh
-        !hasData && !hasError && !loading -> StatusItemType.Empty
-        else -> throw IllegalArgumentException()
+        else -> StatusItemType.Empty
     }
 }

@@ -9,43 +9,87 @@ import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.rgb
 
+data class StatusColor(
+    val background: CSSColorValue,
+    val text: CSSColorValue
+)
+
 class Theme(
     val isDark: Boolean,
+    val name: String,
+
     val backgroundColor: CSSColorValue,
     val textColor: CSSColorValue,
-    val defaultStatusColor: CSSColorValue,
-    val statusTextColor: CSSColorValue,
-    val errorStatusColor: CSSColorValue,
-    val freshStatusColor: CSSColorValue,
-    val bottomBarColor: CSSColorValue,
     val dividerColor: CSSColorValue,
-    val name: String
+    val bottomBarColor: CSSColorValue,
+
+    val loadingStatusColor: StatusColor,
+    val freshStatusColor: StatusColor,
+    val errorStatusColor: StatusColor,
+    val staleStatusColor: StatusColor,
+    val emptyStatusColor: StatusColor
 ) {
 
     companion object {
         val lightTheme = Theme(
             isDark = false,
-            defaultStatusColor = rgb(98, 0, 238),
-            statusTextColor = Color.white,
-            freshStatusColor = rgb(3, 218, 198),
+            name = "light",
+
             backgroundColor = Color.white,
             textColor = Color.black,
-            errorStatusColor = rgb(176, 0, 32),
-            name = "light",
+            dividerColor = Color.lightgray,
             bottomBarColor = Color.whitesmoke,
-            dividerColor = Color.lightgray
+
+            loadingStatusColor = StatusColor(
+                background = rgb(60, 170, 221),
+                text = Color.white
+            ),
+            freshStatusColor = StatusColor(
+                background = rgb(6, 206, 149),
+                text = Color.white
+            ),
+            errorStatusColor = StatusColor(
+                background = rgb(224, 96, 104),
+                text = Color.white
+            ),
+            staleStatusColor = StatusColor(
+                background = rgb(165, 172, 191),
+                text = Color.white
+            ),
+            emptyStatusColor = StatusColor(
+                background = rgb(223, 223, 223),
+                text = rgb(90, 90, 90),
+            )
         )
         val darkTheme = Theme(
             isDark = true,
-            defaultStatusColor = rgb(187, 134, 252),
-            statusTextColor = rgb(36, 36, 36),
-            freshStatusColor = rgb(3, 218, 198),
-            backgroundColor = rgb(36, 36, 36),
-            textColor = rgb(248, 248, 242),
-            errorStatusColor = rgb(207, 102, 121),
-            bottomBarColor = Color.gray,
-            dividerColor = rgb(248, 248, 242),
-            name = "dark"
+            name = "dark",
+
+            backgroundColor = rgb(68, 72, 74),
+            textColor = rgb(195, 195, 195),
+            bottomBarColor = rgb(60, 60, 60),
+            dividerColor = rgb(105, 105, 105),
+
+            loadingStatusColor = StatusColor(
+                background = rgb(57, 158, 205),
+                text = Color.white
+            ),
+            freshStatusColor = StatusColor(
+                background = rgb(82, 167, 97),
+                text = Color.white
+            ),
+            errorStatusColor = StatusColor(
+                background = rgb(176, 107, 105),
+                text = Color.white
+            ),
+            staleStatusColor = StatusColor(
+                background = rgb(128, 131, 138),
+                text = rgb(230, 230, 230)
+            ),
+            emptyStatusColor = StatusColor(
+                background = rgb(195, 195, 195),
+                text = rgb(70, 70, 70)
+            )
         )
     }
 }
