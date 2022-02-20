@@ -4,6 +4,8 @@ plugins {
     id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
+apply from: "${rootDir}/publish.gradle"
+
 kotlin {
     jvm()
     js(IR) {
@@ -12,11 +14,11 @@ kotlin {
 
     sourceSets {
         commonMain {
-            kotlin.srcDir('src/main/kotlin')
+            kotlin.srcDir('src/commonMain/kotlin')
             dependencies {
                 implementation libs.serialization.core
-                api libs.coroutines.core
-                api libs.kotlin.datetime
+                implementation libs.coroutines.core
+                implementation libs.kotlin.datetime
             }
         }
     }
