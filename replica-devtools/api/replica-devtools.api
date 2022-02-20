@@ -23,6 +23,7 @@ public abstract interface class me/aartikov/replica/devtools/ReplicaDevTools {
 }
 
 public final class me/aartikov/replica/devtools/ReplicaDevToolsKt {
-	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/devtools/DevToolsSettings;Landroid/content/Context;)Lme/aartikov/replica/devtools/ReplicaDevTools;
+	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;Landroid/content/Context;Lme/aartikov/replica/devtools/DevToolsSettings;)Lme/aartikov/replica/devtools/ReplicaDevTools;
+	public static synthetic fun ReplicaDevTools$default (Lme/aartikov/replica/client/ReplicaClient;Landroid/content/Context;Lme/aartikov/replica/devtools/DevToolsSettings;ILjava/lang/Object;)Lme/aartikov/replica/devtools/ReplicaDevTools;
 }
 

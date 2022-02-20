@@ -61,7 +61,7 @@ internal class WebServer(
     fun launch() = coroutineScope.launch(Dispatchers.IO) {
         Log.d(
             "ReplicaDevTools",
-            "Devtool is available with address: http://$ipAddress:$port/index.html"
+            "ReplicaDevTools is available with address: http://$ipAddress:$port/index.html"
         )
         InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE)
         server.start(true)

@@ -5,11 +5,25 @@ public final class me/aartikov/replica/devtools/BuildConfig {
 	public fun <init> ()V
 }
 
+public final class me/aartikov/replica/devtools/DevToolsSettings {
+	public fun <init> ()V
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun copy (I)Lme/aartikov/replica/devtools/DevToolsSettings;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/DevToolsSettings;IILjava/lang/Object;)Lme/aartikov/replica/devtools/DevToolsSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPort ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class me/aartikov/replica/devtools/ReplicaDevTools {
 	public abstract fun launch ()V
 }
 
 public final class me/aartikov/replica/devtools/ReplicaDevToolsKt {
-	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;)Lme/aartikov/replica/devtools/ReplicaDevTools;
+	public static final fun ReplicaDevTools (Lme/aartikov/replica/client/ReplicaClient;Landroid/content/Context;Lme/aartikov/replica/devtools/DevToolsSettings;)Lme/aartikov/replica/devtools/ReplicaDevTools;
+	public static synthetic fun ReplicaDevTools$default (Lme/aartikov/replica/client/ReplicaClient;Landroid/content/Context;Lme/aartikov/replica/devtools/DevToolsSettings;ILjava/lang/Object;)Lme/aartikov/replica/devtools/ReplicaDevTools;
 }
 

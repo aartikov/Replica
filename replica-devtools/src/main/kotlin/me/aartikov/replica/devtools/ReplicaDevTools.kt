@@ -11,8 +11,8 @@ interface ReplicaDevTools {
 
 fun ReplicaDevTools(
     replicaClient: ReplicaClient,
-    settings: DevToolsSettings,
-    applicationContext: Context
+    applicationContext: Context,
+    settings: DevToolsSettings = DevToolsSettings()
 ): ReplicaDevTools {
     return ReplicaDevToolsImpl(replicaClient, settings, applicationContext)
 }
