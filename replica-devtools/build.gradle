@@ -4,6 +4,8 @@ plugins {
     id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
+apply from: "${rootDir}/publish.gradle"
+
 android {
     compileSdkVersion androidLibraryConfig.compileSdkVersion
 

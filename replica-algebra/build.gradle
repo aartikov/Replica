@@ -4,6 +4,8 @@ plugins {
     id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
+apply from: "${rootDir}/publish.gradle"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

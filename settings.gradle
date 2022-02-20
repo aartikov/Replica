@@ -26,6 +26,7 @@ dependencyResolutionManagement {
             // Kotlin
             version('kotlin', '1.6.10')
             alias('kotlin-plugin').to('org.jetbrains.kotlin', 'kotlin-gradle-plugin').versionRef('kotlin')
+            alias('jetbrains-dokka-plugin').to('org.jetbrains.dokka', 'dokka-gradle-plugin').versionRef('kotlin')
             alias('kotlin-datetime').to('org.jetbrains.kotlinx', 'kotlinx-datetime').version('0.3.2')
             alias('kotlin-binaryCompatibilityValidator').to('org.jetbrains.kotlinx.binary-compatibility-validator', 'org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin').version('0.8.0')
 
