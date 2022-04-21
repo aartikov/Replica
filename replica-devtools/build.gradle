@@ -4,6 +4,8 @@ plugins {
     id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
+apply from: "${rootDir}/publish.gradle"
+
 android {
     compileSdkVersion androidLibraryConfig.compileSdkVersion
 
@@ -32,10 +34,13 @@ dependencies {
     api project(':replica-core')
     implementation project(':replica-devtools-dto')
     api libs.coroutines.core
+    implementation libs.serialization.core
     implementation libs.serialization.json
-    testImplementation libs.junit
+    implementation libs.kotlin.datetime
 
     implementation libs.ktor.core
     implementation libs.ktor.netty
     implementation libs.ktor.websockets
+
+    testImplementation libs.junit
 }

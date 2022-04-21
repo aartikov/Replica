@@ -7,7 +7,7 @@ import me.aartikov.replica.sample.features.dudes.domain.DudeId
 import java.net.URLEncoder
 
 @Serializable
-data class DudeResponse(
+class DudeResponse(
     @SerialName("uid") val uid: String,
     @SerialName("name") val name: String
 )

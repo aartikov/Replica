@@ -20,5 +20,6 @@ buildscript {
         classpath libs.android.plugin
         classpath libs.serialization.plugin
         classpath libs.jetbrains.compose.plugin
+        classpath libs.jetbrains.dokka.plugin
     }
 }
