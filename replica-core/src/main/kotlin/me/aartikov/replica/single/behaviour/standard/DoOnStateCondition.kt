@@ -10,6 +10,11 @@ import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import kotlin.time.Duration
 
+/**
+ * [ReplicaBehaviour] that executes an [action] when a state satisfies a [condition].
+ * [startDelay] allows to delay execution of an action. If a state stops satisfying the condition before [startDelay] expires the action will not be executed.
+ * [repeatInterval] allows to execute an [action] periodically until a state satisfying the condition. null means execute the action once.
+ */
 class DoOnStateCondition<T : Any>(
     private val condition: (ReplicaState<T>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,

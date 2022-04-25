@@ -6,7 +6,6 @@ import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.standard.*
 import kotlin.time.Duration
 
-
 internal fun <T : Any> createBehavioursForReplicaSettings(
     settings: ReplicaSettings,
     networkConnectivityProvider: NetworkConnectivityProvider?

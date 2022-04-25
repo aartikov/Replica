@@ -39,7 +39,7 @@ class WithOptimisticUpdateTest {
         var isSuccess = false
         var isError = false
         var isCanceled = false
-        var isCompleted = false
+        var isFinished = false
 
         replica.refresh()
         runCurrent()
@@ -49,7 +49,7 @@ class WithOptimisticUpdateTest {
             onSuccess = { isSuccess = true },
             onError = { isError = true },
             onCanceled = { isCanceled = true },
-            onCompleted = { isCompleted = true }
+            onFinished = { isFinished = true }
         ) {
             // Nothing
         }
@@ -58,7 +58,7 @@ class WithOptimisticUpdateTest {
         assertTrue(isSuccess)
         assertFalse(isError)
         assertFalse(isCanceled)
-        assertTrue(isCompleted)
+        assertTrue(isFinished)
         assertEquals(
             newData,
             replica.currentState.data?.value
@@ -73,7 +73,7 @@ class WithOptimisticUpdateTest {
         var isSuccess = false
         var isError = false
         var isCanceled = false
-        var isCompleted = false
+        var isFinished = false
 
         replica.refresh()
         runCurrent()
@@ -84,7 +84,7 @@ class WithOptimisticUpdateTest {
                 onSuccess = { isSuccess = true },
                 onError = { isError = true },
                 onCanceled = { isCanceled = true },
-                onCompleted = { isCompleted = true }) {
+                onFinished = { isFinished = true }) {
                 delay(DEFAULT_DELAY)
                 throw LoadingFailedException()
             }
@@ -95,7 +95,7 @@ class WithOptimisticUpdateTest {
         assertFalse(isSuccess)
         assertTrue(isError)
         assertFalse(isCanceled)
-        assertTrue(isCompleted)
+        assertTrue(isFinished)
         assertEquals(ReplicaProvider.TEST_DATA, replica.currentState.data?.value)
     }
 
@@ -107,7 +107,7 @@ class WithOptimisticUpdateTest {
         var isSuccess = false
         var isError = false
         var isCanceled = false
-        var isCompleted = false
+        var isFinished = false
 
         replica.refresh()
         runCurrent()
@@ -118,7 +118,7 @@ class WithOptimisticUpdateTest {
                 onSuccess = { isSuccess = true },
                 onError = { isError = true },
                 onCanceled = { isCanceled = true },
-                onCompleted = { isCompleted = true }
+                onFinished = { isFinished = true }
             ) { cancel() }
         }
         runCurrent()
@@ -126,7 +126,7 @@ class WithOptimisticUpdateTest {
         assertFalse(isSuccess)
         assertFalse(isError)
         assertTrue(isCanceled)
-        assertTrue(isCompleted)
+        assertTrue(isFinished)
         assertEquals(ReplicaProvider.TEST_DATA, replica.currentState.data?.value)
     }
 

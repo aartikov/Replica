@@ -11,7 +11,7 @@ apply plugin: 'org.jetbrains.dokka'
 ext {
     PUBLISH_GROUP_ID = 'com.github.aartikov'
     PUBLISH_VERSION = '1.0.0-alpha4'
-    DESCRIPTION = 'Android libary for fetching, caching and updating asynchronous data'
+    DESCRIPTION = 'Android libary for organizing of network communication'
 
     GITHUB_USER = 'aartikov'
     GITHUB_PROJECT = 'Replica'

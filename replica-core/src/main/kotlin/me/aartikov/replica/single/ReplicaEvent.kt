@@ -1,5 +1,8 @@
 package me.aartikov.replica.single
 
+/**
+ * Notifies that something happened in [PhysicalReplica].
+ */
 sealed interface ReplicaEvent<out T : Any> {
 
     sealed interface LoadingEvent<out T : Any> : ReplicaEvent<T> {

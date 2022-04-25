@@ -30,9 +30,11 @@ import me.aartikov.replica.time.TimeProvider
 internal class ReplicaClientImpl(
     override val networkConnectivityProvider: NetworkConnectivityProvider?,
     private val timeProvider: TimeProvider,
-    private val coroutineDispatcher: CoroutineDispatcher,   // TODO: get from coroutineScope?
     override val coroutineScope: CoroutineScope
 ) : ReplicaClient {
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private val coroutineDispatcher = coroutineScope.coroutineContext[CoroutineDispatcher.Key]!!
 
     private val _eventFlow = MutableSharedFlow<ReplicaClientEvent>(extraBufferCapacity = 1000)
     override val eventFlow get() = _eventFlow.asSharedFlow()

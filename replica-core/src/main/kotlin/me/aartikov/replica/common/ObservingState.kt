@@ -2,6 +2,9 @@ package me.aartikov.replica.common
 
 import kotlinx.datetime.Instant
 
+/**
+ * Has information about observers of a replica.
+ */
 data class ObservingState(
     val observerUuids: Set<String> = emptySet(),
     val activeObserverUuids: Set<String> = emptySet(),
@@ -24,6 +27,9 @@ enum class ObservingStatus {
     None, Inactive, Active
 }
 
+/**
+ * Represent information when a replica was observed in last time.
+ */
 sealed interface ObservingTime : Comparable<ObservingTime> {
 
     object Never : ObservingTime {

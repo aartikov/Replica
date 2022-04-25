@@ -6,6 +6,9 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
+/**
+ * [ReplicaBehaviour] that executes some [action] on all [ReplicaEvent].
+ */
 class DoOnEvent<T : Any>(
     private val action: suspend PhysicalReplica<T>.(event: ReplicaEvent<T>) -> Unit
 ) : ReplicaBehaviour<T> {

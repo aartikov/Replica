@@ -10,7 +10,7 @@ suspend inline fun <T : Any, R> withOptimisticUpdate(
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
-    noinline onCompleted: (suspend () -> Unit)? = null,
+    noinline onFinished: (suspend () -> Unit)? = null,
     block: () -> R
 ): R {
     return performOptimisticUpdate(
@@ -20,7 +20,7 @@ suspend inline fun <T : Any, R> withOptimisticUpdate(
         onSuccess = onSuccess,
         onError = onError,
         onCanceled = onCanceled,
-        onCompleted = onCompleted,
+        onFinished = onFinished,
         block = block
     )
 }

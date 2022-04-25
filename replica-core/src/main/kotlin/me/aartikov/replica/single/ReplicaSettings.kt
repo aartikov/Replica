@@ -1,8 +1,19 @@
 package me.aartikov.replica.single
 
+import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.network.NetworkConnectivityProvider
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * Configures automatic behaviour of a replica.
+ * @param staleTime specifies how quickly fetched data will became stale (null means never).
+ * @param clearTime specifies how quickly data will be cleared when there is no observers (null means never).
+ * @param clearErrorTime specifies how quickly error will be cleared when there is no observers (null means never).
+ * @param cancelTime specifies how quickly request will be canceled when there is no observers (null means never).
+ * @param revalidateOnActiveObserverAdded specifies if stale data will be refreshed when an active observer is added.
+ * @param revalidateOnNetworkConnection specifies if stale data will be refreshed when a network connection is established and a replica has active observer. Note: [NetworkConnectivityProvider] has to be added to [ReplicaClient].
+ */
 data class ReplicaSettings(
     val staleTime: Duration?,
     val clearTime: Duration? = null,
@@ -13,6 +24,9 @@ data class ReplicaSettings(
 ) {
 
     companion object {
+        /**
+         * Settings for a replica with none automatic behaviour.
+         */
         val WithoutBehaviour = ReplicaSettings(
             staleTime = null,
             clearTime = null,

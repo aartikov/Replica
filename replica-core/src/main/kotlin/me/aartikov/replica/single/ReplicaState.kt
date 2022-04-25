@@ -4,6 +4,9 @@ import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.ObservingState
 
+/**
+ * State of [PhysicalReplica].
+ */
 data class ReplicaState<T : Any>(
     val loading: Boolean,
     val data: ReplicaData<T>?,
