@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -111,16 +111,16 @@ private fun PokemonListContent(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        itemsIndexed(
+        items(
             items = pokemons,
-            key = { _, pokemon -> pokemon.id }
-        ) { index, pokemon ->
+            key = { pokemon -> pokemon.id }
+        ) { pokemon ->
             PokemonItem(
                 pokemon = pokemon,
                 onClick = { onPokemonClick(pokemon.id) }
             )
 
-            if (index != pokemons.lastIndex) {
+            if (pokemon !== pokemons.lastOrNull()) {
                 Divider()
             }
         }

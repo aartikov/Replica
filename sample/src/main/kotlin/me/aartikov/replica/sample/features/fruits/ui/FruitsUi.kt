@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -81,16 +81,16 @@ private fun FruitsListContent(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        itemsIndexed(
+        items(
             items = fruits,
-            key = { _, fruit -> fruit.id }
-        ) { index, fruit ->
+            key = { fruit -> fruit.id }
+        ) { fruit ->
             FruitItem(
                 fruit = fruit,
                 onClick = { onFruitClick(fruit.id) }
             )
 
-            if (index != fruits.lastIndex) {
+            if (fruit !== fruits.lastOrNull()) {
                 Divider()
             }
         }

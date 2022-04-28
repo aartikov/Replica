@@ -3,7 +3,7 @@ package me.aartikov.replica.sample.features.dudes.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -76,13 +76,13 @@ private fun DudesListContent(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        itemsIndexed(
+        items(
             items = dudes,
-            key = { _, dude -> dude.id }
-        ) { index, dude ->
+            key = { it.id }
+        ) { dude ->
             DudeItem(dude)
 
-            if (index != dudes.lastIndex) {
+            if (dude !== dudes.lastOrNull()) {
                 Divider()
             }
         }
