@@ -3,6 +3,9 @@ package me.aartikov.replica.decompose
 import androidx.compose.runtime.State
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.decompose.internal.activeFlow
+import me.aartikov.replica.decompose.internal.coroutineScope
+import me.aartikov.replica.decompose.internal.toComposeState
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.observe

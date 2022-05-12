@@ -1,4 +1,4 @@
-package me.aartikov.replica.decompose
+package me.aartikov.replica.decompose.internal
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

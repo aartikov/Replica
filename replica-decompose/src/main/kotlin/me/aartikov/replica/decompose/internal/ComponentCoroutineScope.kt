@@ -1,4 +1,4 @@
-package me.aartikov.replica.decompose
+package me.aartikov.replica.decompose.internal
 
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.doOnDestroy
