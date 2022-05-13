@@ -5,12 +5,12 @@
 ## Gradle Setup
 ```gradle
 dependencies {
-    implementation 'com.github.aartikov:replica-core:1.0.0-alpha3'
-    implementation 'com.github.aartikov:replica-algebra:1.0.0-alpha3'
-    implementation 'com.github.aartikov:replica-android-network:1.0.0-alpha3'
-    implementation 'com.github.aartikov:replica-decompose:1.0.0-alpha3'
-    debugImplementation 'com.github.aartikov:replica-devtools:1.0.0-alpha3'
-    releaseImplementation 'com.github.aartikov:replica-devtools-noop:1.0.0-alpha3'
+    implementation 'com.github.aartikov:replica-core:1.0.0-alpha4'
+    implementation 'com.github.aartikov:replica-algebra:1.0.0-alpha4'
+    implementation 'com.github.aartikov:replica-android-network:1.0.0-alpha4'
+    implementation 'com.github.aartikov:replica-decompose:1.0.0-alpha4'
+    debugImplementation 'com.github.aartikov:replica-devtools:1.0.0-alpha4'
+    releaseImplementation 'com.github.aartikov:replica-devtools-noop:1.0.0-alpha4'
 }
 ```
 
