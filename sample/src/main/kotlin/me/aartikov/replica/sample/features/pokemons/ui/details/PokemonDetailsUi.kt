@@ -46,7 +46,10 @@ fun PokemonDetailsUi(
                 pokemon = pokemon
             )
 
-            RefreshingProgress(refreshing)
+            RefreshingProgress(
+                refreshing,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }

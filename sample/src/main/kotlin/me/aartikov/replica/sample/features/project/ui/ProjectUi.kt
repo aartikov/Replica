@@ -41,8 +41,10 @@ fun ProjectUi(
                 project = project,
                 onUrlClick = component::onUrlClick
             )
-
-            RefreshingProgress(refreshing)
+            RefreshingProgress(
+                refreshing,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }
