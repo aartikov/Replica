@@ -39,12 +39,8 @@ private class AssociatedKeyedReplica<K : Any, T : Any>(
         replicaProvider(key).revalidate()
     }
 
-    override suspend fun getData(key: K): T {
-        return replicaProvider(key).getData()
-    }
-
-    override suspend fun getRefreshedData(key: K): T {
-        return replicaProvider(key).getRefreshedData()
+    override suspend fun getData(key: K, forceRefresh: Boolean): T {
+        return replicaProvider(key).getData(forceRefresh)
     }
 }
 

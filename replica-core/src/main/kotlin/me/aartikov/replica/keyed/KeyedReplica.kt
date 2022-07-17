@@ -22,9 +22,7 @@ interface KeyedReplica<K : Any, out T : Any> {
 
     fun revalidate(key: K)
 
-    suspend fun getData(key: K): T
-
-    suspend fun getRefreshedData(key: K): T
+    suspend fun getData(key: K, forceRefresh: Boolean = false): T
 }
 
 fun <K : Any, T : Any> KeyedReplica<K, T>.observe(

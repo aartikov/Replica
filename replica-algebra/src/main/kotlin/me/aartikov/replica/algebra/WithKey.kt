@@ -35,11 +35,7 @@ private class WithKeyReplica<K : Any, T : Any>(
         keyedReplica.revalidate(key)
     }
 
-    override suspend fun getData(): T {
-        return keyedReplica.getData(key)
-    }
-
-    override suspend fun getRefreshedData(): T {
-        return keyedReplica.getRefreshedData(key)
+    override suspend fun getData(forceRefresh: Boolean): T {
+        return keyedReplica.getData(key, forceRefresh)
     }
 }

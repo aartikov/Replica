@@ -46,12 +46,8 @@ private class MappedReplica<T : Any, R : Any>(
         originalReplica.revalidate()
     }
 
-    override suspend fun getData(): R {
-        return originalReplica.getData().let(transform)
-    }
-
-    override suspend fun getRefreshedData(): R {
-        return originalReplica.getRefreshedData().let(transform)
+    override suspend fun getData(forceRefresh: Boolean): R {
+        return originalReplica.getData(forceRefresh).let(transform)
     }
 }
 

@@ -31,10 +31,7 @@ interface Replica<out T : Any> {
 
     fun revalidate()
 
-    suspend fun getData(): T
-
-    suspend fun getRefreshedData(): T
-
+    suspend fun getData(forceRefresh: Boolean = false): T
 }
 
 fun <T : Any> Replica<T>.observe(

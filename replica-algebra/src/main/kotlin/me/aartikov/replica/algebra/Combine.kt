@@ -171,16 +171,9 @@ private class CombinedReplica<R : Any>(
         }
     }
 
-    override suspend fun getData(): R = coroutineScope {
+    override suspend fun getData(forceRefresh: Boolean): R = coroutineScope {
         val deferredResults = originalReplicas.map {
-            async { it.getData() }
-        }
-        transform(deferredResults.map { it.await() })
-    }
-
-    override suspend fun getRefreshedData(): R = coroutineScope {
-        val deferredResults = originalReplicas.map {
-            async { it.getRefreshedData() }
+            async { it.getData(forceRefresh) }
         }
         transform(deferredResults.map { it.await() })
     }

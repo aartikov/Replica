@@ -72,12 +72,8 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getOrCreateReplica(key).revalidate()
     }
 
-    override suspend fun getData(key: K): T {
-        return getOrCreateReplica(key).getData()
-    }
-
-    override suspend fun getRefreshedData(key: K): T {
-        return getOrCreateReplica(key).getRefreshedData()
+    override suspend fun getData(key: K, forceRefresh: Boolean): T {
+        return getOrCreateReplica(key).getData(forceRefresh)
     }
 
     override fun getCurrentState(key: K): ReplicaState<T>? {

@@ -80,12 +80,8 @@ internal class PhysicalReplicaImpl<T : Any>(
         dataLoadingController.revalidate()
     }
 
-    override suspend fun getData(): T {
-        return dataLoadingController.getData()
-    }
-
-    override suspend fun getRefreshedData(): T {
-        return dataLoadingController.getRefreshedData()
+    override suspend fun getData(forceRefresh: Boolean): T {
+        return dataLoadingController.getData(forceRefresh)
     }
 
     override suspend fun setData(data: T) {

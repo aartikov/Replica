@@ -81,7 +81,7 @@ class RequestDeduplicationTest {
     }
 
     @Test
-    fun `deduplication during refresh and get refreshed data calls`() = runTest {
+    fun `deduplication during refresh and get with force refresh data calls`() = runTest {
         var counter = 0
         val replica = replicaProvider.replica(
             fetcher = {
@@ -92,7 +92,7 @@ class RequestDeduplicationTest {
         )
 
         replica.refresh()
-        replica.getRefreshedData()
+        replica.getData(forceRefresh = true)
 
         assertEquals(1, counter)
     }

@@ -21,7 +21,6 @@ public abstract interface class me/aartikov/replica/client/ReplicaClient {
 }
 
 public final class me/aartikov/replica/client/ReplicaClient$Companion {
-	public final fun getDefaultCoroutineDispatcher ()Lkotlinx/coroutines/MainCoroutineDispatcher;
 	public final fun getDefaultCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 }
 
@@ -45,8 +44,8 @@ public final class me/aartikov/replica/client/ReplicaClientEvent$ReplicaCreated 
 }
 
 public final class me/aartikov/replica/client/ReplicaClientKt {
-	public static final fun ReplicaClient (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;)Lme/aartikov/replica/client/ReplicaClient;
-	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
+	public static final fun ReplicaClient (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;)Lme/aartikov/replica/client/ReplicaClient;
+	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
 }
 
 public final class me/aartikov/replica/common/CombinedLoadingError {
@@ -256,11 +255,14 @@ public final class me/aartikov/replica/keyed/KeyedPhysicalReplicaKt {
 }
 
 public abstract interface class me/aartikov/replica/keyed/KeyedReplica {
-	public abstract fun getData (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getRefreshedData (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getData (Ljava/lang/Object;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun observe (Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 	public abstract fun refresh (Ljava/lang/Object;)V
 	public abstract fun revalidate (Ljava/lang/Object;)V
+}
+
+public final class me/aartikov/replica/keyed/KeyedReplica$DefaultImpls {
+	public static synthetic fun getData$default (Lme/aartikov/replica/keyed/KeyedReplica;Ljava/lang/Object;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/keyed/KeyedReplicaEvent {
@@ -416,11 +418,14 @@ public final class me/aartikov/replica/single/PhysicalReplicaKt {
 }
 
 public abstract interface class me/aartikov/replica/single/Replica {
-	public abstract fun getData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getRefreshedData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getData (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun observe (Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 	public abstract fun refresh ()V
 	public abstract fun revalidate ()V
+}
+
+public final class me/aartikov/replica/single/Replica$DefaultImpls {
+	public static synthetic fun getData$default (Lme/aartikov/replica/single/Replica;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class me/aartikov/replica/single/ReplicaData {

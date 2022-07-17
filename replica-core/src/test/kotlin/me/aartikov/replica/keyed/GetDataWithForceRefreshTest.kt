@@ -13,7 +13,7 @@ import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetRefreshedDataTest {
+class GetDataWithForceRefreshTest {
 
     private val replicaProvider = KeyedReplicaProvider()
 
@@ -29,7 +29,7 @@ class GetRefreshedDataTest {
     fun `initially loads fresh data`() = runTest {
         val replica = replicaProvider.replica()
 
-        val data = replica.getRefreshedData(DEFAULT_KEY)
+        val data = replica.getData(DEFAULT_KEY, forceRefresh = true)
 
         assertEquals(KeyedReplicaProvider.testData(DEFAULT_KEY), data)
     }
@@ -49,8 +49,8 @@ class GetRefreshedDataTest {
             }
         )
 
-        val actualData = replica.getRefreshedData(DEFAULT_KEY)
-        val actualNewData = replica.getRefreshedData(DEFAULT_KEY)
+        val actualData = replica.getData(DEFAULT_KEY, forceRefresh = true)
+        val actualNewData = replica.getData(DEFAULT_KEY, forceRefresh = true)
 
         assertEquals(KeyedReplicaProvider.testData(DEFAULT_KEY), actualData)
         assertEquals(newData, actualNewData)
@@ -76,9 +76,9 @@ class GetRefreshedDataTest {
             }
         )
 
-        val actualData = replica.getData(DEFAULT_KEY)
+        val actualData = replica.getData(DEFAULT_KEY, forceRefresh = true)
         delay(DEFAULT_DELAY + 1) // waiting until data is stale
-        val actualNewData = replica.getData(DEFAULT_KEY)
+        val actualNewData = replica.getData(DEFAULT_KEY, forceRefresh = true)
 
         assertEquals(KeyedReplicaProvider.testData(DEFAULT_KEY), actualData)
         assertEquals(expectedNewData, actualNewData)
@@ -92,6 +92,6 @@ class GetRefreshedDataTest {
             }
         )
 
-        replica.getRefreshedData(DEFAULT_KEY)
+        replica.getData(DEFAULT_KEY, forceRefresh = true)
     }
 }

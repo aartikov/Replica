@@ -33,11 +33,7 @@ private class StateFlowReplica<T : Any>(
         // nothing
     }
 
-    override suspend fun getData(): T {
-        return stateFlow.value
-    }
-
-    override suspend fun getRefreshedData(): T {
+    override suspend fun getData(forceRefresh: Boolean): T {
         return stateFlow.value
     }
 }

@@ -12,7 +12,7 @@ import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetRefreshedDataTest {
+class GetDataWithForceRefreshTest {
 
     private val replicaProvider = ReplicaProvider()
 
@@ -27,7 +27,7 @@ class GetRefreshedDataTest {
     fun `initially loads fresh data`() = runTest {
         val replica = replicaProvider.replica()
 
-        val data = replica.getRefreshedData()
+        val data = replica.getData(forceRefresh = true)
 
         assertEquals(ReplicaProvider.TEST_DATA, data)
     }
@@ -47,8 +47,8 @@ class GetRefreshedDataTest {
             }
         )
 
-        val actualData = replica.getRefreshedData()
-        val actualNewData = replica.getRefreshedData()
+        val actualData = replica.getData(forceRefresh = true)
+        val actualNewData = replica.getData(forceRefresh = true)
 
         assertEquals(ReplicaProvider.TEST_DATA, actualData)
         assertEquals(newData, actualNewData)
@@ -72,9 +72,9 @@ class GetRefreshedDataTest {
             }
         )
 
-        val actualData = replica.getData()
+        val actualData = replica.getData(forceRefresh = true)
         delay(DEFAULT_DELAY + 1) // waiting until data is stale
-        val actualNewData = replica.getData()
+        val actualNewData = replica.getData(forceRefresh = true)
 
         assertEquals(ReplicaProvider.TEST_DATA, actualData)
         assertEquals(expectedNewData, actualNewData)
@@ -88,6 +88,6 @@ class GetRefreshedDataTest {
             }
         )
 
-        replica.getRefreshedData()
+        replica.getData(forceRefresh = true)
     }
 }

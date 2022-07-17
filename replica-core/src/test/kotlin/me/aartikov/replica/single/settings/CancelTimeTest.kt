@@ -183,7 +183,7 @@ class CancelTimeTest {
 
         val observer = replica.observe(TestScope(), MutableStateFlow(true))
         replica.refresh()
-        launch { replica.getRefreshedData() }
+        launch { replica.getData(forceRefresh = true) }
         observer.cancelObserving()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
 

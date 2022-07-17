@@ -6,7 +6,9 @@ import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.common.applyAll
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.ReplicaData
+import me.aartikov.replica.single.ReplicaEvent
+import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
@@ -59,12 +61,35 @@ internal class DataLoadingController<T : Any>(
         }
     }
 
-    suspend fun getData(): T {
-        return getDataInternal(refreshed = false)
-    }
+    suspend fun getData(forceRefresh: Boolean): T {
+        return withContext(dispatcher) {
+            val data = replicaStateFlow.value.data
+            if (!forceRefresh && data?.fresh == true) {
+                return@withContext data.valueWithOptimisticUpdates
+            }
 
-    suspend fun getRefreshedData(): T {
-        return getDataInternal(refreshed = true)
+            val output = dataLoader.outputFlow
+                .onStart {
+                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
+                    val state = replicaStateFlow.value
+                    if (!state.dataRequested) {
+                        replicaStateFlow.value = state.copy(dataRequested = true)
+                    }
+                }
+                .filterIsInstance<DataLoader.Output.LoadingFinished<T>>()
+                .first()
+
+
+
+            when (output) {
+                is DataLoader.Output.LoadingFinished.Success -> {
+                    val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates
+                    optimisticUpdates?.applyAll(output.data) ?: output.data
+                }
+                is DataLoader.Output.LoadingFinished.Canceled -> throw CancellationException()
+                is DataLoader.Output.LoadingFinished.Error -> throw output.exception
+            }
+        }
     }
 
     fun cancel() {
@@ -143,37 +168,6 @@ internal class DataLoadingController<T : Any>(
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Error(output.exception))
                 }
-            }
-        }
-    }
-
-    private suspend fun getDataInternal(refreshed: Boolean): T {
-        return withContext(dispatcher) {
-            val data = replicaStateFlow.value.data
-            if (!refreshed && data?.fresh == true) {
-                return@withContext data.valueWithOptimisticUpdates
-            }
-
-            val output = dataLoader.outputFlow
-                .onStart {
-                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
-                    val state = replicaStateFlow.value
-                    if (!state.dataRequested) {
-                        replicaStateFlow.value = state.copy(dataRequested = true)
-                    }
-                }
-                .filterIsInstance<DataLoader.Output.LoadingFinished<T>>()
-                .first()
-
-
-
-            when (output) {
-                is DataLoader.Output.LoadingFinished.Success -> {
-                    val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates
-                    optimisticUpdates?.applyAll(output.data) ?: output.data
-                }
-                is DataLoader.Output.LoadingFinished.Canceled -> throw CancellationException()
-                is DataLoader.Output.LoadingFinished.Error -> throw output.exception
             }
         }
     }
