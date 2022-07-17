@@ -112,13 +112,14 @@ class PokemonRepositoryImpl(
 }
 ```
 
-We use `ReplicaClient.createReplica` to create a replica. Once created a replica will exist as long as a replica client exists so don't create more than one replica for the same chunk of data.
-
-The arguments of the method are:
+We use `ReplicaClient.createReplica` to create a replica. The arguments of the method are:
 
 - `name` - a human readable replica name, it can be used for debugging.
 - `settings` - configures replica behaviour. In the example we configured that data became state after one minute since it was loaded. There are other settings in [ReplicaSettings](https://github.com/aartikov/Replica/blob/docs/replica-core/src/main/kotlin/me/aartikov/replica/single/ReplicaSettings.kt) but all these fields have default values.
 - `fetcher` - configures how to load data from a network. In the example `PokemonApi` is powered by Retrofit but you can use any networking library you like.
+
+> **Note**
+> Once created a replica will exist as long as a replica client exists so don't create more than one replica for the same chunk of data.
 
 Maybe you have noticed that in `PokemonRepository` the replica declared as `Replica` whereas in `PokemonRepositoryImpl` as `PhysicalReplica`. This is made on purpose. The difference between `Replica` and `PhysicalReplica` is that the latter has a richer API. `Replica` allows only read data, whereas `PhysicalReplica` has methods to cancel requests, modify data, execute optimistic updates. It is recommended to declare replicas in the presented way to make repositories more encapsulated.
 
