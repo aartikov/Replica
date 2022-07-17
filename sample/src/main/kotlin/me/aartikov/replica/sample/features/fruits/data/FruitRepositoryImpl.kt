@@ -16,10 +16,11 @@ class FruitRepositoryImpl(
 
     override val fruitsReplica: PhysicalReplica<List<Fruit>> = replicaClient.createReplica(
         name = "fruits",
-        settings = ReplicaSettings(staleTime = 30.seconds)
-    ) {
-        api.getFruits().map { it.toDomain() }
-    }
+        settings = ReplicaSettings(staleTime = 30.seconds),
+        fetcher = {
+            api.getFruits().map { it.toDomain() }
+        }
+    )
 
     override suspend fun setFruitLiked(fruitId: FruitId, liked: Boolean) {
         val updateFruitLiked = OptimisticUpdate<List<Fruit>> { fruits ->

@@ -25,10 +25,11 @@ class PokemonRepositoryImpl(
                     staleTime = 10.seconds,
                     clearTime = 60.seconds
                 )
+            },
+            fetcher = { pokemonTypeId ->
+                api.getPokemonsByType(pokemonTypeId.value).toDomain()
             }
-        ) { pokemonTypeId ->
-            api.getPokemonsByType(pokemonTypeId.value).toDomain()
-        }
+        )
 
     override val pokemonByIdReplica: KeyedPhysicalReplica<PokemonId, DetailedPokemon> =
         replicaClient.createKeyedReplica(
@@ -37,8 +38,9 @@ class PokemonRepositoryImpl(
             settings = KeyedReplicaSettings(maxCount = 5),
             childSettings = {
                 ReplicaSettings(staleTime = 10.seconds)
+            },
+            fetcher = { pokemonId ->
+                api.getPokemonById(pokemonId.value).toDomain()
             }
-        ) { pokemonId ->
-            api.getPokemonById(pokemonId.value).toDomain()
-        }
+        )
 }

@@ -77,10 +77,10 @@ dependencies {
 ```
 
 ### Create a replica client
- `ReplicaClient` is required to create Replicas. Create it and make it a singleton.
+ `ReplicaClient` is required to create Replicas. It should be a singleton.
 
 ```kotlin
-
+val replicaClient = ReplicaClient()
 ```
 
 ## Contact the author

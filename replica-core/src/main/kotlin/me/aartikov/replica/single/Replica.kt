@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
  * Replica can clear data automatically when it is not required anymore.
  *
  * The difference between [Replica] and [PhysicalReplica] is that the latter has a richer API.
- * [Replica] has minimalistic read-only API, whereas [PhysicalReplica] allows to cancel a request, modify data, execute optimistic updates.
+ * [Replica] has minimalistic read-only API, whereas [PhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
  * [PhysicalReplica] extends [Replica], but not all replicas are physical replicas.
  * There are lightweight virtual replicas created by combining other replicas (see: replica-algebra module for more details).
  */

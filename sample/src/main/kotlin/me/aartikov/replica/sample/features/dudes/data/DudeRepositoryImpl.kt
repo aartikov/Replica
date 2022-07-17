@@ -12,8 +12,9 @@ class DudeRepositoryImpl(
 
     override val dudesReplica: PhysicalReplica<List<Dude>> = replicaClient.createReplica(
         name = "dudes",
-        settings = ReplicaSettings(staleTime = null)
-    ) {
-        api.getRandomDudes(20).map { it.toDomain() }
-    }
+        settings = ReplicaSettings(staleTime = null),
+        fetcher = {
+            api.getRandomDudes(count = 20).map { it.toDomain() }
+        }
+    )
 }
