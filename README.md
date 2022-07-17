@@ -19,43 +19,44 @@ The library is based on a concept called **data replication**. Imagine that ther
 <img src="images/data_replication.png">
 
 ### Replication primitives
-Replica (a library) provides replication primitives called **Replicas**. Replica (a replication primitive) is located on a client side and performs data replication.
+Replica (a library) provides replication primitives called **replicas**. Replica (a replication primitive) is located on a client side and performs data replication.
 
 <img src="images/replication_primitive.png">
 
 ### Replica Observers
-**Replica observer** is an agent that connects to a Replica and watches what is happening inside. Replica can have zero, one or multiple observers. Each observer can be **active** or **inactive**. By connecting to a Replica an observer gets access to its state. Replica by itself knows how many active and inactive observers it has.
+**Replica observer** is an agent that connects to a replica and watches what is happening inside. Replica can have zero, one or multiple observers. Each observer can be **active** or **inactive**. By connecting to a replica an observer gets access to its state. A replica by itself knows how many active and inactive observers it has.
 
 <img src="images/replica_observers.png">
 
-And the most important concept here is **Replica observer is associated with some UI screen.**
+And the most important concept here is **A replica observer is associated with some UI screen.**
 
 <img src="images/ui_observer.png">
+
 That means:
-- When the screen is visible for an user, the Replica has an active observer.
-- When the screen is invisible (it is in a backstack or the whole app is in background), the Replica has inactive observer.
-- When an user leaves the screen by going back, the observer disconnects from the Replica.
+- When the screen is visible for an user, the replica has an active observer.
+- When the screen is invisible (it is in a backstack or the whole app is in background), the replica has inactive observer.
+- When an user leaves the screen by going back, the observer disconnects from the replica.
 
 ### Automatic behaviour
-To replicate data Replica performs a quite complex automatic behaviour:
+To replicate data a replica performs a quite complex automatic behaviour:
 - Replica loads missing data when an active observer connects.
 - Replica keeps track of data staleness.
 - Replica refreshes stale data when an active observer is connected.
 - Replica cancels network request when a last observer is disconnected.
-- Replica clear data when it has no observers for a long time.
+- Replica clears data when it has no observers for a long time.
 
 > **Note**
 > This behaviour is implemented on a public library API so developers can add their own automatic logic.
 
 ### Let's summarize
-For each chunk of data required from server a client has a corresponding Replica. When a Replica has an active observer it performs automatic data replication. The observed Replica state gets to UI and displayed to an user.
+For each chunk of data required from server a client has a corresponding replica. When a replica has an active observer it performs automatic data replication. The observed replica state gets to UI and displayed to an user.
 
 <img src="images/how_replica_works_summarize.png">
 
 ## How to use Replica?
 
 ### Gradle Setup
-First of all add a dependency to a Gradle script. Start with just `replica-core` and add other artifacts later when you need it.
+First of all add a dependency to a Gradle script. Start with just `replica-core` and add other artifacts later as you need it.
 ```gradle
 dependencies {
     // Basic usage
@@ -76,12 +77,80 @@ dependencies {
 }
 ```
 
-### Create a replica client
- `ReplicaClient` is required to create Replicas. It should be a singleton.
-
+### Create ReplicaClient
+ **ReplicaClient** is required to create replicas. It should be a singleton.
 ```kotlin
 val replicaClient = ReplicaClient()
 ```
+
+### Create a repository with a replica
+
+For example, lets create `PokemonRepository` to replicate a list of pokemons:
+
+```kotlin
+interface PokemonRepository {
+    val pokemons: Replica<List<Pokemon>>
+}
+```
+
+
+```kotlin
+class PokemonRepositoryImpl(
+    replicaClient: ReplicaClient,
+    api: PokemonApi
+) : PokemonRepository {
+
+    override val pokemons: PhysicalReplica<List<Pokemon>> = replicaClient.createReplica(
+        name = "pokemons",
+        settings = ReplicaSettings(
+            staleTime = 1.minutes
+        ),
+        fetcher = {
+            api.getPokemons().toDomain()
+        }
+    )
+}
+```
+
+We use `ReplicaClient.createReplica` to create a replica. Once created a replica will exist as long as a replica client exists so don't create more than one replica for the same chunk of data.
+
+The arguments of the method are:
+
+- `name` - a human readable replica name, it can be used for debugging.
+- `settings` - configures replica behaviour. In the example we configured that data became state after one minute since it was loaded. There are other settings in [ReplicaSettings](https://github.com/aartikov/Replica/blob/docs/replica-core/src/main/kotlin/me/aartikov/replica/single/ReplicaSettings.kt) but all these fields have default values.
+- `fetcher` - configures how to load data from a network. In the example `PokemonApi` is powered by Retrofit but you can use any networking library you like.
+
+Maybe you have noticed that in `PokemonRepository` the replica declared as `Replica` whereas in `PokemonRepositoryImpl` as `PhysicalReplica`. This is made on purpose. The difference between `Replica` and `PhysicalReplica` is that the latter has a richer API. `Replica` allows only read data, whereas `PhysicalReplica` has methods to cancel requests, modify data, execute optimistic updates. It is recommended to declare replicas in the presented way to make repositories more encapsulated.
+
+### Connect an observer
+Use `Replica.observe` to create a replica observer:
+```kotlin
+val pokemonsObserver = pokemonsReplica.observe(observerCoroutineScope, observerActive)
+```
+
+The arguments of the method are:
+
+- `observerCoroutineScope` - is a coroutine scope that represents life time of an observer.
+- `observerActive` - has type `StateFlow<Boolean>` and represents observer state - active/inactive.
+
+Typically you should use a replica observer in a ViewModel. So for `observerCoroutineScope` you will pass `viewModelScope`. To track `observerActive` you should create `MutableStateFlow<Boolean>` in a ViewModel and set it to true/false when a Fragment is started/stopped.
+
+### Display replica state
+Once an observer is connected to a replica you can get replica state.
+```kotlin
+val pokemonsState = pokemonsObserver.stateFlow
+```
+
+Replica state has type `StateFlow<Loadable<T>>` where `Loadable<T>` is
+```
+data class Loadable<out T : Any>(
+    val loading: Boolean,
+    val data: T?,
+    val error: CombinedLoadingError?
+)
+```
+
+Pokemons UI can subscribe to `pokemonsState` and display loading, content or error depending on state.
 
 ## Contact the author
 Artur Artikov <a href="mailto:a.artikov@gmail.com">a.artikov@gmail.com</a>
