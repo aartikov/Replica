@@ -2,9 +2,6 @@ package me.aartikov.replica.single
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import me.aartikov.replica.common.LoadingError
 
 /**
  * Replica is a primitive for data replication.
@@ -32,18 +29,4 @@ interface Replica<out T : Any> {
     fun revalidate()
 
     suspend fun getData(forceRefresh: Boolean = false): T
-}
-
-fun <T : Any> Replica<T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>,
-    onError: (LoadingError, Loadable<T>) -> Unit
-): StateFlow<Loadable<T>> {
-    val observer = observe(observerCoroutineScope, observerActive)
-    observer
-        .loadingErrorFlow
-        .onEach { onError(it, observer.currentState) }
-        .launchIn(observerCoroutineScope)
-
-    return observer.stateFlow
 }

@@ -216,6 +216,10 @@ public final class me/aartikov/replica/keyed/ClearPolicy {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class me/aartikov/replica/keyed/KeepPreviousDataKt {
+	public static final fun keepPreviousData (Lme/aartikov/replica/keyed/KeyedReplica;)Lme/aartikov/replica/keyed/KeyedReplica;
+}
+
 public abstract interface class me/aartikov/replica/keyed/KeyedFetcher {
 	public abstract fun fetch (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -278,11 +282,6 @@ public final class me/aartikov/replica/keyed/KeyedReplicaEvent$ReplicaRemoved : 
 	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getKey ()Ljava/lang/Object;
 	public final fun getReplicaId-iSKwjsg ()Ljava/lang/String;
-}
-
-public final class me/aartikov/replica/keyed/KeyedReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;Lkotlin/jvm/functions/Function2;Z)Lkotlinx/coroutines/flow/StateFlow;
-	public static synthetic fun observe$default (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;Lkotlin/jvm/functions/Function2;ZILjava/lang/Object;)Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public final class me/aartikov/replica/keyed/KeyedReplicaSettings {
@@ -527,10 +526,6 @@ public final class me/aartikov/replica/single/ReplicaEvent$ObserverCountChangedE
 	public final fun getPreviousCount ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class me/aartikov/replica/single/ReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/single/Replica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/StateFlow;
 }
 
 public abstract interface class me/aartikov/replica/single/ReplicaObserver {

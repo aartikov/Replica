@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.KeyedReplica
-import me.aartikov.replica.keyed.observe
+import me.aartikov.replica.keyed.keepPreviousData
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaSettings
@@ -29,7 +29,7 @@ class KeepPreviousDataTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `keeps previous data during refresh with keepPreviousData flag`() = runTest {
+    fun `keeps previous data during refresh with keepPreviousData`() = runTest {
         val replica: KeyedReplica<Int, String> = replicaProvider.replica(
             fetcher = { k ->
                 delay(DEFAULT_DELAY)
@@ -44,13 +44,13 @@ class KeepPreviousDataTest {
         )
 
         val observerKey = MutableStateFlow(DEFAULT_KEY)
-        val stateFlow = replica.observe(
-            observerCoroutineScope = TestScope(),
-            observerActive = MutableStateFlow(true),
-            key = observerKey,
-            onError = { _, _ -> },
-            keepPreviousData = true
-        )
+        val observer = replica
+            .keepPreviousData()
+            .observe(
+                observerCoroutineScope = TestScope(),
+                observerActive = MutableStateFlow(true),
+                key = observerKey
+            )
         delay(DEFAULT_DELAY + 1) // waiting until loading complete
         observerKey.value = DEFAULT_KEY + 1
         delay(DEFAULT_DELAY - 1) // loading not complete yet
@@ -59,11 +59,11 @@ class KeepPreviousDataTest {
             loading = true,
             data = KeyedReplicaProvider.testData(DEFAULT_KEY)
         )
-        assertEquals(expectedLoadable, stateFlow.value)
+        assertEquals(expectedLoadable, observer.stateFlow.value)
     }
 
     @Test
-    fun `no keeps previous data during refresh without keepPreviousData flag`() = runTest {
+    fun `no keeps previous data during refresh without keepPreviousData`() = runTest {
         val replica: KeyedReplica<Int, String> = replicaProvider.replica(
             fetcher = { k ->
                 delay(DEFAULT_DELAY)
@@ -78,13 +78,12 @@ class KeepPreviousDataTest {
         )
 
         val observerKey = MutableStateFlow(DEFAULT_KEY)
-        val stateFlow = replica.observe(
-            observerCoroutineScope = TestScope(),
-            observerActive = MutableStateFlow(true),
-            key = observerKey,
-            onError = { _, _ -> },
-            keepPreviousData = false
-        )
+        val observer = replica
+            .observe(
+                observerCoroutineScope = TestScope(),
+                observerActive = MutableStateFlow(true),
+                key = observerKey
+            )
         delay(DEFAULT_DELAY + 1) // waiting until loading complete
         observerKey.value = DEFAULT_KEY + 1
         delay(DEFAULT_DELAY - 1) // loading not complete yet
@@ -93,6 +92,6 @@ class KeepPreviousDataTest {
             loading = true,
             data = null
         )
-        assertEquals(expectedLoadable, stateFlow.value)
+        assertEquals(expectedLoadable, observer.stateFlow.value)
     }
 }

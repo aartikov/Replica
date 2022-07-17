@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.keyed.KeyedReplica
+import me.aartikov.replica.keyed.keepPreviousData
 import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
 import me.aartikov.replica.sample.core.ui.utils.observe
 import me.aartikov.replica.sample.features.pokemons.domain.Pokemon
@@ -30,12 +31,13 @@ class RealPokemonListComponent(
     override var selectedTypeId by mutableStateOf(types[0].id)
         private set
 
-    override val pokemonsState by pokemonsByTypeReplica.observe(
-        lifecycle,
-        errorHandler,
-        key = { selectedTypeId },
-        keepPreviousData = true
-    )
+    override val pokemonsState by pokemonsByTypeReplica
+        .keepPreviousData() // for better UX
+        .observe(
+            lifecycle,
+            errorHandler,
+            key = { selectedTypeId }
+        )
 
     override fun onTypeClick(typeId: PokemonTypeId) {
         selectedTypeId = typeId

@@ -1,10 +1,10 @@
-package me.aartikov.replica.decompose.internal
+package me.aartikov.replica.decompose
 
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-internal fun Lifecycle.activeFlow(): StateFlow<Boolean> {
+fun Lifecycle.activeFlow(): StateFlow<Boolean> {
     val flow = MutableStateFlow(
         this.state == Lifecycle.State.STARTED || this.state == Lifecycle.State.RESUMED
     )

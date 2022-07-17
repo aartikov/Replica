@@ -23,20 +23,11 @@ android {
         jvmTarget = '1.8'
         useIR = true
     }
-
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.get()
-    }
 }
 
 dependencies {
     api project(':replica-core')
     api libs.coroutines.core
-    api libs.compose.runtime
     api libs.decompose.core
     testImplementation libs.junit
 }

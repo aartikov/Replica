@@ -5,12 +5,19 @@ public final class me/aartikov/replica/decompose/BuildConfig {
 	public fun <init> ()V
 }
 
+public final class me/aartikov/replica/decompose/ComponentActiveFlowKt {
+	public static final fun activeFlow (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public final class me/aartikov/replica/decompose/ComponentCoroutineScopeKt {
+	public static final fun coroutineScope (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lkotlinx/coroutines/CoroutineScope;
+}
+
 public final class me/aartikov/replica/decompose/ObserveKeyedReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Z)Landroidx/compose/runtime/State;
-	public static synthetic fun observe$default (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ZILjava/lang/Object;)Landroidx/compose/runtime/State;
+	public static final fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 
 public final class me/aartikov/replica/decompose/ObserveReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/single/Replica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function2;)Landroidx/compose/runtime/State;
+	public static final fun observe (Lme/aartikov/replica/single/Replica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 

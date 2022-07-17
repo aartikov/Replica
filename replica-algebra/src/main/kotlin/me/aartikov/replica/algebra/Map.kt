@@ -30,10 +30,14 @@ private class MappedReplica<T : Any, R : Any>(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
     ): ReplicaObserver<R> {
+        val originalObserver = originalReplica.observe(
+            observerCoroutineScope,
+            observerActive
+        )
+
         return MappedReplicaObserver(
             observerCoroutineScope,
-            observerActive,
-            originalReplica,
+            originalObserver,
             transform
         )
     }
@@ -59,8 +63,7 @@ private class MappingResult<T : Any, R : Any>(
 
 private class MappedReplicaObserver<T : Any, R : Any>(
     private val coroutineScope: CoroutineScope,
-    activeFlow: StateFlow<Boolean>,
-    originalReplica: Replica<T>,
+    private val originalObserver: ReplicaObserver<T>,
     private val transform: (T) -> R
 ) : ReplicaObserver<R> {
 
@@ -69,8 +72,6 @@ private class MappedReplicaObserver<T : Any, R : Any>(
 
     private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
     override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
-
-    val originalObserver = originalReplica.observe(coroutineScope, activeFlow)
 
     private var stateObservingJob: Job? = null
     private var errorsObservingJob: Job? = null

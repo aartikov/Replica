@@ -11,9 +11,7 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
+import me.aartikov.replica.decompose.coroutineScope
 
 fun <T : Any> createFakeRouterState(instance: T): RouterState<*, T> {
     return RouterState(
@@ -39,15 +37,5 @@ fun <T : Any> Value<T>.toComposeState(lifecycle: Lifecycle): State<T> {
 }
 
 fun LifecycleOwner.componentCoroutineScope(): CoroutineScope {
-    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-
-    if (lifecycle.state != Lifecycle.State.DESTROYED) {
-        lifecycle.doOnDestroy {
-            scope.cancel()
-        }
-    } else {
-        scope.cancel()
-    }
-
-    return scope
+    return lifecycle.coroutineScope()
 }

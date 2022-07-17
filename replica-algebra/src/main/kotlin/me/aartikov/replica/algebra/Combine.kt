@@ -150,10 +150,13 @@ private class CombinedReplica<R : Any>(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
     ): ReplicaObserver<R> {
+        val originalObservers = originalReplicas.map {
+            it.observe(observerCoroutineScope, observerActive)
+        }
+
         return CombinedReplicaObserver(
             observerCoroutineScope,
-            observerActive,
-            originalReplicas,
+            originalObservers,
             transform,
             eager
         )
@@ -187,8 +190,7 @@ private class CombiningResult<R : Any>(
 
 private class CombinedReplicaObserver<R : Any>(
     private val coroutineScope: CoroutineScope,
-    activeFlow: StateFlow<Boolean>,
-    originalReplicas: List<Replica<Any>>,
+    private val originalObservers: List<ReplicaObserver<Any>>,
     private val transform: (List<Any?>) -> R,
     private val eager: Boolean
 ) : ReplicaObserver<R> {
@@ -198,10 +200,6 @@ private class CombinedReplicaObserver<R : Any>(
 
     private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
     override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
-
-    val originalObservers = originalReplicas.map {
-        it.observe(coroutineScope, activeFlow)
-    }
 
     private var stateObservingJob: Job? = null
     private var errorsObservingJobs: List<Job> = emptyList()
