@@ -12,12 +12,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import me.aartikov.replica.sample.R
 import me.aartikov.replica.sample.core.ui.theme.AppTheme
 import me.aartikov.replica.sample.core.ui.widget.EmptyPlaceholder
@@ -110,14 +112,18 @@ private fun FruitItem(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier.size(42.dp),
-            painter = rememberImagePainter(fruit.imageUrl) {
-                with(LocalDensity.current) {
-                    size(42.dp.roundToPx())
+        AsyncImage(
+            contentDescription = null,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(fruit.imageUrl)
+                .apply {
+                    with(LocalDensity.current) {
+                        size(42.dp.roundToPx())
+                    }
                 }
-            },
-            contentDescription = null
+                .crossfade(true)
+                .build(),
+            modifier = Modifier.size(42.dp)
         )
 
         Text(

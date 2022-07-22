@@ -1,6 +1,5 @@
 package me.aartikov.replica.sample.features.dudes.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,12 +10,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import me.aartikov.replica.sample.R
 import me.aartikov.replica.sample.core.ui.theme.AppTheme
@@ -113,16 +114,19 @@ private fun DudeItem(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier.size(42.dp),
-            painter = rememberImagePainter(dude.photoUrl) {
-                crossfade(true)
-                with(LocalDensity.current) {
-                    size(42.dp.roundToPx())
-                    transformations(RoundedCornersTransformation(8.dp.toPx()))
+        AsyncImage(
+            contentDescription = null,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(dude.photoUrl)
+                .apply {
+                    with(LocalDensity.current) {
+                        size(42.dp.roundToPx())
+                        transformations(RoundedCornersTransformation(8.dp.toPx()))
+                    }
                 }
-            },
-            contentDescription = null
+                .crossfade(true)
+                .build(),
+            modifier = Modifier.size(42.dp)
         )
 
         Text(

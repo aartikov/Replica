@@ -16,8 +16,8 @@ fun KeyedReplicaItem(item: KeyedReplicaViewData) {
                 flexFlow(FlexDirection.Row, FlexWrap.Wrap)
                 alignItems(AlignItems.Center)
                 padding(2.px, 16.px)
-                onClick { isExpanded = !isExpanded }
             }
+            onClick { isExpanded = !isExpanded }
         }
     ) {
         ExpandableImg(isExpanded)

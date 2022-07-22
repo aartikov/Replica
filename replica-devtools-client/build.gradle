@@ -25,7 +25,7 @@ kotlin {
                 implementation libs.serialization.json
 
                 api libs.coroutines.core
-                implementation libs.ktor.client.websockets
+                implementation libs.bundles.ktor.client
             }
         }
     }

@@ -1,12 +1,9 @@
 package me.aartikov.replica.devtools.client
 
-import io.ktor.client.HttpClient
-import io.ktor.client.features.websocket.WebSocketException
-import io.ktor.client.features.websocket.WebSockets
-import io.ktor.client.features.websocket.webSocket
-import io.ktor.http.HttpMethod
-import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
+import io.ktor.client.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.http.*
+import io.ktor.websocket.*
 import kotlinx.browser.window
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay

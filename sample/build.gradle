@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "me.aartikov.replica.sample"
         minSdk 23
-        targetSdk 31
+        targetSdk 32
         versionName "1.0"
     }
 
@@ -24,7 +24,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        useIR = true
     }
 
     buildFeatures {
@@ -32,7 +31,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.get()
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
 
     packagingOptions {
@@ -61,8 +60,7 @@ dependencies {
     debugImplementation libs.compose.tooling
     implementation libs.activity.compose
     implementation libs.appcompat
-    implementation libs.accompanist.swiperefresh
-    implementation libs.accompanist.systemuicontroller
+    implementation libs.bundles.accompanist
     implementation libs.coil
     implementation libs.splashscreen
 

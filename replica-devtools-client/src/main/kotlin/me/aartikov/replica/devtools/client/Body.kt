@@ -111,8 +111,8 @@ private fun BottomBar(
                 style {
                     width(20.px)
                     height(20.px)
-                    onClick { onChangeThemeClick() }
                 }
+                onClick { onChangeThemeClick() }
             }
         )
     }
