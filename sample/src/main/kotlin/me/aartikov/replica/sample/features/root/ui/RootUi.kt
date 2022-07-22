@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import me.aartikov.replica.sample.core.theme.AppTheme
 import me.aartikov.replica.sample.core.utils.createFakeChildStack
@@ -27,7 +27,7 @@ fun RootUi(
 
     SystemBarColors()
 
-    Children(component.routerState, modifier) { child ->
+    Children(component.childStack, modifier) { child ->
         when (val instance = child.instance) {
             is RootComponent.Child.Menu -> MenuUi(instance.component)
             is RootComponent.Child.Project -> ProjectUi(instance.component)
@@ -69,7 +69,7 @@ fun RootUiPreview() {
 
 class FakeRootComponent : RootComponent {
 
-    override val routerState = createFakeChildStack(
+    override val childStack = createFakeChildStack(
         RootComponent.Child.Menu(FakeMenuComponent())
     )
 

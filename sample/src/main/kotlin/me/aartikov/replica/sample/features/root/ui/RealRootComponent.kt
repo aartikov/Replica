@@ -4,9 +4,10 @@ import android.os.Parcelable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.push
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.sample.core.ComponentFactory
 import me.aartikov.replica.sample.core.utils.toComposeState
@@ -24,14 +25,14 @@ class RealRootComponent(
     private val componentFactory: ComponentFactory
 ) : ComponentContext by componentContext, RootComponent {
 
-    private val router = router<ChildConfig, RootComponent.Child>(
+    private val navigation = StackNavigation<ChildConfig>()
+
+    override val childStack: ChildStack<*, RootComponent.Child> by childStack(
+        source = navigation,
         initialConfiguration = ChildConfig.Menu,
         handleBackButton = true,
         childFactory = ::createChild
-    )
-
-    override val routerState: RouterState<*, RootComponent.Child>
-        by router.state.toComposeState(lifecycle)
+    ).toComposeState(lifecycle)
 
     override val messageComponent = componentFactory.createMessagesComponent(
         childContext(key = "message")
@@ -71,11 +72,14 @@ class RealRootComponent(
         }
 
     private fun onMenuOutput(output: MenuComponent.Output): Unit = when (output) {
-        is MenuComponent.Output.MenuItemSelected -> when (output.menuItem) {
-            MenuItem.Project -> router.push(ChildConfig.Project)
-            MenuItem.Pokemons -> router.push(ChildConfig.Pokemons)
-            MenuItem.Fruits -> router.push(ChildConfig.Fruits)
-            MenuItem.Dudes -> router.push(ChildConfig.Dudes)
+        is MenuComponent.Output.MenuItemSelected -> {
+            val config = when (output.menuItem) {
+                MenuItem.Project -> ChildConfig.Project
+                MenuItem.Pokemons -> ChildConfig.Pokemons
+                MenuItem.Fruits -> ChildConfig.Fruits
+                MenuItem.Dudes -> ChildConfig.Dudes
+            }
+            navigation.push(config)
         }
     }
 

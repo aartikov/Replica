@@ -3,9 +3,10 @@ package me.aartikov.replica.sample.features.pokemons.ui
 import android.os.Parcelable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.push
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.sample.core.ComponentFactory
 import me.aartikov.replica.sample.core.utils.toComposeState
@@ -19,44 +20,42 @@ class RealPokemonsComponent(
     private val componentFactory: ComponentFactory
 ) : ComponentContext by componentContext, PokemonsComponent {
 
-    private val router = router<ChildConfig, PokemonsComponent.Child>(
+    private val navigation = StackNavigation<ChildConfig>()
+
+    override val childStack: ChildStack<*, PokemonsComponent.Child> by childStack(
+        source = navigation,
         initialConfiguration = ChildConfig.List,
         handleBackButton = true,
         childFactory = ::createChild
-    )
-
-    override val routerState: RouterState<*, PokemonsComponent.Child>
-        by router.state.toComposeState(lifecycle)
+    ).toComposeState(lifecycle)
 
     private fun createChild(
         config: ChildConfig,
         componentContext: ComponentContext
-    ): PokemonsComponent.Child {
-        return when (config) {
-            is ChildConfig.List -> {
-                PokemonsComponent.Child.List(
-                    componentFactory.createPokemonListComponent(
-                        componentContext,
-                        ::onPokemonListOutput
-                    )
+    ): PokemonsComponent.Child = when (config) {
+        is ChildConfig.List -> {
+            PokemonsComponent.Child.List(
+                componentFactory.createPokemonListComponent(
+                    componentContext,
+                    ::onPokemonListOutput
                 )
-            }
+            )
+        }
 
-            is ChildConfig.Details -> {
-                PokemonsComponent.Child.Details(
-                    componentFactory.createPokemonDetailsComponent(
-                        componentContext,
-                        config.pokemonId
-                    )
+        is ChildConfig.Details -> {
+            PokemonsComponent.Child.Details(
+                componentFactory.createPokemonDetailsComponent(
+                    componentContext,
+                    config.pokemonId
                 )
-            }
+            )
         }
     }
 
     private fun onPokemonListOutput(output: PokemonListComponent.Output) {
         when (output) {
             is PokemonListComponent.Output.PokemonDetailsRequested -> {
-                router.push(ChildConfig.Details(output.pokemonId))
+                navigation.push(ChildConfig.Details(output.pokemonId))
             }
         }
     }

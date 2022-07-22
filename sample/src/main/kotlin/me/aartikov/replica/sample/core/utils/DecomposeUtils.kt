@@ -3,7 +3,6 @@ package me.aartikov.replica.sample.core.utils
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -15,8 +14,8 @@ import me.aartikov.replica.decompose.coroutineScope
 /**
  * Creates a [ChildStack] with a single active component. Should be used to create a stack for Jetpack Compose preview.
  */
-fun <T : Any> createFakeChildStack(instance: T): RouterState<*, T> {
-    return RouterState(
+fun <T : Any> createFakeChildStack(instance: T): ChildStack<*, T> {
+    return ChildStack(
         configuration = "<fake>",
         instance = instance
     )
