@@ -7,11 +7,10 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.aartikov.replica.sample.core.ui.message.MessageData
-import me.aartikov.replica.sample.core.ui.message.MessageService
-import me.aartikov.replica.sample.core.ui.utils.componentCoroutineScope
+import me.aartikov.replica.sample.core.message.data.MessageService
+import me.aartikov.replica.sample.core.message.domain.Message
+import me.aartikov.replica.sample.core.utils.componentCoroutineScope
 
 class RealMessageComponent(
     componentContext: ComponentContext,
@@ -24,7 +23,7 @@ class RealMessageComponent(
 
     private val coroutineScope = componentCoroutineScope()
 
-    override var visibleMessageData by mutableStateOf<MessageData?>(null)
+    override var visibleMessage by mutableStateOf<Message?>(null)
         private set
 
     private var autoDismissJob: Job? = null
@@ -41,12 +40,12 @@ class RealMessageComponent(
         }
     }
 
-    private fun showMessage(messageData: MessageData) {
+    private fun showMessage(message: Message) {
         autoDismissJob?.cancel()
-        visibleMessageData = messageData
+        visibleMessage = message
         autoDismissJob = coroutineScope.launch {
             delay(SHOW_TIME)
-            visibleMessageData = null
+            visibleMessage = null
         }
     }
 }

@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
-import me.aartikov.replica.sample.core.ui.error_handing.safeLaunch
-import me.aartikov.replica.sample.core.ui.utils.observe
+import me.aartikov.replica.sample.core.error_handling.ErrorHandler
+import me.aartikov.replica.sample.core.error_handling.safeLaunch
+import me.aartikov.replica.sample.core.utils.observe
 import me.aartikov.replica.sample.features.fruits.domain.Fruit
 import me.aartikov.replica.sample.features.fruits.domain.FruitId
 import me.aartikov.replica.sample.features.fruits.domain.ToggleFruitLikeInteractor

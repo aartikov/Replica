@@ -2,9 +2,9 @@ package me.aartikov.replica.sample.features.pokemons
 
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.algebra.withKey
-import me.aartikov.replica.sample.core.data.network.BaseUrl
-import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
-import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ComponentFactory
+import me.aartikov.replica.sample.core.network.BaseUrl
+import me.aartikov.replica.sample.core.network.NetworkApiFactory
 import me.aartikov.replica.sample.features.pokemons.data.PokemonApi
 import me.aartikov.replica.sample.features.pokemons.data.PokemonRepository
 import me.aartikov.replica.sample.features.pokemons.data.PokemonRepositoryImpl

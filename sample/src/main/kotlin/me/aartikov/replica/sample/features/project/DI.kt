@@ -1,9 +1,9 @@
 package me.aartikov.replica.sample.features.project
 
 import com.arkivanov.decompose.ComponentContext
-import me.aartikov.replica.sample.core.data.network.BaseUrl
-import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
-import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ComponentFactory
+import me.aartikov.replica.sample.core.network.BaseUrl
+import me.aartikov.replica.sample.core.network.NetworkApiFactory
 import me.aartikov.replica.sample.features.project.data.ProjectApi
 import me.aartikov.replica.sample.features.project.data.ProjectRepository
 import me.aartikov.replica.sample.features.project.data.ProjectRepositoryImpl

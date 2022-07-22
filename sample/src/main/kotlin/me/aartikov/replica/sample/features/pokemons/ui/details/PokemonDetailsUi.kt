@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import me.aartikov.replica.sample.R
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.widget.RefreshingProgress
-import me.aartikov.replica.sample.core.ui.widget.SwipeRefreshLceWidget
+import me.aartikov.replica.sample.core.theme.AppTheme
+import me.aartikov.replica.sample.core.widget.RefreshingProgress
+import me.aartikov.replica.sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.sample.features.pokemons.domain.DetailedPokemon
 import me.aartikov.replica.sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.sample.features.pokemons.domain.PokemonType

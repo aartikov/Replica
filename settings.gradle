@@ -85,6 +85,20 @@ dependencyResolutionManagement {
             // Debugging
             library('timber', 'com.jakewharton.timber', 'timber').version('5.0.1')
 
+            version('hyperion', '0.9.34')
+            version('hyperionAddons', '0.3.3')
+            library('hyperion-core', 'com.willowtreeapps.hyperion', 'hyperion-core').versionRef('hyperion')
+            library('hyperion-recorder', 'com.willowtreeapps.hyperion', 'hyperion-recorder').versionRef('hyperion')
+            library('hyperion-crash', 'com.willowtreeapps.hyperion', 'hyperion-crash').versionRef('hyperion')
+            library('hyperion-disk', 'com.willowtreeapps.hyperion', 'hyperion-disk').versionRef('hyperion')
+            library('hyperion-addons-networkEmulation', 'me.nemiron.hyperion', 'network-emulation').versionRef('hyperionAddons')
+            library('hyperion-addons-chucker', 'me.nemiron.hyperion', 'chucker').versionRef('hyperionAddons')
+            bundle('hyperion',
+                    ['hyperion-core', 'hyperion-recorder', 'hyperion-crash', 'hyperion-disk',
+                     'hyperion-addons-networkEmulation', 'hyperion-addons-chucker']
+            )
+            library('chucker', 'com.github.chuckerteam.chucker', 'library').version('3.5.2')
+
             // Testing
             library('junit', 'junit', 'junit').version('4.13.2')
             library('coroutinesTest', 'org.jetbrains.kotlinx','kotlinx-coroutines-test' ).version('kotlin')

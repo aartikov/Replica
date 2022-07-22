@@ -17,9 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.widget.RefreshingProgress
-import me.aartikov.replica.sample.core.ui.widget.SwipeRefreshLceWidget
+import me.aartikov.replica.sample.core.theme.AppTheme
+import me.aartikov.replica.sample.core.widget.RefreshingProgress
+import me.aartikov.replica.sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.sample.features.project.domain.Project
 import me.aartikov.replica.single.Loadable
 

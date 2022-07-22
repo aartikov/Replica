@@ -2,8 +2,8 @@ package me.aartikov.replica.sample.features.dudes.ui
 
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
-import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
-import me.aartikov.replica.sample.core.ui.utils.observe
+import me.aartikov.replica.sample.core.error_handling.ErrorHandler
+import me.aartikov.replica.sample.core.utils.observe
 import me.aartikov.replica.sample.features.dudes.domain.Dude
 import me.aartikov.replica.single.Replica
 

@@ -8,8 +8,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.utils.createFakeRouterState
+import me.aartikov.replica.sample.core.theme.AppTheme
+import me.aartikov.replica.sample.core.utils.createFakeChildStack
 import me.aartikov.replica.sample.features.dudes.ui.DudesUi
 import me.aartikov.replica.sample.features.fruits.ui.FruitsUi
 import me.aartikov.replica.sample.features.menu.ui.FakeMenuComponent
@@ -69,7 +69,7 @@ fun RootUiPreview() {
 
 class FakeRootComponent : RootComponent {
 
-    override val routerState = createFakeRouterState(
+    override val routerState = createFakeChildStack(
         RootComponent.Child.Menu(FakeMenuComponent())
     )
 

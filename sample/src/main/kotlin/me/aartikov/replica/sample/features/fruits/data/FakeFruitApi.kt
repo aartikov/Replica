@@ -5,8 +5,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.network.connected
-import me.aartikov.replica.sample.core.domain.NoInternetException
-import me.aartikov.replica.sample.core.domain.ServerException
+import me.aartikov.replica.sample.core.error_handling.NoInternetException
+import me.aartikov.replica.sample.core.error_handling.ServerException
 
 class FakeFruitApi(
     private val networkConnectivityProvider: NetworkConnectivityProvider
@@ -65,8 +65,8 @@ class FakeFruitApi(
         if (fruit.name == "Durian") {
             delay(300)
             throw ServerException(
-                message = "Are you kidding? Nobody likes durian.",
-                cause = null
+                cause = null,
+                message = "Are you kidding? Nobody likes durian."
             )
         }
 
@@ -74,8 +74,8 @@ class FakeFruitApi(
         if (fruit.name in popularFruits) {
             delay(300)
             throw ServerException(
-                message = "The server is overloaded. Too many users like ${fruit.name.lowercase()}.",
-                cause = null
+                cause = null,
+                message = "The server is overloaded. Too many users like ${fruit.name.lowercase()}."
             )
         }
     }

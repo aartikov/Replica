@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
-import me.aartikov.replica.sample.core.ui.error_handing.ErrorHandler
-import me.aartikov.replica.sample.core.ui.utils.observe
+import me.aartikov.replica.sample.core.error_handling.ErrorHandler
+import me.aartikov.replica.sample.core.utils.observe
 import me.aartikov.replica.sample.features.pokemons.domain.Pokemon
 import me.aartikov.replica.sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.sample.features.pokemons.domain.PokemonType

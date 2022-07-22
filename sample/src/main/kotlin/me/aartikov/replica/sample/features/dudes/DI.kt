@@ -1,9 +1,9 @@
 package me.aartikov.replica.sample.features.dudes
 
 import com.arkivanov.decompose.ComponentContext
-import me.aartikov.replica.sample.core.data.network.BaseUrl
-import me.aartikov.replica.sample.core.data.network.NetworkApiFactory
-import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ComponentFactory
+import me.aartikov.replica.sample.core.network.BaseUrl
+import me.aartikov.replica.sample.core.network.NetworkApiFactory
 import me.aartikov.replica.sample.features.dudes.data.DudeApi
 import me.aartikov.replica.sample.features.dudes.data.DudeRepository
 import me.aartikov.replica.sample.features.dudes.data.DudeRepositoryImpl

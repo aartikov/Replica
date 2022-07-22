@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.utils.createFakeRouterState
+import me.aartikov.replica.sample.core.theme.AppTheme
+import me.aartikov.replica.sample.core.utils.createFakeChildStack
 import me.aartikov.replica.sample.features.pokemons.ui.details.PokemonDetailsUi
 import me.aartikov.replica.sample.features.pokemons.ui.list.FakePokemonListComponent
 import me.aartikov.replica.sample.features.pokemons.ui.list.PokemonListUi
@@ -34,7 +34,7 @@ fun PokemonsUiPreview() {
 
 class FakePokemonsComponent : PokemonsComponent {
 
-    override val routerState = createFakeRouterState(
+    override val routerState = createFakeChildStack(
         PokemonsComponent.Child.List(FakePokemonListComponent())
     )
 }

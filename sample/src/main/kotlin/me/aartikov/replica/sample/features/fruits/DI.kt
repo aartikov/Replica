@@ -1,7 +1,7 @@
 package me.aartikov.replica.sample.features.fruits
 
 import com.arkivanov.decompose.ComponentContext
-import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ComponentFactory
 import me.aartikov.replica.sample.features.fruits.data.FakeFruitApi
 import me.aartikov.replica.sample.features.fruits.data.FruitApi
 import me.aartikov.replica.sample.features.fruits.data.FruitRepository

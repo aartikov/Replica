@@ -1,7 +1,7 @@
 package me.aartikov.replica.sample.features.menu
 
 import com.arkivanov.decompose.ComponentContext
-import me.aartikov.replica.sample.core.ui.ComponentFactory
+import me.aartikov.replica.sample.core.ComponentFactory
 import me.aartikov.replica.sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.sample.features.menu.ui.RealMenuComponent
 

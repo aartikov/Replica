@@ -47,7 +47,6 @@ dependencies {
     implementation project(':replica-android-network')
     implementation project(':replica-decompose')
     debugImplementation project(':replica-devtools')
-    releaseImplementation project(':replica-devtools-noop')
 
     // Kotlin
     implementation libs.coroutines.core
@@ -81,4 +80,6 @@ dependencies {
 
     // Debugging
     implementation libs.timber
+    debugImplementation libs.chucker
+    debugImplementation libs.bundles.hyperion
 }

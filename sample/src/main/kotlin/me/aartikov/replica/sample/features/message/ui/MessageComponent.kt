@@ -1,8 +1,9 @@
 package me.aartikov.replica.sample.features.message.ui
 
-import me.aartikov.replica.sample.core.ui.message.MessageData
+import me.aartikov.replica.sample.core.message.domain.Message
+
 
 interface MessageComponent {
 
-    val visibleMessageData: MessageData?
+    val visibleMessage: Message?
 }

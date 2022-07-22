@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.sample.R
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
+import me.aartikov.replica.sample.core.theme.AppTheme
 
 @Composable
 fun MenuUi(

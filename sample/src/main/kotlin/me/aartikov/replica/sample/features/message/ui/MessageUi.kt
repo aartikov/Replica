@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import me.aartikov.replica.sample.core.ui.message.MessageData
-import me.aartikov.replica.sample.core.ui.theme.AppTheme
-import me.aartikov.replica.sample.core.ui.utils.resolve
+import me.aartikov.replica.sample.core.message.domain.Message
+import me.aartikov.replica.sample.core.theme.AppTheme
+import me.aartikov.replica.sample.core.utils.resolve
 import me.aartikov.sesame.localizedstring.LocalizedString
 
 @Composable
@@ -27,9 +27,9 @@ fun MessageUi(
     val inverseIsDarkTheme = MaterialTheme.colors.isLight
     AppTheme(inverseIsDarkTheme) {
         Box(modifier = modifier.fillMaxSize()) {
-            component.visibleMessageData?.let {
+            component.visibleMessage?.let {
                 MessagePopup(
-                    messageData = it,
+                    message = it,
                     bottomPadding = bottomPadding
                 )
             }
@@ -39,7 +39,7 @@ fun MessageUi(
 
 @Composable
 private fun MessagePopup(
-    messageData: MessageData,
+    message: Message,
     bottomPadding: Dp
 ) {
     Popup(
@@ -61,7 +61,7 @@ private fun MessagePopup(
                 modifier = Modifier
                     .padding(vertical = 12.dp, horizontal = 16.dp)
                     .fillMaxWidth(),
-                text = messageData.text.resolve(),
+                text = message.text.resolve(),
                 style = MaterialTheme.typography.body2
             )
         }
@@ -78,5 +78,5 @@ fun MessageUiPreview() {
 
 class FakeMessageComponent : MessageComponent {
 
-    override val visibleMessageData = MessageData(LocalizedString.raw("Message"))
+    override val visibleMessage = Message(LocalizedString.raw("Message"))
 }
