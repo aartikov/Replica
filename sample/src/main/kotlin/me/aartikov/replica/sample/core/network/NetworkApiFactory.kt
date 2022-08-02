@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * Creates implementations of Retrofit APIs.
  */
 class NetworkApiFactory(
-    private val url: String,
+    private val baseUrl: String,
     private val debugTools: DebugTools
 ) {
 
@@ -40,7 +40,7 @@ class NetworkApiFactory(
     @OptIn(ExperimentalSerializationApi::class)
     private fun createRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(url)
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addCallAdapterFactory(ErrorHandlingCallAdapterFactory(debugTools))
             .addConverterFactory(ErrorHandlingConverterFactory(json.asConverterFactory("application/json".toMediaType())))
