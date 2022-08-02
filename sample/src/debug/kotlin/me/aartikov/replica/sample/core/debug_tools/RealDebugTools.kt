@@ -6,15 +6,23 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.devtools.ReplicaDevTools
+import me.aartikov.replica.sample.core.error_handling.ServerException
 import me.nemiron.hyperion.networkemulation.NetworkEmulatorInterceptor
 import okhttp3.Interceptor
+import java.io.IOException
 
 class RealDebugTools(
     context: Context,
     replicaClient: ReplicaClient
 ) : DebugTools {
 
-    private val networkEmulatorInterceptor = NetworkEmulatorInterceptor(context)
+    private val networkEmulatorInterceptor = NetworkEmulatorInterceptor(
+        context,
+        failureExceptionProvider = {
+            IOException(ServerException(message = "Emulated failure"))
+        }
+    )
+
     private val replicaDebugTools = ReplicaDevTools(replicaClient, context)
 
     private val chuckerCollector = ChuckerCollector(

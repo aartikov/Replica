@@ -10,7 +10,6 @@ import retrofit2.Response
 import java.io.IOException
 import java.net.HttpURLConnection.*
 import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 
 /**
@@ -57,7 +56,8 @@ class ErrorHandlingCall<T>(
             is SerializationException -> DeserializationException(throwable)
             is SocketTimeoutException -> NoServerResponseException(throwable)
             is SSLHandshakeException -> SSLHandshakeException(throwable)
-            is UnknownHostException, is IOException -> NoInternetException(throwable)
+            is IOException -> (throwable.cause as? ApplicationException)
+                ?: NoInternetException(throwable)
             else -> UnknownException(throwable, throwable.message ?: "Unknown")
         }
     }

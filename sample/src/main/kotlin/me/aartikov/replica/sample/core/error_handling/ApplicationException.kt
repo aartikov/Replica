@@ -15,7 +15,7 @@ class UnauthorizedException(cause: Throwable) : ApplicationException(cause)
 /**
  * Received a response from the server, but it is invalid - 4xx, 5xx
  */
-class ServerException(cause: Throwable?, message: String? = null) :
+class ServerException(cause: Throwable? = null, message: String? = null) :
     ApplicationException(cause, message)
 
 /**

@@ -65,7 +65,6 @@ class FakeFruitApi(
         if (fruit.name == "Durian") {
             delay(300)
             throw ServerException(
-                cause = null,
                 message = "Are you kidding? Nobody likes durian."
             )
         }
@@ -74,7 +73,6 @@ class FakeFruitApi(
         if (fruit.name in popularFruits) {
             delay(300)
             throw ServerException(
-                cause = null,
                 message = "The server is overloaded. Too many users like ${fruit.name.lowercase()}."
             )
         }
