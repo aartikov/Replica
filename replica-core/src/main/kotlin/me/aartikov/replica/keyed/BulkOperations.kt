@@ -3,12 +3,20 @@ package me.aartikov.replica.keyed
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.ReplicaTag
 
+/**
+ * Cancels network requests in all child replicas.
+ */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.cancelAll() {
     onEachReplica {
         cancel()
     }
 }
 
+/**
+ * Makes all child replicas stale.
+ *
+ * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
+ */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
 ) {
@@ -17,6 +25,9 @@ suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateAll(
     }
 }
 
+/**
+ * Cancels network requests in child replicas with the matching tags.
+ */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.cancelByTags(
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
@@ -32,6 +43,9 @@ suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.cancelByTags(
     }
 }
 
+/**
+ * Cancels network requests and clears data in child replicas with the matching tags.
+ */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.clearByTags(
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
@@ -47,6 +61,11 @@ suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.clearByTags(
     }
 }
 
+/**
+ * Makes child replicas with the matching tags stale.
+ *
+ * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
+ */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<T, K>.invalidateByTags(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers,
     predicate: (Set<ReplicaTag>) -> Boolean

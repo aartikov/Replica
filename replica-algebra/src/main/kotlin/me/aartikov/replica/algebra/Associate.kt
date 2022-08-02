@@ -10,6 +10,9 @@ import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Creates [KeyedReplica] by providing [Replica] for each given key.
+ */
 fun <K : Any, T : Any> associate(replicaProvider: (K) -> Replica<T>): KeyedReplica<K, T> {
     return AssociatedKeyedReplica(replicaProvider)
 }

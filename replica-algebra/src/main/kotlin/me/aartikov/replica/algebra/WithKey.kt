@@ -7,6 +7,9 @@ import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Converts [KeyedReplica] to [Replica] by fixing a key.
+ */
 fun <K : Any, T : Any> KeyedReplica<K, T>.withKey(key: K): Replica<T> {
     return WithKeyReplica(this, key)
 }

@@ -5,7 +5,7 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
 /**
- * [ReplicaBehaviour] that executes some [action] on a replica is created.
+ * [ReplicaBehaviour] that executes some [action] when a replica is created.
  */
 class DoOnCreated<T : Any>(
     private val action: suspend PhysicalReplica<T>.() -> Unit

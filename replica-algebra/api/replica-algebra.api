@@ -17,13 +17,13 @@ public final class me/aartikov/replica/algebra/ConstReplicaKt {
 	public static final fun constReplica (Ljava/lang/Object;)Lme/aartikov/replica/single/Replica;
 }
 
+public final class me/aartikov/replica/algebra/FlowReplicaKt {
+	public static final fun flowReplica (Lkotlinx/coroutines/flow/Flow;)Lme/aartikov/replica/single/Replica;
+}
+
 public final class me/aartikov/replica/algebra/MapKt {
 	public static final fun map (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/keyed/KeyedReplica;
 	public static final fun map (Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/single/Replica;
-}
-
-public final class me/aartikov/replica/algebra/StateFlowReplicaKt {
-	public static final fun stateFlowReplica (Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/Replica;
 }
 
 public final class me/aartikov/replica/algebra/WithKeyKt {

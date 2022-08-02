@@ -10,19 +10,22 @@ import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
-fun <T : Any> stateFlowReplica(stateFlow: StateFlow<T>): Replica<T> {
-    return StateFlowReplica(stateFlow)
+/**
+ * Creates a replica from [Flow] of data.
+ */
+fun <T : Any> flowReplica(flow: Flow<T>): Replica<T> {
+    return FlowReplica(flow)
 }
 
-private class StateFlowReplica<T : Any>(
-    private val stateFlow: StateFlow<T>
+private class FlowReplica<T : Any>(
+    private val flow: Flow<T>
 ) : Replica<T> {
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
     ): ReplicaObserver<T> {
-        return StateFlowReplicaObserver(observerCoroutineScope, observerActive, stateFlow)
+        return FlowReplicaObserver(observerCoroutineScope, observerActive, flow)
     }
 
     override fun refresh() {
@@ -34,22 +37,22 @@ private class StateFlowReplica<T : Any>(
     }
 
     override suspend fun getData(forceRefresh: Boolean): T {
-        return stateFlow.value
+        return flow.first()
     }
 }
 
-private class StateFlowReplicaObserver<T : Any>(
+private class FlowReplicaObserver<T : Any>(
     private val coroutineScope: CoroutineScope,
     private val activeFlow: StateFlow<Boolean>,
-    private val originalStateFlow: StateFlow<T>
+    private val dataFlow: Flow<T>
 ) : ReplicaObserver<T> {
 
-    private val _stateFlow = MutableStateFlow(Loadable(data = originalStateFlow.value))
+    private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()
 
     override val loadingErrorFlow: Flow<LoadingError> = MutableSharedFlow() // emits nothing
 
-    private var stateObservingJob: Job? = null
+    private var dataObservingJob: Job? = null
 
     init {
         if (coroutineScope.isActive) {
@@ -58,7 +61,7 @@ private class StateFlowReplicaObserver<T : Any>(
     }
 
     private fun launchStateObserving() {
-        stateObservingJob = originalStateFlow
+        dataObservingJob = dataFlow
             .toActivableFlow(coroutineScope, activeFlow)
             .onEach { data ->
                 _stateFlow.value = Loadable(data = data)
@@ -67,7 +70,7 @@ private class StateFlowReplicaObserver<T : Any>(
     }
 
     override fun cancelObserving() {
-        stateObservingJob?.cancel()
-        stateObservingJob = null
+        dataObservingJob?.cancel()
+        dataObservingJob = null
     }
 }

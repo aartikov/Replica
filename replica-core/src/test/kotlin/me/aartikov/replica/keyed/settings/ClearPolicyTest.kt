@@ -28,14 +28,14 @@ class ClearPolicyTest {
     }
 
     @Test
-    fun `not removing replica with privileged key with max count setup`() = runTest {
+    fun `not removing privileged replica with max count setup`() = runTest {
         val maxCount = 2
         val privilegedKey = 0
         val replica = replicaProvider.replica(
             replicaSettings = KeyedReplicaSettings(
                 maxCount = maxCount,
                 clearPolicy = ClearPolicy(
-                    privilegedKeys = setOf(privilegedKey)
+                    isPrivilegedReplica = { (key, _) -> key == privilegedKey }
                 )
             )
         )
@@ -60,7 +60,7 @@ class ClearPolicyTest {
                 replicaSettings = KeyedReplicaSettings(
                     maxCount = maxCount,
                     clearPolicy = ClearPolicy(
-                        privilegedKeys = privilegedKeys
+                        isPrivilegedReplica = { (key, _) -> privilegedKeys.contains(key) }
                     )
                 )
             )

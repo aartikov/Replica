@@ -49,7 +49,7 @@ interface ReplicaClient {
      * Creates a [PhysicalReplica].
      * Note: once created a replica will exist as long as a client exists.
      *
-     * @param name a human readable replica name. Can be used for debugging (for example it is used in Replica DevTools). Shouldn't be unique.
+     * @param name a human readable replica name. Can be used for debugging (for example it is used by Replica DevTools). Shouldn't be unique.
      * @param settings configures replica behaviour. See: [ReplicaSettings].
      * @param tags set of [ReplicaTag]s. Can be used to perform bulk operations on a subset of replicas. See: [cancelByTags], [clearByTags], [invalidateByTags].
      * @param behaviours allow to add custom behaviours to a replica. See: [ReplicaBehaviour].
@@ -62,14 +62,14 @@ interface ReplicaClient {
         tags: Set<ReplicaTag> = emptySet(),
         behaviours: List<ReplicaBehaviour<T>> = emptyList(),
         storage: Storage<T>? = null,
-        fetcher: Fetcher<T>,
+        fetcher: Fetcher<T>
     ): PhysicalReplica<T>
 
     /**
      * Creates a [KeyedPhysicalReplica].
      * Note: once created a keyed replica will exist as long as a client exists.
      *
-     * @param name a human readable keyed replica name. Can be used for debugging (for example it is used in ReplicaDevtools). Shouldn't be unique.
+     * @param name a human readable keyed replica name. Can be used for debugging (for example it is used by Replica Devtools). Shouldn't be unique.
      * @param childName names for child replicas.
      * @param settings configures keyed replica behaviour. See: [KeyedReplicaSettings].
      * @param childSettings [ReplicaSettings] for child replicas.
@@ -96,7 +96,7 @@ interface ReplicaClient {
     /**
      * Executes an [action] on each [PhysicalReplica].
      *
-     * @param includeChildrenOfKeyedReplicas specifies if an action should be executed on children of keyed replicas.
+     * @param includeChildrenOfKeyedReplicas specifies if an action will be executed on children of keyed replicas.
      */
     suspend fun onEachReplica(
         includeChildrenOfKeyedReplicas: Boolean = true,

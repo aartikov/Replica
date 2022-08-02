@@ -1,5 +1,8 @@
 package me.aartikov.replica.keyed
 
+/**
+ * State of [KeyedPhysicalReplica].
+ */
 data class KeyedReplicaState(
     val replicaCount: Int,
     val replicaWithObserversCount: Int,

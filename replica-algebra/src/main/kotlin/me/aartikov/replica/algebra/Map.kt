@@ -11,10 +11,16 @@ import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Transforms replica data with a [transform] function.
+ */
 fun <T : Any, R : Any> Replica<T>.map(transform: (T) -> R): Replica<R> {
     return MappedReplica(this, transform)
 }
 
+/**
+ * Transforms keyed replica data with a [transform] function.
+ */
 fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (T) -> R): KeyedReplica<K, R> {
     return associate { key ->
         withKey(key).map(transform)

@@ -14,40 +14,40 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class StateFlowReplicaTest {
+class FlowReplicaTest {
 
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
     @Test
-    fun `receives new data initially`() = runTest {
-        val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
+    fun `returns data from flow by getData`() = runTest {
+        val flow = MutableStateFlow(ReplicaProvider.TEST_DATA)
 
-        val stateFlowReplica = stateFlowReplica(stateFlow)
-        val actualData = stateFlowReplica.getData()
+        val flowReplica = flowReplica(flow)
+        val actualData = flowReplica.getData()
 
-        assertEquals(stateFlow.value, actualData)
+        assertEquals(flow.value, actualData)
     }
 
     @Test
-    fun `observes data initially`() = runTest {
-        val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
+    fun `observes initial value`() = runTest {
+        val flow = MutableStateFlow(ReplicaProvider.TEST_DATA)
 
-        val stateFlowReplica = stateFlowReplica(stateFlow)
-        val observer = stateFlowReplica.observe(TestScope(), MutableStateFlow(true))
+        val flowReplica = flowReplica(flow)
+        val observer = flowReplica.observe(TestScope(), MutableStateFlow(true))
         runCurrent()
 
         assertEquals(Loadable(data = ReplicaProvider.TEST_DATA), observer.currentState)
     }
 
     @Test
-    fun `observes new data when in stateFlow changed data`() = runTest {
-        val stateFlow = MutableStateFlow(ReplicaProvider.TEST_DATA)
+    fun `observes new data when data in flow is changed`() = runTest {
+        val flow = MutableStateFlow(ReplicaProvider.TEST_DATA)
         val newData = "newData"
 
-        val stateFlowReplica = stateFlowReplica(stateFlow)
-        val observer = stateFlowReplica.observe(TestScope(), MutableStateFlow(true))
-        stateFlow.value = newData
+        val flowReplica = flowReplica(flow)
+        val observer = flowReplica.observe(TestScope(), MutableStateFlow(true))
+        flow.value = newData
         runCurrent()
 
         assertEquals(newData, observer.currentState.data)
