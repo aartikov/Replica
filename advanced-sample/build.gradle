@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlinx-serialization'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "me.aartikov.replica.advanced_sample"
+        minSdk 23
+        targetSdk 32
+        versionName "1.0"
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring libs.android.desugar
+
+    implementation project(':replica-core')
+    implementation project(':replica-algebra')
+    implementation project(':replica-android-network')
+    implementation project(':replica-decompose')
+    debugImplementation project(':replica-devtools')
+
+    // Kotlin
+    implementation libs.coroutines.core
+    implementation libs.coroutines.android
+
+    // UI
+    implementation libs.compose.ui
+    implementation libs.compose.material
+    implementation libs.compose.preview
+    debugImplementation libs.compose.tooling
+    implementation libs.activity.compose
+    implementation libs.appcompat
+    implementation libs.bundles.accompanist
+    implementation libs.coil
+    implementation libs.splashscreen
+
+    // Architecture
+    implementation libs.sesame.localizedString
+    implementation libs.bundles.decompose
+
+    // Network
+    implementation libs.retrofit.core
+    implementation libs.retrofit.converter.serialization
+    implementation libs.okhttp.logging
+
+    // Serialization
+    implementation libs.serialization.json
+
+    // DI
+    implementation libs.koin.android
+
+    // Debugging
+    implementation libs.timber
+    debugImplementation libs.chucker
+    debugImplementation libs.bundles.hyperion
+}

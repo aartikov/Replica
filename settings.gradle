@@ -19,7 +19,7 @@ include ':replica-devtools'
 include ':replica-devtools-noop'
 include ':replica-devtools-client'
 include ':replica-devtools-dto'
-include ':sample'
+include ':advanced-sample'
 
 dependencyResolutionManagement {
     repositories {
