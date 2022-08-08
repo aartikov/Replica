@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Observes [KeyedReplica] in a scope of [Lifecycle].
+ */
 fun <T : Any, K : Any> KeyedReplica<K, T>.observe(
     lifecycle: Lifecycle,
     key: StateFlow<K?>

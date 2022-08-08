@@ -1,9 +1,15 @@
-package me.aartikov.replica.keyed
+package me.aartikov.replica.single
 
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.performOptimisticUpdate
-import me.aartikov.replica.single.PhysicalReplica
 
+/**
+ * Executes an optimistic update on a [replica].
+ * [update] is applied immediately on observed replica state. Then [block] is executed.
+ * If [block] succeed an update is committed, otherwise an update is rolled back.
+ *
+ * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
+ */
 suspend inline fun <T : Any, R> withOptimisticUpdate(
     update: OptimisticUpdate<T>,
     replica: PhysicalReplica<T>,

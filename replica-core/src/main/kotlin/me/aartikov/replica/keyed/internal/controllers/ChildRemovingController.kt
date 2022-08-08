@@ -21,6 +21,10 @@ internal class ChildRemovingController<K : Any, T : Any>(
 
     fun setupAutoRemoving(key: K, replica: PhysicalReplica<T>) {
 
+        // Additional check required to remove "abandoned" child replica. For example:
+        //   someKeyedReplica.onReplica(someKey) {
+        //      // do nothing that will change replica state
+        //   }
         val additionalCheckJob = replica.coroutineScope.launch {
             delay(AdditionalCheckDelay.inWholeMilliseconds)
             if (replica.currentState.canBeRemoved) {

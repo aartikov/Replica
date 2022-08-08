@@ -14,7 +14,7 @@ import me.aartikov.replica.single.currentState
 import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 
-class LimitChildCount<K : Any, T : Any>(
+internal class LimitChildCount<K : Any, T : Any>(
     private val maxCount: Int,
     private val clearPolicy: ClearPolicy<K, T>
 ) : KeyedReplicaBehaviour<K, T> {
@@ -26,7 +26,8 @@ class LimitChildCount<K : Any, T : Any>(
     @OptIn(FlowPreview::class)
     override fun setup(keyedReplica: KeyedPhysicalReplica<K, T>) {
         keyedReplica.stateFlow
-            .debounce(ClearingDebounceTime.inWholeMilliseconds)  // Debounce is used to wait until a just created replica will change state
+            // Debounce is used to wait until a just created replica will change state
+            .debounce(ClearingDebounceTime.inWholeMilliseconds)
             .onEach { state ->
                 if (state.replicaCount > maxCount) {
                     clearReplicas(keyedReplica)

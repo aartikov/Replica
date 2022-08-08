@@ -9,9 +9,9 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.OptimisticUpdate
-import me.aartikov.replica.keyed.withOptimisticUpdate
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
+import me.aartikov.replica.single.withOptimisticUpdate
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
 import org.junit.Assert.*

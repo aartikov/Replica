@@ -1,20 +1,33 @@
 package me.aartikov.replica.keyed
 
+import me.aartikov.replica.common.ObservingState
+import me.aartikov.replica.single.ReplicaData
 import me.aartikov.replica.single.ReplicaState
 
+/**
+ * Configures how [KeyedPhysicalReplica] clears children when child count exceeds [KeyedReplicaSettings.maxCount].
+ * @property clearOrder see [ClearOrder]
+ * @property isPrivilegedReplica allows to set privileged replicas. Privileged replica is cleared only if there is no non-privileged one.
+ */
 data class ClearPolicy<K : Any, T : Any>(
     val clearOrder: ClearOrder<K, T> = ClearOrder.ByObservingTime,
-    val privilegedKeys: Set<K> = emptySet()
+    val isPrivilegedReplica: ((Pair<K, ReplicaState<T>>) -> Boolean)? = null
 ) {
     internal val comparator: Comparator<Pair<K, ReplicaState<T>>> = when (clearOrder) {
         ClearOrder.ByObservingTime -> ClearOrder.ByObservingTime.getComparator()
         ClearOrder.ByDataChangingTime -> ClearOrder.ByDataChangingTime.getComparator()
         is ClearOrder.CustomComparator -> clearOrder.comparator
-    }.withPrivilegedKeys(privilegedKeys)
+    }.withPrivileged(isPrivilegedReplica)
 }
 
+/**
+ * Configures in which order [KeyedPhysicalReplica] clears children when child count exceeds [KeyedReplicaSettings.maxCount].
+ */
 sealed interface ClearOrder<out K : Any, out T : Any> {
 
+    /**
+     * Compares replicas by [ObservingState.observingTime].
+     */
     object ByObservingTime : ClearOrder<Nothing, Nothing> {
         internal fun <K : Any, T : Any> getComparator(): Comparator<Pair<K, ReplicaState<T>>> {
             return Comparator { o1, o2 ->
@@ -26,6 +39,9 @@ sealed interface ClearOrder<out K : Any, out T : Any> {
         }
     }
 
+    /**
+     * Compares replicas by [ReplicaData.changingTime].
+     */
     object ByDataChangingTime : ClearOrder<Nothing, Nothing> {
         internal fun <K : Any, T : Any> getComparator(): Comparator<Pair<K, ReplicaState<T>>> {
             return Comparator { o1, o2 ->
@@ -37,22 +53,23 @@ sealed interface ClearOrder<out K : Any, out T : Any> {
         }
     }
 
+    /**
+     * Allows to specify custom comparator.
+     */
     data class CustomComparator<K : Any, T : Any>(
         val comparator: Comparator<Pair<K, ReplicaState<T>>>
     ) : ClearOrder<K, T>
 }
 
-private fun <K : Any, T : Any> Comparator<Pair<K, ReplicaState<T>>>.withPrivilegedKeys(
-    privilegedKeys: Set<K>
+private fun <K : Any, T : Any> Comparator<Pair<K, ReplicaState<T>>>.withPrivileged(
+    isPrivilegedReplica: ((Pair<K, ReplicaState<T>>) -> Boolean)?
 ): Comparator<Pair<K, ReplicaState<T>>> {
-    if (privilegedKeys.isEmpty()) {
+    if (isPrivilegedReplica == null) {
         return this
     } else {
         return Comparator { o1, o2 ->
-            val k1 = o1.first
-            val k2 = o2.first
-            val privileged1 = privilegedKeys.contains(k1)
-            val privileged2 = privilegedKeys.contains(k2)
+            val privileged1 = isPrivilegedReplica(o1)
+            val privileged2 = isPrivilegedReplica(o2)
             when {
                 privileged1 && !privileged2 -> 1
                 !privileged1 && privileged2 -> -1

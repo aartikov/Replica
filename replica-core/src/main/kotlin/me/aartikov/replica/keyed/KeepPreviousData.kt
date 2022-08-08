@@ -6,6 +6,10 @@ import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Modifies [KeyedReplica] so its observer keeps a data from a previous key until a data for a new key will not be loaded.
+ * It allows to dramatically improve UX when [KeyedReplica] is observed by changing keys.
+ */
 fun <K : Any, T : Any> KeyedReplica<K, T>.keepPreviousData(): KeyedReplica<K, T> {
     return KeepPreviousDataKeyedReplica(this)
 }
@@ -73,6 +77,9 @@ private class KeepPreviousDataReplicaObserver<T : Any>(
                     previousData = newValue.data
                 }
 
+                // "data == null && !loading" means that we should clear previous data.
+                // But we can't do it immediately because on switching replica key
+                // we gets initial value "Loadable(false, null, null)" for a very short time span.
                 if (newValue.data == null && !newValue.loading) {
                     previousDataCleanupJob?.cancel()
                     previousDataCleanupJob = coroutineScope.launch {

@@ -4,6 +4,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.single.Storage
 
+// Storage that executes operations sequentially to prevent race conditions.
 internal class SequentialStorage<T : Any>(
     private val originalStorage: Storage<T>,
     private val additionalMutex: Mutex? = null

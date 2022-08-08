@@ -12,10 +12,12 @@ import me.aartikov.replica.common.ReplicaTag
  * Replica is a primitive for data replication.
  * The replica's task is to represent some chunk of data from a server on a client side.
  * Replica is configured by [Fetcher] and [ReplicaSettings].
- * Replica replicates data only when there is some active observer (see: [Replica.observe]).
- * Replica keeps track of data staleness and refreshes it automatically.
- * Replica can cancel requests automatically when user leaves a screen.
- * Replica can clear data automatically when it is not required anymore.
+ * Replica loads missing data when an active observer connects (see: [Replica.observe]).
+ * Replica keeps track of data staleness.
+ * Replica refreshes stale data when an active observer is connected.
+ * Replica deduplicates network requests (it doesn't coll a new request if another one is in progress).
+ * Replica cancels network request when a last observer is disconnected.
+ * Replica clears data when it has no observers for a long time.
  *
  * The difference between [Replica] and [PhysicalReplica] is that the latter has a richer API.
  * [Replica] has minimalistic read-only API, whereas [PhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
@@ -50,7 +52,7 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     val coroutineScope: CoroutineScope
 
     /**
-     * Provides [ReplicaState] as observable value.
+     * Provides [ReplicaState] as an observable value.
      */
     val stateFlow: StateFlow<ReplicaState<T>>
 
@@ -61,11 +63,15 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     /**
      * Replace current data with new [data].
+     *
+     * Note: It doesn't change data freshness. If previous data is missing a new data will be stale.
      */
     suspend fun setData(data: T)
 
     /**
      * Modifies current data with [transform] function if it is exists.
+     *
+     * Note: It doesn't change data freshness.
      */
     suspend fun mutateData(transform: (T) -> T)
 
@@ -97,16 +103,22 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     /**
      * Begins optimistic update. Observed data will be transformed by [update] function immediately.
+     *
+     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
      */
     suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
-     * Commits optimistic update. Observed data will stay the same. Replica forgets previous data.
+     * Commits optimistic update. Replica forgets previous data.
+     *
+     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
      */
     suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
      * Rollbacks optimistic update. Observed data will be replaced to the previous one.
+     *
+     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
      */
     suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>)
 }

@@ -6,6 +6,9 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 
+/**
+ * [KeyedReplicaBehaviour] that executes some [action] on all [KeyedReplicaEvent].
+ */
 class KeyedDoOnEvent<K : Any, T : Any>(
     private val action: suspend KeyedPhysicalReplica<K, T>.(event: KeyedReplicaEvent<K, T>) -> Unit
 ) : KeyedReplicaBehaviour<K, T> {

@@ -8,6 +8,12 @@ import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
+/**
+ * Combines two replicas to a single replica. Data is merged only when all replicas have loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, R : Any> combine(
     replica1: Replica<T1>,
@@ -23,6 +29,12 @@ fun <T1 : Any, T2 : Any, R : Any> combine(
     )
 }
 
+/**
+ * Combines two replicas to a single replica. Data is merged when any of replicas has loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, R : Any> combineEager(
     replica1: Replica<T1>,
@@ -38,6 +50,13 @@ fun <T1 : Any, T2 : Any, R : Any> combineEager(
     )
 }
 
+/**
+ * Combines three replicas to a single replica. Data is merged only when all replicas have loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, R : Any> combine(
     replica1: Replica<T1>,
@@ -54,6 +73,13 @@ fun <T1 : Any, T2 : Any, T3 : Any, R : Any> combine(
     )
 }
 
+/**
+ * Combines three replicas to a single replica. Data is merged when any of replicas has loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, R : Any> combineEager(
     replica1: Replica<T1>,
@@ -70,6 +96,14 @@ fun <T1 : Any, T2 : Any, T3 : Any, R : Any> combineEager(
     )
 }
 
+/**
+ * Combines four replicas to a single replica. Data is merged only when all replicas have loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param replica4 fourth replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, R : Any> combine(
     replica1: Replica<T1>,
@@ -87,6 +121,14 @@ fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, R : Any> combine(
     )
 }
 
+/**
+ * Combines four replicas to a single replica. Data is merged when any of replicas has loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param replica4 fourth replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, R : Any> combineEager(
     replica1: Replica<T1>,
@@ -104,6 +146,15 @@ fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, R : Any> combineEager(
     )
 }
 
+/**
+ * Combines five replicas to a single replica. Data is merged only when all replicas have loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param replica4 fourth replica
+ * @param replica5 fifth replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> combine(
     replica1: Replica<T1>,
@@ -122,6 +173,15 @@ fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> combine(
     )
 }
 
+/**
+ * Combines five replicas to a single replica. Data is merged when any of replicas has loaded data.
+ * @param replica1 first replica
+ * @param replica2 second replica
+ * @param replica3 third replica
+ * @param replica4 fourth replica
+ * @param replica5 fifth replica
+ * @param transform function that merges replica data together.
+ */
 @Suppress("UNCHECKED_CAST")
 fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> combineEager(
     replica1: Replica<T1>,

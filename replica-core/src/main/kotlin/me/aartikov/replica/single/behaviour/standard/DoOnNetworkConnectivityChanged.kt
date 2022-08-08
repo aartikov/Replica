@@ -8,7 +8,7 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
 /**
- * [ReplicaBehaviour] that executes some [action] on network connectivity status changed.
+ * [ReplicaBehaviour] that executes some [action] when network connectivity status changed.
  */
 class DoOnNetworkConnectivityChanged<T : Any>(
     private val networkConnectivityProvider: NetworkConnectivityProvider,

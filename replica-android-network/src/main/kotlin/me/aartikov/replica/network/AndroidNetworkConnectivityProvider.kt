@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -17,7 +16,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-
+/**
+ * Provides network connectivity status for Android applications.
+ */
 class AndroidNetworkConnectivityProvider(
     application: Application,
     private val disconnectionDebounce: Duration = 500.milliseconds
@@ -87,13 +88,8 @@ class AndroidNetworkConnectivityProvider(
     }
 
     private fun isConnected(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val activeNetwork = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-            return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-        } else {
-            @Suppress("DEPRECATION")
-            return connectivityManager.activeNetworkInfo?.isConnected ?: false
-        }
+        val activeNetwork = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
     }
 }

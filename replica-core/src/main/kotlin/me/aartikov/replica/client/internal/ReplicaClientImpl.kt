@@ -78,6 +78,8 @@ internal class ReplicaClientImpl(
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T> {
 
+        validateKeyedSettings(settings, hasStorage = storage != null)
+
         val storageCleaner = storage?.let { KeyedStorageCleaner(it) }
 
         val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
@@ -169,7 +171,13 @@ internal class ReplicaClientImpl(
 
     private fun validateSettings(settings: ReplicaSettings, hasStorage: Boolean) {
         if (hasStorage && settings.clearTime != null) {
-            throw IllegalArgumentException("clearTime is not supported for replicas with storage")
+            throw IllegalArgumentException("clearTime is not supported for replicas with storage.")
+        }
+    }
+
+    private fun validateKeyedSettings(settings: KeyedReplicaSettings<*, *>, hasStorage: Boolean) {
+        if (hasStorage && settings.maxCount != Int.MAX_VALUE) {
+            throw IllegalArgumentException("maxCount is not supported for keyed replicas with storage.")
         }
     }
 }

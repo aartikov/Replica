@@ -203,16 +203,16 @@ public final class me/aartikov/replica/keyed/ClearOrder$CustomComparator : me/aa
 
 public final class me/aartikov/replica/keyed/ClearPolicy {
 	public fun <init> ()V
-	public fun <init> (Lme/aartikov/replica/keyed/ClearOrder;Ljava/util/Set;)V
-	public synthetic fun <init> (Lme/aartikov/replica/keyed/ClearOrder;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lme/aartikov/replica/keyed/ClearOrder;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lme/aartikov/replica/keyed/ClearOrder;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lme/aartikov/replica/keyed/ClearOrder;
-	public final fun component2 ()Ljava/util/Set;
-	public final fun copy (Lme/aartikov/replica/keyed/ClearOrder;Ljava/util/Set;)Lme/aartikov/replica/keyed/ClearPolicy;
-	public static synthetic fun copy$default (Lme/aartikov/replica/keyed/ClearPolicy;Lme/aartikov/replica/keyed/ClearOrder;Ljava/util/Set;ILjava/lang/Object;)Lme/aartikov/replica/keyed/ClearPolicy;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Lme/aartikov/replica/keyed/ClearOrder;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/keyed/ClearPolicy;
+	public static synthetic fun copy$default (Lme/aartikov/replica/keyed/ClearPolicy;Lme/aartikov/replica/keyed/ClearOrder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lme/aartikov/replica/keyed/ClearPolicy;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getClearOrder ()Lme/aartikov/replica/keyed/ClearOrder;
-	public final fun getPrivilegedKeys ()Ljava/util/Set;
 	public fun hashCode ()I
+	public final fun isPrivilegedReplica ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -331,11 +331,6 @@ public final class me/aartikov/replica/keyed/WithOptimisticUpdateKt {
 	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class me/aartikov/replica/keyed/WithOtimisticUptateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
 public abstract interface class me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour {
 	public abstract fun setup (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
 }
@@ -343,15 +338,6 @@ public abstract interface class me/aartikov/replica/keyed/behaviour/KeyedReplica
 public final class me/aartikov/replica/keyed/behaviour/standard/KeyedDoOnEvent : me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour {
 	public fun <init> (Lkotlin/jvm/functions/Function3;)V
 	public fun setup (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
-}
-
-public final class me/aartikov/replica/keyed/behaviour/standard/LimitChildCount : me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour {
-	public static final field Companion Lme/aartikov/replica/keyed/behaviour/standard/LimitChildCount$Companion;
-	public fun <init> (ILme/aartikov/replica/keyed/ClearPolicy;)V
-	public fun setup (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
-}
-
-public final class me/aartikov/replica/keyed/behaviour/standard/LimitChildCount$Companion {
 }
 
 public abstract interface class me/aartikov/replica/network/NetworkConnectivityProvider {
@@ -598,6 +584,11 @@ public abstract interface class me/aartikov/replica/single/Storage {
 	public abstract fun read (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun remove (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun write (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/single/WithOtimisticUptateKt {
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/single/behaviour/ReplicaBehaviour {
