@@ -5,9 +5,12 @@ import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import coil.load
 import coil.transform.CircleCropTransformation
+import kotlinx.coroutines.launch
 import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.core.utils.SwipeRefreshLceController
 import me.aartikov.replica.simple_sample.databinding.FragmentPokemonDetailsBinding
@@ -61,8 +64,10 @@ class PokemonDetailsFragment : Fragment(R.layout.fragment_pokemon_details) {
             onRetryClick = { vm.onRetryClick() }
         )
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            vm.pokemonState.collect { lceController.setState(it) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.pokemonState.collect { lceController.setState(it) }
+            }
         }
     }
 }

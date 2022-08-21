@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
+import kotlinx.coroutines.launch
 import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.core.utils.SwipeRefreshLceController
 import me.aartikov.replica.simple_sample.databinding.FragmentPokemonListBinding
@@ -50,8 +53,10 @@ class PokemonListFragment : Fragment(R.layout.fragment_pokemon_list) {
             onRetryClick = { vm.onRetryClick() }
         )
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            vm.pokemonsState.collect { lceController.setState(it) }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.pokemonsState.collect { lceController.setState(it) }
+            }
         }
     }
 

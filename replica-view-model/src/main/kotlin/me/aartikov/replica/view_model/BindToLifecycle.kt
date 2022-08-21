@@ -1,12 +1,11 @@
-package me.aartikov.replica.simple_sample.core.vm
+package me.aartikov.replica.view_model
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 
 /**
- * Binds [Activable] to Android [Lifecycle].
- * An activable become active in onStart and inactive in onStop.
+ * Binds [Activable] to onStart and onStop events of Android [Lifecycle].
  */
 fun Activable.bindToLifecycle(lifecycle: Lifecycle) {
     lifecycle.addObserver(ActivableLifecycleObserver(this))

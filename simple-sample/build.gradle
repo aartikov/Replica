@@ -42,6 +42,7 @@ dependencies {
     implementation project(':replica-core')
     implementation project(':replica-algebra')
     implementation project(':replica-android-network')
+    implementation project(':replica-view-model')
     debugImplementation project(':replica-devtools')
     releaseImplementation project(':replica-devtools-noop')
 

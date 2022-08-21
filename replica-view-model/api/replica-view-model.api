@@ -1,0 +1,23 @@
+public abstract interface class me/aartikov/replica/view_model/Activable {
+	public abstract fun getActiveFlow ()Lkotlinx/coroutines/flow/MutableStateFlow;
+}
+
+public final class me/aartikov/replica/view_model/ActivableKt {
+	public static final fun activable ()Lme/aartikov/replica/view_model/Activable;
+}
+
+public final class me/aartikov/replica/view_model/BindToLifecycleKt {
+	public static final fun bindToLifecycle (Lme/aartikov/replica/view_model/Activable;Landroidx/lifecycle/Lifecycle;)V
+}
+
+public final class me/aartikov/replica/view_model/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class me/aartikov/replica/view_model/ObserveReplicaKt {
+	public static final fun observe (Lme/aartikov/replica/single/Replica;Landroidx/lifecycle/ViewModel;)Lme/aartikov/replica/single/ReplicaObserver;
+}
+
