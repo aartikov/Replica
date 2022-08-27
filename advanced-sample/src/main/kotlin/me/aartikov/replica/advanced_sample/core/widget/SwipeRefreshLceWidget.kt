@@ -11,7 +11,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import me.aartikov.replica.single.Loadable
 
 /**
- * Displays Replica state ([Loadable]) with swipe to refresh functionality.
+ * Displays Replica state ([Loadable]) with swipe-to-refresh functionality.
  *
  * Note: a value of refreshing in [content] is true only when data is refreshing and swipe gesture didn't occur.
  */
@@ -21,60 +21,34 @@ fun <T : Any> SwipeRefreshLceWidget(
     onRefresh: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
+    swipeRefreshIndicator: @Composable (state: SwipeRefreshState, refreshTrigger: Dp) -> Unit = { s, trigger ->
+        SwipeRefreshIndicator(s, trigger, contentColor = MaterialTheme.colors.primaryVariant)
+    },
     content: @Composable (data: T, refreshing: Boolean) -> Unit
 ) {
+
     LceWidget(
         state = state,
         onRetryClick = onRetryClick,
-        modifier = modifier,
+        modifier = modifier
     ) { data, refreshing ->
-        StatefulSwipeRefresh(
-            refreshing = refreshing,
-            onRefresh = onRefresh,
-            indicator = { s, trigger ->
-                SwipeRefreshIndicator(
-                    s, trigger,
-                    contentColor = MaterialTheme.colors.primaryVariant
-                )
-            }
-        ) { swipeGestureOccurred ->
+        var swipeGestureOccurred by remember { mutableStateOf(false) }
+
+        LaunchedEffect(refreshing) {
+            if (!refreshing) swipeGestureOccurred = false
+        }
+
+        val swipeRefreshState = rememberSwipeRefreshState(swipeGestureOccurred && refreshing)
+
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = {
+                swipeGestureOccurred = true
+                onRefresh()
+            },
+            indicator = swipeRefreshIndicator
+        ) {
             content(data, refreshing = refreshing && !swipeGestureOccurred)
         }
-    }
-}
-
-/**
- * SwipeRefresh that remembers that swipe gesture occurred.
- *
- * Note: it shows a loader only when [refreshing] is true and swipe gesture occurs.
- */
-@Composable
-fun StatefulSwipeRefresh(
-    refreshing: Boolean,
-    modifier: Modifier = Modifier,
-    onRefresh: () -> Unit,
-    indicator: @Composable (state: SwipeRefreshState, refreshTrigger: Dp) -> Unit = { s, trigger ->
-        SwipeRefreshIndicator(s, trigger)
-    },
-    content: @Composable (swipeToRefreshPulled: Boolean) -> Unit
-) {
-    var swipeGestureOccurred by remember { mutableStateOf(false) }
-
-    LaunchedEffect(refreshing) {
-        if (!refreshing) swipeGestureOccurred = false
-    }
-
-    val state = rememberSwipeRefreshState(swipeGestureOccurred && refreshing)
-
-    SwipeRefresh(
-        state = state,
-        onRefresh = {
-            swipeGestureOccurred = true
-            onRefresh()
-        },
-        indicator = indicator,
-        modifier = modifier
-    ) {
-        content(swipeGestureOccurred)
     }
 }

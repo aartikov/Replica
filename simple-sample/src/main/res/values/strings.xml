@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Simple Replica Sample</string>
+
+    <!-- Common -->
+    <string name="common_retry">Retry</string>
+    <string name="error_no_internet_connection">No internet connection.</string>
+    <string name="error_unknown">Something went wrong.</string>
+    <string name="error_unknown_with_description">Something went wrong. %s</string>
+
+    <!-- Pokemon list -->
+    <string name="pokemons_title">Pokemons</string>
+    <string name="pokemons_select_type">Pokemon type</string>
+    <string name="pokemons_empty_description">Pokemons are not found.</string>
+
+    <!-- Pokemon details -->
+    <string name="pokemons_types">Types:</string>
+    <string name="pokemons_weight">Weight: %.1f</string>
+    <string name="pokemons_height">Height: %.1f</string>
+</resources>

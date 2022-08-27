@@ -14,12 +14,14 @@ rootProject.name = 'Replica'
 include ':replica-core'
 include ':replica-algebra'
 include ':replica-android-network'
+include ':replica-view-model'
 include ':replica-decompose'
 include ':replica-devtools'
 include ':replica-devtools-noop'
 include ':replica-devtools-client'
 include ':replica-devtools-dto'
 include ':advanced-sample'
+include ':simple-sample'
 
 dependencyResolutionManagement {
     repositories {
@@ -41,7 +43,10 @@ dependencyResolutionManagement {
 
             // Android
             library('android-desugar', 'com.android.tools', 'desugar_jdk_libs').version('1.1.5')
-            library('androidx-lifecycle-process', 'androidx.lifecycle', 'lifecycle-process').version('2.5.0')
+            version('lifecycle', '2.5.1')
+            library('androidx-lifecycle-process', 'androidx.lifecycle', 'lifecycle-process').versionRef('lifecycle')
+            library('lifecycle', 'androidx.lifecycle', 'lifecycle-common').versionRef('lifecycle')
+            library('viewModel', 'androidx.lifecycle', 'lifecycle-viewmodel-ktx').versionRef('lifecycle')
 
             // UI
             version('compose', '1.2.0-rc03')
@@ -52,17 +57,22 @@ dependencyResolutionManagement {
             library('compose-preview', 'androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
             library('compose-tooling', 'androidx.compose.ui', 'ui-tooling').versionRef('compose')
             library('activity-compose', 'androidx.activity', 'activity-compose').version('1.5.0')
-            library('appcompat', 'androidx.appcompat', 'appcompat').version('1.4.2')
+            library('appcompat', 'androidx.appcompat', 'appcompat').version('1.5.0')
+            library('fragment', 'androidx.fragment', 'fragment-ktx').version('1.5.2')
+            library('recyclerView', 'androidx.recyclerview', 'recyclerview').version('1.2.1')
+            library('swipeRefresh', 'androidx.swiperefreshlayout', 'swiperefreshlayout').version('1.1.0')
+            library('material', 'com.google.android.material', 'material').version('1.6.1')
             library('splashscreen', 'androidx.core', 'core-splashscreen').version('1.0.0-rc01')
             version('accompanist', '0.24.13-rc')
             library('accompanist-systemuicontroller', 'com.google.accompanist', 'accompanist-systemuicontroller').versionRef('accompanist')
             library('accompanist-swiperefresh', 'com.google.accompanist', 'accompanist-swiperefresh').versionRef('accompanist')
             bundle('accompanist', ['accompanist-systemuicontroller', 'accompanist-swiperefresh'])
-            library('coil', 'io.coil-kt', 'coil-compose').version('2.1.0')
+            version('coil', '2.2.0')
+            library('coil', 'io.coil-kt', 'coil').versionRef('coil')
+            library('coilCompose', 'io.coil-kt', 'coil-compose').versionRef('coil')
 
             // Architecture
-            version('sesame', '1.5.0')
-            library('sesame-localizedString', 'com.github.aartikov', 'sesame-localized-string').versionRef('sesame')
+            library('sesame-localizedString', 'com.github.aartikov', 'sesame-localized-string').version('1.5.0')
 
             version('decompose', '0.8.0')
             library('decompose-core', 'com.arkivanov.decompose', 'decompose').versionRef('decompose')

@@ -60,7 +60,7 @@ dependencies {
     implementation libs.activity.compose
     implementation libs.appcompat
     implementation libs.bundles.accompanist
-    implementation libs.coil
+    implementation libs.coilCompose
     implementation libs.splashscreen
 
     // Architecture

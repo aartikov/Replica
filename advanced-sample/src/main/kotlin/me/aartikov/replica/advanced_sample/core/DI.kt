@@ -1,5 +1,6 @@
 package me.aartikov.replica.advanced_sample.core
 
+import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -10,6 +11,8 @@ import me.aartikov.replica.advanced_sample.core.external_app_service.ExternalApp
 import me.aartikov.replica.advanced_sample.core.external_app_service.ExternalAppServiceImpl
 import me.aartikov.replica.advanced_sample.core.message.data.MessageService
 import me.aartikov.replica.advanced_sample.core.message.data.MessageServiceImpl
+import me.aartikov.replica.advanced_sample.core.message.ui.MessageComponent
+import me.aartikov.replica.advanced_sample.core.message.ui.RealMessageComponent
 import me.aartikov.replica.advanced_sample.core.network.BaseUrl
 import me.aartikov.replica.advanced_sample.core.network.NetworkApiFactory
 import me.aartikov.replica.client.ReplicaClient
@@ -17,6 +20,7 @@ import me.aartikov.replica.network.AndroidNetworkConnectivityProvider
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.component.get
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -31,4 +35,10 @@ val coreModule = module {
     single { ErrorHandler(get()) }
     single<ExternalAppService> { ExternalAppServiceImpl(androidContext()) }
     single { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate) }
+}
+
+fun ComponentFactory.createMessageComponent(
+    componentContext: ComponentContext
+): MessageComponent {
+    return RealMessageComponent(componentContext, get())
 }

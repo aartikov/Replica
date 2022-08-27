@@ -10,13 +10,13 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
+import me.aartikov.replica.advanced_sample.core.createMessageComponent
 import me.aartikov.replica.advanced_sample.core.utils.toComposeState
 import me.aartikov.replica.advanced_sample.features.dudes.createDudesComponent
 import me.aartikov.replica.advanced_sample.features.fruits.createFruitsComponent
 import me.aartikov.replica.advanced_sample.features.menu.createMenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuItem
-import me.aartikov.replica.advanced_sample.features.message.createMessagesComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonsComponent
 import me.aartikov.replica.advanced_sample.features.project.createProjectComponent
 
@@ -34,7 +34,7 @@ class RealRootComponent(
         childFactory = ::createChild
     ).toComposeState(lifecycle)
 
-    override val messageComponent = componentFactory.createMessagesComponent(
+    override val messageComponent = componentFactory.createMessageComponent(
         childContext(key = "message")
     )
 

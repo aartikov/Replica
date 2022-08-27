@@ -12,12 +12,12 @@ import me.aartikov.replica.advanced_sample.features.root.ui.RootUi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         val componentFactory = application.koin.get<ComponentFactory>()
         val rootComponent = componentFactory.createRootComponent(defaultComponentContext())
 
-        installSplashScreen()
         setContent {
             AppTheme {
                 RootUi(rootComponent)
