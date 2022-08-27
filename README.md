@@ -1,62 +1,52 @@
-# Replica
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.aartikov/replica-core)](https://repo1.maven.org/maven2/com/github/aartikov/replica-core/)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-Documentation-informational)](https://aartikov.github.io/Replica/)
 
-#### Developed in [MobileUp](https://mobileup.ru/) company
+<h1 align="center">Replica</h1>
 
-## What is Replica?
-**Replica** is an Android library for organizing of network communication. While libraries such as *Retrofit* and *Kotlin Serialization* help to make network requests, Replica takes on another challenges:
+<div align="center">
+  Android library for organizing of network communication in a declarative way.
+</div>
+<div align="center">
+  <strong>Developed in <a href="https://mobileup.ru/">MobileUp</a> company.</strong>
+</div>
 
-- Optimize amount of network calls
-- Display up-to-date data
-- Provide delightful User Experience (UX)
-- Provide amazing Developer Experience (DX)
+## Motivation
+While libraries such as *Retrofit* and *Kotlin Serialization* help to make network requests, Replica takes on another challenges.
 
-## How Replica works?
-### Data Replication
-The library is based on a concept called **data replication**. Imagine that there is some chunk of data on a server. The task of Replica is to make a copy of this data on a client. Sometimes data is changing on a server but Replica tries to keep it in sync.
+It is important to keep data up to date on a client. But we shouldn't call network requests too frequently to not waste server resources.
 
-<img src="images/data_replication.png">
+Modern Android applications need sophisticated UX-patterns such as *stale-while-revalidate*, *pull-to-refresh*, *pagination* and *optimistic updates*. Developers have to implement it over and over again without the right tool at hand.
 
-### Replication primitives
-Replica (a library) provides replication primitives called **replicas**. Replica (a replication primitive) is located on a client side and performs data replication.
+Classical imperative approach to networking is complex and error-prone. It is hard to achieve desired behavior by manually orchestrating individual network calls.
 
-<img src="images/replication_primitive.png">
+To summarize, Replica helps to:
+1. **Keep client data up to date**
+2. **Save server resources**
+3. **Create great UX**
+4. **Write simple and maintainable code**
 
-### Replica Observers
-**Replica observer** is an agent that connects to a replica and watches what is happening inside. Replica can have zero, one or multiple observers. Each observer can be **active** or **inactive**. By connecting to a replica an observer gets access to its state. A replica by itself knows how many active and inactive observers it has.
+## Features
+Replica provides:
+- Declarative approach to networking
+- Independence from network frameworks (*Retrofit*, *Ktor*, *Apollo GraphQL* and so on)
+- Automatic data loading based on active screens
+- In-memory and on-disk caching
+- Stale time configuration with automatic refresh
+- Automatic request cancellation and old data clearing
+- Request deduplication
+- Sophisticated UX-patterns support
+- Reaction on network connection status changes
+- Combining data from several requests
+- Integration with [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) and [Decompose](https://github.com/arkivanov/Decompose)
+- Visual debug tool integrated to Android Studio
 
-<img src="images/replica_observers.png">
+Planned features:
+- Pagination
+- KMM support
 
-And the most important concept here is **A replica observer is associated with some UI screen.**
-
-<img src="images/ui_observer.png">
-
-That means:
-- When the screen is visible for an user, the replica has an active observer.
-- When the screen is invisible (it is in a backstack or the whole app is in background), the replica has inactive observer.
-- When an user leaves the screen by going back, the observer disconnects from the replica.
-
-### Automatic behaviour
-To replicate data a replica performs a quite complex automatic behaviour:
-- Replica loads missing data when an active observer connects.
-- Replica keeps track of data staleness.
-- Replica refreshes stale data when an active observer is connected.
-- Replica cancels network request when a last observer is disconnected.
-- Replica clears data when it has no observers for a long time.
-
-> **Note**
-> This behaviour is implemented on a public library API so developers can add their own automatic logic.
-
-### Let's summarize
-For each chunk of data required from server a client has a corresponding replica. When a replica has an active observer it performs automatic data replication. The observed replica state gets to UI and displayed to an user.
-
-<img src="images/how_replica_works_summarize.png">
-
-## How to use Replica?
-
-### Gradle Setup
-First of all add a dependency to a Gradle script. Start with just `replica-core` and add other artifacts later as you need it.
+## Gradle Setup
 ```gradle
 dependencies {
 
@@ -77,40 +67,35 @@ dependencies {
     // Integration with Decompose library
     implementation "com.github.aartikov:replica-decompose:$replicaVersion"
 
-    // Debugging tool
+    // Debug tool
     debugImplementation "com.github.aartikov:replica-devtools:$replicaVersion"
     releaseImplementation "com.github.aartikov:replica-devtools-noop:$replicaVersion"
 }
 ```
 
-### Create ReplicaClient
- **ReplicaClient** is required to create replicas. It should be a singleton.
-```kotlin
-val replicaClient = ReplicaClient()
-```
+## How it works
+The library is based on a concept called **data replication**. The idea is simple. There is some data on a server. A client needs this data. Replica automatically represent server data on a client side and keeps it in sync.
 
-### Create a repository with a replica
+Replica provides data replication primitives called **replicas**. Each replica targets some chunk of data on a server and replicates it on a client.
 
-For example, lets create `PokemonRepository` to replicate a list of pokemons:
+And the last concept is **replica observers**. Replica observers are required to display data on UI. An observer connects to a replica and transfers its state to UI. A replica knows how many observers it has and performs complex behaviour based on this information.
 
-```kotlin
-interface PokemonRepository {
-    val pokemons: Replica<List<Pokemon>>
-}
-```
+<img src="images/how_replica_works.png">
 
+## Basic usage
+Typical code with Replica looks like that:
+
+1. **Create a replica in Repository**
 
 ```kotlin
-class PokemonRepositoryImpl(
+class PokemonRepository(
     replicaClient: ReplicaClient,
     api: PokemonApi
-) : PokemonRepository {
+) {
 
-    override val pokemons: PhysicalReplica<List<Pokemon>> = replicaClient.createReplica(
+    val pokemonsReplica: Replica<List<Pokemon>> = replicaClient.createReplica(
         name = "pokemons",
-        settings = ReplicaSettings(
-            staleTime = 1.minutes
-        ),
+        settings = ReplicaSettings(staleTime = 1.minutes),
         fetcher = {
             api.getPokemons().toDomain()
         }
@@ -118,49 +103,66 @@ class PokemonRepositoryImpl(
 }
 ```
 
-We use `ReplicaClient.createReplica` to create a replica. The arguments of the method are:
-
-- `name` - a human readable replica name, it can be used for debugging.
-- `settings` - configures replica behaviour. In the example we configured that data became state after one minute since it was loaded. There are other settings in [ReplicaSettings](https://github.com/aartikov/Replica/blob/docs/replica-core/src/main/kotlin/me/aartikov/replica/single/ReplicaSettings.kt) but all these fields have default values.
-- `fetcher` - configures how to load data from a network. In the example `PokemonApi` is powered by Retrofit but you can use any networking library you like.
-
-> **Note**
-> Once created a replica will exist as long as a replica client exists so don't create more than one replica for the same chunk of data.
-
-Maybe you have noticed that in `PokemonRepository` the replica declared as `Replica` whereas in `PokemonRepositoryImpl` as `PhysicalReplica`. This is made on purpose. The difference between `Replica` and `PhysicalReplica` is that the latter has a richer API. `Replica` allows only read data, whereas `PhysicalReplica` has methods to cancel requests, modify data, execute optimistic updates. It is recommended to declare replicas in the presented way to make repositories more encapsulated.
-
-### Connect an observer
-Use `Replica.observe` to create a replica observer:
+2. **Observe a replica in ViewModel**
 ```kotlin
-val pokemonsObserver = pokemonsReplica.observe(observerCoroutineScope, observerActive)
+class PokemonListViewModel(
+    private val pokemonsReplica: Replica<List<Pokemon>>,
+    errorHandler: ErrorHandler
+) : ViewModel(), Activable by activable() {
+
+    val pokemonsState = pokemonsReplica.observe(this, errorHandler)
+
+}
 ```
 
-The arguments of the method are:
-
-- `observerCoroutineScope` - is a coroutine scope that represents life time of an observer.
-- `observerActive` - has type `StateFlow<Boolean>` and represents observer state - active/inactive.
-
-Typically you should use a replica observer in a ViewModel. So for `observerCoroutineScope` you will pass `viewModelScope`. To track `observerActive` you should create `MutableStateFlow<Boolean>` in a ViewModel and set it to true/false when a Fragment is started/stopped.
-
-### Display replica state
-Once an observer is connected to a replica you can get replica state.
+3. **Display state on UI**
 ```kotlin
-val pokemonsState = pokemonsObserver.stateFlow
+viewLifecycleOwner.lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.pokemonsState.collect { state ->
+            val (loading, data, error) = state
+            when {
+                data != null -> {
+                    // show a list of pokemons
+                }
+                loading -> {
+                    // show a fullscreen progress
+                }
+                error != null -> {
+                    // show a fullscreen error
+                }
+            }
+        }
+    }
+}
 ```
 
-Replica state has type `StateFlow<Loadable<T>>` where `Loadable<T>` is
-```
-data class Loadable<out T : Any>(
-    val loading: Boolean,
-    val data: T?,
-    val error: CombinedLoadingError?
-)
-```
+## Replica DevTools
 
-Pokemons UI can subscribe to `pokemonsState` and display loading, content or error depending on state.
+Replica has a debug tool integrated to Android Studio. It allows to monitor replicas, its states and observers.
+
+<img src="images/replica_devtools_light.png">
+
+Of cause, dark theme is supported.
+
+<img src="images/replica_devtools_dark.png">
+
+
+## Learn more
+### Samples
+- [Simple sample](https://github.com/aartikov/Replica/tree/main/simple-sample) - shows basic usage of Replica. 
+- [Advanced sample](https://github.com/aartikov/Replica/tree/main/advanced-sample) - shows advanced techniques: observing data by dynamic key, optimistic updates, integration with [Decompose](https://github.com/arkivanov/Decompose). Architecture on this sample is based on [MobileUp Android Template](https://github.com/MobileUpLLC/MobileUp-Android-Template).
+
+### Documentation
+[Replica Documentation](https://aartikov.github.io/Replica/) - a website with detailed documentation (WIP).
 
 ## Contact the author
-Artur Artikov <a href="mailto:a.artikov@gmail.com">a.artikov@gmail.com</a>
+Artur Artikov
+
+telegram - <a href="https://t.me/aartikov">@aartikov</a>, email - <a href="mailto:a.artikov@gmail.com">a.artikov@gmail.com</a>
+
+## Special thanks
+To <a href="https://github.com/EgoriusE">Egor Belov</a> for the help with Replica DevTools and Unit tests.
 
 ## License
 ```
