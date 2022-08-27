@@ -13,7 +13,7 @@ import me.aartikov.replica.view_model.Activable
 import me.aartikov.replica.view_model.observe
 
 /**
- * Observes [Replica] and handles errors by [ErrorHandler].
+ * Observes [Replica] in a scope of [ViewModel] and handles errors by [ErrorHandler]. ViewModel has to be [Activable].
  * @return Replica [Loadable] state as [StateFlow].
  */
 fun <T : Any, VM> Replica<T>.observe(

@@ -1,4 +1,4 @@
-package me.aartikov.replica.advanced_sample.core.message.data
+package me.aartikov.replica.simple_sample.core.message.data
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

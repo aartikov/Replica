@@ -1,6 +1,6 @@
 package me.aartikov.replica.simple_sample.core.error_handling
 
-import me.aartikov.replica.advanced_sample.core.message.data.MessageService
+import me.aartikov.replica.simple_sample.core.message.data.MessageService
 import me.aartikov.replica.simple_sample.core.message.domain.Message
 import timber.log.Timber
 

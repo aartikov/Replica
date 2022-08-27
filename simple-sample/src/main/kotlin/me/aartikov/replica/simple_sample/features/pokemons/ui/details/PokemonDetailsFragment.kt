@@ -3,7 +3,6 @@ package me.aartikov.replica.simple_sample.features.pokemons.ui.details
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +12,7 @@ import coil.transform.CircleCropTransformation
 import kotlinx.coroutines.launch
 import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.core.utils.SwipeRefreshLceController
+import me.aartikov.replica.simple_sample.core.utils.refreshing
 import me.aartikov.replica.simple_sample.databinding.FragmentPokemonDetailsBinding
 import me.aartikov.replica.simple_sample.features.pokemons.domain.DetailedPokemon
 import me.aartikov.replica.simple_sample.features.pokemons.domain.PokemonId
@@ -46,7 +46,7 @@ class PokemonDetailsFragment : Fragment(R.layout.fragment_pokemon_details) {
         swipeRefresh.setColorSchemeResources(R.color.mint_dark)
 
         val lceController = SwipeRefreshLceController<DetailedPokemon>(
-            swipeRefeshView = swipeRefresh,
+            contentView = swipeRefresh,
             loadingView = loadingView,
             errorView = errorView,
             setContent = { pokemon, refreshing ->
@@ -58,7 +58,7 @@ class PokemonDetailsFragment : Fragment(R.layout.fragment_pokemon_details) {
                 }
                 height.text = getString(R.string.pokemons_height, pokemon.height)
                 weight.text = getString(R.string.pokemons_weight, pokemon.weight)
-                refreshingView.root.isVisible = refreshing
+                refreshingView.refreshing = refreshing
             },
             onRefresh = { vm.onRefresh() },
             onRetryClick = { vm.onRetryClick() }

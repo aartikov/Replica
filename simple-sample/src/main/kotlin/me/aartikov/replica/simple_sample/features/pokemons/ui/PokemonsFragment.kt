@@ -8,7 +8,6 @@ import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.simple_sample.features.pokemons.ui.details.PokemonDetailsFragment
 import me.aartikov.replica.simple_sample.features.pokemons.ui.list.PokemonListFragment
-import me.aartikov.replica.simple_sample.features.pokemons.ui.list.PokemonsNavigation
 
 class PokemonsFragment : Fragment(R.layout.fragment_pokemons), PokemonsNavigation {
 
@@ -30,9 +29,5 @@ class PokemonsFragment : Fragment(R.layout.fragment_pokemons), PokemonsNavigatio
             replace(R.id.container, PokemonDetailsFragment.newInstance(pokemonId))
             addToBackStack("details")
         }
-    }
-
-    override fun navigateBack(): Boolean {
-        return childFragmentManager.popBackStackImmediate()
     }
 }

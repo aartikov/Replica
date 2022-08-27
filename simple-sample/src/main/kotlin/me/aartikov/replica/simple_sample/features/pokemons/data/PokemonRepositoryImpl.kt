@@ -1,5 +1,6 @@
 package me.aartikov.replica.simple_sample.features.pokemons.data
 
+import kotlinx.coroutines.delay
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
@@ -21,6 +22,7 @@ class PokemonRepositoryImpl(
             name = "pokemons",
             settings = ReplicaSettings(staleTime = 10.seconds),
             fetcher = {
+                delay(500) // for demo purpose
                 api.getPokemons().toDomain()
             }
         )
@@ -37,6 +39,7 @@ class PokemonRepositoryImpl(
                 )
             },
             fetcher = { pokemonId ->
+                delay(500) // for demo purpose
                 api.getPokemonById(pokemonId.value).toDomain()
             }
         )

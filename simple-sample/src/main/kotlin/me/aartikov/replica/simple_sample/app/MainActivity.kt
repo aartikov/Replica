@@ -7,7 +7,6 @@ import androidx.fragment.app.commit
 import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.core.message.ui.MessagePopup
 import me.aartikov.replica.simple_sample.features.pokemons.ui.PokemonsFragment
-import me.aartikov.replica.simple_sample.features.pokemons.ui.list.PokemonsNavigation
 import org.koin.android.ext.android.get
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -21,17 +20,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-    override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
-        val handled = (currentFragment as PokemonsNavigation).navigateBack()
-        if (!handled) {
-            super.onBackPressed()
-        }
-    }
-
     private fun setupInitialFragment() {
         supportFragmentManager.commit {
-            add(R.id.container, PokemonsFragment())
+            val fragment = PokemonsFragment()
+            add(R.id.container, fragment)
+            setPrimaryNavigationFragment(fragment)
         }
     }
 

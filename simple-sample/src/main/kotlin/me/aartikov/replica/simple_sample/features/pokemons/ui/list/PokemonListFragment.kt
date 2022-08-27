@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.coroutines.launch
 import me.aartikov.replica.simple_sample.R
 import me.aartikov.replica.simple_sample.core.utils.SwipeRefreshLceController
+import me.aartikov.replica.simple_sample.core.utils.refreshing
 import me.aartikov.replica.simple_sample.databinding.FragmentPokemonListBinding
 import me.aartikov.replica.simple_sample.features.pokemons.domain.Pokemon
 import me.aartikov.replica.simple_sample.features.pokemons.domain.PokemonId
+import me.aartikov.replica.simple_sample.features.pokemons.ui.PokemonsNavigation
 import me.aartikov.replica.view_model.bindToLifecycle
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -38,12 +40,12 @@ class PokemonListFragment : Fragment(R.layout.fragment_pokemon_list) {
         emptyView.message.text = getString(R.string.pokemons_empty_description)
 
         val lceController = SwipeRefreshLceController<List<Pokemon>>(
-            swipeRefeshView = swipeRefresh,
+            contentView = swipeRefresh,
             loadingView = loadingView,
             errorView = errorView,
             setContent = { pokemons, refreshing ->
                 adapter.submitList(pokemons)
-                refreshingView.root.isVisible = refreshing
+                refreshingView.refreshing = refreshing
                 emptyView.root.isVisible = pokemons.isEmpty()
             },
             resetContent = {
