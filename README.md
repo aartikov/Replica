@@ -59,21 +59,27 @@ For each chunk of data required from server a client has a corresponding replica
 First of all add a dependency to a Gradle script. Start with just `replica-core` and add other artifacts later as you need it.
 ```gradle
 dependencies {
+
+    def replicaVersion = '1.0.0-alpha6'
+
     // Basic usage
-    implementation 'com.github.aartikov:replica-core:1.0.0-alpha5'
+    implementation "com.github.aartikov:replica-core:$replicaVersion"
 
     // Automatic reaction on changes of network connection status
-    implementation 'com.github.aartikov:replica-android-network:1.0.0-alpha45
+    implementation "com.github.aartikov:replica-android-network:$replicaVersion"
 
     // Transforming and combining replicas
-    implementation 'com.github.aartikov:replica-algebra:1.0.0-alpha5'
-    
+    implementation "com.github.aartikov:replica-algebra:$replicaVersion"
+
+    // Integration with ViewModel library
+    implementation "com.github.aartikov:replica-view-model:$replicaVersion"
+
     // Integration with Decompose library
-    implementation 'com.github.aartikov:replica-decompose:1.0.0-alpha5'
-    
-    // Debuging tool
-    debugImplementation 'com.github.aartikov:replica-devtools:1.0.0-alpha5'
-    releaseImplementation 'com.github.aartikov:replica-devtools-noop:1.0.0-alpha5'
+    implementation "com.github.aartikov:replica-decompose:$replicaVersion"
+
+    // Debugging tool
+    debugImplementation "com.github.aartikov:replica-devtools:$replicaVersion"
+    releaseImplementation "com.github.aartikov:replica-devtools-noop:$replicaVersion"
 }
 ```
 
