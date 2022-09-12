@@ -139,11 +139,11 @@ viewLifecycleOwner.lifecycleScope.launch {
 
 ## Replica DevTools
 
-Replica has a debug tool integrated to Android Studio. It allows to monitor replicas, its states and observers.
+Replica has a debug tool integrated to Android Studio. It allows to monitor replicas, their states and observers.
 
 <img src="images/replica_devtools_light.png">
 
-Of cause, dark theme is supported.
+Of course, dark theme is supported.
 
 <img src="images/replica_devtools_dark.png">
 
