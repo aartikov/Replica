@@ -15,7 +15,13 @@ plugins {
     id 'com.android.library' version "$androidGradlePluginVersion" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlinVersion" apply false
     id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion" apply false
-    id 'org.jetbrains.dokka' version "$kotlinVersion" apply false
+    id 'org.jetbrains.dokka' version "$kotlinVersion" apply true
     id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.11.0' apply false
     id 'org.jetbrains.compose' version '1.2.0-alpha01-dev741' apply false
+}
+
+dokkaHtmlMultiModule {
+    pluginsMapConfiguration.set(
+        ["org.jetbrains.dokka.base.DokkaBase": """{ "footerMessage": "Copyright © 2022 Artur Artikov" }"""]
+    )
 }

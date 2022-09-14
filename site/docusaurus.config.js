@@ -39,8 +39,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           {
             type: 'doc',
             docId: 'introduction',
-            position: 'left',
             label: 'Documentation',
+            position: 'left',
+          },
+          {
+            href: 'pathname:///api/',
+            position: 'right',
+            label: 'API',
           },
           {
             href: 'https://github.com/aartikov/Replica',
@@ -51,7 +56,21 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
       },
       footer: {
         style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} Artur Artikov. Built with Docusaurus.`,
+        links: [
+          {
+            label: 'Documentation',
+            href: '/docs/introduction',
+          },
+          {
+            label: 'API',
+            href: 'pathname:///api/',
+          },
+          {
+            label: 'GitHub',
+            href: 'https://github.com/aartikov/Replica',
+          }
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Artur Artikov. Built with <a href="https://docusaurus.io/">Docusaurus</a>.`,
       },
       prism: {
         theme: lightCodeTheme,

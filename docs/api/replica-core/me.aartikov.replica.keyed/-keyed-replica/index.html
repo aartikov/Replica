@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>KeyedReplica</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>Replica</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="replica-core::me.aartikov.replica.keyed/KeyedReplica///PointingToDeclaration//173573876">
+  <div class="breadcrumbs"><a href="../../index.html">replica-core</a><span class="delimiter">/</span><a href="../index.html">me.aartikov.replica.keyed</a><span class="delimiter">/</span><a href="index.html">KeyedReplica</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Keyed</span><wbr><span><span>Replica</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">KeyedReplica</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">K</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="index.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Keyed replica replicates multiple chunks of data - different chunks for different keys.</p><p class="paragraph">The difference between <a href="index.html">KeyedReplica</a> and <a href="../-keyed-physical-replica/index.html">KeyedPhysicalReplica</a> is that the latter has a richer API. <a href="index.html">KeyedReplica</a> has minimalistic read-only API, whereas <a href="../-keyed-physical-replica/index.html">KeyedPhysicalReplica</a> allows to cancel requests, modify data, execute optimistic updates.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1638685593%2FFunctions%2F173573876" anchor-label="getData" id="1638685593%2FFunctions%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-data.html"><span>get</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1638685593%2FFunctions%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="get-data.html"><span class="token function">getData</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="index.html">K</a><span class="token punctuation">, </span></span><span class="parameter ">forceRefresh<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Loads and returns data for a given <a href="get-data.html">key</a>. Throws an exception on error. It never returns stale data. It makes a network request if data is stale.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-335599419%2FFunctions%2F173573876" anchor-label="observe" id="-335599419%2FFunctions%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="observe.html"><span><span>observe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-335599419%2FFunctions%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="observe.html"><span class="token function">observe</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;observerCoroutineScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;observerActive<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;key<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">K</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../me.aartikov.replica.single/-replica-observer/index.html">ReplicaObserver</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Starts to observe a keyed replica. Returned <a href="../../me.aartikov.replica.single/-replica-observer/index.html">ReplicaObserver</a> gives access to replica state and error events.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1351532400%2FFunctions%2F173573876" anchor-label="refresh" id="1351532400%2FFunctions%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="refresh.html"><span><span>refresh</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1351532400%2FFunctions%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="refresh.html"><span class="token function">refresh</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="index.html">K</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Loads fresh data from a network for a given <a href="refresh.html">key</a>.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="269889312%2FFunctions%2F173573876" anchor-label="revalidate" id="269889312%2FFunctions%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="revalidate.html"><span><span>revalidate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="269889312%2FFunctions%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="revalidate.html"><span class="token function">revalidate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="index.html">K</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Loads fresh data from a network for a given <a href="revalidate.html">key</a> if it is stale.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inheritors</h2>
+      <div class="table" data-togglable="Inheritors"><a data-name="-1436100998%2FInheritors%2F173573876" anchor-label="KeyedPhysicalReplica" id="-1436100998%2FInheritors%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-keyed-physical-replica/index.html">KeyedPhysicalReplica</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1436100998%2FInheritors%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <h2 class="tabbedcontent">Extensions</h2>
+      <div class="table" data-togglable="Extensions"><a data-name="-2083760129%2FExtensions%2F173573876" anchor-label="keepPreviousData" id="-2083760129%2FExtensions%2F173573876" data-filterable-set=":replica-core:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../keep-previous-data.html"><span>keep</span><wbr><span>Previous</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2083760129%2FExtensions%2F173573876"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../keep-previous-data.html">K</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../keep-previous-data.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html">KeyedReplica</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../keep-previous-data.html">K</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../keep-previous-data.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../keep-previous-data.html"><span class="token function">keepPreviousData</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">KeyedReplica</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../keep-previous-data.html">K</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../keep-previous-data.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Modifies <a href="index.html">KeyedReplica</a> so its observer keeps a data from a previous key until a data for a new key will not be loaded. It allows to dramatically improve UX when <a href="index.html">KeyedReplica</a> is observed by changing keys.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+
