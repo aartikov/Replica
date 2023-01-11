@@ -4,13 +4,13 @@ import me.aartikov.replica.devtools.dto.KeyedReplicaDto
 import me.aartikov.replica.devtools.dto.ReplicaDto
 
 sealed class ItemViewData(
-    open val id: String,
+    open val id: Long,
     open val name: String,
     open val observingTime: ObservingTime
 )
 
 data class SimpleReplicaViewData(
-    override val id: String,
+    override val id: Long,
     override val name: String,
     val status: StatusItemType,
     val observerType: ObserverType,
@@ -18,7 +18,7 @@ data class SimpleReplicaViewData(
 ) : ItemViewData(id, name, observingTime)
 
 data class KeyedReplicaViewData(
-    override val id: String,
+    override val id: Long,
     override val name: String,
     val childReplicas: List<SimpleReplicaViewData>,
     override val observingTime: ObservingTime,

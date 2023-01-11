@@ -24,7 +24,7 @@ class DtoStore {
         _eventFlow.tryEmit(KeyedReplicaCreated(keyedReplica))
     }
 
-    fun addKeyedReplicaChild(keyedReplicaId: String, childReplica: ReplicaDto) {
+    fun addKeyedReplicaChild(keyedReplicaId: Long, childReplica: ReplicaDto) {
         _dtoFlow.update {
             val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
             val updatedKeyedReplica = keyedReplica.copy(
@@ -37,7 +37,7 @@ class DtoStore {
         _eventFlow.tryEmit(KeyedReplicaChildCreated(keyedReplicaId, childReplica))
     }
 
-    fun updateReplicaState(replicaId: String, state: ReplicaStateDto) {
+    fun updateReplicaState(replicaId: Long, state: ReplicaStateDto) {
         _dtoFlow.update {
             val updatedReplica = it.replicas[replicaId]?.copy(state = state) ?: return
             it.copy(
@@ -47,7 +47,7 @@ class DtoStore {
         _eventFlow.tryEmit(ReplicaUpdated(replicaId, state))
     }
 
-    fun updateKeyedReplicaState(keyedReplicaId: String, state: KeyedReplicaStateDto) {
+    fun updateKeyedReplicaState(keyedReplicaId: Long, state: KeyedReplicaStateDto) {
         _dtoFlow.update {
             val updatedReplica = it.keyedReplicas[keyedReplicaId]?.copy(state = state) ?: return
             it.copy(
@@ -58,8 +58,8 @@ class DtoStore {
     }
 
     fun updateKeyedReplicaChildState(
-        keyedReplicaId: String,
-        childReplicaId: String,
+        keyedReplicaId: Long,
+        childReplicaId: Long,
         state: ReplicaStateDto
     ) {
         _dtoFlow.update {
@@ -83,7 +83,7 @@ class DtoStore {
         )
     }
 
-    fun removeKeyedReplicaChild(keyedReplicaId: String, childReplicaId: String) {
+    fun removeKeyedReplicaChild(keyedReplicaId: Long, childReplicaId: Long) {
         _dtoFlow.update {
             val keyedReplica = it.keyedReplicas[keyedReplicaId] ?: return
             val updatedKeyedReplica = keyedReplica.copy(

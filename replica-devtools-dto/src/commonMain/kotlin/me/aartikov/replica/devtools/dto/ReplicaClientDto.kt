@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReplicaClientDto(
-    val replicas: Map<String, ReplicaDto> = emptyMap(),
-    val keyedReplicas: Map<String, KeyedReplicaDto> = emptyMap()
+    val replicas: Map<Long, ReplicaDto> = emptyMap(),
+    val keyedReplicas: Map<Long, KeyedReplicaDto> = emptyMap()
 )

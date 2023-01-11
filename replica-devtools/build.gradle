@@ -31,6 +31,7 @@ afterEvaluate {
 }
 
 dependencies {
+    coreLibraryDesugaring libs.android.desugar
     api project(':replica-core')
     implementation project(':replica-devtools-dto')
     api libs.coroutines.core

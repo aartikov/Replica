@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring libs.android.desugar
     api project(':replica-core')
     api libs.coroutines.core
     implementation libs.androidx.lifecycle.process

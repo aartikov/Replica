@@ -11,28 +11,28 @@ public final class me/aartikov/replica/devtools/dto/DevToolsEventDto$Companion {
 public final class me/aartikov/replica/devtools/dto/DtoStore {
 	public fun <init> ()V
 	public final fun addKeyedReplica (Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;)V
-	public final fun addKeyedReplicaChild (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaDto;)V
+	public final fun addKeyedReplicaChild (JLme/aartikov/replica/devtools/dto/ReplicaDto;)V
 	public final fun addReplica (Lme/aartikov/replica/devtools/dto/ReplicaDto;)V
 	public final fun getDtoFlow ()Lkotlinx/coroutines/flow/StateFlow;
 	public final fun getEventFlow ()Lkotlinx/coroutines/flow/Flow;
-	public final fun removeKeyedReplicaChild (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun updateKeyedReplicaChildState (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
-	public final fun updateKeyedReplicaState (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)V
-	public final fun updateReplicaState (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public final fun removeKeyedReplicaChild (JJ)V
+	public final fun updateKeyedReplicaChildState (JJLme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public final fun updateKeyedReplicaState (JLme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)V
+	public final fun updateReplicaState (JLme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
 	public final fun updateState (Lme/aartikov/replica/devtools/dto/ReplicaClientDto;)V
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated : me/aartikov/replica/devtools/dto/DevToolsEventDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaDto;)V
-	public final fun component1 ()Ljava/lang/String;
+	public synthetic fun <init> (IJLme/aartikov/replica/devtools/dto/ReplicaDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JLme/aartikov/replica/devtools/dto/ReplicaDto;)V
+	public final fun component1 ()J
 	public final fun component2 ()Lme/aartikov/replica/devtools/dto/ReplicaDto;
-	public final fun copy (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;
+	public final fun copy (JLme/aartikov/replica/devtools/dto/ReplicaDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;JLme/aartikov/replica/devtools/dto/ReplicaDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChildReplica ()Lme/aartikov/replica/devtools/dto/ReplicaDto;
-	public final fun getKeyedReplicaId ()Ljava/lang/String;
+	public final fun getKeyedReplicaId ()J
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public static final fun write$Self (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
@@ -56,15 +56,15 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$Com
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved : me/aartikov/replica/devtools/dto/DevToolsEventDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;
+	public synthetic fun <init> (IJJLkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JJ)V
+	public final fun component1 ()J
+	public final fun component2 ()J
+	public final fun copy (JJ)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;JJILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getChildReplicaId ()Ljava/lang/String;
-	public final fun getKeyedReplicaId ()Ljava/lang/String;
+	public final fun getChildReplicaId ()J
+	public final fun getKeyedReplicaId ()J
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public static final fun write$Self (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
@@ -88,16 +88,16 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$Com
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated : me/aartikov/replica/devtools/dto/DevToolsEventDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
+	public synthetic fun <init> (IJJLme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JJLme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public final fun component1 ()J
+	public final fun component2 ()J
 	public final fun component3 ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;
+	public final fun copy (JJLme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;JJLme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getChildReplicaId ()Ljava/lang/String;
-	public final fun getKeyedReplicaId ()Ljava/lang/String;
+	public final fun getChildReplicaId ()J
+	public final fun getKeyedReplicaId ()J
 	public final fun getState ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -152,18 +152,18 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaCreated$Companio
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/KeyedReplicaDto$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
+	public synthetic fun <init> (IJLjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JLjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;)V
+	public synthetic fun <init> (JLjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;
 	public final fun component4 ()Ljava/util/Map;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;)Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;
+	public final fun copy (JLjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;)Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;JLjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Ljava/util/Map;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChildReplicas ()Ljava/util/Map;
-	public final fun getId ()Ljava/lang/String;
+	public final fun getId ()J
 	public final fun getName ()Ljava/lang/String;
 	public final fun getState ()Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;
 	public fun hashCode ()I
@@ -223,14 +223,14 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto$Compani
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated : me/aartikov/replica/devtools/dto/DevToolsEventDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)V
-	public final fun component1 ()Ljava/lang/String;
+	public synthetic fun <init> (IJLme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JLme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)V
+	public final fun component1 ()J
 	public final fun component2 ()Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;
-	public final fun copy (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;
+	public final fun copy (JLme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;JLme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId ()Ljava/lang/String;
+	public final fun getId ()J
 	public final fun getState ()Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -399,15 +399,15 @@ public final class me/aartikov/replica/devtools/dto/ReplicaCreated$Companion {
 
 public final class me/aartikov/replica/devtools/dto/ReplicaDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/ReplicaDto$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
-	public final fun component1 ()Ljava/lang/String;
+	public synthetic fun <init> (IJLjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JLjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public final fun component1 ()J
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/ReplicaDto;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaDto;Ljava/lang/String;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaDto;
+	public final fun copy (JLjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/ReplicaDto;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaDto;JLjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaDto;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId ()Ljava/lang/String;
+	public final fun getId ()J
 	public final fun getName ()Ljava/lang/String;
 	public final fun getState ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
 	public fun hashCode ()I
@@ -475,14 +475,14 @@ public final class me/aartikov/replica/devtools/dto/ReplicaStateDto$Companion {
 
 public final class me/aartikov/replica/devtools/dto/ReplicaUpdated : me/aartikov/replica/devtools/dto/DevToolsEventDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/ReplicaUpdated$Companion;
-	public synthetic fun <init> (ILjava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
-	public final fun component1 ()Ljava/lang/String;
+	public synthetic fun <init> (IJLme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (JLme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public final fun component1 ()J
 	public final fun component2 ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
-	public final fun copy (Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/ReplicaUpdated;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaUpdated;Ljava/lang/String;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaUpdated;
+	public final fun copy (JLme/aartikov/replica/devtools/dto/ReplicaStateDto;)Lme/aartikov/replica/devtools/dto/ReplicaUpdated;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaUpdated;JLme/aartikov/replica/devtools/dto/ReplicaStateDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaUpdated;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId ()Ljava/lang/String;
+	public final fun getId ()J
 	public final fun getState ()Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

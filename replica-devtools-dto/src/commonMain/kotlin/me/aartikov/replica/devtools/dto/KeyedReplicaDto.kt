@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KeyedReplicaDto(
-    val id: String,
+    val id: Long,
     val name: String,
     val state: KeyedReplicaStateDto,
-    val childReplicas: Map<String, ReplicaDto> = emptyMap()
+    val childReplicas: Map<Long, ReplicaDto> = emptyMap()
 )
 
 @Serializable

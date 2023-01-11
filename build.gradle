@@ -13,6 +13,7 @@ buildscript {
 plugins {
     id 'com.android.application' version "$androidGradlePluginVersion" apply false
     id 'com.android.library' version "$androidGradlePluginVersion" apply false
+    id 'org.jetbrains.kotlin.multiplatform' version "$kotlinVersion" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlinVersion" apply false
     id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion" apply false
     id 'org.jetbrains.dokka' version "$kotlinVersion" apply true
