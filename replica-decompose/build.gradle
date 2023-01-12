@@ -1,25 +1,37 @@
 plugins {
-    id 'java-library'
-    id 'kotlin'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'org.jetbrains.dokka'
     id 'org.jetbrains.kotlinx.binary-compatibility-validator'
 }
 
 apply from: "${rootDir}/publish.gradle"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
     }
-}
 
-dependencies {
-    api project(':replica-core')
-    api libs.coroutines.core
-    api libs.decompose.core
+    ios()
+
+    js(IR) {
+        browser()
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(':replica-core')
+                api libs.coroutines.core
+                api libs.decompose.core
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation libs.junit
+                implementation libs.coroutines.test
+            }
+        }
+    }
 }
