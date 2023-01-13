@@ -4,12 +4,12 @@ apply plugin: 'signing'
 /**
  * publish:
  * ./gradlew build
- * ./gradlew publishReleasePublicationToSonatypeRepository
+ * ./gradlew publishToSonatypeRepository
  */
 
 ext {
     PUBLISH_GROUP_ID = 'com.github.aartikov'
-    PUBLISH_VERSION = '1.0.0-alpha6'
+    PUBLISH_VERSION = '1.0.0-alpha7'
     DESCRIPTION = 'Android libary for organizing of network communication in a declarative way'
 
     GITHUB_USER = 'aartikov'
@@ -23,37 +23,19 @@ ext {
 }
 
 def isAndroidLibrary = project.plugins.findPlugin('com.android.library') != null
-def isMultiplatform = project.plugins.findPlugin('org.jetbrains.kotlin.multiplatform') != null
 
-task sourceJar(type: Jar) {
-    archiveClassifier.set('sources')
-    def mainSourceSet
-    if (isAndroidLibrary) {
-        mainSourceSet = android.sourceSets.main
-    } else if (isMultiplatform) {
-        mainSourceSet = project.kotlin.sourceSets.commonMain
-    } else {
-        mainSourceSet = sourceSets.main
+if (tasks.findByPath('dokkaHtml') != null) {
+    task javadocJar(type: Jar, dependsOn: dokkaHtml) {
+        archiveClassifier.set('javadoc')
+        from dokkaHtml.outputDirectory
     }
-    from mainSourceSet.kotlin.srcDirs
-}
-
-if (isMultiplatform) {
-    // add empty file because dokkaJavadoc doesn't support Kotlin Multiplatform
+} else {
+    // empty jar
     task javadocJar(type: Jar) {
         archiveClassifier.set('javadoc')
     }
-} else {
-    task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
-        archiveClassifier.set('javadoc')
-        from dokkaJavadoc.outputDirectory
-    }
 }
 
-artifacts {
-    archives sourceJar
-    archives javadocJar
-}
 
 group = PUBLISH_GROUP_ID
 version = PUBLISH_VERSION
@@ -79,33 +61,41 @@ if (secretPropsFile.exists()) {
     ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
 }
 
+// KMM plugin generates publication automatically, but Android plugin doesn't. So create it here.
+if (isAndroidLibrary) {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId PUBLISH_GROUP_ID
+                artifactId project.name
+                version PUBLISH_VERSION
+
+                afterEvaluate {
+                    from components.release
+                }
+            }
+        }
+    }
+}
+
+// Configure created publications to fit Sonatype requirements.
 publishing {
     publications {
-        release(MavenPublication) {
-            groupId PUBLISH_GROUP_ID
-            artifactId project.name
-            version PUBLISH_VERSION
-            if (isAndroidLibrary) {
-                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-            } else if (isMultiplatform) {
-                artifact("$buildDir/libs/${project.name}-jvm-${version}.jar")
-            } else {
-                artifact("$buildDir/libs/${project.name}-${version}.jar")
-            }
-
-            artifact sourceJar
+        withType(MavenPublication) {
             artifact javadocJar
 
             pom {
                 name = project.name
                 description = DESCRIPTION
                 url = "https://github.com/${GITHUB_USER}/${GITHUB_PROJECT}"
+
                 licenses {
                     license {
                         name = LICENSE_NAME
                         url = LICENSE_URL
                     }
                 }
+
                 developers {
                     developer {
                         id = DEVELOPER_ID
@@ -113,31 +103,16 @@ publishing {
                         email = DEVELOPER_EMAIL
                     }
                 }
+
                 scm {
                     connection = "scm:git:github.com/${GITHUB_USER}/${GITHUB_PROJECT}.git"
                     developerConnection = "scm:git:ssh://github.com/${GITHUB_USER}/${GITHUB_PROJECT}.git"
                     url = "https://github.com/${GITHUB_USER}/${GITHUB_PROJECT}/tree/main"
                 }
-                withXml {
-                    def dependenciesNode = asNode().appendNode('dependencies')
-                    def configuration
-                    if (isMultiplatform) {
-                        configuration = project.configurations.commonMainImplementation
-                    } else {
-                        configuration = project.configurations.implementation
-                    }
-                    configuration.allDependencies.each {
-                        if (it.name != 'unspecified') {
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
-                            dependencyNode.appendNode('artifactId', it.name)
-                            dependencyNode.appendNode('version', it.version)
-                        }
-                    }
-                }
             }
         }
     }
+
     repositories {
         maven {
             name = "sonatype"
