@@ -168,7 +168,7 @@ To <a href="https://github.com/EgoriusE">Egor Belov</a> for the help with Replic
 ```
 The MIT License (MIT)
 
-Copyright (c) 2022 Artur Artikov, Egor Belov
+Copyright (c) 2023 Artur Artikov, Egor Belov
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights

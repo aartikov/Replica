@@ -23,6 +23,6 @@ plugins {
 
 dokkaHtmlMultiModule {
     pluginsMapConfiguration.set(
-        ["org.jetbrains.dokka.base.DokkaBase": """{ "footerMessage": "Copyright © 2022 Artur Artikov" }"""]
+        ["org.jetbrains.dokka.base.DokkaBase": """{ "footerMessage": "Copyright © 2023 Artur Artikov" }"""]
     )
 }
