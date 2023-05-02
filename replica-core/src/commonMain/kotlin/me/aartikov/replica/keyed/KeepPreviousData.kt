@@ -1,17 +1,68 @@
 package me.aartikov.replica.keyed
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
 
 /**
- * Modifies [KeyedReplica] so its observer keeps a data from a previous key until a data for a new key will not be loaded.
- * It allows to dramatically improve UX when [KeyedReplica] is observed by changing keys.
+ * Modifies [Replica] so its observer keeps a previous data until new data will not be loaded.
+ * It allows to dramatically improve UX when data is loaded for changing key.
  */
+fun <T : Any> Replica<T>.keepPreviousData(): Replica<T> {
+    return KeepPreviousDataReplica(this)
+}
+
+/**
+ * Modifies [KeyedReplica] so its observer keeps a data from a previous key until a data for a new key will not be loaded.
+ * It allows to dramatically improve UX when data is loaded for changing key.
+ */
+// TODO: Deprecate it?
 fun <K : Any, T : Any> KeyedReplica<K, T>.keepPreviousData(): KeyedReplica<K, T> {
     return KeepPreviousDataKeyedReplica(this)
+}
+
+private class KeepPreviousDataReplica<T : Any>(
+    private val originalReplica: Replica<T>
+) : Replica<T> {
+
+    override fun observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>
+    ): ReplicaObserver<T> {
+        val originalObserver = originalReplica.observe(
+            observerCoroutineScope,
+            observerActive
+        )
+
+        return KeepPreviousDataReplicaObserver(
+            observerCoroutineScope,
+            originalObserver
+        )
+    }
+
+    override fun refresh() {
+        originalReplica.refresh()
+    }
+
+    override fun revalidate() {
+        originalReplica.revalidate()
+    }
+
+    override suspend fun getData(forceRefresh: Boolean): T {
+        return originalReplica.getData(forceRefresh)
+    }
 }
 
 private class KeepPreviousDataKeyedReplica<K : Any, T : Any>(

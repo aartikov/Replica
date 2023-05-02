@@ -7,19 +7,22 @@ import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
+import me.aartikov.replica.advanced_sample.core.utils.componentCoroutineScope
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.core.utils.persistent
+import me.aartikov.replica.advanced_sample.core.utils.snapshotStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.Pokemon
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonTypeId
+import me.aartikov.replica.algebra.withKey
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
 
 class RealPokemonListComponent(
     componentContext: ComponentContext,
     private val onOutput: (PokemonListComponent.Output) -> Unit,
-    private val pokemonsByTypeReplica: KeyedReplica<PokemonTypeId, List<Pokemon>>,
+    pokemonsByTypeReplica: KeyedReplica<PokemonTypeId, List<Pokemon>>,
     errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, PokemonListComponent {
 
@@ -34,12 +37,14 @@ class RealPokemonListComponent(
     override var selectedTypeId by mutableStateOf(types[0].id)
         private set
 
-    override val pokemonsState by pokemonsByTypeReplica
+    private val pokemonsReplica = pokemonsByTypeReplica
+        .withKey(snapshotStateFlow(componentCoroutineScope(), { selectedTypeId }))
+
+    override val pokemonsState by pokemonsReplica
         .keepPreviousData() // for better UX
         .observe(
             lifecycle,
-            errorHandler,
-            key = { selectedTypeId }
+            errorHandler
         )
 
     init {
@@ -58,11 +63,11 @@ class RealPokemonListComponent(
     }
 
     override fun onRefresh() {
-        pokemonsByTypeReplica.refresh(selectedTypeId)
+        pokemonsReplica.refresh()
     }
 
     override fun onRetryClick() {
-        pokemonsByTypeReplica.refresh(selectedTypeId)
+        pokemonsReplica.refresh()
     }
 
     @Parcelize

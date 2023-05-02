@@ -11,12 +11,19 @@ import me.aartikov.replica.single.ReplicaObserver
  * Converts [KeyedReplica] to [Replica] by fixing a key.
  */
 fun <K : Any, T : Any> KeyedReplica<K, T>.withKey(key: K): Replica<T> {
-    return WithKeyReplica(this, key)
+    return WithKeyReplica(this, MutableStateFlow(key))
+}
+
+/**
+ * Converts [KeyedReplica] to [Replica] by passing [StateFlow] with dynamic key.
+ */
+fun <K : Any, T : Any> KeyedReplica<K, T>.withKey(keyFlow: StateFlow<K?>): Replica<T> {
+    return WithKeyReplica(this, keyFlow)
 }
 
 private class WithKeyReplica<K : Any, T : Any>(
     private val keyedReplica: KeyedReplica<K, T>,
-    private val key: K
+    private val keyFlow: StateFlow<K?>
 ) : Replica<T> {
 
     override fun observe(
@@ -26,19 +33,24 @@ private class WithKeyReplica<K : Any, T : Any>(
         return keyedReplica.observe(
             observerCoroutineScope,
             observerActive,
-            MutableStateFlow(key)
+            keyFlow
         )
     }
 
     override fun refresh() {
+        val key = keyFlow.value ?: return
         keyedReplica.refresh(key)
     }
 
     override fun revalidate() {
+        val key = keyFlow.value ?: return
         keyedReplica.revalidate(key)
     }
 
     override suspend fun getData(forceRefresh: Boolean): T {
+        val key = keyFlow.value ?: throw MissingKeyException()
         return keyedReplica.getData(key, forceRefresh)
     }
 }
+
+class MissingKeyException : Exception()

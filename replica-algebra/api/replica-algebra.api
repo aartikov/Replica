@@ -26,7 +26,12 @@ public final class me/aartikov/replica/algebra/MapKt {
 	public static final fun map (Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/single/Replica;
 }
 
+public final class me/aartikov/replica/algebra/MissingKeyException : java/lang/Exception {
+	public fun <init> ()V
+}
+
 public final class me/aartikov/replica/algebra/WithKeyKt {
 	public static final fun withKey (Lme/aartikov/replica/keyed/KeyedReplica;Ljava/lang/Object;)Lme/aartikov/replica/single/Replica;
+	public static final fun withKey (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/Replica;
 }
 

@@ -218,6 +218,7 @@ public final class me/aartikov/replica/keyed/ClearPolicy {
 
 public final class me/aartikov/replica/keyed/KeepPreviousDataKt {
 	public static final fun keepPreviousData (Lme/aartikov/replica/keyed/KeyedReplica;)Lme/aartikov/replica/keyed/KeyedReplica;
+	public static final fun keepPreviousData (Lme/aartikov/replica/single/Replica;)Lme/aartikov/replica/single/Replica;
 }
 
 public abstract interface class me/aartikov/replica/keyed/KeyedFetcher {
