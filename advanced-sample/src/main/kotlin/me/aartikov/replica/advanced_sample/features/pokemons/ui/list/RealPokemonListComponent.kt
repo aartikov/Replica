@@ -37,15 +37,13 @@ class RealPokemonListComponent(
     override var selectedTypeId by mutableStateOf(types[0].id)
         private set
 
-    private val pokemonsReplica = pokemonsByTypeReplica
-        .withKey(snapshotStateFlow(componentCoroutineScope(), { selectedTypeId }))
+    private val selectedTypeIdStateFlow =
+        snapshotStateFlow(componentCoroutineScope()) { selectedTypeId }
 
-    override val pokemonsState by pokemonsReplica
-        .keepPreviousData() // for better UX
-        .observe(
-            lifecycle,
-            errorHandler
-        )
+    private val pokemonsReplica = pokemonsByTypeReplica
+        .keepPreviousData().withKey(selectedTypeIdStateFlow)
+
+    override val pokemonsState by pokemonsReplica.observe(lifecycle, errorHandler)
 
     init {
         persistent(

@@ -1,7 +1,16 @@
 package me.aartikov.replica.keyed
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaObserver
@@ -67,35 +76,21 @@ private class KeepPreviousDataReplicaObserver<T : Any>(
         }
     }
 
+    @OptIn(FlowPreview::class)
     private fun launchStateObserving() {
-        var previousData: T? = null
-        var previousDataCleanupJob: Job? = null
-
         stateObservingJob = originalObserver.stateFlow
-            .onEach { newValue ->
-                if (newValue.data != null) {
-                    previousData = newValue.data
-                }
-
-                // "data == null && !loading" means that we should clear previous data.
-                // But we can't do it immediately because on switching replica key
-                // we gets initial value "Loadable(false, null, null)" for a very short time span.
+            .debounce { newValue ->
                 if (newValue.data == null && !newValue.loading) {
-                    previousDataCleanupJob?.cancel()
-                    previousDataCleanupJob = coroutineScope.launch {
-                        delay(100)
-                        previousData = null
-                        previousDataCleanupJob = null
-                    }
-                } else if (previousDataCleanupJob != null) {
-                    previousDataCleanupJob?.cancel()
-                    previousDataCleanupJob = null
-                }
-
-                _stateFlow.value = if (newValue.data == null && newValue.loading) {
-                    newValue.copy(data = previousData)
+                    30 // wait until an empty replica starts load data
                 } else {
-                    newValue
+                    0
+                }
+            }
+            .onEach { newValue ->
+                if (newValue.data == null && newValue.loading) {
+                    _stateFlow.value = newValue.copy(data = _stateFlow.value.data)
+                } else {
+                    _stateFlow.value = newValue
                 }
             }
             .launchIn(coroutineScope)
