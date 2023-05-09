@@ -264,6 +264,8 @@ private class CombinedReplicaObserver<R : Any>(
     private var stateObservingJob: Job? = null
     private var errorsObservingJobs: List<Job> = emptyList()
 
+    private val delayedLoadingErrors = mutableListOf<LoadingError>()
+
     init {
         if (coroutineScope.isActive) {
             launchStateObserving()
@@ -297,11 +299,32 @@ private class CombinedReplicaObserver<R : Any>(
                     }
                 )
 
-                if (combiningResult.error != null && !combinedLoading) {
-                    _loadingErrorFlow.emit(LoadingError(combiningResult.error))
+                if (!combinedLoading) {
+                    delayedLoadingErrors.forEach {
+                        _loadingErrorFlow.emit(it)
+                    }
+                    delayedLoadingErrors.clear()
+
+                    combiningResult.error?.let {
+                        _loadingErrorFlow.emit(LoadingError(it))
+                    }
                 }
             }
             .launchIn(coroutineScope)
+    }
+
+    private fun launchLoadingErrorsObserving() {
+        errorsObservingJobs = originalObservers.map { observer ->
+            observer.loadingErrorFlow
+                .onEach { error ->
+                    if (_stateFlow.value.loading) {
+                        delayedLoadingErrors.add(error)
+                    } else {
+                        _loadingErrorFlow.emit(error)
+                    }
+                }
+                .launchIn(coroutineScope)
+        }
     }
 
     private fun combineStates(
@@ -328,16 +351,6 @@ private class CombinedReplicaObserver<R : Any>(
             CombiningResult(originalData, combinedData, null)
         } catch (e: Exception) {
             CombiningResult(originalData, null, e)
-        }
-    }
-
-    private fun launchLoadingErrorsObserving() {
-        errorsObservingJobs = originalObservers.map { observer ->
-            observer.loadingErrorFlow
-                .onEach { error ->
-                    _loadingErrorFlow.emit(error)
-                }
-                .launchIn(coroutineScope)
         }
     }
 
