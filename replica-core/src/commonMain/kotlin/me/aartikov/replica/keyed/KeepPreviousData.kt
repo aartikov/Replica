@@ -1,16 +1,16 @@
 package me.aartikov.replica.keyed
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaObserver
@@ -76,22 +76,44 @@ private class KeepPreviousDataReplicaObserver<T : Any>(
         }
     }
 
-    @OptIn(FlowPreview::class)
     private fun launchStateObserving() {
+        var previousData: T? = null
+        var previousDataCleanupJob: Job? = null
+        var keepingPreviousData = false
+
         stateObservingJob = originalObserver.stateFlow
-            .debounce { newValue ->
-                if (newValue.data == null && !newValue.loading) {
-                    30 // wait until an empty replica starts load data
-                } else {
-                    0
-                }
-            }
             .onEach { newValue ->
-                if (newValue.data == null && newValue.loading) {
-                    _stateFlow.value = newValue.copy(data = _stateFlow.value.data)
-                } else {
-                    _stateFlow.value = newValue
+                if (newValue.data != null) {
+                    previousData = newValue.data
                 }
+
+                // "data == null && !loading" means that we should clear previous data.
+                // But we can't do it immediately because on switching replica key
+                // we gets initial value "Loadable(false, null, null)" for a very short time span.
+                if (previousData != null && newValue.data == null && !newValue.loading) {
+                    previousDataCleanupJob?.cancel()
+                    previousDataCleanupJob = coroutineScope.launch {
+                        delay(30)
+                        previousData = null
+                        previousDataCleanupJob = null
+                        if (keepingPreviousData) {
+                            _stateFlow.value = _stateFlow.value.copy(data = null)
+                            keepingPreviousData = false
+                        }
+                    }
+                } else if (previousDataCleanupJob != null) {
+                    previousDataCleanupJob?.cancel()
+                    previousDataCleanupJob = null
+                }
+
+                _stateFlow.value =
+                    if (previousData != null && newValue.data == null && newValue.error == null) {
+                        keepingPreviousData = true
+                        newValue.copy(data = previousData)
+                    } else {
+                        keepingPreviousData = false
+                        newValue
+                    }
             }
             .launchIn(coroutineScope)
     }
