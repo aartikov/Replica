@@ -6,7 +6,7 @@
 <h1 align="center">Replica</h1>
 
 <div align="center">
-  Android library for organizing of network communication in a declarative way.
+  KMM library for organizing of network communication in a declarative way.
 </div>
 <div align="center">
   <strong>Developed in <a href="https://mobileup.ru/">MobileUp</a> company.</strong>
@@ -41,16 +41,16 @@ Replica provides:
 - Combining data from several requests
 - Integration with [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) and [Decompose](https://github.com/arkivanov/Decompose)
 - Visual debug tool integrated to Android Studio
+- KMM support
 
 Planned features:
 - Pagination
-- KMM support
 
 ## Gradle Setup
 ```gradle
 dependencies {
 
-    def replicaVersion = '1.0.0-alpha6'
+    def replicaVersion = '1.0.0-alpha13'
 
     // Basic usage
     implementation "com.github.aartikov:replica-core:$replicaVersion"
