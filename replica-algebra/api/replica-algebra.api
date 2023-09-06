@@ -3,10 +3,12 @@ public final class me/aartikov/replica/algebra/AssociateKt {
 }
 
 public final class me/aartikov/replica/algebra/CombineKt {
+	public static final fun combine (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/single/Replica;
 	public static final fun combine (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/single/Replica;
 	public static final fun combine (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/single/Replica;
 	public static final fun combine (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function4;)Lme/aartikov/replica/single/Replica;
 	public static final fun combine (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function5;)Lme/aartikov/replica/single/Replica;
+	public static final fun combineEager (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/single/Replica;
 	public static final fun combineEager (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/single/Replica;
 	public static final fun combineEager (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/single/Replica;
 	public static final fun combineEager (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function4;)Lme/aartikov/replica/single/Replica;
