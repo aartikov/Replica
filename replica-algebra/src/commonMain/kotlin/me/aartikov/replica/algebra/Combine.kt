@@ -208,13 +208,13 @@ fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> combineEager(
 @Suppress("UNCHECKED_CAST")
 fun <T : Any, R : Any> combine(
     replicas: List<Replica<T>>,
-    transform: (List<T?>) -> R
+    transform: (List<T>) -> R
 ): Replica<R> {
     return CombinedReplica<R>(
         originalReplicas = replicas,
         transform = { list ->
             transform(
-                list.map { it as T? }
+                list.map { it as T }
             )
         },
         eager = false
