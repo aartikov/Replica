@@ -50,7 +50,7 @@ Planned features:
 ```gradle
 dependencies {
 
-    def replicaVersion = '1.0.0-alpha14'
+    def replicaVersion = '1.0.0-alpha15'
 
     // Basic usage
     implementation "com.github.aartikov:replica-core:$replicaVersion"
