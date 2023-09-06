@@ -200,6 +200,48 @@ fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> combineEager(
     )
 }
 
+/**
+ * Combines list of replicas with same key type to a single replica. Data is merged only when all replicas have loaded data.
+ * @param replicas list of replicas
+ * @param transform function that merges replica data together.
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T : Any, R : Any> combine(
+    replicas: List<Replica<T>>,
+    transform: (List<T?>) -> R
+): Replica<R> {
+    return CombinedReplica<R>(
+        originalReplicas = replicas,
+        transform = { list ->
+            transform(
+                list.map { it as T? }
+            )
+        },
+        eager = false
+    )
+}
+
+/**
+ * Combines list of replicas with same key type to a single replica. Data is merged only when any of replicas has loaded data.
+ * @param replicas list of replicas
+ * @param transform function that merges replica data together.
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T : Any, R : Any> combineEager(
+    replicas: List<Replica<T>>,
+    transform: (List<T?>) -> R
+): Replica<R> {
+    return CombinedReplica<R>(
+        originalReplicas = replicas,
+        transform = { list ->
+            transform(
+                list.map { it as T? }
+            )
+        },
+        eager = true
+    )
+}
+
 private class CombinedReplica<R : Any>(
     private val originalReplicas: List<Replica<Any>>,
     private val transform: (List<Any?>) -> R,
