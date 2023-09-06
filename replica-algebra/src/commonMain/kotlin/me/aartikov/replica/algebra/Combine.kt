@@ -222,7 +222,7 @@ fun <T : Any, R : Any> combine(
 }
 
 /**
- * Combines list of replicas with same key type to a single replica. Data is merged only when all replicas have loaded data.
+ * Combines list of replicas with same key type to a single replica. Data is merged only when any of replicas has loaded data.
  * @param replicas list of replicas
  * @param transform function that merges replica data together.
  */
