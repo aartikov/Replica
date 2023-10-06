@@ -4,10 +4,3 @@ public final class me/aartikov/replica/network/AndroidNetworkConnectivityProvide
 	public fun getConnectedFlow ()Lkotlinx/coroutines/flow/StateFlow;
 }
 
-public final class me/aartikov/replica/network/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
-}
-

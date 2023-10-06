@@ -37,12 +37,11 @@ class NetworkApiFactory(
         return retrofit.create(clazz)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     private fun createRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addCallAdapterFactory(ErrorHandlingCallAdapterFactory(debugTools))
+            .addCallAdapterFactory(ErrorHandlingCallAdapterFactory())
             .addConverterFactory(ErrorHandlingConverterFactory(json.asConverterFactory("application/json".toMediaType())))
             .build()
     }

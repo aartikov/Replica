@@ -66,6 +66,7 @@ public final class me/aartikov/replica/common/InvalidationMode : java/lang/Enum 
 	public static final field RefreshAlways Lme/aartikov/replica/common/InvalidationMode;
 	public static final field RefreshIfHasActiveObservers Lme/aartikov/replica/common/InvalidationMode;
 	public static final field RefreshIfHasObservers Lme/aartikov/replica/common/InvalidationMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lme/aartikov/replica/common/InvalidationMode;
 	public static fun values ()[Lme/aartikov/replica/common/InvalidationMode;
 }
@@ -105,6 +106,7 @@ public final class me/aartikov/replica/common/ObservingStatus : java/lang/Enum {
 	public static final field Active Lme/aartikov/replica/common/ObservingStatus;
 	public static final field Inactive Lme/aartikov/replica/common/ObservingStatus;
 	public static final field None Lme/aartikov/replica/common/ObservingStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lme/aartikov/replica/common/ObservingStatus;
 	public static fun values ()[Lme/aartikov/replica/common/ObservingStatus;
 }

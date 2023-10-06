@@ -1,14 +1,15 @@
 package me.aartikov.replica.advanced_sample.core.network
 
 import kotlinx.serialization.SerializationException
-import me.aartikov.replica.advanced_sample.core.debug_tools.DebugTools
 import me.aartikov.replica.advanced_sample.core.error_handling.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
-import java.net.HttpURLConnection.*
+import java.net.HttpURLConnection.HTTP_GATEWAY_TIMEOUT
+import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
+import java.net.HttpURLConnection.HTTP_UNAVAILABLE
 import java.net.SocketTimeoutException
 import javax.net.ssl.SSLHandshakeException
 
@@ -16,8 +17,7 @@ import javax.net.ssl.SSLHandshakeException
  * Converts platform exceptions to [ApplicationException]s.
  */
 class ErrorHandlingCall<T>(
-    private val sourceCall: Call<T>,
-    private val debugTools: DebugTools
+    private val sourceCall: Call<T>
 ) : Call<T> by sourceCall {
 
     override fun enqueue(callback: Callback<T>) {
@@ -31,7 +31,6 @@ class ErrorHandlingCall<T>(
                 true -> callback.onResponse(call, response)
                 else -> {
                     val exception = mapToFailureException(response)
-                    debugTools.collectNetworkError(exception)
                     callback.onFailure(call, exception)
                 }
             }
@@ -39,7 +38,6 @@ class ErrorHandlingCall<T>(
 
         override fun onFailure(call: Call<T>, throwable: Throwable) {
             val exception = mapToFailureException(throwable)
-            debugTools.collectNetworkError(exception)
             callback.onFailure(call, exception)
         }
 
