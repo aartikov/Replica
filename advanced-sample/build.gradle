@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
 
     defaultConfig {
         applicationId "me.aartikov.replica.advanced_sample"
         minSdk 23
-        targetSdk 32
+        targetSdk 34
         versionName "1.0"
     }
 
@@ -28,6 +28,7 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig = true
     }
 
     composeOptions {
@@ -37,6 +38,8 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/*")
     }
+
+    namespace = "me.aartikov.replica.advanced_sample"
 }
 
 dependencies {

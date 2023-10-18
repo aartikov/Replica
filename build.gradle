@@ -2,11 +2,11 @@ buildscript {
     ext {
         androidLibraryConfig = [
                 minSdkVersion    : 23,
-                compileSdkVersion: 32
+                compileSdkVersion: 34
         ]
 
-        androidGradlePluginVersion = '7.2.0'
-        kotlinVersion = '1.7.0'
+        androidGradlePluginVersion = '8.1.2'
+        kotlinVersion = '1.9.10'
     }
 }
 
@@ -16,9 +16,9 @@ plugins {
     id 'org.jetbrains.kotlin.multiplatform' version "$kotlinVersion" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlinVersion" apply false
     id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlinVersion" apply false
-    id 'org.jetbrains.dokka' version "$kotlinVersion" apply true
-    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.11.0' apply false
-    id 'org.jetbrains.compose' version '1.2.0-alpha01-dev741' apply false
+    id 'org.jetbrains.dokka' version '1.9.0' apply true
+    id 'org.jetbrains.kotlinx.binary-compatibility-validator' version '0.13.2' apply false
+    id 'org.jetbrains.compose' version '1.5.2' apply false
 }
 
 dokkaHtmlMultiModule {

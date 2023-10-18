@@ -15,8 +15,4 @@ class RealDebugTools(
     override fun launch() {
         // do nothing
     }
-
-    override fun collectNetworkError(exception: Exception) {
-        // do nothing
-    }
 }

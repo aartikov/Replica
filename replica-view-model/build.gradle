@@ -29,6 +29,8 @@ android {
             withSourcesJar()
         }
     }
+
+    namespace = "me.aartikov.replica.view_model"
 }
 
 dependencies {

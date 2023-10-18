@@ -29,11 +29,13 @@ android {
             withSourcesJar()
         }
     }
+
+    namespace = "me.aartikov.replica.devtools"
 }
 
 afterEvaluate {
-    tasks.findByPath(':replica-devtools:preBuild')
-            .dependsOn(tasks.findByPath(':replica-devtools-client:jsBrowserProductionWebpack'))
+    tasks.findByPath(':replica-devtools:processReleaseJavaRes')
+            .dependsOn(tasks.findByPath(':replica-devtools-client:jsBrowserDistribution'))
 }
 
 dependencies {

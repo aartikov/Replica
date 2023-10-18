@@ -7,6 +7,4 @@ interface DebugTools {
     val interceptors: List<Interceptor>
 
     fun launch()
-
-    fun collectNetworkError(exception: Exception)
 }

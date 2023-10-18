@@ -44,9 +44,4 @@ class RealDebugTools(
     override fun launch() {
         replicaDebugTools.launch()
     }
-
-    @Suppress("DEPRECATION")
-    override fun collectNetworkError(exception: Exception) {
-        chuckerCollector.onError("DebugTools", exception)
-    }
 }
