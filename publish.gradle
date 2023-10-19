@@ -9,7 +9,7 @@ apply plugin: 'signing'
 
 ext {
     PUBLISH_GROUP_ID = 'com.github.aartikov'
-    PUBLISH_VERSION = '1.0.0-alpha15'
+    PUBLISH_VERSION = '1.1.0-alpha1'
     DESCRIPTION = 'Android libary for organizing of network communication in a declarative way'
 
     GITHUB_USER = 'aartikov'
@@ -130,4 +130,9 @@ publishing {
 
 signing {
     sign publishing.publications
+}
+
+// Workaround for https://github.com/gradle/gradle/issues/26091
+tasks.withType(AbstractPublishToMaven.class).configureEach {
+    mustRunAfter(tasks.withType(Sign.class))
 }
