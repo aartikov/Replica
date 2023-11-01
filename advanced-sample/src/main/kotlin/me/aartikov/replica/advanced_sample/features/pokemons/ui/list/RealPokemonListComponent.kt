@@ -1,16 +1,12 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui.list
 
 import android.os.Parcelable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
-import me.aartikov.replica.advanced_sample.core.utils.componentCoroutineScope
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.core.utils.persistent
-import me.aartikov.replica.advanced_sample.core.utils.snapshotStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.Pokemon
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
@@ -34,26 +30,24 @@ class RealPokemonListComponent(
         PokemonType.Poison
     )
 
-    override var selectedTypeId by mutableStateOf(types[0].id)
+    override var selectedTypeId = MutableStateFlow(types[0].id)
         private set
 
-    private val selectedTypeIdStateFlow =
-        snapshotStateFlow(componentCoroutineScope()) { selectedTypeId }
-
     private val pokemonsReplica = pokemonsByTypeReplica
-        .keepPreviousData().withKey(selectedTypeIdStateFlow)
+        .keepPreviousData()
+        .withKey(selectedTypeId)
 
-    override val pokemonsState by pokemonsReplica.observe(lifecycle, errorHandler)
+    override val pokemonsState = pokemonsReplica.observe(lifecycle, errorHandler)
 
     init {
         persistent(
-            save = { PersistentState(selectedTypeId) },
-            restore = { state -> selectedTypeId = state.selectedTypeId }
+            save = { PersistentState(selectedTypeId.value) },
+            restore = { state -> selectedTypeId.value = state.selectedTypeId }
         )
     }
 
     override fun onTypeClick(typeId: PokemonTypeId) {
-        selectedTypeId = typeId
+        selectedTypeId.value = typeId
     }
 
     override fun onPokemonClick(pokemonId: PokemonId) {

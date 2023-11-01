@@ -1,6 +1,7 @@
 package me.aartikov.replica.advanced_sample.features.root.ui
 
 import com.arkivanov.decompose.router.stack.ChildStack
+import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.advanced_sample.core.message.ui.MessageComponent
 import me.aartikov.replica.advanced_sample.features.dudes.ui.DudesComponent
 import me.aartikov.replica.advanced_sample.features.fruits.ui.FruitsComponent
@@ -10,7 +11,7 @@ import me.aartikov.replica.advanced_sample.features.project.ui.ProjectComponent
 
 interface RootComponent {
 
-    val childStack: ChildStack<*, Child>
+    val childStack: StateFlow<ChildStack<*, Child>>
 
     val messageComponent: MessageComponent
 

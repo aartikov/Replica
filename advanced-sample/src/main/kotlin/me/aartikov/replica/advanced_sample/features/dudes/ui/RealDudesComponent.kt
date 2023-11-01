@@ -1,6 +1,5 @@
 package me.aartikov.replica.advanced_sample.features.dudes.ui
 
-import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.utils.observe
@@ -13,7 +12,7 @@ class RealDudesComponent(
     errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, DudesComponent {
 
-    override val dudesState by dudesReplica.observe(lifecycle, errorHandler)
+    override val dudesState = dudesReplica.observe(lifecycle, errorHandler)
 
     override fun onRefresh() {
         dudesReplica.refresh()

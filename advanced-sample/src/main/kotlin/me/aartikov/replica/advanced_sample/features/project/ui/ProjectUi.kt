@@ -11,12 +11,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
@@ -28,12 +31,14 @@ fun ProjectUi(
     component: ProjectComponent,
     modifier: Modifier = Modifier
 ) {
+    val projectState by component.projectState.collectAsState()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         SwipeRefreshLceWidget(
-            state = component.projectState,
+            state = projectState,
             onRefresh = component::onRefresh,
             onRetryClick = component::onRetryClick
         ) { project, refreshing ->
@@ -112,14 +117,16 @@ fun ProjectUiPreview() {
 
 class FakeProjectComponent : ProjectComponent {
 
-    override val projectState = Loadable(
-        loading = true,
-        data = Project(
-            name = "Replica",
-            url = "https://github.com/aartikov/Replica",
-            starsCount = 605,
-            forksCount = 5,
-            subscribersCount = 15
+    override val projectState = MutableStateFlow(
+        Loadable(
+            loading = true,
+            data = Project(
+                name = "Replica",
+                url = "https://github.com/aartikov/Replica",
+                starsCount = 605,
+                forksCount = 5,
+                subscribersCount = 15
+            )
         )
     )
 

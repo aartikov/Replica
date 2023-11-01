@@ -9,6 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
@@ -34,12 +37,14 @@ fun PokemonDetailsUi(
     component: PokemonDetailsComponent,
     modifier: Modifier = Modifier
 ) {
+    val pokemonState by component.pokemonState.collectAsState()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
     ) {
         SwipeRefreshLceWidget(
-            state = component.pokemonState,
+            state = pokemonState,
             onRefresh = component::onRefresh,
             onRetryClick = component::onRetryClick
         ) { pokemon, refreshing ->
@@ -125,15 +130,17 @@ fun PokemonDetailsUiPreview() {
 
 class FakePokemonDetailsComponent : PokemonDetailsComponent {
 
-    override val pokemonState = Loadable(
-        loading = true,
-        data = DetailedPokemon(
-            id = PokemonId("1"),
-            name = "Bulbasaur",
-            imageUrl = "",
-            height = 0.7f,
-            weight = 6.9f,
-            types = listOf(PokemonType.Grass, PokemonType.Poison)
+    override val pokemonState = MutableStateFlow(
+        Loadable(
+            loading = true,
+            data = DetailedPokemon(
+                id = PokemonId("1"),
+                name = "Bulbasaur",
+                imageUrl = "",
+                height = 0.7f,
+                weight = 6.9f,
+                types = listOf(PokemonType.Grass, PokemonType.Poison)
+            )
         )
     )
 

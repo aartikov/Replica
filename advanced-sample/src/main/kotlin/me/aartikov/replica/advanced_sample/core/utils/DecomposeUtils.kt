@@ -1,9 +1,6 @@
 package me.aartikov.replica.advanced_sample.core.utils
 
 import android.os.Parcelable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -12,6 +9,8 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
 import com.arkivanov.essenty.statekeeper.consume
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.decompose.coroutineScope
 
 /**
@@ -24,11 +23,15 @@ fun <T : Any> createFakeChildStack(instance: T): ChildStack<*, T> {
     )
 }
 
+fun <T : Any> createFakeChildStackStateFlow(instance: T): StateFlow<ChildStack<*, T>> {
+    return MutableStateFlow(createFakeChildStack(instance))
+}
+
 /**
- * Converts [Value] from Decompose to [State] from Jetpack Compose.
+ * Converts [Value] from Decompose to [StateFlow] from Jetpack Compose.
  */
-fun <T : Any> Value<T>.toComposeState(lifecycle: Lifecycle): State<T> {
-    val state: MutableState<T> = mutableStateOf(this.value)
+fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
+    val state: MutableStateFlow<T> = MutableStateFlow(this.value)
 
     if (lifecycle.state != Lifecycle.State.DESTROYED) {
         val observer = { value: T -> state.value = value }

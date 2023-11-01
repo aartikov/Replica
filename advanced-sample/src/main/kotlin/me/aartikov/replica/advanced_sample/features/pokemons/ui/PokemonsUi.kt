@@ -1,11 +1,13 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
-import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStack
+import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStackStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.details.PokemonDetailsUi
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.FakePokemonListComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.PokemonListUi
@@ -15,7 +17,9 @@ fun PokemonsUi(
     component: PokemonsComponent,
     modifier: Modifier = Modifier
 ) {
-    Children(component.childStack, modifier) { child ->
+    val childStack by component.childStack.collectAsState()
+
+    Children(childStack, modifier) { child ->
         when (val instance = child.instance) {
             is PokemonsComponent.Child.List -> PokemonListUi(instance.component)
             is PokemonsComponent.Child.Details -> PokemonDetailsUi(instance.component)
@@ -31,10 +35,9 @@ fun PokemonsUiPreview() {
     }
 }
 
-
 class FakePokemonsComponent : PokemonsComponent {
 
-    override val childStack = createFakeChildStack(
+    override val childStack = createFakeChildStackStateFlow(
         PokemonsComponent.Child.List(FakePokemonListComponent())
     )
 }

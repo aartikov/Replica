@@ -1,6 +1,5 @@
 package me.aartikov.replica.advanced_sample.features.project.ui
 
-import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.error_handling.safeRun
@@ -16,7 +15,7 @@ class RealProjectComponent(
     private val errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, ProjectComponent {
 
-    override val projectState by projectReplica.observe(lifecycle, errorHandler)
+    override val projectState = projectReplica.observe(lifecycle, errorHandler)
 
     override fun onRefresh() {
         projectReplica.refresh()

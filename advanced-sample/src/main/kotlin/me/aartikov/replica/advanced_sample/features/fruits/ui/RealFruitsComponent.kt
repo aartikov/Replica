@@ -1,6 +1,5 @@
 package me.aartikov.replica.advanced_sample.features.fruits.ui
 
-import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -20,12 +19,12 @@ class RealFruitsComponent(
     private val errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, FruitsComponent {
 
-    override val fruitsState by fruitsReplica.observe(lifecycle, errorHandler)
+    override val fruitsState = fruitsReplica.observe(lifecycle, errorHandler)
 
     private val toggleLikeJobs = mutableMapOf<FruitId, Job>()
 
     override fun onFruitClick(fruitId: FruitId) {
-        val fruit = fruitsState.data?.find { it.id == fruitId } ?: return
+        val fruit = fruitsState.value.data?.find { it.id == fruitId } ?: return
         toggleLikeJobs[fruitId]?.cancel()
         toggleLikeJobs[fruitId] = applicationCoroutineScope.safeLaunch(errorHandler) {
             toggleFruitLikeInteractor.execute(fruit)
