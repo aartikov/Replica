@@ -8,6 +8,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
@@ -33,6 +36,8 @@ fun DudesUi(
     component: DudesComponent,
     modifier: Modifier = Modifier
 ) {
+    val dudesState by component.dudesState.collectAsState()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -51,7 +56,7 @@ fun DudesUi(
             }
 
             SwipeRefreshLceWidget(
-                state = component.dudesState,
+                state = dudesState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick
             ) { dudes, refreshing ->
@@ -148,23 +153,25 @@ fun DudesUiPreview() {
 }
 
 class FakeDudesComponent : DudesComponent {
-    override val dudesState: Loadable<List<Dude>> = Loadable(
-        loading = true,
-        data = listOf(
-            Dude(
-                id = DudeId("1"),
-                name = "Leanne Graham",
-                photoUrl = ""
-            ),
-            Dude(
-                id = DudeId("2"),
-                name = "Ervin Howell",
-                photoUrl = ""
-            ),
-            Dude(
-                id = DudeId("3"),
-                name = "Clementine Bauch",
-                photoUrl = ""
+    override val dudesState = MutableStateFlow(
+        Loadable(
+            loading = true,
+            data = listOf(
+                Dude(
+                    id = DudeId("1"),
+                    name = "Leanne Graham",
+                    photoUrl = ""
+                ),
+                Dude(
+                    id = DudeId("2"),
+                    name = "Ervin Howell",
+                    photoUrl = ""
+                ),
+                Dude(
+                    id = DudeId("3"),
+                    name = "Clementine Bauch",
+                    photoUrl = ""
+                )
             )
         )
     )

@@ -1,7 +1,7 @@
 package me.aartikov.replica.advanced_sample.core.utils
 
-import androidx.compose.runtime.State
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
@@ -18,7 +18,7 @@ import me.aartikov.replica.single.currentState
 fun <T : Any> Replica<T>.observe(
     lifecycle: Lifecycle,
     errorHandler: ErrorHandler
-): State<Loadable<T>> {
+): StateFlow<Loadable<T>> {
 
     val coroutineScope = lifecycle.coroutineScope()
     val observer = observe(lifecycle)
@@ -33,5 +33,5 @@ fun <T : Any> Replica<T>.observe(
         }
         .launchIn(coroutineScope)
 
-    return observer.stateFlow.toComposeState(coroutineScope)
+    return observer.stateFlow
 }

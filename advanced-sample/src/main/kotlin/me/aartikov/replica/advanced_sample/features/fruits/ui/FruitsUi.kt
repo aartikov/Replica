@@ -10,6 +10,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
@@ -34,6 +37,8 @@ fun FruitsUi(
     component: FruitsComponent,
     modifier: Modifier = Modifier
 ) {
+    val fruitsState by component.fruitsState.collectAsState()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -52,7 +57,7 @@ fun FruitsUi(
             }
 
             SwipeRefreshLceWidget(
-                state = component.fruitsState,
+                state = fruitsState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick
             ) { fruits, refreshing ->
@@ -153,26 +158,28 @@ fun FruitsUiPreview() {
 }
 
 class FakeFruitsComponent : FruitsComponent {
-    override val fruitsState: Loadable<List<Fruit>> = Loadable(
-        loading = true,
-        data = listOf(
-            Fruit(
-                id = FruitId("1"),
-                name = "Banana",
-                imageUrl = "",
-                liked = false
-            ),
-            Fruit(
-                id = FruitId("2"),
-                name = "Orange",
-                imageUrl = "",
-                liked = true
-            ),
-            Fruit(
-                id = FruitId("3"),
-                name = "Mango",
-                imageUrl = "",
-                liked = false
+    override val fruitsState = MutableStateFlow(
+        Loadable(
+            loading = true,
+            data = listOf(
+                Fruit(
+                    id = FruitId("1"),
+                    name = "Banana",
+                    imageUrl = "",
+                    liked = false
+                ),
+                Fruit(
+                    id = FruitId("2"),
+                    name = "Orange",
+                    imageUrl = "",
+                    liked = true
+                ),
+                Fruit(
+                    id = FruitId("3"),
+                    name = "Mango",
+                    imageUrl = "",
+                    liked = false
+                )
             )
         )
     )

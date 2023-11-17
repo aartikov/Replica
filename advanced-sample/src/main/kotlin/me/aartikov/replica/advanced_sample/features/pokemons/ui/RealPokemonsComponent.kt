@@ -1,15 +1,15 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui
 
 import android.os.Parcelable
-import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
-import me.aartikov.replica.advanced_sample.core.utils.toComposeState
+import me.aartikov.replica.advanced_sample.core.utils.toStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonDetailsComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonListComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
@@ -22,12 +22,12 @@ class RealPokemonsComponent(
 
     private val navigation = StackNavigation<ChildConfig>()
 
-    override val childStack: ChildStack<*, PokemonsComponent.Child> by childStack(
+    override val childStack: StateFlow<ChildStack<*, PokemonsComponent.Child>> = childStack(
         source = navigation,
         initialConfiguration = ChildConfig.List,
         handleBackButton = true,
         childFactory = ::createChild
-    ).toComposeState(lifecycle)
+    ).toStateFlow(lifecycle)
 
     private fun createChild(
         config: ChildConfig,

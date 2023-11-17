@@ -11,10 +11,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
@@ -31,6 +34,9 @@ fun PokemonListUi(
     component: PokemonListComponent,
     modifier: Modifier = Modifier
 ) {
+    val pokemonsState by component.pokemonsState.collectAsState()
+    val selectedTypeId by component.selectedTypeId.collectAsState()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -38,12 +44,12 @@ fun PokemonListUi(
         Column(modifier = Modifier.fillMaxSize()) {
             PokemonTypesRow(
                 types = component.types,
-                selectedTypeId = component.selectedTypeId,
+                selectedTypeId = selectedTypeId,
                 onTypeClick = component::onTypeClick
             )
 
             SwipeRefreshLceWidget(
-                state = component.pokemonsState,
+                state = pokemonsState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick
             ) { pokemons, refreshing ->
@@ -161,22 +167,24 @@ class FakePokemonListComponent : PokemonListComponent {
         PokemonType.Poison
     )
 
-    override val selectedTypeId = types[0].id
+    override val selectedTypeId = MutableStateFlow(types[0].id)
 
-    override val pokemonsState = Loadable(
-        loading = true,
-        data = listOf(
-            Pokemon(
-                id = PokemonId("1"),
-                name = "Bulbasaur"
-            ),
-            Pokemon(
-                id = PokemonId("5"),
-                name = "Charmeleon"
-            ),
-            Pokemon(
-                id = PokemonId("7"),
-                name = "Squirtle"
+    override val pokemonsState = MutableStateFlow(
+        Loadable(
+            loading = true,
+            data = listOf(
+                Pokemon(
+                    id = PokemonId("1"),
+                    name = "Bulbasaur"
+                ),
+                Pokemon(
+                    id = PokemonId("5"),
+                    name = "Charmeleon"
+                ),
+                Pokemon(
+                    id = PokemonId("7"),
+                    name = "Squirtle"
+                )
             )
         )
     )

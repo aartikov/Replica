@@ -1,17 +1,17 @@
 package me.aartikov.replica.advanced_sample.features.root.ui
 
 import android.os.Parcelable
-import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
 import me.aartikov.replica.advanced_sample.core.createMessageComponent
-import me.aartikov.replica.advanced_sample.core.utils.toComposeState
+import me.aartikov.replica.advanced_sample.core.utils.toStateFlow
 import me.aartikov.replica.advanced_sample.features.dudes.createDudesComponent
 import me.aartikov.replica.advanced_sample.features.fruits.createFruitsComponent
 import me.aartikov.replica.advanced_sample.features.menu.createMenuComponent
@@ -27,12 +27,12 @@ class RealRootComponent(
 
     private val navigation = StackNavigation<ChildConfig>()
 
-    override val childStack: ChildStack<*, RootComponent.Child> by childStack(
+    override val childStack: StateFlow<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
         initialConfiguration = ChildConfig.Menu,
         handleBackButton = true,
         childFactory = ::createChild
-    ).toComposeState(lifecycle)
+    ).toStateFlow(lifecycle)
 
     override val messageComponent = componentFactory.createMessageComponent(
         childContext(key = "message")

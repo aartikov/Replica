@@ -3,6 +3,8 @@ package me.aartikov.replica.advanced_sample.features.root.ui
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -11,7 +13,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import me.aartikov.replica.advanced_sample.core.message.ui.FakeMessageComponent
 import me.aartikov.replica.advanced_sample.core.message.ui.MessageUi
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
-import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStack
+import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStackStateFlow
 import me.aartikov.replica.advanced_sample.features.dudes.ui.DudesUi
 import me.aartikov.replica.advanced_sample.features.fruits.ui.FruitsUi
 import me.aartikov.replica.advanced_sample.features.menu.ui.FakeMenuComponent
@@ -24,10 +26,11 @@ fun RootUi(
     component: RootComponent,
     modifier: Modifier = Modifier
 ) {
-
     SystemBarColors()
 
-    Children(component.childStack, modifier) { child ->
+    val childStack by component.childStack.collectAsState()
+
+    Children(childStack, modifier) { child ->
         when (val instance = child.instance) {
             is RootComponent.Child.Menu -> MenuUi(instance.component)
             is RootComponent.Child.Project -> ProjectUi(instance.component)
@@ -69,7 +72,7 @@ fun RootUiPreview() {
 
 class FakeRootComponent : RootComponent {
 
-    override val childStack = createFakeChildStack(
+    override val childStack = createFakeChildStackStateFlow(
         RootComponent.Child.Menu(FakeMenuComponent())
     )
 
