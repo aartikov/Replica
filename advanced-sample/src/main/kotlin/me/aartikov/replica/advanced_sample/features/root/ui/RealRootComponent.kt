@@ -3,9 +3,11 @@ package me.aartikov.replica.advanced_sample.features.root.ui
 import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.parcelize.Parcelize
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
 import me.aartikov.replica.advanced_sample.core.createMessageComponent
@@ -25,7 +27,7 @@ class RealRootComponent(
 
     private val navigation = StackNavigation<ChildConfig>()
 
-    override val childStack =  childStack(
+    override val childStack: StateFlow<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
         initialConfiguration = ChildConfig.Menu,
         handleBackButton = true,
@@ -81,7 +83,7 @@ class RealRootComponent(
         }
     }
 
-    sealed interface ChildConfig : Parcelable {
+    private sealed interface ChildConfig : Parcelable {
 
         @Parcelize
         object Menu : ChildConfig
