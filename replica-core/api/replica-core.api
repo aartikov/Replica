@@ -1,10 +1,14 @@
 public final class me/aartikov/replica/client/BulkOperationsKt {
 	public static final fun cancelAll (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun cancelByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun cancelByTags (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun clearAll (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun clearByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun clearByTags (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun invalidateAll (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun invalidateAll$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun invalidateByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invalidateByTag$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun invalidateByTags (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun invalidateByTags$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
