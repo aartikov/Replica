@@ -26,7 +26,7 @@ internal class ChildRemovingController<K : Any, T : Any>(
         //      // do nothing that will change replica state
         //   }
         val additionalCheckJob = replica.coroutineScope.launch {
-            delay(AdditionalCheckDelay.inWholeMilliseconds)
+            delay(AdditionalCheckDelay)
             if (replica.currentState.canBeRemoved) {
                 removeReplica(key)
             }

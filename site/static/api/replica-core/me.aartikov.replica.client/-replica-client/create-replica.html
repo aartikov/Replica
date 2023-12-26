@@ -37,12 +37,177 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="replica-core::me.aartikov.replica.client/ReplicaClient/createReplica/#kotlin.String#me.aartikov.replica.single.ReplicaSettings#kotlin.collections.Set[me.aartikov.replica.common.ReplicaTag]#kotlin.collections.List[me.aartikov.replica.single.behaviour.ReplicaBehaviour[TypeParam(bounds=[kotlin.Any])]]#me.aartikov.replica.single.Storage[TypeParam(bounds=[kotlin.Any])]?#me.aartikov.replica.single.Fetcher[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration//173573876">
-  <div class="breadcrumbs"><a href="../../index.html">replica-core</a><span class="delimiter">/</span><a href="../index.html">me.aartikov.replica.client</a><span class="delimiter">/</span><a href="index.html">ReplicaClient</a><span class="delimiter">/</span><a href="create-replica.html">createReplica</a></div>
-  <div class="cover ">
-    <h1 class="cover"><span>create</span><wbr><span><span>Replica</span></span></h1>
-  </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":replica-core:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-replica.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="create-replica.html"><span class="token function">createReplica</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;settings<span class="token operator">: </span><a href="../../me.aartikov.replica.single/-replica-settings/index.html">ReplicaSettings</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;tags<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../me.aartikov.replica.common/-replica-tag/index.html">ReplicaTag</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptySet()<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;behaviours<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../me.aartikov.replica.single.behaviour/-replica-behaviour/index.html">ReplicaBehaviour</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-replica.html">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;storage<span class="token operator">: </span><a href="../../me.aartikov.replica.single/-storage/index.html">Storage</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-replica.html">T</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;fetcher<span class="token operator">: </span><a href="../../me.aartikov.replica.single/-fetcher/index.html">Fetcher</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-replica.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../me.aartikov.replica.single/-physical-replica/index.html">PhysicalReplica</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="create-replica.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Creates a <a href="../../me.aartikov.replica.single/-physical-replica/index.html">PhysicalReplica</a>. Note: once created a replica will exist as long as a client exists.</p><h2 class="">Parameters</h2><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>name</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">a human readable replica name. Can be used for debugging (for example it is used by Replica DevTools). Shouldn't be unique.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>settings</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">configures replica behaviour. See: <a href="../../me.aartikov.replica.single/-replica-settings/index.html">ReplicaSettings</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>tags</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">set of <a href="../../me.aartikov.replica.common/-replica-tag/index.html">ReplicaTag</a>s. Can be used to perform bulk operations on a subset of replicas. See: <a href="../cancel-by-tags.html">cancelByTags</a>, <a href="../clear-by-tags.html">clearByTags</a>, <a href="../invalidate-by-tags.html">invalidateByTags</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>behaviours</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">allow to add custom behaviours to a replica. See: <a href="../../me.aartikov.replica.single.behaviour/-replica-behaviour/index.html">ReplicaBehaviour</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>storage</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">makes replica data persistent. See: <a href="../../me.aartikov.replica.single/-storage/index.html">Storage</a>.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":replica-core:dokkaHtmlPartial/main" data-filterable-set=":replica-core:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>fetcher</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">configures how to load data from a network. See: <a href="../../me.aartikov.replica.single/-fetcher/index.html">Fetcher</a>.</p></div></div></div></div></div></div></div></div></div>
+<div class="main-content" id="content"
+     pageids="replica-core::me.aartikov.replica.client/ReplicaClient/createReplica/#kotlin.String#me.aartikov.replica.single.ReplicaSettings#kotlin.collections.Set[me.aartikov.replica.common.ReplicaTag]#kotlin.collections.List[me.aartikov.replica.paged.behaviour.ReplicaBehaviour[TypeParam(bounds=[kotlin.Any])]]#me.aartikov.replica.single.Storage[TypeParam(bounds=[kotlin.Any])]?#me.aartikov.replica.single.Fetcher[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration//173573876">
+    <div class="breadcrumbs"><a href="../../index.html">replica-core</a><span
+            class="delimiter">/</span><a href="../index.html">me.aartikov.replica.client</a><span
+            class="delimiter">/</span><a href="index.html">ReplicaClient</a><span class="delimiter">/</span><a
+            href="create-replica.html">createReplica</a></div>
+    <div class="cover ">
+        <h1 class="cover"><span>create</span>
+            <wbr>
+            <span><span>Replica</span></span></h1>
+    </div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted">
+        <div class="content sourceset-depenent-content" data-active=""
+             data-togglable=":replica-core:dokkaHtmlPartial/main">
+            <div class="symbol monospace"><span class="token keyword">abstract </span><span
+                    class="token keyword"></span><span class="token keyword">fun </span><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="create-replica.html">T</a><span class="token operator"> : </span><a
+                    href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span
+                    class="token operator">&gt; </span><a href="create-replica.html"><span
+                    class="token function">createReplica</span></a><span
+                    class="token punctuation">(</span><span class="parameters wrapped"><span
+                    class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;name<span
+                    class="token operator">: </span><a
+                    href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span
+                    class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;settings<span
+                    class="token operator">: </span><a
+                    href="../../me.aartikov.replica.single/-replica-settings/index.html">ReplicaSettings</a><span
+                    class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;tags<span
+                    class="token operator">: </span><a
+                    href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="../../me.aartikov.replica.common/-replica-tag/index.html">ReplicaTag</a><span
+                    class="token operator">&gt;</span><span class="token operator"> = </span>emptySet()<span
+                    class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;behaviours<span
+                    class="token operator">: </span><a
+                    href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="../../me.aartikov.replica.single.behaviour/-replica-behaviour/index.html">ReplicaBehaviour</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="create-replica.html">T</a><span class="token operator">&gt;</span><span
+                    class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()<span
+                    class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;storage<span
+                    class="token operator">: </span><a
+                    href="../../me.aartikov.replica.single/-storage/index.html">Storage</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="create-replica.html">T</a><span class="token operator">&gt;</span><span
+                    class="token operator">?</span><span class="token operator"> = </span>null<span
+                    class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;fetcher<span
+                    class="token operator">: </span><a
+                    href="../../me.aartikov.replica.single/-fetcher/index.html">Fetcher</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="create-replica.html">T</a><span class="token operator">&gt;</span></span></span><span
+                    class="token punctuation">)</span><span class="token operator">: </span><a
+                    href="../../me.aartikov.replica.single/-physical-replica/index.html">PhysicalReplica</a><span
+                    class="token operator">&lt;</span><span class="token keyword"></span><a
+                    href="create-replica.html">T</a><span class="token operator">&gt;</span><span
+                    class="top-right-position"><span class="copy-icon"></span><div
+                    class="copy-popup-wrapper popup-to-left"><span
+                    class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span>
+            </div>
+            <p class="paragraph">Creates a <a
+                    href="../../me.aartikov.replica.single/-physical-replica/index.html">PhysicalReplica</a>.
+                Note: once created a replica will exist as long as a client exists.</p>
+            <h2 class="">Parameters</h2>
+            <div data-togglable="Parameters">
+                <div class="table" data-togglable="Parameters">
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>name</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">a human
+                                        readable replica name. Can be used for debugging (for
+                                        example it is used by Replica DevTools). Shouldn't be
+                                        unique.</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>settings</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">configures
+                                        replica behaviour. See: <a
+                                                href="../../me.aartikov.replica.single/-replica-settings/index.html">ReplicaSettings</a>.
+                                    </p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>tags</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">set of <a
+                                            href="../../me.aartikov.replica.common/-replica-tag/index.html">ReplicaTag</a>s.
+                                        Can be used to perform bulk operations on a subset of
+                                        replicas. See: <a
+                                                href="../cancel-by-tags.html">cancelByTags</a>, <a
+                                                href="../clear-by-tags.html">clearByTags</a>, <a
+                                                href="../invalidate-by-tags.html">invalidateByTags</a>.
+                                    </p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>behaviours</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">allow to
+                                        add custom behaviours to a replica. See: <a
+                                                href="../../me.aartikov.replica.single.behaviour/-replica-behaviour/index.html">ReplicaBehaviour</a>.
+                                    </p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>storage</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">makes
+                                        replica data persistent. See: <a
+                                                href="../../me.aartikov.replica.single/-storage/index.html">Storage</a>.
+                                    </p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-row"
+                         data-filterable-current=":replica-core:dokkaHtmlPartial/main"
+                         data-filterable-set=":replica-core:dokkaHtmlPartial/main">
+                        <div class="main-subrow keyValue WithExtraAttributes">
+                            <div class=""><span class="inline-flex"><div><span><span>fetcher</span></span></div></span>
+                            </div>
+                            <div>
+                                <div class="title">
+                                    <div data-togglable="Parameters"><p class="paragraph">configures
+                                        how to load data from a network. See: <a
+                                                href="../../me.aartikov.replica.single/-fetcher/index.html">Fetcher</a>.
+                                    </p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
