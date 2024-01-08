@@ -2,10 +2,18 @@ package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
@@ -64,7 +72,7 @@ private class MappedReplica<T : Any, R : Any>(
 private class MappingResult<T : Any, R : Any>(
     val originalData: T?,
     val data: R?,
-    val error: Exception?
+    val exception: Exception?
 )
 
 private class MappedReplicaObserver<T : Any, R : Any>(
@@ -99,15 +107,15 @@ private class MappedReplicaObserver<T : Any, R : Any>(
                 _stateFlow.value = Loadable(
                     loading = state.loading,
                     data = mappingResult.data,
-                    error = if (mappingResult.error != null) {
-                        CombinedLoadingError(mappingResult.error)
+                    error = if (mappingResult.exception != null) {
+                        CombinedLoadingError(LoadingReason.Normal, mappingResult.exception)
                     } else {
                         state.error
                     }
                 )
 
-                if (mappingResult.error != null && !state.loading) {
-                    _loadingErrorFlow.emit(LoadingError(mappingResult.error))
+                if (mappingResult.exception != null && !state.loading) {
+                    _loadingErrorFlow.emit(LoadingError(LoadingReason.Normal, mappingResult.exception))
                 }
             }
             .launchIn(coroutineScope)

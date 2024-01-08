@@ -1,9 +1,17 @@
 package me.aartikov.replica.single.internal
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.internal.Lock
 import me.aartikov.replica.common.internal.withLock
 import me.aartikov.replica.single.Fetcher
@@ -33,7 +41,7 @@ internal class DataLoader<T : Any>(
     private val _outputFlow = MutableSharedFlow<Output<T>>(extraBufferCapacity = 1000)
     val outputFlow: Flow<Output<T>> = _outputFlow.asSharedFlow()
 
-    val lock = Lock()
+    private val lock = Lock()
     private var loadingJob: Job? = null
 
     fun load(loadingFromStorageRequired: Boolean) = lock.withLock {

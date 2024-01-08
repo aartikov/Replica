@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
@@ -53,7 +54,7 @@ class LoadingErrorObservingTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  LoadingFailedException()
+                throw LoadingFailedException()
             }
         )
 
@@ -88,7 +89,7 @@ class LoadingErrorObservingTest {
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  LoadingFailedException()
+                throw LoadingFailedException()
             }
         )
 
@@ -123,11 +124,11 @@ class LoadingErrorObservingTest {
 
     @Test
     fun `active observer observes error event`() = runTest {
-        val error = LoadingFailedException()
+        val exception = LoadingFailedException()
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  error
+                throw exception
             }
         )
 
@@ -138,18 +139,18 @@ class LoadingErrorObservingTest {
         delay(DEFAULT_DELAY * 2) // wait until loading has finished
         val state = observer.currentState
         assertEquals(
-            Loadable<String>(error = CombinedLoadingError(listOf(error))),
+            Loadable<String>(error = CombinedLoadingError(LoadingReason.Normal, exception)),
             state
         )
-        assertEquals(LoadingError(error), errorEvent)
+        assertEquals(LoadingError(LoadingReason.Normal, exception), errorEvent)
     }
 
     @Test
     fun `inactive observer doesn't observe error event`() = runTest {
-        val error = LoadingFailedException()
+        val exception = LoadingFailedException()
         val replica = replicaProvider.replica(
             fetcher = {
-                throw  error
+                throw exception
             }
         )
 
@@ -163,12 +164,12 @@ class LoadingErrorObservingTest {
 
     @Test
     fun `active observer observes multiple error events`() = runTest {
-        val error = LoadingFailedException()
+        val exception = LoadingFailedException()
         val errorsCount = 10
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  error
+                throw exception
             }
         )
 
@@ -183,21 +184,21 @@ class LoadingErrorObservingTest {
         val errorEvents = observer.loadingErrorFlow.take(errorsCount).toList()
         val state = observer.currentState
         assertEquals(
-            List(errorsCount) { LoadingError(error) },
+            List(errorsCount) { LoadingError(LoadingReason.Normal, exception) },
             errorEvents
         )
-        assertEquals(Loadable<String>(error = CombinedLoadingError(error)), state)
+        assertEquals(Loadable<String>(error = CombinedLoadingError(LoadingReason.Normal, exception)), state)
     }
 
     @Test
     fun `observer observes error events only when active`() = runTest {
         var counter = 0
-        val error = { num: Int -> LoadingFailedException(num.toString()) }
+        val exception = { num: Int -> LoadingFailedException(num.toString()) }
         val errorsCount = 30
         val replica = replicaProvider.replica(
             fetcher = {
                 delay(DEFAULT_DELAY)
-                throw  error(counter)
+                throw exception(counter)
             }
         )
 
@@ -217,10 +218,12 @@ class LoadingErrorObservingTest {
         val errorEvents = observer.loadingErrorFlow.take(errorsCount / 2).toList()
         val state = observer.currentState
         val expectedErrorsEvents = ((errorsCount / 2 + 1)..errorsCount).map {
-            LoadingError(LoadingFailedException(it.toString()))
+            LoadingError(LoadingReason.Normal, LoadingFailedException(it.toString()))
         }
         val expectedState = Loadable<String>(
-            error = CombinedLoadingError(LoadingFailedException(errorsCount.toString()))
+            error = CombinedLoadingError(
+                LoadingReason.Normal, LoadingFailedException(errorsCount.toString())
+            )
         )
         assertEquals(expectedErrorsEvents, errorEvents)
         assertEquals(expectedState, state)

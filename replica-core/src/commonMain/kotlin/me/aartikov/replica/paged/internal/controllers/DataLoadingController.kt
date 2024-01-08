@@ -10,13 +10,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedLoadingStatus
+import me.aartikov.replica.paged.PagedReplicaData
 import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaState
-import me.aartikov.replica.single.ReplicaData
-import me.aartikov.replica.single.internal.DataLoader
+import me.aartikov.replica.paged.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<T : Any, P : Page<T>>(
@@ -34,9 +36,12 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
             .launchIn(coroutineScope)
     }
 
-
     fun refresh() {
-        dataLoader.load()
+        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
+            withContext(dispatcher) {
+                refreshImpl()
+            }
+        }
     }
 
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
@@ -62,7 +67,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
         coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
             withContext(dispatcher) {
                 if (!replicaStateFlow.value.hasFreshData) {
-                    dataLoader.load()
+                    refreshImpl()
                 }
             }
         }
@@ -72,61 +77,79 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
         dataLoader.cancel()
     }
 
-    private suspend fun onDataLoaderOutput(output: DataLoader.Output<T>) {
+    private fun refreshImpl() {
+        val currentLoadingStatus = replicaStateFlow.value.loading
+        val cancel = currentLoadingStatus != PagedLoadingStatus.LoadingFirstPage
+        dataLoader.loadFirstPage(cancel)
+    }
+
+    private suspend fun onDataLoaderOutput(output: DataLoader.Output<T, P>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             when (output) {
                 is DataLoader.Output.LoadingStarted -> {
                     replicaStateFlow.value = state.copy(
-                        loading = true,
+                        loading = output.reason.toLoadingStatus(),
                         preloading = state.observingState.status == ObservingStatus.None
                     )
-                    replicaEventFlow.emit(PagedReplicaEvent.LoadingEvent.LoadingStarted)
+                    replicaEventFlow.emit(
+                        PagedReplicaEvent.LoadingEvent.LoadingStarted(output.reason)
+                    )
                 }
 
                 is DataLoader.Output.LoadingFinished.Success -> {
+                    val newData = if (state.data != null) {
+                        PagedData(listOf(output.page)) // to do merge pages
+                    } else {
+                        PagedData(listOf(output.page))
+                    }
+
                     replicaStateFlow.value = state.copy(
                         data = if (state.data != null) {
                             state.data.copy(
-                                value = output.data,
+                                value = newData,
                                 fresh = true,
                                 changingTime = timeProvider.currentTime
                             )
                         } else {
-                            ReplicaData(
-                                value = output.data,
+                            PagedReplicaData(
+                                value = newData,
                                 fresh = true,
                                 changingTime = timeProvider.currentTime
                             )
                         },
                         error = null,
-                        loading = false,
+                        loading = PagedLoadingStatus.None,
                         preloading = false
                     )
                     replicaEventFlow.emit(
                         PagedReplicaEvent.LoadingEvent.LoadingFinished.Success(
-                            output.data
+                            output.reason,
+                            output.page
                         )
                     )
                     replicaEventFlow.emit(PagedReplicaEvent.FreshnessEvent.Freshened)
                 }
 
-                DataLoader.Output.LoadingFinished.Canceled -> {
+                is DataLoader.Output.LoadingFinished.Canceled -> {
                     replicaStateFlow.value = state.copy(
                         loading = PagedLoadingStatus.None,
                         preloading = false
                     )
-                    replicaEventFlow.emit(PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled)
+                    replicaEventFlow.emit(
+                        PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled(output.reason)
+                    )
                 }
 
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
-                        error = LoadingError(output.exception),
+                        error = LoadingError(output.reason, output.exception),
                         loading = PagedLoadingStatus.None,
                         preloading = false
                     )
                     replicaEventFlow.emit(
                         PagedReplicaEvent.LoadingEvent.LoadingFinished.Error(
+                            output.reason,
                             output.exception
                         )
                     )
@@ -134,4 +157,10 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
             }
         }
     }
+}
+
+private fun LoadingReason.toLoadingStatus(): PagedLoadingStatus = when (this) {
+    LoadingReason.Normal -> PagedLoadingStatus.LoadingFirstPage
+    LoadingReason.NextPage -> PagedLoadingStatus.LoadingNextPage
+    LoadingReason.PreviousPage -> PagedLoadingStatus.LoadingPreviousPage
 }

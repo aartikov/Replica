@@ -5,16 +5,22 @@ package me.aartikov.replica.common
  *
  * Multiple errors can occur in a combined replica. See replica-algebra module for more details.
  */
-data class CombinedLoadingError(val exceptions: List<Exception>) {
+data class CombinedLoadingError(val errors: List<LoadingError>) {
 
-    constructor(exception: Exception) : this(listOf(exception))
+    constructor(reason: LoadingReason, exception: Exception) : this(listOf(LoadingError(reason, exception)))
 
     init {
-        check(exceptions.isNotEmpty()) { "Attempt to create empty CombinedLoadingError" }
+        check(errors.isNotEmpty()) { "Attempt to create empty CombinedLoadingError" }
     }
 
     /**
-     * Returns some of the errors. Can be used when UI is not suitable to display multiple errors at the same time.
+     * Returns first exception. Can be used when UI is not suitable to display multiple errors at
+     * the same time.
      */
-    val exception get() = exceptions[0]
+    val exception get(): Exception = errors[0].exception
+
+    /**
+     * Returns first [LoadingReason]
+     */
+    val reason get(): LoadingReason = errors[0].reason
 }

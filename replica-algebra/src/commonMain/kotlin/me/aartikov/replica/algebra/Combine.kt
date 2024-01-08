@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
@@ -287,7 +288,7 @@ private class CombinedReplica<R : Any>(
 private class CombiningResult<R : Any>(
     val originalData: List<Any?>,
     val data: R?,
-    val error: Exception?
+    val exception: Exception?
 )
 
 private class CombinedReplicaObserver<R : Any>(
@@ -329,12 +330,12 @@ private class CombinedReplicaObserver<R : Any>(
                 _stateFlow.value = Loadable(
                     loading = combinedLoading,
                     data = combiningResult.data,
-                    error = if (combiningResult.error != null) {
-                        CombinedLoadingError(combiningResult.error)
+                    error = if (combiningResult.exception != null) {
+                        CombinedLoadingError(LoadingReason.Normal, combiningResult.exception)
                     } else {
-                        val exceptions = states.mapNotNull { it.error }.flatMap { it.exceptions }
-                        if (exceptions.isNotEmpty()) {
-                            CombinedLoadingError(exceptions)
+                        val errors = states.mapNotNull { it.error }.flatMap { it.errors }
+                        if (errors.isNotEmpty()) {
+                            CombinedLoadingError(errors)
                         } else {
                             null
                         }
@@ -347,8 +348,8 @@ private class CombinedReplicaObserver<R : Any>(
                     }
                     delayedLoadingErrors.clear()
 
-                    combiningResult.error?.let {
-                        _loadingErrorFlow.emit(LoadingError(it))
+                    combiningResult.exception?.let {
+                        _loadingErrorFlow.emit(LoadingError(LoadingReason.Normal, it))
                     }
                 }
             }
