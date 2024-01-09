@@ -1,12 +1,30 @@
 package me.aartikov.replica.single.internal
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.common.internal.AtomicLong
 import me.aartikov.replica.common.internal.toActivableFlow
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.single.ReplicaEvent
+import me.aartikov.replica.single.ReplicaObserver
+import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.internal.controllers.ObserversController
+import me.aartikov.replica.single.toLoadable
 
 internal class ReplicaObserverImpl<T : Any>(
     private val coroutineScope: CoroutineScope,
@@ -84,7 +102,7 @@ internal class ReplicaObserverImpl<T : Any>(
             .toActivableFlow(coroutineScope, activeFlow)
             .filterIsInstance<ReplicaEvent.LoadingEvent.LoadingFinished.Error>()
             .onEach { errorEvent ->
-                _loadingErrorFlow.emit(LoadingError(errorEvent.exception))
+                _loadingErrorFlow.emit(LoadingError(LoadingReason.Normal, errorEvent.exception))
             }
             .launchIn(coroutineScope)
     }

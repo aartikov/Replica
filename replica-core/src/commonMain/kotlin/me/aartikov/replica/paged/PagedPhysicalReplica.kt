@@ -8,7 +8,7 @@ import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
 
-interface PhysicalPagedReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
+interface PagedPhysicalReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
 
     /**
      * Unique identifier
@@ -109,4 +109,4 @@ interface PhysicalPagedReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
 /**
  * Returns current [PagedReplicaState].
  */
-val <T : Any, P : Page<T>> PhysicalPagedReplica<T, P>.currentState get() = stateFlow.value
+val <T : Any, P : Page<T>> PagedPhysicalReplica<T, P>.currentState get() = stateFlow.value

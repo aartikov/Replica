@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaState
-import me.aartikov.replica.paged.PhysicalPagedReplica
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import kotlin.time.Duration
 
@@ -25,12 +25,12 @@ class DoOnStateCondition<T : Any, P : Page<T>>(
     private val condition: (PagedReplicaState<T, P>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,
     private val repeatInterval: Duration? = null,
-    private val action: suspend PhysicalPagedReplica<T, P>.() -> Unit
+    private val action: suspend PagedPhysicalReplica<T, P>.() -> Unit
 ) : PagedReplicaBehaviour<T, P> {
 
     private var job: Job? = null
 
-    override fun setup(replica: PhysicalPagedReplica<T, P>) {
+    override fun setup(replica: PagedPhysicalReplica<T, P>) {
         replica.stateFlow
             .map { condition(it) }
             .distinctUntilChanged()
@@ -44,7 +44,7 @@ class DoOnStateCondition<T : Any, P : Page<T>>(
             .launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.launchJob(replica: PhysicalPagedReplica<T, P>) {
+    private fun CoroutineScope.launchJob(replica: PagedPhysicalReplica<T, P>) {
         if (job?.isActive == true) return
 
         job = launch {

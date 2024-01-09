@@ -1,9 +1,20 @@
 package me.aartikov.replica.single.internal.controllers
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.common.applyAll
 import me.aartikov.replica.single.ReplicaData
@@ -86,6 +97,7 @@ internal class DataLoadingController<T : Any>(
                     val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates
                     optimisticUpdates?.applyAll(output.data) ?: output.data
                 }
+
                 is DataLoader.Output.LoadingFinished.Canceled -> throw CancellationException("Data loading is canceled")
                 is DataLoader.Output.LoadingFinished.Error -> throw output.exception
             }
@@ -161,7 +173,7 @@ internal class DataLoadingController<T : Any>(
 
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
-                        error = LoadingError(output.exception),
+                        error = LoadingError(LoadingReason.Normal, output.exception),
                         loading = false,
                         preloading = false,
                         dataRequested = false

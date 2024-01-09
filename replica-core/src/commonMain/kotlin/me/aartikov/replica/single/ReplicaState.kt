@@ -35,5 +35,5 @@ data class ReplicaState<T : Any>(
 internal fun <T : Any> ReplicaState<T>.toLoadable() = Loadable(
     loading = loading,
     data = data?.valueWithOptimisticUpdates,
-    error = error?.let { CombinedLoadingError(it) }
+    error = error?.let { CombinedLoadingError(listOf(it)) }
 )

@@ -14,4 +14,8 @@ interface PagedReplica<out T : Any, out P : Page<T>> {
 
     fun revalidate()
 
+    fun loadNext()
+
+    fun loadPrevious()
+
 }

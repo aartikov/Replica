@@ -13,6 +13,11 @@ import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import me.aartikov.replica.network.NetworkConnectivityProvider
+import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedFetcher
+import me.aartikov.replica.paged.PagedPhysicalReplica
+import me.aartikov.replica.paged.PagedReplicaSettings
+import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
@@ -92,6 +97,24 @@ interface ReplicaClient {
         storage: KeyedStorage<K, T>? = null,
         fetcher: KeyedFetcher<K, T>
     ): KeyedPhysicalReplica<K, T>
+
+    /**
+     * Creates a [PagedPhysicalReplica].
+     * Note: once created a replica will exist as long as a client exists.
+     *
+     * @param name a human readable replica name. Can be used for debugging (for example it is used by Replica DevTools). Shouldn't be unique.
+     * @param settings configures replica behaviour. See: [PagedReplicaSettings].
+     * @param tags set of [ReplicaTag]s. Can be used to perform bulk operations on a subset of replicas. See: [cancelByTags], [clearByTags], [invalidateByTags].
+     * @param behaviours allow to add custom behaviours to a replica. See: [PagedReplicaBehaviour].
+     * @param fetcher configures how to load data from a network. See: [PagedFetcher].
+     */
+    fun <T : Any, P : Page<T>> createPagedReplica(
+        name: String,
+        settings: PagedReplicaSettings,
+        tags: Set<ReplicaTag> = emptySet(),
+        behaviours: List<PagedReplicaBehaviour<T, P>> = emptyList(),
+        fetcher: PagedFetcher<T, P>
+    ): PagedPhysicalReplica<T, P>
 
     /**
      * Executes an [action] on each [PhysicalReplica].

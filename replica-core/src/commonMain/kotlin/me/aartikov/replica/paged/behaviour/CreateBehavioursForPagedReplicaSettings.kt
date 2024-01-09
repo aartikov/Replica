@@ -4,9 +4,9 @@ import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedLoadingStatus
+import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaSettings
-import me.aartikov.replica.paged.PhysicalPagedReplica
 import me.aartikov.replica.paged.behaviour.standard.DoOnEvent
 import me.aartikov.replica.paged.behaviour.standard.DoOnNetworkConnectivityChanged
 import me.aartikov.replica.paged.behaviour.standard.DoOnStateCondition
@@ -51,7 +51,7 @@ private fun <T : Any, P : Page<T>> createClearingBehaviour(clearTime: Duration):
                     && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearTime,
-        action = PhysicalPagedReplica<T, P>::clear
+        action = PagedPhysicalReplica<T, P>::clear
     )
 }
 
@@ -61,7 +61,7 @@ private fun <T : Any, P : Page<T>> createErrorClearingBehaviour(clearErrorTime: 
             it.error != null && it.loading == PagedLoadingStatus.None && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearErrorTime,
-        action = PhysicalPagedReplica<T, P>::clearError
+        action = PagedPhysicalReplica<T, P>::clearError
     )
 }
 
@@ -72,7 +72,7 @@ private fun <T : Any, P : Page<T>> createCancellationBehaviour(cancelTime: Durat
                     && it.observingState.status == ObservingStatus.None
         },
         startDelay = cancelTime,
-        action = PhysicalPagedReplica<T, P>::cancel
+        action = PagedPhysicalReplica<T, P>::cancel
     )
 }
 

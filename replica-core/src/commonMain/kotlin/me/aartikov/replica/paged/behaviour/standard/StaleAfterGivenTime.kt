@@ -10,8 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaEvent
-import me.aartikov.replica.paged.PhysicalPagedReplica
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import kotlin.time.Duration
 
@@ -21,7 +21,7 @@ internal class StaleAfterGivenTime<T : Any, P : Page<T>>(
 
     private var staleJob: Job? = null
 
-    override fun setup(replica: PhysicalPagedReplica<T, P>) {
+    override fun setup(replica: PagedPhysicalReplica<T, P>) {
         replica.eventFlow
             .onEach { event ->
                 when (event) {
@@ -38,7 +38,7 @@ internal class StaleAfterGivenTime<T : Any, P : Page<T>>(
             }.launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.relaunchStaleJob(replica: PhysicalPagedReplica<T, P>) {
+    private fun CoroutineScope.relaunchStaleJob(replica: PagedPhysicalReplica<T, P>) {
         staleJob?.cancel()
         staleJob = launch {
             delay(staleTime)

@@ -28,5 +28,5 @@ data class PagedReplicaState<T : Any, P : Page<T>>(
 internal fun <T : Any, P : Page<T>> PagedReplicaState<T, P>.toPaged() = Paged(
     loading = loading,
     data = data?.valueWithOptimisticUpdates,
-    error = error?.let { CombinedLoadingError(it) }
+    error = error?.let { CombinedLoadingError(listOf(it)) }
 )

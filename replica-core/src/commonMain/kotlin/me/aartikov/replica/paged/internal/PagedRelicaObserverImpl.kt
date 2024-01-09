@@ -25,7 +25,6 @@ import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.internal.controllers.ObserversController
 import me.aartikov.replica.paged.toPaged
-import me.aartikov.replica.single.ReplicaEvent
 
 internal class PagedReplicaObserverImpl<T : Any, P : Page<T>>(
     private val coroutineScope: CoroutineScope,
@@ -101,9 +100,9 @@ internal class PagedReplicaObserverImpl<T : Any, P : Page<T>>(
     private fun launchLoadingErrorsObserving() {
         errorsObservingJob = replicaEventFlow
             .toActivableFlow(coroutineScope, activeFlow)
-            .filterIsInstance<ReplicaEvent.LoadingEvent.LoadingFinished.Error>()
+            .filterIsInstance<PagedReplicaEvent.LoadingEvent.LoadingFinished.Error>()
             .onEach { errorEvent ->
-                _loadingErrorFlow.emit(LoadingError(errorEvent.exception))
+                _loadingErrorFlow.emit(LoadingError(errorEvent.reason, errorEvent.exception))
             }
             .launchIn(coroutineScope)
     }

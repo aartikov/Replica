@@ -73,6 +73,22 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
         }
     }
 
+    fun loadNext() {
+        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
+            withContext(dispatcher) {
+                loadNextImpl()
+            }
+        }
+    }
+
+    fun loadPrevious() {
+        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
+            withContext(dispatcher) {
+                loadPreviousImpl()
+            }
+        }
+    }
+
     fun cancel() {
         dataLoader.cancel()
     }
@@ -81,6 +97,20 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
         val currentLoadingStatus = replicaStateFlow.value.loading
         val cancel = currentLoadingStatus != PagedLoadingStatus.LoadingFirstPage
         dataLoader.loadFirstPage(cancel)
+    }
+
+    private fun loadNextImpl() {
+        val currentData = replicaStateFlow.value.data ?: return
+        val currentLoadingStatus = replicaStateFlow.value.loading
+        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingPreviousPage
+        dataLoader.loadNextPage(cancel, currentData.valueWithOptimisticUpdates)
+    }
+
+    private fun loadPreviousImpl() {
+        val currentData = replicaStateFlow.value.data ?: return
+        val currentLoadingStatus = replicaStateFlow.value.loading
+        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
+        dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<T, P>) {

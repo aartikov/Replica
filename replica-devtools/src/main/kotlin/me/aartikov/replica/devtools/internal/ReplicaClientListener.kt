@@ -27,9 +27,14 @@ internal class ReplicaClientListener(
                 store.addReplica(event.replica.toDto())
                 launchReplicaProcessing(event.replica)
             }
+
             is ReplicaClientEvent.KeyedReplicaCreated -> {
                 store.addKeyedReplica(event.keyedReplica.toDto())
                 launchKeyedReplicaProcessing(event.keyedReplica)
+            }
+
+            is ReplicaClientEvent.PagedReplicaCreated -> {
+                // TODO: add paged replicas support in ReplicaDevTools
             }
         }
     }

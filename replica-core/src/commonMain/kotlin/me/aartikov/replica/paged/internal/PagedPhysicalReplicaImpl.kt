@@ -14,11 +14,11 @@ import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedFetcher
+import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.paged.PagedReplicaSettings
 import me.aartikov.replica.paged.PagedReplicaState
-import me.aartikov.replica.paged.PhysicalPagedReplica
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import me.aartikov.replica.paged.internal.controllers.ClearingController
 import me.aartikov.replica.paged.internal.controllers.DataChangingController
@@ -29,7 +29,7 @@ import me.aartikov.replica.paged.internal.controllers.OptimisticUpdatesControlle
 import me.aartikov.replica.time.TimeProvider
 
 
-internal class PhysicalPagedReplicaImpl<T : Any, P : Page<T>>(
+internal class PagedPhysicalReplicaImpl<T : Any, P : Page<T>>(
     timeProvider: TimeProvider,
     dispatcher: CoroutineDispatcher,
     override val coroutineScope: CoroutineScope,
@@ -38,7 +38,7 @@ internal class PhysicalPagedReplicaImpl<T : Any, P : Page<T>>(
     override val tags: Set<ReplicaTag>,
     behaviours: List<PagedReplicaBehaviour<T, P>>,
     fetcher: PagedFetcher<T, P>
-) : PhysicalPagedReplica<T, P> {
+) : PagedPhysicalReplica<T, P> {
 
     override val id: ReplicaId = ReplicaId.random()
 
@@ -91,6 +91,14 @@ internal class PhysicalPagedReplicaImpl<T : Any, P : Page<T>>(
 
     override fun revalidate() {
         dataLoadingController.revalidate()
+    }
+
+    override fun loadNext() {
+        dataLoadingController.loadNext()
+    }
+
+    override fun loadPrevious() {
+        dataLoadingController.loadPrevious()
     }
 
     override suspend fun setData(data: List<P>) {
