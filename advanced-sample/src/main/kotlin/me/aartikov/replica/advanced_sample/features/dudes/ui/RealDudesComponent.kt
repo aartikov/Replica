@@ -4,11 +4,12 @@ import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
-import me.aartikov.replica.single.Replica
+import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedReplica
 
 class RealDudesComponent(
     componentContext: ComponentContext,
-    private val dudesReplica: Replica<List<Dude>>,
+    private val dudesReplica: PagedReplica<Dude, Page<Dude>>,
     errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, DudesComponent {
 
@@ -20,5 +21,9 @@ class RealDudesComponent(
 
     override fun onRetryClick() {
         dudesReplica.refresh()
+    }
+
+    override fun onLoadNext() {
+        dudesReplica.loadNext()
     }
 }

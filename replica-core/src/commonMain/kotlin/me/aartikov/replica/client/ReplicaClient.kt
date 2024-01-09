@@ -112,6 +112,7 @@ interface ReplicaClient {
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag> = emptySet(),
+        idExtractor: ((T) -> Any)?,
         behaviours: List<PagedReplicaBehaviour<T, P>> = emptyList(),
         fetcher: PagedFetcher<T, P>
     ): PagedPhysicalReplica<T, P>

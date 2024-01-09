@@ -12,6 +12,7 @@ import me.aartikov.replica.time.TimeProvider
 internal class DataChangingController<T : Any, P : Page<T>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
+    private val idExtractor: ((T) -> Any)?,
     private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
 ) {
 
@@ -21,14 +22,15 @@ internal class DataChangingController<T : Any, P : Page<T>>(
             replicaStateFlow.value = state.copy(
                 data = if (state.data != null) {
                     state.data.copy(
-                        value = PagedData(data),
+                        value = PagedData(data, idExtractor),
                         changingTime = timeProvider.currentTime
                     )
                 } else {
                     PagedReplicaData(
-                        value = PagedData(data),
+                        value = PagedData(data, idExtractor),
                         fresh = false,
-                        changingTime = timeProvider.currentTime
+                        changingTime = timeProvider.currentTime,
+                        idExtractor = idExtractor
                     )
                 }
             )
@@ -42,7 +44,7 @@ internal class DataChangingController<T : Any, P : Page<T>>(
                 val newData = transform(state.data.value.pages)
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
-                        value = PagedData(newData),
+                        value = PagedData(newData, idExtractor),
                         changingTime = timeProvider.currentTime
                     )
                 )

@@ -27,7 +27,7 @@ import org.koin.dsl.module
 val coreModule = module {
     single(named(BaseUrl.Github)) { NetworkApiFactory(BaseUrl.Github.url, get()) }
     single(named(BaseUrl.Pokemons)) { NetworkApiFactory(BaseUrl.Pokemons.url, get()) }
-    single(named(BaseUrl.RandomData)) { NetworkApiFactory(BaseUrl.RandomData.url, get()) }
+    single(named(BaseUrl.Randommer)) { NetworkApiFactory(BaseUrl.Randommer.url, get()) }
     single<NetworkConnectivityProvider> { AndroidNetworkConnectivityProvider(androidApplication()) }
     single { ReplicaClient(get()) }
     single<DebugTools> { RealDebugTools(androidContext(), get()) }

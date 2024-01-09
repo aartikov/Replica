@@ -47,7 +47,7 @@ internal fun <T : Any, P : Page<T>> createBehavioursForPagedReplicaSettings(
 private fun <T : Any, P : Page<T>> createClearingBehaviour(clearTime: Duration): PagedReplicaBehaviour<T, P> {
     return DoOnStateCondition(
         condition = {
-            (it.data != null || it.error != null) && it.loading == PagedLoadingStatus.None
+            (it.data != null || it.error != null) && it.loadingStatus == PagedLoadingStatus.None
                     && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearTime,
@@ -58,7 +58,7 @@ private fun <T : Any, P : Page<T>> createClearingBehaviour(clearTime: Duration):
 private fun <T : Any, P : Page<T>> createErrorClearingBehaviour(clearErrorTime: Duration): PagedReplicaBehaviour<T, P> {
     return DoOnStateCondition(
         condition = {
-            it.error != null && it.loading == PagedLoadingStatus.None && it.observingState.status == ObservingStatus.None
+            it.error != null && it.loadingStatus == PagedLoadingStatus.None && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearErrorTime,
         action = PagedPhysicalReplica<T, P>::clearError
@@ -68,7 +68,7 @@ private fun <T : Any, P : Page<T>> createErrorClearingBehaviour(clearErrorTime: 
 private fun <T : Any, P : Page<T>> createCancellationBehaviour(cancelTime: Duration): PagedReplicaBehaviour<T, P> {
     return DoOnStateCondition(
         condition = {
-            it.loading != PagedLoadingStatus.None && !it.preloading
+            it.loadingStatus != PagedLoadingStatus.None && !it.preloading
                     && it.observingState.status == ObservingStatus.None
         },
         startDelay = cancelTime,

@@ -36,6 +36,7 @@ internal class PagedPhysicalReplicaImpl<T : Any, P : Page<T>>(
     override val name: String,
     override val settings: PagedReplicaSettings,
     override val tags: Set<ReplicaTag>,
+    idExtractor: ((T) -> Any)?,
     behaviours: List<PagedReplicaBehaviour<T, P>>,
     fetcher: PagedFetcher<T, P>
 ) : PagedPhysicalReplica<T, P> {
@@ -52,19 +53,19 @@ internal class PagedPhysicalReplicaImpl<T : Any, P : Page<T>>(
         ObserversController(timeProvider, dispatcher, _stateFlow, _eventFlow)
 
     private val dataLoadingController = DataLoadingController(
-        timeProvider, dispatcher, coroutineScope, _stateFlow, _eventFlow,
+        timeProvider, dispatcher, coroutineScope, idExtractor, _stateFlow, _eventFlow,
         DataLoader(coroutineScope, fetcher)
     )
 
     private val dataChangingController =
-        DataChangingController(timeProvider, dispatcher, _stateFlow)
+        DataChangingController(timeProvider, dispatcher, idExtractor, _stateFlow)
 
     private val freshnessController = FreshnessController(dispatcher, _stateFlow, _eventFlow)
 
     private val clearingController = ClearingController(dispatcher, _stateFlow, _eventFlow)
 
     private val optimisticUpdatesController =
-        OptimisticUpdatesController(timeProvider, dispatcher, _stateFlow)
+        OptimisticUpdatesController(timeProvider, dispatcher, idExtractor, _stateFlow)
 
     init {
         behaviours.forEach { behaviour ->

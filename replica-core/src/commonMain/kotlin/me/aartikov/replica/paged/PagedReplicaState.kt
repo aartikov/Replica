@@ -5,7 +5,7 @@ import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.ObservingState
 
 data class PagedReplicaState<T : Any, P : Page<T>>(
-    val loading: PagedLoadingStatus,
+    val loadingStatus: PagedLoadingStatus,
     val data: PagedReplicaData<T, P>?,
     val error: LoadingError?,
     val observingState: ObservingState,
@@ -16,7 +16,7 @@ data class PagedReplicaState<T : Any, P : Page<T>>(
 
     companion object {
         fun <T : Any, P : Page<T>> createEmpty() = PagedReplicaState<T, P>(
-            loading = PagedLoadingStatus.None,
+            loadingStatus = PagedLoadingStatus.None,
             data = null,
             error = null,
             observingState = ObservingState(),
@@ -26,7 +26,7 @@ data class PagedReplicaState<T : Any, P : Page<T>>(
 }
 
 internal fun <T : Any, P : Page<T>> PagedReplicaState<T, P>.toPaged() = Paged(
-    loading = loading,
+    loadingStatus = loadingStatus,
     data = data?.valueWithOptimisticUpdates,
     error = error?.let { CombinedLoadingError(listOf(it)) }
 )

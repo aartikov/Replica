@@ -12,6 +12,7 @@ import me.aartikov.replica.time.TimeProvider
 internal class OptimisticUpdatesController<T : Any, P : Page<T>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
+    private val idExtractor: ((T) -> Any)?,
     private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>
 ) {
 
@@ -35,7 +36,7 @@ internal class OptimisticUpdatesController<T : Any, P : Page<T>>(
                 val newData = update.apply(state.data.value.pages)
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
-                        value = PagedData(newData),
+                        value = PagedData(newData, idExtractor),
                         optimisticUpdates = state.data.optimisticUpdates - update,
                         changingTime = timeProvider.currentTime
                     )

@@ -1,9 +1,10 @@
 package me.aartikov.replica.advanced_sample.features.dudes.data
 
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
-import me.aartikov.replica.single.Replica
+import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedReplica
 
 interface DudeRepository {
 
-    val dudesReplica: Replica<List<Dude>>
+    val dudesReplica: PagedReplica<Dude, Page<Dude>>
 }

@@ -25,6 +25,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope,
+    private val idExtractor: ((T) -> Any)?,
     private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
     private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<T, P>>,
     private val dataLoader: DataLoader<T, P>
@@ -94,21 +95,21 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
     }
 
     private fun refreshImpl() {
-        val currentLoadingStatus = replicaStateFlow.value.loading
+        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus != PagedLoadingStatus.LoadingFirstPage
         dataLoader.loadFirstPage(cancel)
     }
 
     private fun loadNextImpl() {
         val currentData = replicaStateFlow.value.data ?: return
-        val currentLoadingStatus = replicaStateFlow.value.loading
+        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingPreviousPage
         dataLoader.loadNextPage(cancel, currentData.valueWithOptimisticUpdates)
     }
 
     private fun loadPreviousImpl() {
         val currentData = replicaStateFlow.value.data ?: return
-        val currentLoadingStatus = replicaStateFlow.value.loading
+        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
         dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
     }
@@ -119,7 +120,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
             when (output) {
                 is DataLoader.Output.LoadingStarted -> {
                     replicaStateFlow.value = state.copy(
-                        loading = output.reason.toLoadingStatus(),
+                        loadingStatus = output.reason.toLoadingStatus(),
                         preloading = state.observingState.status == ObservingStatus.None
                     )
                     replicaEventFlow.emit(
@@ -129,9 +130,14 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
 
                 is DataLoader.Output.LoadingFinished.Success -> {
                     val newData = if (state.data != null) {
-                        PagedData(listOf(output.page)) // to do merge pages
+                        val newPages = when (output.reason) {
+                            LoadingReason.Normal -> listOf(output.page)
+                            LoadingReason.NextPage -> state.data.value.pages + listOf(output.page)
+                            LoadingReason.PreviousPage -> listOf(output.page) + state.data.value.pages
+                        }
+                        PagedData(newPages, idExtractor)
                     } else {
-                        PagedData(listOf(output.page))
+                        PagedData(listOf(output.page), idExtractor)
                     }
 
                     replicaStateFlow.value = state.copy(
@@ -145,11 +151,12 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
                             PagedReplicaData(
                                 value = newData,
                                 fresh = true,
-                                changingTime = timeProvider.currentTime
+                                changingTime = timeProvider.currentTime,
+                                idExtractor = idExtractor
                             )
                         },
                         error = null,
-                        loading = PagedLoadingStatus.None,
+                        loadingStatus = PagedLoadingStatus.None,
                         preloading = false
                     )
                     replicaEventFlow.emit(
@@ -163,7 +170,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
 
                 is DataLoader.Output.LoadingFinished.Canceled -> {
                     replicaStateFlow.value = state.copy(
-                        loading = PagedLoadingStatus.None,
+                        loadingStatus = PagedLoadingStatus.None,
                         preloading = false
                     )
                     replicaEventFlow.emit(
@@ -174,7 +181,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
                         error = LoadingError(output.reason, output.exception),
-                        loading = PagedLoadingStatus.None,
+                        loadingStatus = PagedLoadingStatus.None,
                         preloading = false
                     )
                     replicaEventFlow.emit(

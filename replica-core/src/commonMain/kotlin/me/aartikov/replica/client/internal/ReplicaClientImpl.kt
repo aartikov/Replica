@@ -140,6 +140,7 @@ internal class ReplicaClientImpl(
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag>,
+        idExtractor: ((T) -> Any)?,
         behaviours: List<PagedReplicaBehaviour<T, P>>,
         fetcher: PagedFetcher<T, P>
     ): PagedPhysicalReplica<T, P> {
@@ -147,6 +148,7 @@ internal class ReplicaClientImpl(
             name,
             settings,
             tags,
+            idExtractor,
             behaviours,
             fetcher,
             coroutineDispatcher,
@@ -224,6 +226,7 @@ internal class ReplicaClientImpl(
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag>,
+        idExtractor: ((T) -> Any)?,
         behaviours: List<PagedReplicaBehaviour<T, P>>,
         fetcher: PagedFetcher<T, P>,
         coroutineDispatcher: CoroutineDispatcher,
@@ -240,6 +243,7 @@ internal class ReplicaClientImpl(
             name,
             settings,
             tags,
+            idExtractor,
             behaviours = behavioursForSettings + behaviours,
             fetcher
         )

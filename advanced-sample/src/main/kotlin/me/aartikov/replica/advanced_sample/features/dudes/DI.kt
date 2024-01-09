@@ -15,7 +15,7 @@ import org.koin.dsl.module
 
 val dudesModule = module {
     single<DudeApi> {
-        get<NetworkApiFactory>(named(BaseUrl.RandomData)).createApi()
+        get<NetworkApiFactory>(named(BaseUrl.Randommer)).createApi()
     }
     single<DudeRepository> {
         DudeRepositoryImpl(get(), get())
