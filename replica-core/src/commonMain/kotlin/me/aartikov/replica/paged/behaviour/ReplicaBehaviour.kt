@@ -3,15 +3,15 @@ package me.aartikov.replica.paged.behaviour
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaSettings
-import me.aartikov.replica.paged.behaviour.standard.DoOnCreated
-import me.aartikov.replica.paged.behaviour.standard.DoOnEvent
-import me.aartikov.replica.paged.behaviour.standard.DoOnNetworkConnectivityChanged
-import me.aartikov.replica.paged.behaviour.standard.DoOnStateCondition
+import me.aartikov.replica.paged.behaviour.standard.PagedDoOnCreated
+import me.aartikov.replica.paged.behaviour.standard.PagedDoOnEvent
+import me.aartikov.replica.paged.behaviour.standard.PagedDoOnNetworkConnectivityChanged
+import me.aartikov.replica.paged.behaviour.standard.PagedDoOnStateCondition
 
 /**
  * Allows to add a custom behavior to a replica.
  * All features represented in [PagedReplicaSettings] a implemented as [PagedReplicaBehaviour].
- * See also: [DoOnCreated], [DoOnEvent], [DoOnStateCondition], [DoOnNetworkConnectivityChanged].
+ * See also: [PagedDoOnCreated], [PagedDoOnEvent], [PagedDoOnStateCondition], [PagedDoOnNetworkConnectivityChanged].
  */
 interface PagedReplicaBehaviour<T : Any, P : Page<T>> {
 

@@ -36,6 +36,10 @@ internal class ReplicaClientListener(
             is ReplicaClientEvent.PagedReplicaCreated -> {
                 // TODO: add paged replicas support in ReplicaDevTools
             }
+
+            is ReplicaClientEvent.KeyedPagedReplicaCreated -> {
+                // TODO: add keyed paged replicas support in ReplicaDevTools
+            }
         }
     }
 
@@ -68,6 +72,7 @@ internal class ReplicaClientListener(
                 store.addKeyedReplicaChild(keyedReplicaId.value, event.replica.toDto())
                 launchKeyedReplicaChildProcessing(keyedReplicaId, event.replica)
             }
+
             is KeyedReplicaEvent.ReplicaRemoved -> {
                 store.removeKeyedReplicaChild(keyedReplicaId.value, event.replicaId.value)
             }

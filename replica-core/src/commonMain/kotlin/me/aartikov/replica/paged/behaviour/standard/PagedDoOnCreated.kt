@@ -8,7 +8,7 @@ import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 /**
  * [PagedReplicaBehaviour] that executes some [action] when a replica is created.
  */
-class DoOnCreated<T : Any, P : Page<T>>(
+class PagedDoOnCreated<T : Any, P : Page<T>>(
     private val action: suspend PagedPhysicalReplica<T, P>.() -> Unit
 ) : PagedReplicaBehaviour<T, P> {
 

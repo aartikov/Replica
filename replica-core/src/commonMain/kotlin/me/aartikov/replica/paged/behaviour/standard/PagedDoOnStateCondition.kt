@@ -21,7 +21,7 @@ import kotlin.time.Duration
  * [startDelay] allows to delay execution of an action. If a state stops satisfying the condition before [startDelay] expires the action will not be executed.
  * [repeatInterval] allows to execute an [action] periodically until a state satisfying the condition. null means execute the action once.
  */
-class DoOnStateCondition<T : Any, P : Page<T>>(
+class PagedDoOnStateCondition<T : Any, P : Page<T>>(
     private val condition: (PagedReplicaState<T, P>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,
     private val repeatInterval: Duration? = null,

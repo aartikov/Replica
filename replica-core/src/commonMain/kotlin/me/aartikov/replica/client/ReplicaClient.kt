@@ -12,6 +12,10 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
+import me.aartikov.replica.keyed_paged.KeyedPagedFetcher
+import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
+import me.aartikov.replica.keyed_paged.KeyedPagedReplicaSettings
+import me.aartikov.replica.keyed_paged.behaviour.KeyedPagedReplicaBehaviour
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedFetcher
@@ -105,6 +109,8 @@ interface ReplicaClient {
      * @param name a human readable replica name. Can be used for debugging (for example it is used by Replica DevTools). Shouldn't be unique.
      * @param settings configures replica behaviour. See: [PagedReplicaSettings].
      * @param tags set of [ReplicaTag]s. Can be used to perform bulk operations on a subset of replicas. See: [cancelByTags], [clearByTags], [invalidateByTags].
+     * @param idExtractor configures how to extract unique ids from items to remove accidental
+     * duplicates. Pass null if you don't need it.
      * @param behaviours allow to add custom behaviours to a replica. See: [PagedReplicaBehaviour].
      * @param fetcher configures how to load data from a network. See: [PagedFetcher].
      */
@@ -116,6 +122,38 @@ interface ReplicaClient {
         behaviours: List<PagedReplicaBehaviour<T, P>> = emptyList(),
         fetcher: PagedFetcher<T, P>
     ): PagedPhysicalReplica<T, P>
+
+    /**
+     * Creates a [KeyedPagedPhysicalReplica].
+     * Note: once created a keyed paged replica will exist as long as a client exists.
+     *
+     * @param name a human readable keyed paged replica name. Can be used for debugging
+     * (for example it is used by Replica Devtools). Shouldn't be unique.
+     * @param childName names for child replicas.
+     * @param settings configures keyed paged replica behaviour. See: [KeyedPagedReplicaSettings].
+     * @param childSettings [PagedReplicaSettings] for child paged replicas.
+     * @param tags set of [ReplicaTag]s. Can be used to perform bulk operations on a subset of
+     * paged replicas. See: [cancelByTags], [clearByTags], [invalidateByTags].
+     * @param idExtractor configures how to extract unique ids from items to remove accidental
+     * duplicates. Pass null if you don't need it.
+     * @param childTags tags for child paged replicas.
+     * @param behaviours allow to add custom behaviours to a keyed paged replica.
+     * See: [KeyedPagedReplicaBehaviour].
+     * @param childBehaviours custom behaviours for child paged replicas.
+     * @param fetcher configures how to loads data from a network. See: [KeyedPagedFetcher].
+     */
+    fun <K : Any, T : Any, P : Page<T>> createKeyedPagedReplica(
+        name: String,
+        childName: (K) -> String,
+        settings: KeyedPagedReplicaSettings<K, T, P> = KeyedPagedReplicaSettings(),
+        childSettings: (K) -> PagedReplicaSettings,
+        tags: Set<ReplicaTag> = emptySet(),
+        childTags: (K) -> Set<ReplicaTag> = { emptySet() },
+        idExtractor: ((T) -> Any)?,
+        behaviours: List<KeyedPagedReplicaBehaviour<K, T, P>> = emptyList(),
+        childBehaviours: (K) -> List<PagedReplicaBehaviour<T, P>> = { emptyList() },
+        fetcher: KeyedPagedFetcher<K, T, P>
+    ): KeyedPagedPhysicalReplica<K, T, P>
 
     /**
      * Executes an [action] on each [PhysicalReplica].
@@ -143,6 +181,14 @@ interface ReplicaClient {
         includeChildrenOfKeyedReplicas: Boolean = true,
         action: suspend PagedPhysicalReplica<*, *>.() -> Unit
     )
+
+    /**
+     * Executes an [action] on each [KeyedPagedPhysicalReplica].
+     */
+    suspend fun onEachKeyedPagedReplica(
+        action: suspend KeyedPagedPhysicalReplica<*, *, *>.() -> Unit
+    )
+
 }
 
 /**

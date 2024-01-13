@@ -11,7 +11,7 @@ import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 /**
  * [PagedReplicaBehaviour] that executes some [action] when network connectivity status changed.
  */
-class DoOnNetworkConnectivityChanged<T : Any, P : Page<T>>(
+class PagedDoOnNetworkConnectivityChanged<T : Any, P : Page<T>>(
     private val networkConnectivityProvider: NetworkConnectivityProvider,
     private val action: suspend PagedPhysicalReplica<T, P>.(connected: Boolean) -> Unit
 ) : PagedReplicaBehaviour<T, P> {

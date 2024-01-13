@@ -7,17 +7,30 @@ import me.aartikov.replica.keyed.cancelByTags
 import me.aartikov.replica.keyed.clearByTags
 import me.aartikov.replica.keyed.invalidateAll
 import me.aartikov.replica.keyed.invalidateByTags
+import me.aartikov.replica.keyed_paged.cancelAll
+import me.aartikov.replica.keyed_paged.cancelByTags
+import me.aartikov.replica.keyed_paged.clearByTags
+import me.aartikov.replica.keyed_paged.invalidateAll
+import me.aartikov.replica.keyed_paged.invalidateByTags
 
 /**
  * Cancels network requests in all replicas.
  */
 suspend fun ReplicaClient.cancelAll() {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        cancel()
+        this.cancel()
     }
 
     onEachKeyedReplica {
-        cancelAll()
+        this.cancelAll()
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        this.cancel()
+    }
+
+    onEachKeyedPagedReplica {
+        this.cancelAll()
     }
 }
 
@@ -26,11 +39,19 @@ suspend fun ReplicaClient.cancelAll() {
  */
 suspend fun ReplicaClient.clearAll() {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        clear()
+        this.clear()
     }
 
     onEachKeyedReplica {
-        clearAll()
+        this.clearAll()
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        this.clear()
+    }
+
+    onEachKeyedPagedReplica {
+        this.clearAll()
     }
 }
 
@@ -43,11 +64,19 @@ suspend fun ReplicaClient.invalidateAll(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
 ) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
-        invalidate(mode)
+        this.invalidate(mode)
     }
 
     onEachKeyedReplica {
-        invalidateAll(mode)
+        this.invalidateAll(mode)
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        this.invalidate(mode)
+    }
+
+    onEachKeyedPagedReplica {
+        this.invalidateAll(mode)
     }
 }
 
@@ -69,12 +98,22 @@ suspend fun ReplicaClient.clearAndInvalidateAll(
 suspend fun ReplicaClient.cancelByTags(predicate: (Set<ReplicaTag>) -> Boolean) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
         if (predicate(tags)) {
-            cancel()
+            this.cancel()
         }
     }
 
     onEachKeyedReplica {
-        cancelByTags(predicate)
+        this.cancelByTags(predicate)
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        if (predicate(tags)) {
+            this.cancel()
+        }
+    }
+
+    onEachKeyedPagedReplica {
+        this.cancelByTags(predicate)
     }
 }
 
@@ -84,12 +123,22 @@ suspend fun ReplicaClient.cancelByTags(predicate: (Set<ReplicaTag>) -> Boolean) 
 suspend fun ReplicaClient.clearByTags(predicate: (Set<ReplicaTag>) -> Boolean) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
         if (predicate(tags)) {
-            clear()
+            this.clear()
         }
     }
 
     onEachKeyedReplica {
-        clearByTags(predicate)
+        this.clearByTags(predicate)
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        if (predicate(tags)) {
+            this.clear()
+        }
+    }
+
+    onEachKeyedPagedReplica {
+        this.clearByTags(predicate)
     }
 }
 
@@ -104,12 +153,22 @@ suspend fun ReplicaClient.invalidateByTags(
 ) {
     onEachReplica(includeChildrenOfKeyedReplicas = false) {
         if (predicate(tags)) {
-            invalidate(mode)
+            this.invalidate(mode)
         }
     }
 
     onEachKeyedReplica {
-        invalidateByTags(mode, predicate)
+        this.invalidateByTags(mode, predicate)
+    }
+
+    onEachPagedReplica(includeChildrenOfKeyedReplicas = false) {
+        if (predicate(tags)) {
+            this.invalidate(mode)
+        }
+    }
+
+    onEachKeyedPagedReplica {
+        this.invalidateByTags(mode, predicate)
     }
 }
 
@@ -158,7 +217,7 @@ suspend fun ReplicaClient.invalidateByTag(
  *
  * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
  */
-suspend fun ReplicaClient.clearAndInvalidateByTags(
+suspend fun ReplicaClient.clearAndInvalidateByTag(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers,
     tag: ReplicaTag
 ) {

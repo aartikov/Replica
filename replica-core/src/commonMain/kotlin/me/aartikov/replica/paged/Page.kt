@@ -11,6 +11,6 @@ interface Page<out T : Any> {
     val hasPreviousPage: Boolean
 }
 
-fun <T : Any> Page(items: List<T>, hasNextPage: Boolean, hasPreviousPage: Boolean): Page<T> {
+fun <T : Any> Page(items: List<T>, hasNextPage: Boolean, hasPreviousPage: Boolean = false): Page<T> {
     return SimplePage(items, hasNextPage, hasPreviousPage)
 }

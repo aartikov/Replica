@@ -28,7 +28,7 @@ sealed interface ClearOrder<out K : Any, out T : Any> {
     /**
      * Compares replicas by [ObservingState.observingTime].
      */
-    object ByObservingTime : ClearOrder<Nothing, Nothing> {
+    data object ByObservingTime : ClearOrder<Nothing, Nothing> {
         internal fun <K : Any, T : Any> getComparator(): Comparator<Pair<K, ReplicaState<T>>> {
             return Comparator { o1, o2 ->
                 compareValues(
@@ -42,7 +42,7 @@ sealed interface ClearOrder<out K : Any, out T : Any> {
     /**
      * Compares replicas by [ReplicaData.changingTime].
      */
-    object ByDataChangingTime : ClearOrder<Nothing, Nothing> {
+    data object ByDataChangingTime : ClearOrder<Nothing, Nothing> {
         internal fun <K : Any, T : Any> getComparator(): Comparator<Pair<K, ReplicaState<T>>> {
             return Comparator { o1, o2 ->
                 compareValues(
@@ -64,10 +64,10 @@ sealed interface ClearOrder<out K : Any, out T : Any> {
 private fun <K : Any, T : Any> Comparator<Pair<K, ReplicaState<T>>>.withPrivileged(
     isPrivilegedReplica: ((Pair<K, ReplicaState<T>>) -> Boolean)?
 ): Comparator<Pair<K, ReplicaState<T>>> {
-    if (isPrivilegedReplica == null) {
-        return this
+    return if (isPrivilegedReplica == null) {
+        this
     } else {
-        return Comparator { o1, o2 ->
+        Comparator { o1, o2 ->
             val privileged1 = isPrivilegedReplica(o1)
             val privileged2 = isPrivilegedReplica(o2)
             when {

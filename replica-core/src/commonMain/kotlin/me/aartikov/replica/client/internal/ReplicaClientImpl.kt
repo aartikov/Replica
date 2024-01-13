@@ -18,8 +18,15 @@ import me.aartikov.replica.keyed.behaviour.createBehavioursForKeyedReplicaSettin
 import me.aartikov.replica.keyed.internal.FixedKeyStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.keyed.internal.KeyedStorageCleaner
+import me.aartikov.replica.keyed_paged.KeyedPagedFetcher
+import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
+import me.aartikov.replica.keyed_paged.KeyedPagedReplicaSettings
+import me.aartikov.replica.keyed_paged.behaviour.KeyedPagedReplicaBehaviour
+import me.aartikov.replica.keyed_paged.behaviour.createBehavioursForKeyedPagedReplicaSettings
+import me.aartikov.replica.keyed_paged.internal.KeyedPagedPhysicalReplicaImpl
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedFetcher
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaSettings
@@ -56,6 +63,9 @@ internal class ReplicaClientImpl(
 
     private val pagedReplicasLock = Lock()
     private val pagedReplicas = mutableSetOf<PagedPhysicalReplica<*, *>>()
+
+    private val keyedPagedReplicasLock = Lock()
+    private val keyedPagedReplicas = mutableSetOf<KeyedPagedPhysicalReplica<*, *, *>>()
 
     override fun <T : Any> createReplica(
         name: String,
@@ -161,6 +171,62 @@ internal class ReplicaClientImpl(
         return replica
     }
 
+    override fun <K : Any, T : Any, P : Page<T>> createKeyedPagedReplica(
+        name: String,
+        childName: (K) -> String,
+        settings: KeyedPagedReplicaSettings<K, T, P>,
+        childSettings: (K) -> PagedReplicaSettings,
+        tags: Set<ReplicaTag>,
+        childTags: (K) -> Set<ReplicaTag>,
+        idExtractor: ((T) -> Any)?,
+        behaviours: List<KeyedPagedReplicaBehaviour<K, T, P>>,
+        childBehaviours: (K) -> List<PagedReplicaBehaviour<T, P>>,
+        fetcher: KeyedPagedFetcher<K, T, P>
+    ): KeyedPagedPhysicalReplica<K, T, P> {
+
+        val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
+            createPagedReplicaInternal(
+                name = childName(key),
+                settings = childSettings(key),
+                tags = childTags(key),
+                idExtractor = idExtractor,
+                behaviours = childBehaviours(key),
+                fetcher = object : PagedFetcher<T, P> {
+                    override suspend fun fetchFirstPage(): P {
+                        return fetcher.fetchFirstPage(key)
+                    }
+
+                    override suspend fun fetchNextPage(currentData: PagedData<T, P>): P {
+                        return fetcher.fetchNextPage(key, currentData)
+                    }
+
+                    override suspend fun fetchPreviousPage(currentData: PagedData<T, P>): P {
+                        return fetcher.fetchPreviousPage(key, currentData)
+                    }
+                },
+                coroutineDispatcher = coroutineDispatcher,
+                coroutineScope = childCoroutineScope
+            )
+        }
+
+        val behavioursForSettings = createBehavioursForKeyedPagedReplicaSettings<K, T, P>(settings)
+
+        val keyedReplica = KeyedPagedPhysicalReplicaImpl(
+            coroutineScope,
+            name,
+            settings,
+            tags,
+            behavioursForSettings + behaviours,
+            replicaFactory
+        )
+
+        keyedPagedReplicasLock.withLock {
+            keyedPagedReplicas.add(keyedReplica)
+        }
+        _eventFlow.tryEmit(ReplicaClientEvent.KeyedPagedReplicaCreated(keyedReplica))
+        return keyedReplica
+    }
+
     override suspend fun onEachReplica(
         includeChildrenOfKeyedReplicas: Boolean,
         action: suspend PhysicalReplica<*>.() -> Unit
@@ -206,8 +272,6 @@ internal class ReplicaClientImpl(
             it.action()
         }
 
-        // TODO
-        /*
         if (includeChildrenOfKeyedReplicas) {
             onEachKeyedPagedReplica {
                 onEachPagedReplica {
@@ -215,7 +279,18 @@ internal class ReplicaClientImpl(
                 }
             }
         }
-         */
+    }
+
+    override suspend fun onEachKeyedPagedReplica(
+        action: suspend KeyedPagedPhysicalReplica<*, *, *>.() -> Unit
+    ) {
+        // make a copy for concurrent modification
+        val keyedPagedReplicasCopy = keyedPagedReplicasLock.withLock {
+            HashSet(keyedPagedReplicas)
+        }
+        keyedPagedReplicasCopy.forEach {
+            it.action()
+        }
     }
 
     private fun <T : Any> createReplicaInternal(
