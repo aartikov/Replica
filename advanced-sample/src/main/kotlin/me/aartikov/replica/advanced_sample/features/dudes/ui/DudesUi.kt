@@ -73,7 +73,7 @@ fun DudesUi(
             ) { dudes, refreshing ->
                 if (dudes.items.isNotEmpty()) {
                     DudesListContent(
-                        loading = dudesState.loadingStatus,
+                        loadingStatus = dudesState.loadingStatus,
                         dudes = dudes,
                         hasError = dudesState.error != null,
                         onLoadNext = component::onLoadNext
@@ -92,14 +92,14 @@ fun DudesUi(
 
 @Composable
 private fun DudesListContent(
-    loading: PagedLoadingStatus,
+    loadingStatus: PagedLoadingStatus,
     dudes: PagedData<Dude, Page<Dude>>,
     hasError: Boolean,
     onLoadNext: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
-    if (dudes.hasNextPage && loading == PagedLoadingStatus.None) {
+    if (dudes.hasNextPage && loadingStatus == PagedLoadingStatus.None) {
         lazyListState.OnEndReached(
             callback = onLoadNext,
             itemCountGap = 3,
@@ -123,7 +123,7 @@ private fun DudesListContent(
             }
         }
 
-        if (loading == PagedLoadingStatus.LoadingNextPage) {
+        if (loadingStatus == PagedLoadingStatus.LoadingNextPage) {
             item {
                 PagedLoadingProgress()
             }
