@@ -3,6 +3,12 @@ public final class me/aartikov/replica/client/BulkOperationsKt {
 	public static final fun cancelByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun cancelByTags (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun clearAll (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun clearAndInvalidateAll (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun clearAndInvalidateAll$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun clearAndInvalidateByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun clearAndInvalidateByTag$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun clearAndInvalidateByTags (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun clearAndInvalidateByTags$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun clearByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun clearByTags (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun invalidateAll (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -15,12 +21,16 @@ public final class me/aartikov/replica/client/BulkOperationsKt {
 
 public abstract interface class me/aartikov/replica/client/ReplicaClient {
 	public static final field Companion Lme/aartikov/replica/client/ReplicaClient$Companion;
+	public abstract fun createKeyedPagedReplica (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedFetcher;)Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;
 	public abstract fun createKeyedReplica (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedStorage;Lme/aartikov/replica/keyed/KeyedFetcher;)Lme/aartikov/replica/keyed/KeyedPhysicalReplica;
+	public abstract fun createPagedReplica (Ljava/lang/String;Lme/aartikov/replica/paged/PagedReplicaSettings;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lme/aartikov/replica/paged/PagedFetcher;)Lme/aartikov/replica/paged/PagedPhysicalReplica;
 	public abstract fun createReplica (Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Ljava/util/List;Lme/aartikov/replica/single/Storage;Lme/aartikov/replica/single/Fetcher;)Lme/aartikov/replica/single/PhysicalReplica;
 	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public abstract fun getEventFlow ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getNetworkConnectivityProvider ()Lme/aartikov/replica/network/NetworkConnectivityProvider;
+	public abstract fun onEachKeyedPagedReplica (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun onEachKeyedReplica (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun onEachPagedReplica (ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun onEachReplica (ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -29,17 +39,30 @@ public final class me/aartikov/replica/client/ReplicaClient$Companion {
 }
 
 public final class me/aartikov/replica/client/ReplicaClient$DefaultImpls {
+	public static synthetic fun createKeyedPagedReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedFetcher;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;
 	public static synthetic fun createKeyedReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedStorage;Lme/aartikov/replica/keyed/KeyedFetcher;ILjava/lang/Object;)Lme/aartikov/replica/keyed/KeyedPhysicalReplica;
+	public static synthetic fun createPagedReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lme/aartikov/replica/paged/PagedReplicaSettings;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lme/aartikov/replica/paged/PagedFetcher;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedPhysicalReplica;
 	public static synthetic fun createReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Ljava/util/List;Lme/aartikov/replica/single/Storage;Lme/aartikov/replica/single/Fetcher;ILjava/lang/Object;)Lme/aartikov/replica/single/PhysicalReplica;
+	public static synthetic fun onEachPagedReplica$default (Lme/aartikov/replica/client/ReplicaClient;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun onEachReplica$default (Lme/aartikov/replica/client/ReplicaClient;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/client/ReplicaClientEvent {
 }
 
+public final class me/aartikov/replica/client/ReplicaClientEvent$KeyedPagedReplicaCreated : me/aartikov/replica/client/ReplicaClientEvent {
+	public fun <init> (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;)V
+	public final fun getKeyedPagedReplica ()Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;
+}
+
 public final class me/aartikov/replica/client/ReplicaClientEvent$KeyedReplicaCreated : me/aartikov/replica/client/ReplicaClientEvent {
 	public fun <init> (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
 	public final fun getKeyedReplica ()Lme/aartikov/replica/keyed/KeyedPhysicalReplica;
+}
+
+public final class me/aartikov/replica/client/ReplicaClientEvent$PagedReplicaCreated : me/aartikov/replica/client/ReplicaClientEvent {
+	public fun <init> (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+	public final fun getReplica ()Lme/aartikov/replica/paged/PagedPhysicalReplica;
 }
 
 public final class me/aartikov/replica/client/ReplicaClientEvent$ReplicaCreated : me/aartikov/replica/client/ReplicaClientEvent {
@@ -52,15 +75,22 @@ public final class me/aartikov/replica/client/ReplicaClientKt {
 	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
 }
 
+public abstract interface class me/aartikov/replica/common/AbstractLoadable {
+	public abstract fun getData ()Ljava/lang/Object;
+	public abstract fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
+	public abstract fun getLoading ()Z
+}
+
 public final class me/aartikov/replica/common/CombinedLoadingError {
-	public fun <init> (Ljava/lang/Exception;)V
 	public fun <init> (Ljava/util/List;)V
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun copy (Ljava/util/List;)Lme/aartikov/replica/common/CombinedLoadingError;
 	public static synthetic fun copy$default (Lme/aartikov/replica/common/CombinedLoadingError;Ljava/util/List;ILjava/lang/Object;)Lme/aartikov/replica/common/CombinedLoadingError;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrors ()Ljava/util/List;
 	public final fun getException ()Ljava/lang/Exception;
-	public final fun getExceptions ()Ljava/util/List;
+	public final fun getReason ()Lme/aartikov/replica/common/LoadingReason;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -76,14 +106,25 @@ public final class me/aartikov/replica/common/InvalidationMode : java/lang/Enum 
 }
 
 public final class me/aartikov/replica/common/LoadingError {
-	public fun <init> (Ljava/lang/Exception;)V
-	public final fun component1 ()Ljava/lang/Exception;
-	public final fun copy (Ljava/lang/Exception;)Lme/aartikov/replica/common/LoadingError;
-	public static synthetic fun copy$default (Lme/aartikov/replica/common/LoadingError;Ljava/lang/Exception;ILjava/lang/Object;)Lme/aartikov/replica/common/LoadingError;
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;)V
+	public final fun component1 ()Lme/aartikov/replica/common/LoadingReason;
+	public final fun component2 ()Ljava/lang/Exception;
+	public final fun copy (Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;)Lme/aartikov/replica/common/LoadingError;
+	public static synthetic fun copy$default (Lme/aartikov/replica/common/LoadingError;Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;ILjava/lang/Object;)Lme/aartikov/replica/common/LoadingError;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getException ()Ljava/lang/Exception;
+	public final fun getReason ()Lme/aartikov/replica/common/LoadingReason;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/common/LoadingReason : java/lang/Enum {
+	public static final field NextPage Lme/aartikov/replica/common/LoadingReason;
+	public static final field Normal Lme/aartikov/replica/common/LoadingReason;
+	public static final field PreviousPage Lme/aartikov/replica/common/LoadingReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lme/aartikov/replica/common/LoadingReason;
+	public static fun values ()[Lme/aartikov/replica/common/LoadingReason;
 }
 
 public final class me/aartikov/replica/common/ObservingState {
@@ -190,10 +231,16 @@ public abstract interface class me/aartikov/replica/keyed/ClearOrder {
 
 public final class me/aartikov/replica/keyed/ClearOrder$ByDataChangingTime : me/aartikov/replica/keyed/ClearOrder {
 	public static final field INSTANCE Lme/aartikov/replica/keyed/ClearOrder$ByDataChangingTime;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class me/aartikov/replica/keyed/ClearOrder$ByObservingTime : me/aartikov/replica/keyed/ClearOrder {
 	public static final field INSTANCE Lme/aartikov/replica/keyed/ClearOrder$ByObservingTime;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class me/aartikov/replica/keyed/ClearOrder$CustomComparator : me/aartikov/replica/keyed/ClearOrder {
@@ -346,6 +393,173 @@ public final class me/aartikov/replica/keyed/behaviour/standard/KeyedDoOnEvent :
 	public fun setup (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;)V
 }
 
+public final class me/aartikov/replica/keyed_paged/BulkOperationsKt {
+	public static final fun cancelAll (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun cancelByTags (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun clearByTags (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun invalidateAll (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invalidateAll$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun invalidateByTags (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun invalidateByTags$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeepPreviousDataKt {
+	public static final fun keepPreviousData (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedFetcher {
+	public abstract fun fetchFirstPage (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun fetchNextPage (Ljava/lang/Object;Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun fetchPreviousPage (Ljava/lang/Object;Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedFetcher$DefaultImpls {
+	public static fun fetchPreviousPage (Lme/aartikov/replica/keyed_paged/KeyedPagedFetcher;Ljava/lang/Object;Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica : me/aartikov/replica/keyed_paged/KeyedPagedReplica {
+	public abstract fun beginOptimisticUpdate (Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun cancel (Ljava/lang/Object;)V
+	public abstract fun clear (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun clearAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun clearError (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun commitOptimisticUpdate (Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getCurrentState (Ljava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaState;
+	public abstract fun getEventFlow ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getId-iSKwjsg ()J
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getSettings ()Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;
+	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getTags ()Ljava/util/Set;
+	public abstract fun invalidate (Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun makeFresh (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun mutateData (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun onEachPagedReplica (Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun onExistingPagedReplica (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun onPagedReplica (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun rollbackOptimisticUpdate (Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setData (Ljava/lang/Object;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica$DefaultImpls {
+	public static synthetic fun invalidate$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplicaKt {
+	public static final fun getCurrentState (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState;
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedReplica {
+	public abstract fun loadNext (Ljava/lang/Object;)V
+	public abstract fun loadPrevious (Ljava/lang/Object;)V
+	public abstract fun observe (Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
+	public abstract fun refresh (Ljava/lang/Object;)V
+	public abstract fun revalidate (Ljava/lang/Object;)V
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent {
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent$ReplicaCreated : me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent {
+	public fun <init> (Ljava/lang/Object;Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+	public final fun getKey ()Ljava/lang/Object;
+	public final fun getReplica ()Lme/aartikov/replica/paged/PagedPhysicalReplica;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent$ReplicaRemoved : me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent {
+	public synthetic fun <init> (Ljava/lang/Object;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getKey ()Ljava/lang/Object;
+	public final fun getReplicaId-iSKwjsg ()J
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings {
+	public fun <init> ()V
+	public fun <init> (ILme/aartikov/replica/keyed_paged/PagedClearPolicy;)V
+	public synthetic fun <init> (ILme/aartikov/replica/keyed_paged/PagedClearPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Lme/aartikov/replica/keyed_paged/PagedClearPolicy;
+	public final fun copy (ILme/aartikov/replica/keyed_paged/PagedClearPolicy;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;
+	public static synthetic fun copy$default (Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;ILme/aartikov/replica/keyed_paged/PagedClearPolicy;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClearPolicy ()Lme/aartikov/replica/keyed_paged/PagedClearPolicy;
+	public final fun getMaxCount ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaState {
+	public static final field Companion Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState$Companion;
+	public fun <init> (III)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (III)Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState;
+	public static synthetic fun copy$default (Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState;IIIILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReplicaCount ()I
+	public final fun getReplicaWithActiveObserversCount ()I
+	public final fun getReplicaWithObserversCount ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaState$Companion {
+	public final fun getEmpty ()Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaState;
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/PagedClearOrder {
+}
+
+public final class me/aartikov/replica/keyed_paged/PagedClearOrder$ByDataChangingTime : me/aartikov/replica/keyed_paged/PagedClearOrder {
+	public static final field INSTANCE Lme/aartikov/replica/keyed_paged/PagedClearOrder$ByDataChangingTime;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/PagedClearOrder$ByObservingTime : me/aartikov/replica/keyed_paged/PagedClearOrder {
+	public static final field INSTANCE Lme/aartikov/replica/keyed_paged/PagedClearOrder$ByObservingTime;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/PagedClearOrder$CustomComparator : me/aartikov/replica/keyed_paged/PagedClearOrder {
+	public fun <init> (Ljava/util/Comparator;)V
+	public final fun component1 ()Ljava/util/Comparator;
+	public final fun copy (Ljava/util/Comparator;)Lme/aartikov/replica/keyed_paged/PagedClearOrder$CustomComparator;
+	public static synthetic fun copy$default (Lme/aartikov/replica/keyed_paged/PagedClearOrder$CustomComparator;Ljava/util/Comparator;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/PagedClearOrder$CustomComparator;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getComparator ()Ljava/util/Comparator;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/PagedClearPolicy {
+	public fun <init> ()V
+	public fun <init> (Lme/aartikov/replica/keyed_paged/PagedClearOrder;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lme/aartikov/replica/keyed_paged/PagedClearOrder;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lme/aartikov/replica/keyed_paged/PagedClearOrder;
+	public final fun component2 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Lme/aartikov/replica/keyed_paged/PagedClearOrder;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/keyed_paged/PagedClearPolicy;
+	public static synthetic fun copy$default (Lme/aartikov/replica/keyed_paged/PagedClearPolicy;Lme/aartikov/replica/keyed_paged/PagedClearOrder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/PagedClearPolicy;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClearOrder ()Lme/aartikov/replica/keyed_paged/PagedClearOrder;
+	public fun hashCode ()I
+	public final fun isPrivilegedReplica ()Lkotlin/jvm/functions/Function1;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour {
+	public abstract fun setup (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;)V
+}
+
+public final class me/aartikov/replica/keyed_paged/behaviour/standard/KeyedPagedPagedDoOnEvent : me/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour {
+	public fun <init> (Lkotlin/jvm/functions/Function3;)V
+	public fun setup (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;)V
+}
+
 public abstract interface class me/aartikov/replica/network/NetworkConnectivityProvider {
 	public abstract fun getConnectedFlow ()Lkotlinx/coroutines/flow/StateFlow;
 }
@@ -354,11 +568,325 @@ public final class me/aartikov/replica/network/NetworkConnectivityProviderKt {
 	public static final fun getConnected (Lme/aartikov/replica/network/NetworkConnectivityProvider;)Z
 }
 
+public abstract interface class me/aartikov/replica/paged/Page {
+	public abstract fun getHasNextPage ()Z
+	public abstract fun getHasPreviousPage ()Z
+	public abstract fun getItems ()Ljava/util/List;
+}
+
+public final class me/aartikov/replica/paged/PageKt {
+	public static final fun Page (Ljava/util/List;ZZ)Lme/aartikov/replica/paged/Page;
+	public static synthetic fun Page$default (Ljava/util/List;ZZILjava/lang/Object;)Lme/aartikov/replica/paged/Page;
+}
+
+public final class me/aartikov/replica/paged/Paged : me/aartikov/replica/common/AbstractLoadable {
+	public fun <init> ()V
+	public fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;)V
+	public synthetic fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public final fun component2 ()Lme/aartikov/replica/paged/PagedData;
+	public final fun component3 ()Lme/aartikov/replica/common/CombinedLoadingError;
+	public final fun copy (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;)Lme/aartikov/replica/paged/Paged;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/Paged;Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;ILjava/lang/Object;)Lme/aartikov/replica/paged/Paged;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getData ()Ljava/lang/Object;
+	public fun getData ()Lme/aartikov/replica/paged/PagedData;
+	public fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
+	public fun getLoading ()Z
+	public final fun getLoadingStatus ()Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedData {
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Lme/aartikov/replica/paged/PagedData;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedData;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHasNextPage ()Z
+	public final fun getHasPreviousPage ()Z
+	public final fun getItems ()Ljava/util/List;
+	public final fun getPages ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedFetcher {
+	public abstract fun fetchFirstPage (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun fetchNextPage (Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun fetchPreviousPage (Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/paged/PagedFetcher$DefaultImpls {
+	public static fun fetchPreviousPage (Lme/aartikov/replica/paged/PagedFetcher;Lme/aartikov/replica/paged/PagedData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/paged/PagedKt {
+	public static final fun mapData (Lme/aartikov/replica/paged/Paged;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/paged/Paged;
+}
+
+public final class me/aartikov/replica/paged/PagedLoadingStatus : java/lang/Enum {
+	public static final field LoadingFirstPage Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public static final field LoadingNextPage Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public static final field LoadingPreviousPage Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public static final field None Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public static fun values ()[Lme/aartikov/replica/paged/PagedLoadingStatus;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedPhysicalReplica : me/aartikov/replica/paged/PagedReplica {
+	public abstract fun beginOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun cancel ()V
+	public abstract fun clear (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun clearError (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun commitOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getEventFlow ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getId-iSKwjsg ()J
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getSettings ()Lme/aartikov/replica/paged/PagedReplicaSettings;
+	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getTags ()Ljava/util/Set;
+	public abstract fun invalidate (Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun makeFresh (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun mutateData (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun rollbackOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setData (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/paged/PagedPhysicalReplica$DefaultImpls {
+	public static synthetic fun invalidate$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class me/aartikov/replica/paged/PagedPhysicalReplicaKt {
+	public static final fun getCurrentState (Lme/aartikov/replica/paged/PagedPhysicalReplica;)Lme/aartikov/replica/paged/PagedReplicaState;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplica {
+	public abstract fun loadNext ()V
+	public abstract fun loadPrevious ()V
+	public abstract fun observe (Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
+	public abstract fun refresh ()V
+	public abstract fun revalidate ()V
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaData {
+	public fun <init> (Lme/aartikov/replica/paged/PagedData;ZLkotlinx/datetime/Instant;Lkotlin/jvm/functions/Function1;Ljava/util/List;)V
+	public synthetic fun <init> (Lme/aartikov/replica/paged/PagedData;ZLkotlinx/datetime/Instant;Lkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lme/aartikov/replica/paged/PagedData;
+	public final fun component2 ()Z
+	public final fun component3 ()Lkotlinx/datetime/Instant;
+	public final fun component4 ()Lkotlin/jvm/functions/Function1;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Lme/aartikov/replica/paged/PagedData;ZLkotlinx/datetime/Instant;Lkotlin/jvm/functions/Function1;Ljava/util/List;)Lme/aartikov/replica/paged/PagedReplicaData;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaData;Lme/aartikov/replica/paged/PagedData;ZLkotlinx/datetime/Instant;Lkotlin/jvm/functions/Function1;Ljava/util/List;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChangingTime ()Lkotlinx/datetime/Instant;
+	public final fun getFresh ()Z
+	public final fun getIdExtractor ()Lkotlin/jvm/functions/Function1;
+	public final fun getOptimisticUpdates ()Ljava/util/List;
+	public final fun getValue ()Lme/aartikov/replica/paged/PagedData;
+	public final fun getValueWithOptimisticUpdates ()Lme/aartikov/replica/paged/PagedData;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplicaEvent {
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$ClearedEvent : me/aartikov/replica/paged/PagedReplicaEvent {
+	public static final field INSTANCE Lme/aartikov/replica/paged/PagedReplicaEvent$ClearedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent : me/aartikov/replica/paged/PagedReplicaEvent {
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent$BecameStale : me/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent {
+	public static final field INSTANCE Lme/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent$BecameStale;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent$Freshened : me/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent {
+	public static final field INSTANCE Lme/aartikov/replica/paged/PagedReplicaEvent$FreshnessEvent$Freshened;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent : me/aartikov/replica/paged/PagedReplicaEvent {
+	public abstract fun getReason ()Lme/aartikov/replica/common/LoadingReason;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished : me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent {
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Canceled : me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished {
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;)V
+	public final fun component1 ()Lme/aartikov/replica/common/LoadingReason;
+	public final fun copy (Lme/aartikov/replica/common/LoadingReason;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Canceled;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Canceled;Lme/aartikov/replica/common/LoadingReason;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Canceled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getReason ()Lme/aartikov/replica/common/LoadingReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Error : me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished {
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;)V
+	public final fun component1 ()Lme/aartikov/replica/common/LoadingReason;
+	public final fun component2 ()Ljava/lang/Exception;
+	public final fun copy (Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Error;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Error;Lme/aartikov/replica/common/LoadingReason;Ljava/lang/Exception;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getException ()Ljava/lang/Exception;
+	public fun getReason ()Lme/aartikov/replica/common/LoadingReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Success : me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished {
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;Lme/aartikov/replica/paged/Page;)V
+	public final fun component1 ()Lme/aartikov/replica/common/LoadingReason;
+	public final fun component2 ()Lme/aartikov/replica/paged/Page;
+	public final fun copy (Lme/aartikov/replica/common/LoadingReason;Lme/aartikov/replica/paged/Page;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Success;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Success;Lme/aartikov/replica/common/LoadingReason;Lme/aartikov/replica/paged/Page;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingFinished$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPage ()Lme/aartikov/replica/paged/Page;
+	public fun getReason ()Lme/aartikov/replica/common/LoadingReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingStarted : me/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent {
+	public fun <init> (Lme/aartikov/replica/common/LoadingReason;)V
+	public final fun component1 ()Lme/aartikov/replica/common/LoadingReason;
+	public final fun copy (Lme/aartikov/replica/common/LoadingReason;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingStarted;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingStarted;Lme/aartikov/replica/common/LoadingReason;ILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaEvent$LoadingEvent$LoadingStarted;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getReason ()Lme/aartikov/replica/common/LoadingReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaEvent$ObserverCountChangedEvent : me/aartikov/replica/paged/PagedReplicaEvent {
+	public fun <init> (IIII)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun copy (IIII)Lme/aartikov/replica/paged/PagedReplicaEvent$ObserverCountChangedEvent;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaEvent$ObserverCountChangedEvent;IIIIILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaEvent$ObserverCountChangedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActiveCount ()I
+	public final fun getCount ()I
+	public final fun getPreviousActiveCount ()I
+	public final fun getPreviousCount ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class me/aartikov/replica/paged/PagedReplicaObserver {
+	public abstract fun cancelObserving ()V
+	public abstract fun getLoadingErrorFlow ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getStateFlow ()Lkotlinx/coroutines/flow/StateFlow;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaObserverKt {
+	public static final fun getCurrentState (Lme/aartikov/replica/paged/PagedReplicaObserver;)Lme/aartikov/replica/paged/Paged;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaSettings {
+	public static final field Companion Lme/aartikov/replica/paged/PagedReplicaSettings$Companion;
+	public synthetic fun <init> (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-FghU774 ()Lkotlin/time/Duration;
+	public final fun component2-FghU774 ()Lkotlin/time/Duration;
+	public final fun component3-FghU774 ()Lkotlin/time/Duration;
+	public final fun component4-FghU774 ()Lkotlin/time/Duration;
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun copy-21BF-PU (Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ZZ)Lme/aartikov/replica/paged/PagedReplicaSettings;
+	public static synthetic fun copy-21BF-PU$default (Lme/aartikov/replica/paged/PagedReplicaSettings;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;Lkotlin/time/Duration;ZZILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCancelTime-FghU774 ()Lkotlin/time/Duration;
+	public final fun getClearErrorTime-FghU774 ()Lkotlin/time/Duration;
+	public final fun getClearTime-FghU774 ()Lkotlin/time/Duration;
+	public final fun getRevalidateOnActiveObserverAdded ()Z
+	public final fun getRevalidateOnNetworkConnection ()Z
+	public final fun getStaleTime-FghU774 ()Lkotlin/time/Duration;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaSettings$Companion {
+	public final fun getWithoutBehaviour ()Lme/aartikov/replica/paged/PagedReplicaSettings;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaState {
+	public static final field Companion Lme/aartikov/replica/paged/PagedReplicaState$Companion;
+	public fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedReplicaData;Lme/aartikov/replica/common/LoadingError;Lme/aartikov/replica/common/ObservingState;Z)V
+	public final fun component1 ()Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public final fun component2 ()Lme/aartikov/replica/paged/PagedReplicaData;
+	public final fun component3 ()Lme/aartikov/replica/common/LoadingError;
+	public final fun component4 ()Lme/aartikov/replica/common/ObservingState;
+	public final fun component5 ()Z
+	public final fun copy (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedReplicaData;Lme/aartikov/replica/common/LoadingError;Lme/aartikov/replica/common/ObservingState;Z)Lme/aartikov/replica/paged/PagedReplicaState;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/PagedReplicaState;Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedReplicaData;Lme/aartikov/replica/common/LoadingError;Lme/aartikov/replica/common/ObservingState;ZILjava/lang/Object;)Lme/aartikov/replica/paged/PagedReplicaState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lme/aartikov/replica/paged/PagedReplicaData;
+	public final fun getError ()Lme/aartikov/replica/common/LoadingError;
+	public final fun getHasFreshData ()Z
+	public final fun getLoadingStatus ()Lme/aartikov/replica/paged/PagedLoadingStatus;
+	public final fun getObservingState ()Lme/aartikov/replica/common/ObservingState;
+	public final fun getPreloading ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/paged/PagedReplicaState$Companion {
+	public final fun createEmpty ()Lme/aartikov/replica/paged/PagedReplicaState;
+}
+
+public abstract interface class me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
+	public abstract fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+}
+
+public final class me/aartikov/replica/paged/behaviour/standard/PagedDoOnCreated : me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+}
+
+public final class me/aartikov/replica/paged/behaviour/standard/PagedDoOnEvent : me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
+	public fun <init> (Lkotlin/jvm/functions/Function3;)V
+	public fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+}
+
+public final class me/aartikov/replica/paged/behaviour/standard/PagedDoOnNetworkConnectivityChanged : me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
+	public fun <init> (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lkotlin/jvm/functions/Function3;)V
+	public fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+}
+
+public final class me/aartikov/replica/paged/behaviour/standard/PagedDoOnStateCondition : me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
+}
+
 public abstract interface class me/aartikov/replica/single/Fetcher {
 	public abstract fun fetch (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class me/aartikov/replica/single/Loadable {
+public final class me/aartikov/replica/single/Loadable : me/aartikov/replica/common/AbstractLoadable {
 	public fun <init> ()V
 	public fun <init> (ZLjava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;)V
 	public synthetic fun <init> (ZLjava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -368,9 +896,9 @@ public final class me/aartikov/replica/single/Loadable {
 	public final fun copy (ZLjava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;)Lme/aartikov/replica/single/Loadable;
 	public static synthetic fun copy$default (Lme/aartikov/replica/single/Loadable;ZLjava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;ILjava/lang/Object;)Lme/aartikov/replica/single/Loadable;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getData ()Ljava/lang/Object;
-	public final fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
-	public final fun getLoading ()Z
+	public fun getData ()Ljava/lang/Object;
+	public fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
+	public fun getLoading ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
