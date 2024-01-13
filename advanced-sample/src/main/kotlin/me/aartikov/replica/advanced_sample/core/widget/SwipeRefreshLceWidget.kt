@@ -13,21 +13,16 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import me.aartikov.replica.common.CombinedLoadingError
-import me.aartikov.replica.paged.Page
-import me.aartikov.replica.paged.Paged
-import me.aartikov.replica.paged.PagedData
-import me.aartikov.replica.paged.PagedLoadingStatus
-import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.common.AbstractLoadable
 
 /**
- * Displays Replica state ([Loadable]) with swipe-to-refresh functionality.
+ * Displays Replica state ([AbstractLoadable]) with swipe-to-refresh functionality.
  *
  * Note: a value of refreshing in [content] is true only when data is refreshing and swipe gesture didn't occur.
  */
 @Composable
 fun <T : Any> SwipeRefreshLceWidget(
-    state: Loadable<T>,
+    state: AbstractLoadable<T>,
     onRefresh: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -36,75 +31,19 @@ fun <T : Any> SwipeRefreshLceWidget(
     },
     content: @Composable (data: T, refreshing: Boolean) -> Unit
 ) {
-    SwipeRefreshLceWidget(
-        loading = state.loading,
-        data = state.data,
-        error = state.error,
-        onRefresh = onRefresh,
-        onRetryClick = onRetryClick,
-        modifier = modifier,
-        swipeRefreshIndicator = swipeRefreshIndicator,
-        content = { data, swipeGestureOccurred ->
-            content(data, state.loading && !swipeGestureOccurred)
-        }
-    )
-}
 
-/**
- * Displays Replica state ([Loadable]) with swipe-to-refresh functionality.
- *
- * Note: a value of refreshing in [content] is true only when data is refreshing and swipe gesture didn't occur.
- */
-@Composable
-fun <T : Any, P : Page<T>> SwipeRefreshLceWidget(
-    state: Paged<T, P>,
-    onRefresh: () -> Unit,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    swipeRefreshIndicator: @Composable (state: SwipeRefreshState, refreshTrigger: Dp) -> Unit = { s, trigger ->
-        SwipeRefreshIndicator(s, trigger, contentColor = MaterialTheme.colors.primaryVariant)
-    },
-    content: @Composable (data: PagedData<T, P>, refreshing: Boolean) -> Unit
-) {
-    SwipeRefreshLceWidget(
-        loading = state.loadingStatus != PagedLoadingStatus.None,
-        data = state.data,
-        error = state.error,
-        onRefresh = onRefresh,
-        onRetryClick = onRetryClick,
-        modifier = modifier,
-        swipeRefreshIndicator = swipeRefreshIndicator,
-        content = { data, swipeGestureOccurred ->
-            content(data, state.loadingStatus == PagedLoadingStatus.LoadingFirstPage && !swipeGestureOccurred)
-        }
-    )
-}
-
-@Composable
-private fun <T : Any> SwipeRefreshLceWidget(
-    loading: Boolean,
-    data: T?,
-    error: CombinedLoadingError?,
-    onRefresh: () -> Unit,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    swipeRefreshIndicator: @Composable (state: SwipeRefreshState, refreshTrigger: Dp) -> Unit,
-    content: @Composable (data: T, swipeGestureOccurred: Boolean) -> Unit
-) {
     LceWidget(
-        loading = loading,
-        data = data,
-        error = error,
+        state = state,
         onRetryClick = onRetryClick,
         modifier = modifier
-    ) {
+    ) { data, refreshing ->
         var swipeGestureOccurred by remember { mutableStateOf(false) }
 
-        LaunchedEffect(loading) {
-            if (!loading) swipeGestureOccurred = false
+        LaunchedEffect(refreshing) {
+            if (!refreshing) swipeGestureOccurred = false
         }
 
-        val swipeRefreshState = rememberSwipeRefreshState(swipeGestureOccurred && loading)
+        val swipeRefreshState = rememberSwipeRefreshState(swipeGestureOccurred && refreshing)
 
         SwipeRefresh(
             state = swipeRefreshState,
@@ -114,7 +53,7 @@ private fun <T : Any> SwipeRefreshLceWidget(
             },
             indicator = swipeRefreshIndicator
         ) {
-            content(it, swipeGestureOccurred)
+            content(data, refreshing && !swipeGestureOccurred)
         }
     }
 }

@@ -1,5 +1,6 @@
 package me.aartikov.replica.single
 
+import me.aartikov.replica.common.AbstractLoadable
 import me.aartikov.replica.common.CombinedLoadingError
 
 /**
@@ -7,10 +8,10 @@ import me.aartikov.replica.common.CombinedLoadingError
  * In opposite to [ReplicaState] this class contains very limited set of fields.
  */
 data class Loadable<out T : Any>(
-    val loading: Boolean = false,
-    val data: T? = null,
-    val error: CombinedLoadingError? = null
-)
+    override val loading: Boolean = false,
+    override val data: T? = null,
+    override val error: CombinedLoadingError? = null
+) : AbstractLoadable<T>
 
 /**
  * Transforms data with a [transform] functions.
