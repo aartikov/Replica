@@ -193,6 +193,31 @@ internal class ReplicaClientImpl(
         }
     }
 
+    override suspend fun onEachPagedReplica(
+        includeChildrenOfKeyedReplicas: Boolean,
+        action: suspend PagedPhysicalReplica<*, *>.() -> Unit
+    ) {
+        // make a copy for concurrent modification
+        val pagedReplicasCopy = pagedReplicasLock.withLock {
+            HashSet(pagedReplicas)
+        }
+
+        pagedReplicasCopy.forEach {
+            it.action()
+        }
+
+        // TODO
+        /*
+        if (includeChildrenOfKeyedReplicas) {
+            onEachKeyedPagedReplica {
+                onEachPagedReplica {
+                    action()
+                }
+            }
+        }
+         */
+    }
+
     private fun <T : Any> createReplicaInternal(
         name: String,
         settings: ReplicaSettings,

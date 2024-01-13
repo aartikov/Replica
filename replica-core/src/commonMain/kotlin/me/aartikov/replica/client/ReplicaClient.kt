@@ -133,6 +133,16 @@ interface ReplicaClient {
     suspend fun onEachKeyedReplica(
         action: suspend KeyedPhysicalReplica<*, *>.() -> Unit
     )
+
+    /**
+     * Executes an [action] on each [PagedPhysicalReplica].
+     *
+     * @param includeChildrenOfKeyedReplicas specifies if an action will be executed on children of keyed replicas.
+     */
+    suspend fun onEachPagedReplica(
+        includeChildrenOfKeyedReplicas: Boolean = true,
+        action: suspend PagedPhysicalReplica<*, *>.() -> Unit
+    )
 }
 
 /**
