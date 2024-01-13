@@ -102,6 +102,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
 
     private fun loadNextImpl() {
         val currentData = replicaStateFlow.value.data ?: return
+        if (!currentData.value.hasNextPage) return
         val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingPreviousPage
         dataLoader.loadNextPage(cancel, currentData.valueWithOptimisticUpdates)
@@ -109,6 +110,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
 
     private fun loadPreviousImpl() {
         val currentData = replicaStateFlow.value.data ?: return
+        if (!currentData.value.hasPreviousPage) return
         val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
         dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)

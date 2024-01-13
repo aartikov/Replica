@@ -36,6 +36,7 @@ import me.aartikov.replica.advanced_sample.core.widget.PagedLoadingProgress
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
+import me.aartikov.replica.advanced_sample.features.dudes.domain.DudesPage
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedData
@@ -180,10 +181,9 @@ class FakeDudesComponent : DudesComponent {
             loadingStatus = PagedLoadingStatus.LoadingFirstPage,
             data = PagedData(
                 pages = listOf(
-                    Page(
+                    DudesPage(
                         items = Dude.FAKE_LIST,
-                        hasNextPage = false,
-                        hasPreviousPage = false
+                        nextPageCursor = "12345"
                     )
                 )
             )

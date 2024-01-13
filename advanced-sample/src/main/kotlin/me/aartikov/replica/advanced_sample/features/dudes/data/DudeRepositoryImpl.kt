@@ -1,8 +1,8 @@
 package me.aartikov.replica.advanced_sample.features.dudes.data
 
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
+import me.aartikov.replica.advanced_sample.features.dudes.domain.DudesPage
 import me.aartikov.replica.client.ReplicaClient
-import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedFetcher
 import me.aartikov.replica.paged.PagedPhysicalReplica
@@ -17,32 +17,31 @@ class DudeRepositoryImpl(
         private const val PAGE_SIZE = 20
     }
 
-    override val dudesReplica: PagedPhysicalReplica<Dude, Page<Dude>> =
+    override val dudesReplica: PagedPhysicalReplica<Dude, DudesPage> =
         replicaClient.createPagedReplica(
             name = "dudes",
             settings = PagedReplicaSettings(staleTime = null),
             idExtractor = { it.id },
-            fetcher = object : PagedFetcher<Dude, Page<Dude>> {
+            fetcher = object : PagedFetcher<Dude, DudesPage> {
 
-                override suspend fun fetchFirstPage(): Page<Dude> {
+                override suspend fun fetchFirstPage(): DudesPage {
                     val dudes = api.getRandomDudes(count = PAGE_SIZE).map { it.toDomain() }
-                    return Page(
+                    return DudesPage(
                         items = dudes,
-                        hasNextPage = dudes.size >= PAGE_SIZE,
-                        hasPreviousPage = false
+                        nextPageCursor = if (dudes.size >= PAGE_SIZE) "a" else null,
                     )
                 }
 
-                override suspend fun fetchNextPage(currentData: PagedData<Dude, Page<Dude>>): Page<Dude> {
-                    val lastPage = currentData.items.size >= 300
-                    val dudes = api.getRandomDudes(
-                        count = if (lastPage) PAGE_SIZE / 2 else PAGE_SIZE
-                    ).map { it.toDomain() }
+                override suspend fun fetchNextPage(currentData: PagedData<Dude, DudesPage>): DudesPage {
+                    val nextPageCursor = currentData.pages.last().nextPageCursor
+                        ?: throw IllegalArgumentException("nextPageCursor can't be null here")
 
-                    return Page(
+                    val lastPage = nextPageCursor.length == 10
+                    val dudes = api.getRandomDudes(count = PAGE_SIZE).map { it.toDomain() }
+
+                    return DudesPage(
                         items = dudes,
-                        hasNextPage = dudes.size >= PAGE_SIZE,
-                        hasPreviousPage = true
+                        nextPageCursor = if (lastPage) null else nextPageCursor + "a",
                     )
                 }
             }
