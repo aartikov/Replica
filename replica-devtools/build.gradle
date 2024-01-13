@@ -34,6 +34,9 @@ android {
 }
 
 afterEvaluate {
+    tasks.findByPath(':replica-devtools:processDebugJavaRes')
+            .dependsOn(tasks.findByPath(':replica-devtools-client:jsBrowserDistribution'))
+
     tasks.findByPath(':replica-devtools:processReleaseJavaRes')
             .dependsOn(tasks.findByPath(':replica-devtools-client:jsBrowserDistribution'))
 }
