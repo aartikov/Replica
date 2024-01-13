@@ -9,6 +9,7 @@ import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.algebra.utils.ReplicaProvider
 import me.aartikov.replica.common.CombinedLoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import org.junit.Assert.assertEquals
@@ -61,10 +62,10 @@ class AssociateReplicaTest {
     fun `observes error state when error throws`() = runTest {
         val data = "abcde"
         val replica = replicaProvider.replica(fetcher = { data })
-        val error = LoadingFailedException()
+        val exception = LoadingFailedException()
 
         val associatedReplica = associate { key: Int ->
-            replica.map { it.getOrElse(key) { throw  error } }
+            replica.map { it.getOrElse(key) { throw  exception } }
         }
         val key = data.length + 1
         val observer = associatedReplica.observe(
@@ -75,7 +76,10 @@ class AssociateReplicaTest {
         associatedReplica.refresh(key)
         runCurrent()
 
-        assertEquals(Loadable<String>(error = CombinedLoadingError(error)), observer.currentState)
+        assertEquals(
+            Loadable<String>(error = CombinedLoadingError(LoadingReason.Normal, exception)),
+            observer.currentState
+        )
     }
 
     @Test

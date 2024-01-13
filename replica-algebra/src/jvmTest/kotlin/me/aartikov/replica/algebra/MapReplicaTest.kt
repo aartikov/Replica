@@ -10,6 +10,7 @@ import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.algebra.utils.ReplicaProvider
 import me.aartikov.replica.common.CombinedLoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.currentState
@@ -57,14 +58,14 @@ class MapReplicaTest {
     @Test
     fun `observes error state with mapped data after throwing error`() = runTest {
         var isFirstRefresh = true
-        val error = LoadingFailedException()
+        val exception = LoadingFailedException()
         val replica = replicaProvider.replica(
             fetcher = {
                 if (isFirstRefresh) {
                     isFirstRefresh = false
                     ReplicaProvider.TEST_DATA
                 } else {
-                    throw  error
+                    throw  exception
                 }
             }
         )
@@ -80,7 +81,7 @@ class MapReplicaTest {
         assertEquals(
             Loadable(
                 data = transform(ReplicaProvider.TEST_DATA),
-                error = CombinedLoadingError(error)
+                error = CombinedLoadingError(LoadingReason.Normal, exception)
             ),
             observer.currentState
         )

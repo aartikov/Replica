@@ -10,6 +10,8 @@ import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.algebra.utils.ReplicaProvider
 import me.aartikov.replica.common.CombinedLoadingError
+import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import org.junit.Assert.assertEquals
@@ -121,8 +123,8 @@ class CombineReplicaTest {
     @Test
     fun `error, no data if one of replicas throws error`() = runTest {
         val data2 = "test2"
-        val error = LoadingFailedException()
-        val replica1 = replicaProvider.replica(fetcher = { throw error })
+        val exception = LoadingFailedException()
+        val replica1 = replicaProvider.replica(fetcher = { throw exception })
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
@@ -130,15 +132,18 @@ class CombineReplicaTest {
         combinedReplica.refresh()
         runCurrent()
 
-        assertEquals(Loadable<String>(error = CombinedLoadingError(error)), observer.currentState)
+        assertEquals(
+            Loadable<String>(error = CombinedLoadingError(LoadingReason.Normal, exception)),
+            observer.currentState
+        )
     }
 
     @Test
     fun `error, part of data if one of replicas throws error and replicas combined eagerly`() =
         runTest {
             val data2 = "test2"
-            val error = LoadingFailedException()
-            val replica1 = replicaProvider.replica(fetcher = { throw error })
+            val exception = LoadingFailedException()
+            val replica1 = replicaProvider.replica(fetcher = { throw exception })
             val replica2 = replicaProvider.replica(fetcher = { data2 })
 
             val combinedReplica = combineEager(replica1, replica2) { d1, d2 -> d1 + d2 }
@@ -147,25 +152,29 @@ class CombineReplicaTest {
             runCurrent()
 
             assertEquals(
-                Loadable(data = "null$data2", error = CombinedLoadingError(error)),
+                Loadable(data = "null$data2", error = CombinedLoadingError(LoadingReason.Normal, exception)),
                 observer.currentState
             )
         }
 
     @Test
     fun `multiple errors, if multiple replicas throws error`() = runTest {
-        val error1 = LoadingFailedException("error1")
-        val error2 = LoadingFailedException("error2")
-        val replica1 = replicaProvider.replica(fetcher = { throw error1 })
-        val replica2 = replicaProvider.replica(fetcher = { throw error2 })
+        val exception1 = LoadingFailedException("error1")
+        val exception2 = LoadingFailedException("error2")
+        val replica1 = replicaProvider.replica(fetcher = { throw exception1 })
+        val replica2 = replicaProvider.replica(fetcher = { throw exception2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
         val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         runCurrent()
 
+        val expectedErrors = listOf(
+            LoadingError(LoadingReason.Normal, exception1),
+            LoadingError(LoadingReason.Normal, exception2)
+        )
         assertEquals(
-            Loadable<String>(error = CombinedLoadingError(listOf(error1, error2))),
+            Loadable<String>(error = CombinedLoadingError(expectedErrors)),
             observer.currentState
         )
     }
