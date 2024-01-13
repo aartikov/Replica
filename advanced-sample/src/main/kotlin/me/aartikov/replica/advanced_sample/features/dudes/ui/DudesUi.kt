@@ -1,5 +1,6 @@
 package me.aartikov.replica.advanced_sample.features.dudes.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -74,7 +75,8 @@ fun DudesUi(
                         loadingStatus = dudesState.loadingStatus,
                         dudes = dudes,
                         hasError = dudesState.error != null,
-                        onLoadNext = component::onLoadNext
+                        onLoadNext = component::onLoadNext,
+                        onSwitch = component::onSwitch
                     )
                 } else {
                     EmptyPlaceholder(
@@ -94,6 +96,7 @@ private fun DudesListContent(
     dudes: DudesContent,
     hasError: Boolean,
     onLoadNext: () -> Unit,
+    onSwitch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
@@ -114,7 +117,7 @@ private fun DudesListContent(
             items = dudes.items,
             key = { it.id }
         ) { dude ->
-            DudeItem(dude)
+            DudeItem(dude, onClick = onSwitch)
 
             if (dude !== dudes.items.lastOrNull()) {
                 Divider()
@@ -132,11 +135,13 @@ private fun DudesListContent(
 @Composable
 private fun DudeItem(
     dude: Dude,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -180,6 +185,8 @@ class FakeDudesComponent : DudesComponent {
             data = DudesContent(Dude.FAKE_LIST, hasNextPage = false)
         )
     )
+
+    override fun onSwitch() = Unit
 
     override fun onRefresh() = Unit
 

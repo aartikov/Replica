@@ -8,6 +8,8 @@ interface DudesComponent {
 
     val dudesState: StateFlow<Paged<DudesContent>>
 
+    fun onSwitch()
+
     fun onRefresh()
 
     fun onRetryClick()
