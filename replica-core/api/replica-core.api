@@ -380,8 +380,8 @@ public abstract interface class me/aartikov/replica/keyed/KeyedStorage {
 }
 
 public final class me/aartikov/replica/keyed/WithOptimisticUpdateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour {
@@ -549,6 +549,11 @@ public final class me/aartikov/replica/keyed_paged/PagedClearPolicy {
 	public fun hashCode ()I
 	public final fun isPrivilegedReplica ()Lkotlin/jvm/functions/Function1;
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class me/aartikov/replica/keyed_paged/WithOptimisticUpdateKt {
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour {
@@ -857,6 +862,11 @@ public final class me/aartikov/replica/paged/PagedReplicaState$Companion {
 	public final fun createEmpty ()Lme/aartikov/replica/paged/PagedReplicaState;
 }
 
+public final class me/aartikov/replica/paged/WithOtimisticUptateKt {
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
 public abstract interface class me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
 	public abstract fun setup (Lme/aartikov/replica/paged/PagedPhysicalReplica;)V
 }
@@ -1121,8 +1131,8 @@ public abstract interface class me/aartikov/replica/single/Storage {
 }
 
 public final class me/aartikov/replica/single/WithOtimisticUptateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/common/OptimisticUpdate;Lme/aartikov/replica/single/PhysicalReplica;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/single/behaviour/ReplicaBehaviour {
