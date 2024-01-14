@@ -104,21 +104,21 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     /**
      * Begins optimistic update. Observed data will be transformed by [update] function immediately.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
      * Commits optimistic update. Replica forgets previous data.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
-     * Rollbacks optimistic update. Observed data will be replaced to the previous one.
+     * Rollbacks optimistic update. Observed data will be replaced to the originaal one.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>)
 }

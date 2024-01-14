@@ -109,21 +109,21 @@ interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedR
     /**
      * Begins optimistic update for a given [key]. Observed data will be transformed by [update] function immediately.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
 
     /**
      * Commits optimistic update for a given [key]. Child replica forgets previous data.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
 
     /**
-     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the previous one.
+     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the originaal one.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] helper function.
+     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
     suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
 

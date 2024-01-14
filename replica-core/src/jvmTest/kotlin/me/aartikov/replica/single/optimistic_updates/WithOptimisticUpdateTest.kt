@@ -43,9 +43,8 @@ class WithOptimisticUpdateTest {
 
         replica.refresh()
         runCurrent()
-        withOptimisticUpdate(
+        replica.withOptimisticUpdate(
             optimisticUpdate,
-            replica,
             onSuccess = { isSuccess = true },
             onError = { isError = true },
             onCanceled = { isCanceled = true },
@@ -78,9 +77,8 @@ class WithOptimisticUpdateTest {
         replica.refresh()
         runCurrent()
         try {
-            withOptimisticUpdate(
+            replica.withOptimisticUpdate(
                 update = optimisticUpdate,
-                replica = replica,
                 onSuccess = { isSuccess = true },
                 onError = { isError = true },
                 onCanceled = { isCanceled = true },
@@ -112,9 +110,8 @@ class WithOptimisticUpdateTest {
         replica.refresh()
         runCurrent()
         launch {
-            withOptimisticUpdate(
+            replica.withOptimisticUpdate(
                 update = optimisticUpdate,
-                replica = replica,
                 onSuccess = { isSuccess = true },
                 onError = { isError = true },
                 onCanceled = { isCanceled = true },
@@ -140,9 +137,8 @@ class WithOptimisticUpdateTest {
         val observer = replica.observe(TestScope(), MutableStateFlow(true))
         runCurrent()
         launch {
-            withOptimisticUpdate(
-                update = optimisticUpdate,
-                replica = replica,
+            replica.withOptimisticUpdate(
+                update = optimisticUpdate
             ) {
                 delay(DEFAULT_DELAY)
             }
@@ -162,9 +158,8 @@ class WithOptimisticUpdateTest {
         val observer = replica.observe(TestScope(), MutableStateFlow(true))
         runCurrent()
         launch {
-            withOptimisticUpdate(
-                update = optimisticUpdate,
-                replica = replica,
+            replica.withOptimisticUpdate(
+                update = optimisticUpdate
             ) {
                 delay(DEFAULT_DELAY)
             }
@@ -185,9 +180,8 @@ class WithOptimisticUpdateTest {
         runCurrent()
         launch {
             try {
-                withOptimisticUpdate(
-                    update = optimisticUpdate,
-                    replica = replica,
+                replica.withOptimisticUpdate(
+                    update = optimisticUpdate
                 ) {
                     delay(DEFAULT_DELAY)
                     throw LoadingFailedException()
@@ -211,9 +205,8 @@ class WithOptimisticUpdateTest {
         runCurrent()
         updates.forEach { update ->
             launch {
-                withOptimisticUpdate(
-                    update = update,
-                    replica = replica,
+                replica.withOptimisticUpdate(
+                    update = update
                 ) {
                     // Nothing
                 }
@@ -233,18 +226,16 @@ class WithOptimisticUpdateTest {
         replica.refresh()
         runCurrent()
         launch {
-            withOptimisticUpdate(
-                update = { firstUpdateData },
-                replica = replica,
+            replica.withOptimisticUpdate(
+                update = { firstUpdateData }
             ) {
                 delay(DEFAULT_DELAY)
             }
         }
         delay(DEFAULT_DELAY / 2)
         try {
-            withOptimisticUpdate(
+            replica.withOptimisticUpdate(
                 update = { secondUpdateData },
-                replica = replica,
             ) {
                 delay(DEFAULT_DELAY)
                 throw LoadingFailedException()
@@ -266,18 +257,16 @@ class WithOptimisticUpdateTest {
         replica.refresh()
         runCurrent()
         launch {
-            withOptimisticUpdate(
-                update = { firstUpdateData },
-                replica = replica,
+            replica.withOptimisticUpdate(
+                update = { firstUpdateData }
             ) {
                 delay(DEFAULT_DELAY)
             }
         }
         delay(DEFAULT_DELAY / 2)
         launch {
-            withOptimisticUpdate(
-                update = { secondUpdateData },
-                replica = replica,
+            replica.withOptimisticUpdate(
+                update = { secondUpdateData }
             ) {
                 delay(DEFAULT_DELAY)
                 cancel()
@@ -300,15 +289,14 @@ class WithOptimisticUpdateTest {
         runCurrent()
         for (i in 0 until updatesCount) {
             launch {
-                withOptimisticUpdate(
+                replica.withOptimisticUpdate(
                     update = {
                         StringBuilder(it)
                             .also { stringBuilder ->
                                 stringBuilder[i] = it[i].uppercaseChar()
                             }
                             .toString()
-                    },
-                    replica = replica,
+                    }
                 ) {
                     delay(DEFAULT_DELAY)
                 }
@@ -331,15 +319,14 @@ class WithOptimisticUpdateTest {
         runCurrent()
         for (i in 0 until updatesCount) {
             launch {
-                withOptimisticUpdate(
+                replica.withOptimisticUpdate(
                     update = {
                         StringBuilder(it)
                             .also { stringBuilder ->
                                 stringBuilder[i] = it[i].uppercaseChar()
                             }
                             .toString()
-                    },
-                    replica = replica,
+                    }
                 ) {
                     delay(DEFAULT_DELAY)
                 }
@@ -364,7 +351,7 @@ class WithOptimisticUpdateTest {
         for (i in 0 until updatesCount) {
             launch {
                 try {
-                    withOptimisticUpdate(
+                    replica.withOptimisticUpdate(
                         update = {
                             if (fails[i]) {
                                 throw LoadingFailedException()
@@ -375,8 +362,7 @@ class WithOptimisticUpdateTest {
                                     }
                                     .toString()
                             }
-                        },
-                        replica = replica,
+                        }
                     ) {
                         delay(DEFAULT_DELAY)
                     }

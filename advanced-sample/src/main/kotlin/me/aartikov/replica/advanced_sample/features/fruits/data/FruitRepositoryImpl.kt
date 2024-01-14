@@ -29,7 +29,7 @@ class FruitRepositoryImpl(
             }
         }
 
-        withOptimisticUpdate(updateFruitLiked, fruitsReplica) {
+        fruitsReplica.withOptimisticUpdate(updateFruitLiked) {
             if (liked) {
                 api.likeFruit(fruitId.value)
             } else {
