@@ -1,12 +1,12 @@
 package me.aartikov.replica.paged
 
-interface PagedFetcher<T : Any, P : Page<T>> {
+interface PagedFetcher<I : Any, P : Page<I>> {
 
     suspend fun fetchFirstPage(): P
 
-    suspend fun fetchNextPage(currentData: PagedData<T, P>): P
+    suspend fun fetchNextPage(currentData: PagedData<I, P>): P
 
-    suspend fun fetchPreviousPage(currentData: PagedData<T, P>): P {
+    suspend fun fetchPreviousPage(currentData: PagedData<I, P>): P {
         throw UnsupportedOperationException()
     }
 }

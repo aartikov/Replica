@@ -3,12 +3,12 @@ package me.aartikov.replica.paged
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
-interface PagedReplica<out T : Any, out P : Page<T>> {
+interface PagedReplica<out T : Any> {
 
     fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<T, P>
+    ): PagedReplicaObserver<T>
 
     fun refresh()
 

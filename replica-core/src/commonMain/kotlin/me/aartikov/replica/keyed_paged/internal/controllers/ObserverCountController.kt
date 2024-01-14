@@ -10,11 +10,11 @@ import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 
-internal class ObserverCountController<T : Any, P : Page<T>>(
+internal class ObserverCountController<I : Any, P : Page<I>>(
     private val keyedPagedReplicaStateFlow: MutableStateFlow<KeyedPagedReplicaState>
 ) {
 
-    fun setupObserverCounting(replica: PagedPhysicalReplica<T, P>) {
+    fun setupObserverCounting(replica: PagedPhysicalReplica<I, P>) {
         replica.eventFlow
             .filterIsInstance<ReplicaEvent.ObserverCountChangedEvent>()
             .onEach { event ->

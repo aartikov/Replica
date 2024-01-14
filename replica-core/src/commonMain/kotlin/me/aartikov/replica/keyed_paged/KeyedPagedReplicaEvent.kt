@@ -7,15 +7,15 @@ import me.aartikov.replica.paged.PagedPhysicalReplica
 /**
  * Notifies that something happened in [KeyedPagedPhysicalReplica].
  */
-sealed interface KeyedPagedReplicaEvent<K : Any, T : Any, P : Page<T>> {
+sealed interface KeyedPagedReplicaEvent<K : Any, I : Any, P : Page<I>> {
 
-    class ReplicaCreated<K : Any, T : Any, P : Page<T>>(
+    class ReplicaCreated<K : Any, I : Any, P : Page<I>>(
         val key: K,
-        val replica: PagedPhysicalReplica<T, P>
-    ) : KeyedPagedReplicaEvent<K, T, P>
+        val replica: PagedPhysicalReplica<I, P>
+    ) : KeyedPagedReplicaEvent<K, I, P>
 
-    class ReplicaRemoved<K : Any, T : Any, P : Page<T>>(
+    class ReplicaRemoved<K : Any, I : Any, P : Page<I>>(
         val key: K,
         val replicaId: ReplicaId
-    ) : KeyedPagedReplicaEvent<K, T, P>
+    ) : KeyedPagedReplicaEvent<K, I, P>
 }

@@ -8,6 +8,7 @@ import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.single.ReplicaState
@@ -20,7 +21,8 @@ import me.aartikov.replica.single.ReplicaState
  * has a richer API.
  * [KeyedPagedReplica] has minimalistic read-only API, whereas [KeyedPagedPhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
  */
-interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedReplica<K, T, P> {
+interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
+    KeyedPagedReplica<K, PagedData<I, P>> {
 
     /**
      * Unique identifier
@@ -35,7 +37,7 @@ interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedR
     /**
      * Settings, see: [KeyedPagedReplicaSettings]
      */
-    val settings: KeyedPagedReplicaSettings<K, T, P>
+    val settings: KeyedPagedReplicaSettings<K, I, P>
 
     /**
      * Tags that can be used for bulk operations
@@ -55,12 +57,12 @@ interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedR
     /**
      * Notifies that some [KeyedPagedReplicaEvent] has occurred.
      */
-    val eventFlow: Flow<KeyedPagedReplicaEvent<K, T, P>>
+    val eventFlow: Flow<KeyedPagedReplicaEvent<K, I, P>>
 
     /**
      * Returns current [ReplicaState] for a given [key].
      */
-    fun getCurrentState(key: K): PagedReplicaState<T, P>?
+    fun getCurrentState(key: K): PagedReplicaState<I, P>?
 
     /**
      * Replace current data with new [data] for a given [key].
@@ -121,7 +123,7 @@ interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedR
     suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
 
     /**
-     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the originaal one.
+     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the original one.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
@@ -130,20 +132,20 @@ interface KeyedPagedPhysicalReplica<K : Any, T : Any, P : Page<T>> : KeyedPagedR
     /**
      * Executes an [action] on a [PagedPhysicalReplica] with a given [key]. If the replica doesn't exist it is created.
      */
-    suspend fun onPagedReplica(key: K, action: suspend PagedPhysicalReplica<T, P>.() -> Unit)
+    suspend fun onPagedReplica(key: K, action: suspend PagedPhysicalReplica<I, P>.() -> Unit)
 
     /**
      * Executes an [action] on a [PagedPhysicalReplica] with a given [key]. If the replica doesn't exist the action is not executed.
      */
-    suspend fun onExistingPagedReplica(key: K, action: suspend PagedPhysicalReplica<T, P>.() -> Unit)
+    suspend fun onExistingPagedReplica(key: K, action: suspend PagedPhysicalReplica<I, P>.() -> Unit)
 
     /**
      * Executes an [action] on each child [PagedPhysicalReplica].
      */
-    suspend fun onEachPagedReplica(action: suspend PagedPhysicalReplica<T, P>.(K) -> Unit)
+    suspend fun onEachPagedReplica(action: suspend PagedPhysicalReplica<I, P>.(K) -> Unit)
 }
 
 /**
- * Returns current [KeyedReplicaState].
+ * Returns current [KeyedPagedReplicaState].
  */
-val <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.currentState get() = stateFlow.value
+val <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.currentState get() = stateFlow.value

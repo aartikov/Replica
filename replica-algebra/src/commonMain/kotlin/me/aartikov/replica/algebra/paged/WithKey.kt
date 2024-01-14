@@ -1,37 +1,36 @@
-package me.aartikov.replica.algebra
+package me.aartikov.replica.algebra.paged
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.keyed_paged.KeyedPagedReplica
-import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedReplica
 import me.aartikov.replica.paged.PagedReplicaObserver
 
 /**
  * Converts [KeyedPagedReplica] to [PagedReplica] by fixing a key.
  */
-fun <K : Any, T : Any, P : Page<T>> KeyedPagedReplica<K, T, P>.withKey(key: K): PagedReplica<T, P> {
-    return WithKeyPagedReplica(this, MutableStateFlow(key))
+fun <K : Any, T : Any> KeyedPagedReplica<K, T>.withKey(key: K): PagedReplica<T> {
+    return WithKeyReplica(this, MutableStateFlow(key))
 }
 
 /**
  * Converts [KeyedPagedReplica] to [PagedReplica] by passing [StateFlow] with dynamic key.
  */
-fun <K : Any, T : Any, P : Page<T>> KeyedPagedReplica<K, T, P>.withKey(keyFlow: StateFlow<K?>): PagedReplica<T, P> {
-    return WithKeyPagedReplica(this, keyFlow)
+fun <K : Any, T : Any> KeyedPagedReplica<K, T>.withKey(keyFlow: StateFlow<K?>): PagedReplica<T> {
+    return WithKeyReplica(this, keyFlow)
 }
 
-private class WithKeyPagedReplica<K : Any, T : Any, P : Page<T>>(
-    private val keyedPagedReplica: KeyedPagedReplica<K, T, P>,
+private class WithKeyReplica<K : Any, T : Any>(
+    private val keyedReplica: KeyedPagedReplica<K, T>,
     private val keyFlow: StateFlow<K?>
-) : PagedReplica<T, P> {
+) : PagedReplica<T> {
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<T, P> {
-        return keyedPagedReplica.observe(
+    ): PagedReplicaObserver<T> {
+        return keyedReplica.observe(
             observerCoroutineScope,
             observerActive,
             keyFlow
@@ -40,21 +39,21 @@ private class WithKeyPagedReplica<K : Any, T : Any, P : Page<T>>(
 
     override fun refresh() {
         val key = keyFlow.value ?: return
-        keyedPagedReplica.refresh(key)
+        keyedReplica.refresh(key)
     }
 
     override fun revalidate() {
         val key = keyFlow.value ?: return
-        keyedPagedReplica.revalidate(key)
+        keyedReplica.revalidate(key)
     }
 
     override fun loadNext() {
         val key = keyFlow.value ?: return
-        keyedPagedReplica.loadNext(key)
+        keyedReplica.loadNext(key)
     }
 
     override fun loadPrevious() {
         val key = keyFlow.value ?: return
-        keyedPagedReplica.loadPrevious(key)
+        keyedReplica.loadPrevious(key)
     }
 }

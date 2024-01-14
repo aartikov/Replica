@@ -1,4 +1,4 @@
-package me.aartikov.replica.algebra
+package me.aartikov.replica.algebra.paged
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -14,36 +14,37 @@ import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.LoadingReason
-import me.aartikov.replica.keyed.KeyedReplica
-import me.aartikov.replica.single.Loadable
-import me.aartikov.replica.single.Replica
-import me.aartikov.replica.single.ReplicaObserver
+import me.aartikov.replica.keyed_paged.KeyedPagedReplica
+import me.aartikov.replica.paged.Paged
+import me.aartikov.replica.paged.PagedLoadingStatus
+import me.aartikov.replica.paged.PagedReplica
+import me.aartikov.replica.paged.PagedReplicaObserver
 
 /**
- * Transforms replica data with a [transform] function.
+ * Transforms paged replica data with a [transform] function.
  */
-fun <T : Any, R : Any> Replica<T>.map(transform: (T) -> R): Replica<R> {
+fun <T : Any, R : Any> PagedReplica<T>.map(transform: (T) -> R): PagedReplica<R> {
     return MappedReplica(this, transform)
 }
 
 /**
  * Transforms keyed replica data with a [transform] function.
  */
-fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (T) -> R): KeyedReplica<K, R> {
-    return associate { key ->
+fun <K : Any, T : Any, R : Any> KeyedPagedReplica<K, T>.map(transform: (T) -> R): KeyedPagedReplica<K, R> {
+    return associatePaged { key ->
         withKey(key).map(transform)
     }
 }
 
 private class MappedReplica<T : Any, R : Any>(
-    private val originalReplica: Replica<T>,
+    private val originalReplica: PagedReplica<T>,
     private val transform: (T) -> R
-) : Replica<R> {
+) : PagedReplica<R> {
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<R> {
+    ): PagedReplicaObserver<R> {
         val originalObserver = originalReplica.observe(
             observerCoroutineScope,
             observerActive
@@ -64,8 +65,12 @@ private class MappedReplica<T : Any, R : Any>(
         originalReplica.revalidate()
     }
 
-    override suspend fun getData(forceRefresh: Boolean): R {
-        return originalReplica.getData(forceRefresh).let(transform)
+    override fun loadNext() {
+        originalReplica.loadNext()
+    }
+
+    override fun loadPrevious() {
+        originalReplica.loadPrevious()
     }
 }
 
@@ -77,12 +82,12 @@ private class MappingResult<T : Any, R : Any>(
 
 private class MappedReplicaObserver<T : Any, R : Any>(
     private val coroutineScope: CoroutineScope,
-    private val originalObserver: ReplicaObserver<T>,
+    private val originalObserver: PagedReplicaObserver<T>,
     private val transform: (T) -> R
-) : ReplicaObserver<R> {
+) : PagedReplicaObserver<R> {
 
-    private val _stateFlow = MutableStateFlow(Loadable<R>())
-    override val stateFlow: StateFlow<Loadable<R>> = _stateFlow.asStateFlow()
+    private val _stateFlow = MutableStateFlow(Paged<R>())
+    override val stateFlow: StateFlow<Paged<R>> = _stateFlow.asStateFlow()
 
     private val _loadingErrorFlow = MutableSharedFlow<LoadingError>()
     override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()
@@ -104,8 +109,8 @@ private class MappedReplicaObserver<T : Any, R : Any>(
                 val mappingResult = mapState(state, cachedMappingResult)
                 cachedMappingResult = mappingResult
 
-                _stateFlow.value = Loadable(
-                    loading = state.loading,
+                _stateFlow.value = Paged(
+                    loadingStatus = state.loadingStatus,
                     data = mappingResult.data,
                     error = if (mappingResult.exception != null) {
                         CombinedLoadingError(LoadingReason.Normal, mappingResult.exception)
@@ -114,7 +119,7 @@ private class MappedReplicaObserver<T : Any, R : Any>(
                     }
                 )
 
-                if (mappingResult.exception != null && !state.loading) {
+                if (mappingResult.exception != null && state.loadingStatus == PagedLoadingStatus.None) {
                     _loadingErrorFlow.emit(LoadingError(LoadingReason.Normal, mappingResult.exception))
                 }
             }
@@ -122,7 +127,7 @@ private class MappedReplicaObserver<T : Any, R : Any>(
     }
 
     private fun mapState(
-        state: Loadable<T>,
+        state: Paged<T>,
         cachedResult: MappingResult<T, R>?
     ): MappingResult<T, R> {
         val originalData = state.data

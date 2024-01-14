@@ -3,19 +3,19 @@ package me.aartikov.replica.paged
 import me.aartikov.replica.common.AbstractLoadable
 import me.aartikov.replica.common.CombinedLoadingError
 
-data class Paged<out T : Any, out P : Page<T>>(
+data class Paged<out T : Any>(
     val loadingStatus: PagedLoadingStatus = PagedLoadingStatus.None,
-    override val data: PagedData<T, P>? = null,
+    override val data: T? = null,
     override val error: CombinedLoadingError? = null
-) : AbstractLoadable<PagedData<T, P>> {
+) : AbstractLoadable<T> {
 
     override val loading: Boolean
         get() = loadingStatus == PagedLoadingStatus.LoadingFirstPage
 }
 
-fun <T : Any, P : Page<T>, TR : Any, PR : Page<TR>> Paged<T, P>.mapData(
-    transform: (PagedData<T, P>) -> PagedData<TR, PR>
-): Paged<TR, PR> {
+fun <T : Any, R : Any> Paged<T>.mapData(
+    transform: (T) -> R
+): Paged<R> {
     return Paged(
         loadingStatus = loadingStatus, data = data?.let { transform(it) }, error = error
     )

@@ -11,7 +11,7 @@ import me.aartikov.replica.paged.Page
  *
  * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
  */
-suspend inline fun <K : Any, T : Any, P : Page<T>, R> KeyedPagedPhysicalReplica<K, T, P>.withOptimisticUpdate(
+suspend inline fun <K : Any, I : Any, P : Page<I>, R> KeyedPagedPhysicalReplica<K, I, P>.withOptimisticUpdate(
     update: OptimisticUpdate<List<P>>,
     key: K,
     noinline onSuccess: (suspend () -> Unit)? = null,

@@ -8,10 +8,10 @@ import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaState
 
-internal class ClearingController<T : Any, P : Page<T>>(
+internal class ClearingController<I : Any, P : Page<I>>(
     private val dispatcher: CoroutineDispatcher,
-    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
-    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<T, P>>,
+    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
+    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<I, P>>,
 ) {
 
     suspend fun clear() {

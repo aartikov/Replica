@@ -1,6 +1,6 @@
 package me.aartikov.replica.simple_sample.features.pokemons
 
-import me.aartikov.replica.algebra.withKey
+import me.aartikov.replica.algebra.paged.withKey
 import me.aartikov.replica.simple_sample.core.network.NetworkApiFactory
 import me.aartikov.replica.simple_sample.features.pokemons.data.PokemonApi
 import me.aartikov.replica.simple_sample.features.pokemons.data.PokemonRepository

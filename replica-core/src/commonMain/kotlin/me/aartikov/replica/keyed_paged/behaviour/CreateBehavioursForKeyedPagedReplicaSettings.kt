@@ -5,9 +5,9 @@ import me.aartikov.replica.keyed_paged.behaviour.standard.LimitChildCount
 import me.aartikov.replica.paged.Page
 
 
-internal fun <K : Any, T : Any, P : Page<T>> createBehavioursForKeyedPagedReplicaSettings(
-    settings: KeyedPagedReplicaSettings<K, T, P>
-) = buildList<KeyedPagedReplicaBehaviour<K, T, P>> {
+internal fun <K : Any, I : Any, P : Page<I>> createBehavioursForKeyedPagedReplicaSettings(
+    settings: KeyedPagedReplicaSettings<K, I, P>
+) = buildList<KeyedPagedReplicaBehaviour<K, I, P>> {
 
     if (settings.maxCount != Int.MAX_VALUE) {
         add(

@@ -9,11 +9,11 @@ import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.time.TimeProvider
 
-internal class OptimisticUpdatesController<T : Any, P : Page<T>>(
+internal class OptimisticUpdatesController<I : Any, P : Page<I>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val idExtractor: ((T) -> Any)?,
-    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>
+    private val idExtractor: ((I) -> Any)?,
+    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>
 ) {
 
     suspend fun beginOptimisticUpdate(update: OptimisticUpdate<List<P>>) {

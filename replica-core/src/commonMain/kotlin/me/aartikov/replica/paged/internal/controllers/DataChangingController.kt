@@ -9,11 +9,11 @@ import me.aartikov.replica.paged.PagedReplicaData
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.time.TimeProvider
 
-internal class DataChangingController<T : Any, P : Page<T>>(
+internal class DataChangingController<I : Any, P : Page<I>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val idExtractor: ((T) -> Any)?,
-    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
+    private val idExtractor: ((I) -> Any)?,
+    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
 ) {
 
     suspend fun setData(data: List<P>) {

@@ -13,7 +13,7 @@ import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.currentState
 import kotlin.time.Duration.Companion.seconds
 
-internal class ChildRemovingController<K : Any, T : Any, P : Page<T>>(
+internal class ChildRemovingController<K : Any, I : Any, P : Page<I>>(
     private val removeReplica: (K) -> Unit
 ) {
 
@@ -21,7 +21,7 @@ internal class ChildRemovingController<K : Any, T : Any, P : Page<T>>(
         private val AdditionalCheckDelay = 0.5.seconds
     }
 
-    fun setupAutoRemoving(key: K, replica: PagedPhysicalReplica<T, P>) {
+    fun setupAutoRemoving(key: K, replica: PagedPhysicalReplica<I, P>) {
 
         // Additional check required to remove "abandoned" child replica. For example:
         //   someKeyedPagedReplica.onPagedReplica(someKey) {
@@ -46,7 +46,7 @@ internal class ChildRemovingController<K : Any, T : Any, P : Page<T>>(
             .launchIn(replica.coroutineScope)
     }
 
-    private val <T : Any, P : Page<T>> PagedReplicaState<T, P>.canBeRemoved: Boolean
+    private val <I : Any, P : Page<I>> PagedReplicaState<I, P>.canBeRemoved: Boolean
         get() = data == null && error == null && loadingStatus == PagedLoadingStatus.None &&
                     observingState.status == ObservingStatus.None
 

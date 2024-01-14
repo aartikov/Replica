@@ -10,7 +10,7 @@ import me.aartikov.replica.common.performOptimisticUpdate
  *
  * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
  */
-suspend inline fun <T : Any, P : Page<T>, R> PagedPhysicalReplica<T, P>.withOptimisticUpdate(
+suspend inline fun <I : Any, P : Page<I>, R> PagedPhysicalReplica<I, P>.withOptimisticUpdate(
     update: OptimisticUpdate<List<P>>,
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,

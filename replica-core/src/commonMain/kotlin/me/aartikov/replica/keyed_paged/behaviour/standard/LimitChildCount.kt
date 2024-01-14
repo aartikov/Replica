@@ -16,17 +16,17 @@ import me.aartikov.replica.paged.currentState
 import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class LimitChildCount<K : Any, T : Any, P : Page<T>>(
+internal class LimitChildCount<K : Any, I : Any, P : Page<I>>(
     private val maxCount: Int,
-    private val clearPolicy: PagedClearPolicy<K, T, P>
-) : KeyedPagedReplicaBehaviour<K, T, P> {
+    private val clearPolicy: PagedClearPolicy<K, I, P>
+) : KeyedPagedReplicaBehaviour<K, I, P> {
 
     companion object {
         private val ClearingDebounceTime = 100.milliseconds
     }
 
     @OptIn(FlowPreview::class)
-    override fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, T, P>) {
+    override fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>) {
         keyedPagedReplica.stateFlow
             // Debounce is used to wait until a just created replica will change state
             .debounce(ClearingDebounceTime.inWholeMilliseconds)
@@ -38,12 +38,12 @@ internal class LimitChildCount<K : Any, T : Any, P : Page<T>>(
             .launchIn(keyedPagedReplica.coroutineScope)
     }
 
-    private suspend fun clearReplicas(keyedPagedReplica: KeyedPagedPhysicalReplica<K, T, P>) {
+    private suspend fun clearReplicas(keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>) {
         val totalCount = keyedPagedReplica.currentState.replicaCount
         val countForRemoving = max(0, totalCount - maxCount)
         if (countForRemoving == 0) return
 
-        val keysWithStateForRemoving = mutableListOf<Pair<K, PagedReplicaState<T, P>>>()
+        val keysWithStateForRemoving = mutableListOf<Pair<K, PagedReplicaState<I, P>>>()
         keyedPagedReplica.onEachPagedReplica { key ->
             val state = currentState
             val removable = state.loadingStatus == PagedLoadingStatus.None

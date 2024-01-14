@@ -19,11 +19,11 @@ import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedFetcher
 
-internal class DataLoader<T : Any, P : Page<T>>(
+internal class DataLoader<I : Any, P : Page<I>>(
     private val coroutineScope: CoroutineScope,
-    private val fetcher: PagedFetcher<T, P>
+    private val fetcher: PagedFetcher<I, P>
 ) {
-    sealed interface Output<out T : Any, out P : Page<T>> {
+    sealed interface Output<out I : Any, out P : Page<I>> {
 
         val reason: LoadingReason
 
@@ -31,12 +31,12 @@ internal class DataLoader<T : Any, P : Page<T>>(
             override val reason: LoadingReason
         ) : Output<Nothing, Nothing>
 
-        sealed interface LoadingFinished<out T : Any, out P : Page<T>> : Output<T, P> {
+        sealed interface LoadingFinished<out I : Any, out P : Page<I>> : Output<I, P> {
 
-            data class Success<out T : Any, out P : Page<T>>(
+            data class Success<out I : Any, out P : Page<I>>(
                 override val reason: LoadingReason,
                 val page: P
-            ) : LoadingFinished<T, P>
+            ) : LoadingFinished<I, P>
 
             data class Canceled(
                 override val reason: LoadingReason
@@ -49,8 +49,8 @@ internal class DataLoader<T : Any, P : Page<T>>(
         }
     }
 
-    private val _outputFlow = MutableSharedFlow<Output<T, P>>(extraBufferCapacity = 1000)
-    val outputFlow: Flow<Output<T, P>> = _outputFlow.asSharedFlow()
+    private val _outputFlow = MutableSharedFlow<Output<I, P>>(extraBufferCapacity = 1000)
+    val outputFlow: Flow<Output<I, P>> = _outputFlow.asSharedFlow()
 
     private val lock = Lock()
     private var loadingJob: Job? = null
@@ -61,13 +61,13 @@ internal class DataLoader<T : Any, P : Page<T>>(
         }
     }
 
-    fun loadNextPage(cancel: Boolean, currentData: PagedData<T, P>) {
+    fun loadNextPage(cancel: Boolean, currentData: PagedData<I, P>) {
         load(cancel, LoadingReason.NextPage) {
             fetcher.fetchNextPage(currentData)
         }
     }
 
-    fun loadPreviousPage(cancel: Boolean, currentData: PagedData<T, P>) {
+    fun loadPreviousPage(cancel: Boolean, currentData: PagedData<I, P>) {
         load(cancel, LoadingReason.PreviousPage) {
             fetcher.fetchPreviousPage(currentData)
         }

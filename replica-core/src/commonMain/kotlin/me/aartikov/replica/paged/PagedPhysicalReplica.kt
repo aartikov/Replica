@@ -8,7 +8,7 @@ import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
 
-interface PagedPhysicalReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
+interface PagedPhysicalReplica<I : Any, P : Page<I>> : PagedReplica<PagedData<I, P>> {
 
     /**
      * Unique identifier
@@ -38,12 +38,12 @@ interface PagedPhysicalReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
     /**
      * Provides [PagedReplicaState] as an observable value.
      */
-    val stateFlow: StateFlow<PagedReplicaState<T, P>>
+    val stateFlow: StateFlow<PagedReplicaState<I, P>>
 
     /**
-     * Notifies that some [ReplicaEvent] has occurred.
+     * Notifies that some [PagedReplicaEvent] has occurred.
      */
-    val eventFlow: Flow<PagedReplicaEvent<T, P>>
+    val eventFlow: Flow<PagedReplicaEvent<I, P>>
 
     /**
      * Replace current data with new [data].
@@ -99,7 +99,7 @@ interface PagedPhysicalReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
     suspend fun commitOptimisticUpdate(update: OptimisticUpdate<List<P>>)
 
     /**
-     * Rollbacks optimistic update. Observed data will be replaced to the originaal one.
+     * Rollbacks optimistic update. Observed data will be replaced to the original one.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
@@ -109,4 +109,4 @@ interface PagedPhysicalReplica<T : Any, P : Page<T>> : PagedReplica<T, P> {
 /**
  * Returns current [PagedReplicaState].
  */
-val <T : Any, P : Page<T>> PagedPhysicalReplica<T, P>.currentState get() = stateFlow.value
+val <I : Any, P : Page<I>> PagedPhysicalReplica<I, P>.currentState get() = stateFlow.value

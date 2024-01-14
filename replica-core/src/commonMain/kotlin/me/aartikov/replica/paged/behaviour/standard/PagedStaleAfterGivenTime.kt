@@ -15,13 +15,13 @@ import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import kotlin.time.Duration
 
-internal class PagedStaleAfterGivenTime<T : Any, P : Page<T>>(
+internal class PagedStaleAfterGivenTime<I : Any, P : Page<I>>(
     private val staleTime: Duration
-) : PagedReplicaBehaviour<T, P> {
+) : PagedReplicaBehaviour<I, P> {
 
     private var staleJob: Job? = null
 
-    override fun setup(replica: PagedPhysicalReplica<T, P>) {
+    override fun setup(replica: PagedPhysicalReplica<I, P>) {
         replica.eventFlow
             .onEach { event ->
                 when (event) {
@@ -38,7 +38,7 @@ internal class PagedStaleAfterGivenTime<T : Any, P : Page<T>>(
             }.launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.relaunchStaleJob(replica: PagedPhysicalReplica<T, P>) {
+    private fun CoroutineScope.relaunchStaleJob(replica: PagedPhysicalReplica<I, P>) {
         staleJob?.cancel()
         staleJob = launch {
             delay(staleTime)

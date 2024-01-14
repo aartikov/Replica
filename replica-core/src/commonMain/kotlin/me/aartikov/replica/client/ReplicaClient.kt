@@ -114,14 +114,14 @@ interface ReplicaClient {
      * @param behaviours allow to add custom behaviours to a replica. See: [PagedReplicaBehaviour].
      * @param fetcher configures how to load data from a network. See: [PagedFetcher].
      */
-    fun <T : Any, P : Page<T>> createPagedReplica(
+    fun <I : Any, P : Page<I>> createPagedReplica(
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag> = emptySet(),
-        idExtractor: ((T) -> Any)?,
-        behaviours: List<PagedReplicaBehaviour<T, P>> = emptyList(),
-        fetcher: PagedFetcher<T, P>
-    ): PagedPhysicalReplica<T, P>
+        idExtractor: ((I) -> Any)?,
+        behaviours: List<PagedReplicaBehaviour<I, P>> = emptyList(),
+        fetcher: PagedFetcher<I, P>
+    ): PagedPhysicalReplica<I, P>
 
     /**
      * Creates a [KeyedPagedPhysicalReplica].
@@ -142,18 +142,18 @@ interface ReplicaClient {
      * @param childBehaviours custom behaviours for child paged replicas.
      * @param fetcher configures how to loads data from a network. See: [KeyedPagedFetcher].
      */
-    fun <K : Any, T : Any, P : Page<T>> createKeyedPagedReplica(
+    fun <K : Any, I : Any, P : Page<I>> createKeyedPagedReplica(
         name: String,
         childName: (K) -> String,
-        settings: KeyedPagedReplicaSettings<K, T, P> = KeyedPagedReplicaSettings(),
+        settings: KeyedPagedReplicaSettings<K, I, P> = KeyedPagedReplicaSettings(),
         childSettings: (K) -> PagedReplicaSettings,
         tags: Set<ReplicaTag> = emptySet(),
         childTags: (K) -> Set<ReplicaTag> = { emptySet() },
-        idExtractor: ((T) -> Any)?,
-        behaviours: List<KeyedPagedReplicaBehaviour<K, T, P>> = emptyList(),
-        childBehaviours: (K) -> List<PagedReplicaBehaviour<T, P>> = { emptyList() },
-        fetcher: KeyedPagedFetcher<K, T, P>
-    ): KeyedPagedPhysicalReplica<K, T, P>
+        idExtractor: ((I) -> Any)?,
+        behaviours: List<KeyedPagedReplicaBehaviour<K, I, P>> = emptyList(),
+        childBehaviours: (K) -> List<PagedReplicaBehaviour<I, P>> = { emptyList() },
+        fetcher: KeyedPagedFetcher<K, I, P>
+    ): KeyedPagedPhysicalReplica<K, I, P>
 
     /**
      * Executes an [action] on each [PhysicalReplica].

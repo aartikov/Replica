@@ -14,10 +14,10 @@ import me.aartikov.replica.paged.behaviour.standard.PagedStaleAfterGivenTime
 import me.aartikov.replica.paged.currentState
 import kotlin.time.Duration
 
-internal fun <T : Any, P : Page<T>> createBehavioursForPagedReplicaSettings(
+internal fun <I : Any, P : Page<I>> createBehavioursForPagedReplicaSettings(
     settings: PagedReplicaSettings,
     networkConnectivityProvider: NetworkConnectivityProvider?
-) = buildList<PagedReplicaBehaviour<T, P>> {
+) = buildList<PagedReplicaBehaviour<I, P>> {
 
     settings.staleTime?.let {
         add(PagedStaleAfterGivenTime(it))
@@ -44,39 +44,39 @@ internal fun <T : Any, P : Page<T>> createBehavioursForPagedReplicaSettings(
     }
 }
 
-private fun <T : Any, P : Page<T>> createClearingBehaviour(clearTime: Duration): PagedReplicaBehaviour<T, P> {
+private fun <I : Any, P : Page<I>> createClearingBehaviour(clearTime: Duration): PagedReplicaBehaviour<I, P> {
     return PagedDoOnStateCondition(
         condition = {
             (it.data != null || it.error != null) && it.loadingStatus == PagedLoadingStatus.None
                         && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearTime,
-        action = PagedPhysicalReplica<T, P>::clear
+        action = PagedPhysicalReplica<I, P>::clear
     )
 }
 
-private fun <T : Any, P : Page<T>> createErrorClearingBehaviour(clearErrorTime: Duration): PagedReplicaBehaviour<T, P> {
+private fun <I : Any, P : Page<I>> createErrorClearingBehaviour(clearErrorTime: Duration): PagedReplicaBehaviour<I, P> {
     return PagedDoOnStateCondition(
         condition = {
             it.error != null && it.loadingStatus == PagedLoadingStatus.None && it.observingState.status == ObservingStatus.None
         },
         startDelay = clearErrorTime,
-        action = PagedPhysicalReplica<T, P>::clearError
+        action = PagedPhysicalReplica<I, P>::clearError
     )
 }
 
-private fun <T : Any, P : Page<T>> createCancellationBehaviour(cancelTime: Duration): PagedReplicaBehaviour<T, P> {
+private fun <I : Any, P : Page<I>> createCancellationBehaviour(cancelTime: Duration): PagedReplicaBehaviour<I, P> {
     return PagedDoOnStateCondition(
         condition = {
             it.loadingStatus != PagedLoadingStatus.None && !it.preloading
                         && it.observingState.status == ObservingStatus.None
         },
         startDelay = cancelTime,
-        action = PagedPhysicalReplica<T, P>::cancel
+        action = PagedPhysicalReplica<I, P>::cancel
     )
 }
 
-private fun <T : Any, P : Page<T>> createRevalidationOnActiveObserverAddedBehaviour(): PagedReplicaBehaviour<T, P> {
+private fun <I : Any, P : Page<I>> createRevalidationOnActiveObserverAddedBehaviour(): PagedReplicaBehaviour<I, P> {
     return PagedDoOnEvent { event ->
         if (event is PagedReplicaEvent.ObserverCountChangedEvent
             && event.activeCount > event.previousActiveCount
@@ -86,9 +86,9 @@ private fun <T : Any, P : Page<T>> createRevalidationOnActiveObserverAddedBehavi
     }
 }
 
-private fun <T : Any, P : Page<T>> createRevalidationOnNetworkConnectionBehaviour(
+private fun <I : Any, P : Page<I>> createRevalidationOnNetworkConnectionBehaviour(
     networkConnectivityProvider: NetworkConnectivityProvider
-): PagedReplicaBehaviour<T, P> {
+): PagedReplicaBehaviour<I, P> {
     return PagedDoOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
         if (connected && currentState.observingState.status == ObservingStatus.Active) {
             revalidate()

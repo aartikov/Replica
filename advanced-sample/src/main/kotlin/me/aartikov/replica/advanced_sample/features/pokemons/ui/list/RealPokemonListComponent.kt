@@ -11,7 +11,7 @@ import me.aartikov.replica.advanced_sample.features.pokemons.domain.Pokemon
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonTypeId
-import me.aartikov.replica.algebra.withKey
+import me.aartikov.replica.algebra.normal.withKey
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
 

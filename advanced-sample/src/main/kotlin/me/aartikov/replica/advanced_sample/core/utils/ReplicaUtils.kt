@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.decompose.coroutineScope
 import me.aartikov.replica.decompose.observe
-import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedReplica
 import me.aartikov.replica.paged.currentState
@@ -44,10 +43,10 @@ fun <T : Any> Replica<T>.observe(
  * Observes [PagedReplica] and handles errors by [ErrorHandler].
  * @return Replica [Paged] state as StateFlow
  */
-fun <T : Any, P : Page<T>> PagedReplica<T, P>.observe(
+fun <T : Any> PagedReplica<T>.observe(
     lifecycle: Lifecycle,
     errorHandler: ErrorHandler
-): StateFlow<Paged<T, P>> {
+): StateFlow<Paged<T>> {
 
     val coroutineScope = lifecycle.coroutineScope()
     val observer = observe(lifecycle)

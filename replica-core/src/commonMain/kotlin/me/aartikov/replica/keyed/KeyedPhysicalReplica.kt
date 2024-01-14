@@ -119,7 +119,7 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
 
     /**
-     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the originaal one.
+     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the original one.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */

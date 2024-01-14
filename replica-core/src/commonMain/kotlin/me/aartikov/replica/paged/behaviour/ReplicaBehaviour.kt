@@ -13,7 +13,7 @@ import me.aartikov.replica.paged.behaviour.standard.PagedDoOnStateCondition
  * All features represented in [PagedReplicaSettings] a implemented as [PagedReplicaBehaviour].
  * See also: [PagedDoOnCreated], [PagedDoOnEvent], [PagedDoOnStateCondition], [PagedDoOnNetworkConnectivityChanged].
  */
-interface PagedReplicaBehaviour<T : Any, P : Page<T>> {
+interface PagedReplicaBehaviour<I : Any, P : Page<I>> {
 
-    fun setup(replica: PagedPhysicalReplica<T, P>)
+    fun setup(replica: PagedPhysicalReplica<I, P>)
 }

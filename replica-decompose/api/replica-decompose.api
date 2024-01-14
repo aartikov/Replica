@@ -6,10 +6,6 @@ public final class me/aartikov/replica/decompose/ComponentCoroutineScopeKt {
 	public static final fun coroutineScope (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lkotlinx/coroutines/CoroutineScope;
 }
 
-public final class me/aartikov/replica/decompose/ObserveKeyedReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
-}
-
 public final class me/aartikov/replica/decompose/ObservePagedReplicaKt {
 	public static final fun observe (Lme/aartikov/replica/paged/PagedReplica;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 }

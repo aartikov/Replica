@@ -2,9 +2,9 @@ package me.aartikov.replica.paged
 
 import me.aartikov.replica.common.LoadingReason
 
-sealed interface PagedReplicaEvent<out T : Any, out P : Page<T>> {
+sealed interface PagedReplicaEvent<out I : Any, out P : Page<I>> {
 
-    sealed interface LoadingEvent<out T : Any, out P : Page<T>> : PagedReplicaEvent<T, P> {
+    sealed interface LoadingEvent<out I : Any, out P : Page<I>> : PagedReplicaEvent<I, P> {
 
         val reason: LoadingReason
 
@@ -12,11 +12,11 @@ sealed interface PagedReplicaEvent<out T : Any, out P : Page<T>> {
             override val reason: LoadingReason
         ) : LoadingEvent<Nothing, Nothing>
 
-        sealed interface LoadingFinished<out T : Any, out P : Page<T>> : LoadingEvent<T, P> {
-            data class Success<out T : Any, out P : Page<T>>(
+        sealed interface LoadingFinished<out I : Any, out P : Page<I>> : LoadingEvent<I, P> {
+            data class Success<out I : Any, out P : Page<I>>(
                 override val reason: LoadingReason,
                 val page: P
-            ) : LoadingFinished<T, P>
+            ) : LoadingFinished<I, P>
 
             data class Canceled(
                 override val reason: LoadingReason,

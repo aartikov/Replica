@@ -7,7 +7,7 @@ import me.aartikov.replica.paged.Page
 /**
  * Cancels network requests in all child replicas.
  */
-suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.cancelAll() {
+suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.cancelAll() {
     onEachPagedReplica {
         cancel()
     }
@@ -18,7 +18,7 @@ suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.c
  *
  * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
  */
-suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.invalidateAll(
+suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.invalidateAll(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
 ) {
     onEachPagedReplica {
@@ -29,7 +29,7 @@ suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.i
 /**
  * Cancels network requests in child replicas with the matching tags.
  */
-suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.cancelByTags(
+suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.cancelByTags(
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
     if (predicate(tags)) {
@@ -47,7 +47,7 @@ suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.c
 /**
  * Cancels network requests and clears data in child replicas with the matching tags.
  */
-suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.clearByTags(
+suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.clearByTags(
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
     if (predicate(tags)) {
@@ -67,7 +67,7 @@ suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.c
  *
  * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
  */
-suspend fun <K : Any, T : Any, P : Page<T>> KeyedPagedPhysicalReplica<K, T, P>.invalidateByTags(
+suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.invalidateByTags(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers,
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {

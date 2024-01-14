@@ -36,10 +36,8 @@ import me.aartikov.replica.advanced_sample.core.widget.PagedLoadingProgress
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
-import me.aartikov.replica.advanced_sample.features.dudes.domain.DudesPage
-import me.aartikov.replica.paged.Page
+import me.aartikov.replica.advanced_sample.features.dudes.domain.DudesContent
 import me.aartikov.replica.paged.Paged
-import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedLoadingStatus
 
 @Composable
@@ -93,7 +91,7 @@ fun DudesUi(
 @Composable
 private fun DudesListContent(
     loadingStatus: PagedLoadingStatus,
-    dudes: PagedData<Dude, Page<Dude>>,
+    dudes: DudesContent,
     hasError: Boolean,
     onLoadNext: () -> Unit,
     modifier: Modifier = Modifier
@@ -179,14 +177,7 @@ class FakeDudesComponent : DudesComponent {
     override val dudesState = MutableStateFlow(
         Paged(
             loadingStatus = PagedLoadingStatus.LoadingFirstPage,
-            data = PagedData(
-                pages = listOf(
-                    DudesPage(
-                        items = Dude.FAKE_LIST,
-                        nextPageCursor = "12345"
-                    )
-                )
-            )
+            data = DudesContent(Dude.FAKE_LIST, hasNextPage = false)
         )
     )
 

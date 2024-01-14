@@ -21,14 +21,14 @@ import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
-internal class DataLoadingController<T : Any, P : Page<T>>(
+internal class DataLoadingController<I : Any, P : Page<I>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
     private val coroutineScope: CoroutineScope,
-    private val idExtractor: ((T) -> Any)?,
-    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
-    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<T, P>>,
-    private val dataLoader: DataLoader<T, P>
+    private val idExtractor: ((I) -> Any)?,
+    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
+    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<I, P>>,
+    private val dataLoader: DataLoader<I, P>
 ) {
 
     init {
@@ -116,7 +116,7 @@ internal class DataLoadingController<T : Any, P : Page<T>>(
         dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
     }
 
-    private suspend fun onDataLoaderOutput(output: DataLoader.Output<T, P>) {
+    private suspend fun onDataLoaderOutput(output: DataLoader.Output<I, P>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             when (output) {

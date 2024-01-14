@@ -11,11 +11,11 @@ import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.time.TimeProvider
 
-internal class ObserversController<T : Any, P : Page<T>>(
+internal class ObserversController<I : Any, P : Page<I>>(
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<T, P>>,
-    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<T, P>>
+    private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
+    private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<I, P>>
 ) {
 
     suspend fun onObserverAdded(observerId: Long, active: Boolean) {

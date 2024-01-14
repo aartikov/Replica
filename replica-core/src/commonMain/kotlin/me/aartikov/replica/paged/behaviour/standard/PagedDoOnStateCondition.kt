@@ -21,16 +21,16 @@ import kotlin.time.Duration
  * [startDelay] allows to delay execution of an action. If a state stops satisfying the condition before [startDelay] expires the action will not be executed.
  * [repeatInterval] allows to execute an [action] periodically until a state satisfying the condition. null means execute the action once.
  */
-class PagedDoOnStateCondition<T : Any, P : Page<T>>(
-    private val condition: (PagedReplicaState<T, P>) -> Boolean,
+class PagedDoOnStateCondition<I : Any, P : Page<I>>(
+    private val condition: (PagedReplicaState<I, P>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,
     private val repeatInterval: Duration? = null,
-    private val action: suspend PagedPhysicalReplica<T, P>.() -> Unit
-) : PagedReplicaBehaviour<T, P> {
+    private val action: suspend PagedPhysicalReplica<I, P>.() -> Unit
+) : PagedReplicaBehaviour<I, P> {
 
     private var job: Job? = null
 
-    override fun setup(replica: PagedPhysicalReplica<T, P>) {
+    override fun setup(replica: PagedPhysicalReplica<I, P>) {
         replica.stateFlow
             .map { condition(it) }
             .distinctUntilChanged()
@@ -44,7 +44,7 @@ class PagedDoOnStateCondition<T : Any, P : Page<T>>(
             .launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.launchJob(replica: PagedPhysicalReplica<T, P>) {
+    private fun CoroutineScope.launchJob(replica: PagedPhysicalReplica<I, P>) {
         if (job?.isActive == true) return
 
         job = launch {

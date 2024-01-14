@@ -586,16 +586,15 @@ public final class me/aartikov/replica/paged/PageKt {
 
 public final class me/aartikov/replica/paged/Paged : me/aartikov/replica/common/AbstractLoadable {
 	public fun <init> ()V
-	public fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;)V
-	public synthetic fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Ljava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;)V
+	public synthetic fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Ljava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lme/aartikov/replica/paged/PagedLoadingStatus;
-	public final fun component2 ()Lme/aartikov/replica/paged/PagedData;
+	public final fun component2 ()Ljava/lang/Object;
 	public final fun component3 ()Lme/aartikov/replica/common/CombinedLoadingError;
-	public final fun copy (Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;)Lme/aartikov/replica/paged/Paged;
-	public static synthetic fun copy$default (Lme/aartikov/replica/paged/Paged;Lme/aartikov/replica/paged/PagedLoadingStatus;Lme/aartikov/replica/paged/PagedData;Lme/aartikov/replica/common/CombinedLoadingError;ILjava/lang/Object;)Lme/aartikov/replica/paged/Paged;
+	public final fun copy (Lme/aartikov/replica/paged/PagedLoadingStatus;Ljava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;)Lme/aartikov/replica/paged/Paged;
+	public static synthetic fun copy$default (Lme/aartikov/replica/paged/Paged;Lme/aartikov/replica/paged/PagedLoadingStatus;Ljava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;ILjava/lang/Object;)Lme/aartikov/replica/paged/Paged;
 	public fun equals (Ljava/lang/Object;)Z
-	public synthetic fun getData ()Ljava/lang/Object;
-	public fun getData ()Lme/aartikov/replica/paged/PagedData;
+	public fun getData ()Ljava/lang/Object;
 	public fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
 	public fun getLoading ()Z
 	public final fun getLoadingStatus ()Lme/aartikov/replica/paged/PagedLoadingStatus;

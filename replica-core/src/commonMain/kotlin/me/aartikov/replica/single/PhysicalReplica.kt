@@ -116,7 +116,7 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
-     * Rollbacks optimistic update. Observed data will be replaced to the originaal one.
+     * Rollbacks optimistic update. Observed data will be replaced to the original one.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */

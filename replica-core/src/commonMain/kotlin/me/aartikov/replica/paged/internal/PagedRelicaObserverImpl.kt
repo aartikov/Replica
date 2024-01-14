@@ -20,26 +20,27 @@ import me.aartikov.replica.common.internal.AtomicLong
 import me.aartikov.replica.common.internal.toActivableFlow
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.Paged
+import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.internal.controllers.ObserversController
 import me.aartikov.replica.paged.toPaged
 
-internal class PagedReplicaObserverImpl<T : Any, P : Page<T>>(
+internal class PagedReplicaObserverImpl<I : Any, P : Page<I>>(
     private val coroutineScope: CoroutineScope,
     private val activeFlow: StateFlow<Boolean>,
-    private val replicaStateFlow: StateFlow<PagedReplicaState<T, P>>,
-    private val replicaEventFlow: Flow<PagedReplicaEvent<T, P>>,
-    private val observersController: ObserversController<T, P>
-) : PagedReplicaObserver<T, P> {
+    private val replicaStateFlow: StateFlow<PagedReplicaState<I, P>>,
+    private val replicaEventFlow: Flow<PagedReplicaEvent<I, P>>,
+    private val observersController: ObserversController<I, P>
+) : PagedReplicaObserver<PagedData<I, P>> {
 
     companion object {
         private val idGenerator = AtomicLong(0)
     }
 
-    private val _stateFlow = MutableStateFlow(Paged<T, P>())
-    override val stateFlow: StateFlow<Paged<T, P>> = _stateFlow.asStateFlow()
+    private val _stateFlow = MutableStateFlow(Paged<PagedData<I, P>>())
+    override val stateFlow: StateFlow<Paged<PagedData<I, P>>> = _stateFlow.asStateFlow()
 
     private val _loadingErrorFlow = MutableSharedFlow<LoadingError>(extraBufferCapacity = 1000)
     override val loadingErrorFlow: Flow<LoadingError> = _loadingErrorFlow.asSharedFlow()

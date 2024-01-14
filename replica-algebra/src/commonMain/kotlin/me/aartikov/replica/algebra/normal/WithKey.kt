@@ -1,4 +1,4 @@
-package me.aartikov.replica.algebra
+package me.aartikov.replica.algebra.normal
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

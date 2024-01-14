@@ -24,35 +24,36 @@ import me.aartikov.replica.keyed_paged.behaviour.KeyedPagedReplicaBehaviour
 import me.aartikov.replica.keyed_paged.internal.controllers.ChildRemovingController
 import me.aartikov.replica.keyed_paged.internal.controllers.ObserverCountController
 import me.aartikov.replica.paged.Page
+import me.aartikov.replica.paged.PagedData
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.currentState
 
-internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
+internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
     override val coroutineScope: CoroutineScope,
     override val name: String,
-    override val settings: KeyedPagedReplicaSettings<K, T, P>,
+    override val settings: KeyedPagedReplicaSettings<K, I, P>,
     override val tags: Set<ReplicaTag>,
-    behaviours: List<KeyedPagedReplicaBehaviour<K, T, P>>,
-    private val replicaFactory: (CoroutineScope, K) -> PagedPhysicalReplica<T, P>
-) : KeyedPagedPhysicalReplica<K, T, P> {
+    behaviours: List<KeyedPagedReplicaBehaviour<K, I, P>>,
+    private val replicaFactory: (CoroutineScope, K) -> PagedPhysicalReplica<I, P>
+) : KeyedPagedPhysicalReplica<K, I, P> {
 
     override val id: ReplicaId = ReplicaId.random()
 
     private val _stateFlow = MutableStateFlow(KeyedPagedReplicaState.Empty)
     override val stateFlow get() = _stateFlow.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<KeyedPagedReplicaEvent<K, T, P>>(
+    private val _eventFlow = MutableSharedFlow<KeyedPagedReplicaEvent<K, I, P>>(
         extraBufferCapacity = 1000
     )
     override val eventFlow get() = _eventFlow.asSharedFlow()
 
     private val replicasLock = Lock()
-    private val replicas = mutableMapOf<K, PagedPhysicalReplica<T, P>>()
+    private val replicas = mutableMapOf<K, PagedPhysicalReplica<I, P>>()
 
-    private val childRemovingController = ChildRemovingController<K, T, P>(this::removeReplica)
-    private val observerCountController = ObserverCountController<T, P>(_stateFlow)
+    private val childRemovingController = ChildRemovingController<K, I, P>(this::removeReplica)
+    private val observerCountController = ObserverCountController<I, P>(_stateFlow)
 
     init {
         behaviours.forEach { behaviour ->
@@ -64,7 +65,7 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>,
         key: StateFlow<K?>
-    ): PagedReplicaObserver<T, P> {
+    ): PagedReplicaObserver<PagedData<I, P>> {
         return KeyedPagedReplicaObserverImpl(
             coroutineScope = observerCoroutineScope,
             activeFlow = observerActive,
@@ -89,7 +90,7 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
         getOrCreateReplica(key).loadPrevious()
     }
 
-    override fun getCurrentState(key: K): PagedReplicaState<T, P>? {
+    override fun getCurrentState(key: K): PagedReplicaState<I, P>? {
         return getReplica(key)?.currentState
     }
 
@@ -146,20 +147,20 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
 
     override suspend fun onPagedReplica(
         key: K,
-        action: suspend PagedPhysicalReplica<T, P>.() -> Unit
+        action: suspend PagedPhysicalReplica<I, P>.() -> Unit
     ) {
         getOrCreateReplica(key).apply { action() }
     }
 
     override suspend fun onExistingPagedReplica(
         key: K, action:
-        suspend PagedPhysicalReplica<T, P>.() -> Unit
+        suspend PagedPhysicalReplica<I, P>.() -> Unit
     ) {
         getReplica(key)?.apply { action() }
     }
 
     override suspend fun onEachPagedReplica(
-        action: suspend PagedPhysicalReplica<T, P>.(K) -> Unit
+        action: suspend PagedPhysicalReplica<I, P>.(K) -> Unit
     ) {
         // make a copy for concurrent modification
         val replicasCopy = replicasLock.withLock {
@@ -170,11 +171,11 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
         }
     }
 
-    private fun getReplica(key: K): PagedPhysicalReplica<T, P>? = replicasLock.withLock {
+    private fun getReplica(key: K): PagedPhysicalReplica<I, P>? = replicasLock.withLock {
         return replicas[key]
     }
 
-    private fun getOrCreateReplica(key: K): PagedPhysicalReplica<T, P> {
+    private fun getOrCreateReplica(key: K): PagedPhysicalReplica<I, P> {
         var created = false
         val replica = replicasLock.withLock {
             replicas.getOrPut(key) {
@@ -194,7 +195,7 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, T : Any, P : Page<T>>(
         return replica
     }
 
-    private fun createReplica(key: K): PagedPhysicalReplica<T, P> {
+    private fun createReplica(key: K): PagedPhysicalReplica<I, P> {
         val childCoroutineScope = coroutineScope.createChildScope()
         val replica = replicaFactory(childCoroutineScope, key)
         childRemovingController.setupAutoRemoving(key, replica)

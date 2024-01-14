@@ -14,7 +14,7 @@ import me.aartikov.replica.advanced_sample.features.pokemons.ui.details.PokemonD
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.details.RealPokemonDetailsComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.PokemonListComponent
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.RealPokemonListComponent
-import me.aartikov.replica.algebra.withKey
+import me.aartikov.replica.algebra.normal.withKey
 import org.koin.core.component.get
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

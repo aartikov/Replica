@@ -2,15 +2,19 @@ package me.aartikov.replica.paged
 
 import me.aartikov.replica.paged.internal.SimplePage
 
-interface Page<out T : Any> {
+interface Page<out I : Any> {
 
-    val items: List<T>
+    val items: List<I>
 
     val hasNextPage: Boolean
 
     val hasPreviousPage: Boolean
 }
 
-fun <T : Any> Page(items: List<T>, hasNextPage: Boolean, hasPreviousPage: Boolean = false): Page<T> {
+fun <I : Any> Page(
+    items: List<I>,
+    hasNextPage: Boolean,
+    hasPreviousPage: Boolean = false
+): Page<I> {
     return SimplePage(items, hasNextPage, hasPreviousPage)
 }

@@ -12,9 +12,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.aartikov.replica.common.LoadingError
-import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.Paged
-import me.aartikov.replica.paged.PagedData
+import me.aartikov.replica.paged.PagedLoadingStatus
 import me.aartikov.replica.paged.PagedReplicaObserver
 
 /**
@@ -22,20 +21,20 @@ import me.aartikov.replica.paged.PagedReplicaObserver
  * new key will not be loaded.
  * It allows to dramatically improve UX when [KeyedPagedReplica] is observed by changing keys.
  */
-fun <K : Any, T : Any, P : Page<T>> KeyedPagedReplica<K, T, P>.keepPreviousData():
-            KeyedPagedReplica<K, T, P> {
+fun <K : Any, T : Any> KeyedPagedReplica<K, T>.keepPreviousData():
+            KeyedPagedReplica<K, T> {
     return KeepPreviousDataKeyedPagedReplica(this)
 }
 
-private class KeepPreviousDataKeyedPagedReplica<K : Any, T : Any, P : Page<T>>(
-    private val originalKeyedPagedReplica: KeyedPagedReplica<K, T, P>
-) : KeyedPagedReplica<K, T, P> {
+private class KeepPreviousDataKeyedPagedReplica<K : Any, T : Any>(
+    private val originalKeyedPagedReplica: KeyedPagedReplica<K, T>
+) : KeyedPagedReplica<K, T> {
 
     override fun observe(
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>,
         key: StateFlow<K?>
-    ): PagedReplicaObserver<T, P> {
+    ): PagedReplicaObserver<T> {
         val originalObserver = originalKeyedPagedReplica.observe(
             observerCoroutineScope,
             observerActive,
@@ -65,13 +64,13 @@ private class KeepPreviousDataKeyedPagedReplica<K : Any, T : Any, P : Page<T>>(
     }
 }
 
-private class KeepPreviousDataPagedReplicaObserver<T : Any, P : Page<T>>(
+private class KeepPreviousDataPagedReplicaObserver<T : Any>(
     val coroutineScope: CoroutineScope,
-    val originalObserver: PagedReplicaObserver<T, P>
-) : PagedReplicaObserver<T, P> {
+    val originalObserver: PagedReplicaObserver<T>
+) : PagedReplicaObserver<T> {
 
-    private val _stateFlow = MutableStateFlow(Paged<T, P>())
-    override val stateFlow: StateFlow<Paged<T, P>> = _stateFlow.asStateFlow()
+    private val _stateFlow = MutableStateFlow(Paged<T>())
+    override val stateFlow: StateFlow<Paged<T>> = _stateFlow.asStateFlow()
 
     override val loadingErrorFlow: Flow<LoadingError>
         get() = originalObserver.loadingErrorFlow
@@ -85,7 +84,7 @@ private class KeepPreviousDataPagedReplicaObserver<T : Any, P : Page<T>>(
     }
 
     private fun launchStateObserving() {
-        var previousData: PagedData<T, P>? = null
+        var previousData: T? = null
         var previousDataCleanupJob: Job? = null
         var keepingPreviousData = false
 
@@ -95,10 +94,10 @@ private class KeepPreviousDataPagedReplicaObserver<T : Any, P : Page<T>>(
                     previousData = newValue.data
                 }
 
-                // "data == null && !loading" means that we should clear previous data.
+                // "data == null and PagedLoadingStatus.None" means that we should clear previous data.
                 // But we can't do it immediately because on switching replica key
-                // we gets initial value "Loadable(false, null, null)" for a very short time span.
-                if (previousData != null && newValue.data == null && !newValue.loading) {
+                // we gets initial value "Paged(PagedLoadingStatus.None, null, null)" for a very short time span.
+                if (previousData != null && newValue.data == null && newValue.loadingStatus == PagedLoadingStatus.None) {
                     previousDataCleanupJob?.cancel()
                     previousDataCleanupJob = coroutineScope.launch {
                         delay(30)

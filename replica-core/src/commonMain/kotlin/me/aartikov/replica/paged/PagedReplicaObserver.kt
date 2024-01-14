@@ -4,13 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.LoadingError
 
-interface PagedReplicaObserver<out T : Any, out P : Page<T>> {
+interface PagedReplicaObserver<out T : Any> {
 
-    val stateFlow: StateFlow<Paged<T, P>>
+    val stateFlow: StateFlow<Paged<T>>
 
     val loadingErrorFlow: Flow<LoadingError>
 
     fun cancelObserving()
 }
 
-val <T : Any, P : Page<T>> PagedReplicaObserver<T, P>.currentState get() = stateFlow.value
+val <T : Any> PagedReplicaObserver<T>.currentState get() = stateFlow.value

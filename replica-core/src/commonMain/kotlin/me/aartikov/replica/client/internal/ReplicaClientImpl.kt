@@ -146,14 +146,14 @@ internal class ReplicaClientImpl(
         return keyedReplica
     }
 
-    override fun <T : Any, P : Page<T>> createPagedReplica(
+    override fun <I : Any, P : Page<I>> createPagedReplica(
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag>,
-        idExtractor: ((T) -> Any)?,
-        behaviours: List<PagedReplicaBehaviour<T, P>>,
-        fetcher: PagedFetcher<T, P>
-    ): PagedPhysicalReplica<T, P> {
+        idExtractor: ((I) -> Any)?,
+        behaviours: List<PagedReplicaBehaviour<I, P>>,
+        fetcher: PagedFetcher<I, P>
+    ): PagedPhysicalReplica<I, P> {
         val replica = createPagedReplicaInternal(
             name,
             settings,
@@ -171,18 +171,18 @@ internal class ReplicaClientImpl(
         return replica
     }
 
-    override fun <K : Any, T : Any, P : Page<T>> createKeyedPagedReplica(
+    override fun <K : Any, I : Any, P : Page<I>> createKeyedPagedReplica(
         name: String,
         childName: (K) -> String,
-        settings: KeyedPagedReplicaSettings<K, T, P>,
+        settings: KeyedPagedReplicaSettings<K, I, P>,
         childSettings: (K) -> PagedReplicaSettings,
         tags: Set<ReplicaTag>,
         childTags: (K) -> Set<ReplicaTag>,
-        idExtractor: ((T) -> Any)?,
-        behaviours: List<KeyedPagedReplicaBehaviour<K, T, P>>,
-        childBehaviours: (K) -> List<PagedReplicaBehaviour<T, P>>,
-        fetcher: KeyedPagedFetcher<K, T, P>
-    ): KeyedPagedPhysicalReplica<K, T, P> {
+        idExtractor: ((I) -> Any)?,
+        behaviours: List<KeyedPagedReplicaBehaviour<K, I, P>>,
+        childBehaviours: (K) -> List<PagedReplicaBehaviour<I, P>>,
+        fetcher: KeyedPagedFetcher<K, I, P>
+    ): KeyedPagedPhysicalReplica<K, I, P> {
 
         val replicaFactory = { childCoroutineScope: CoroutineScope, key: K ->
             createPagedReplicaInternal(
@@ -191,16 +191,16 @@ internal class ReplicaClientImpl(
                 tags = childTags(key),
                 idExtractor = idExtractor,
                 behaviours = childBehaviours(key),
-                fetcher = object : PagedFetcher<T, P> {
+                fetcher = object : PagedFetcher<I, P> {
                     override suspend fun fetchFirstPage(): P {
                         return fetcher.fetchFirstPage(key)
                     }
 
-                    override suspend fun fetchNextPage(currentData: PagedData<T, P>): P {
+                    override suspend fun fetchNextPage(currentData: PagedData<I, P>): P {
                         return fetcher.fetchNextPage(key, currentData)
                     }
 
-                    override suspend fun fetchPreviousPage(currentData: PagedData<T, P>): P {
+                    override suspend fun fetchPreviousPage(currentData: PagedData<I, P>): P {
                         return fetcher.fetchPreviousPage(key, currentData)
                     }
                 },
@@ -209,7 +209,7 @@ internal class ReplicaClientImpl(
             )
         }
 
-        val behavioursForSettings = createBehavioursForKeyedPagedReplicaSettings<K, T, P>(settings)
+        val behavioursForSettings = createBehavioursForKeyedPagedReplicaSettings<K, I, P>(settings)
 
         val keyedReplica = KeyedPagedPhysicalReplicaImpl(
             coroutineScope,
@@ -322,19 +322,19 @@ internal class ReplicaClientImpl(
         )
     }
 
-    private fun <T : Any, P : Page<T>> createPagedReplicaInternal(
+    private fun <I : Any, P : Page<I>> createPagedReplicaInternal(
         name: String,
         settings: PagedReplicaSettings,
         tags: Set<ReplicaTag>,
-        idExtractor: ((T) -> Any)?,
-        behaviours: List<PagedReplicaBehaviour<T, P>>,
-        fetcher: PagedFetcher<T, P>,
+        idExtractor: ((I) -> Any)?,
+        behaviours: List<PagedReplicaBehaviour<I, P>>,
+        fetcher: PagedFetcher<I, P>,
         coroutineDispatcher: CoroutineDispatcher,
         coroutineScope: CoroutineScope
-    ): PagedPhysicalReplica<T, P> {
+    ): PagedPhysicalReplica<I, P> {
 
         val behavioursForSettings =
-            createBehavioursForPagedReplicaSettings<T, P>(settings, networkConnectivityProvider)
+            createBehavioursForPagedReplicaSettings<I, P>(settings, networkConnectivityProvider)
 
         return PagedPhysicalReplicaImpl(
             timeProvider,

@@ -6,7 +6,7 @@ import me.aartikov.replica.paged.Page
 /**
  * Allows to add a custom behavior to a keyed paged replica.
  */
-interface KeyedPagedReplicaBehaviour<K : Any, T : Any, P : Page<T>> {
+interface KeyedPagedReplicaBehaviour<K : Any, I : Any, P : Page<I>> {
 
-    fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, T, P>)
+    fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>)
 }

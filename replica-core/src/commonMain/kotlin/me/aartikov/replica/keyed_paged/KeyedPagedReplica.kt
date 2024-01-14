@@ -2,17 +2,16 @@ package me.aartikov.replica.keyed_paged
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.single.ReplicaObserver
 
 /**
  * Keyed replica replicates multiple chunks of data - different chunks for different keys.
  *
- * The difference between [KeyedReplica] and [KeyedPhysicalReplica] is that the latter has a richer API.
- * [KeyedReplica] has minimalistic read-only API, whereas [KeyedPhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
+ * The difference between [KeyedPagedReplica] and [KeyedPagedPhysicalReplica] is that the latter has a richer API.
+ * [KeyedPagedReplica] has minimalistic read-only API, whereas [KeyedPagedPhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
  */
-interface KeyedPagedReplica<K : Any, out T : Any, out P : Page<T>> {
+interface KeyedPagedReplica<K : Any, out T : Any> {
 
     /**
      * Starts to observe a keyed replica. Returned [ReplicaObserver] gives access to replica state and error events.
@@ -24,7 +23,7 @@ interface KeyedPagedReplica<K : Any, out T : Any, out P : Page<T>> {
         observerCoroutineScope: CoroutineScope,
         observerActive: StateFlow<Boolean>,
         key: StateFlow<K?>
-    ): PagedReplicaObserver<T, P>
+    ): PagedReplicaObserver<T>
 
     /**
      * Loads fresh data from a network for a given [key].

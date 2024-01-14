@@ -8,7 +8,7 @@ import me.aartikov.replica.paged.Page
  * @property clearPolicy configures how keyed replica clears children when child count exceeds [maxCount].
  * See: [PagedClearPolicy].
  */
-data class KeyedPagedReplicaSettings<K : Any, T : Any, P : Page<T>>(
+data class KeyedPagedReplicaSettings<K : Any, I : Any, P : Page<I>>(
     val maxCount: Int = Int.MAX_VALUE,
-    val clearPolicy: PagedClearPolicy<K, T, P> = PagedClearPolicy()
+    val clearPolicy: PagedClearPolicy<K, I, P> = PagedClearPolicy()
 )
