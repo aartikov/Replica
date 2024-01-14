@@ -6,6 +6,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.associate
+import me.aartikov.replica.algebra.normal.map
 import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.algebra.utils.ReplicaProvider

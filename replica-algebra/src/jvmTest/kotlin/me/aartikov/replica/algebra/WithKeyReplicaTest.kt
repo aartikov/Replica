@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import me.aartikov.replica.algebra.normal.withKey
 import me.aartikov.replica.algebra.utils.KeyedReplicaProvider
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.single.Loadable
