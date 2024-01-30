@@ -29,9 +29,9 @@ fun <T : Any, R : Any> Replica<T>.map(transform: (T) -> R): Replica<R> {
 /**
  * Transforms keyed replica data with a [transform] function.
  */
-fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (T) -> R): KeyedReplica<K, R> {
+fun <K : Any, T : Any, R : Any> KeyedReplica<K, T>.map(transform: (K, T) -> R): KeyedReplica<K, R> {
     return associate { key ->
-        withKey(key).map(transform)
+        withKey(key).map { transform(key, it) }
     }
 }
 

@@ -579,11 +579,6 @@ public abstract interface class me/aartikov/replica/paged/Page {
 	public abstract fun getItems ()Ljava/util/List;
 }
 
-public final class me/aartikov/replica/paged/PageKt {
-	public static final fun Page (Ljava/util/List;ZZ)Lme/aartikov/replica/paged/Page;
-	public static synthetic fun Page$default (Ljava/util/List;ZZILjava/lang/Object;)Lme/aartikov/replica/paged/Page;
-}
-
 public final class me/aartikov/replica/paged/Paged : me/aartikov/replica/common/AbstractLoadable {
 	public fun <init> ()V
 	public fun <init> (Lme/aartikov/replica/paged/PagedLoadingStatus;Ljava/lang/Object;Lme/aartikov/replica/common/CombinedLoadingError;)V

@@ -30,9 +30,9 @@ fun <T : Any, R : Any> PagedReplica<T>.map(transform: (T) -> R): PagedReplica<R>
 /**
  * Transforms keyed replica data with a [transform] function.
  */
-fun <K : Any, T : Any, R : Any> KeyedPagedReplica<K, T>.map(transform: (T) -> R): KeyedPagedReplica<K, R> {
+fun <K : Any, T : Any, R : Any> KeyedPagedReplica<K, T>.map(transform: (K, T) -> R): KeyedPagedReplica<K, R> {
     return associatePaged { key ->
-        withKey(key).map(transform)
+        withKey(key).map { transform(key, it) }
     }
 }
 

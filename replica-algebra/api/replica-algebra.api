@@ -24,7 +24,7 @@ public final class me/aartikov/replica/algebra/normal/FlowReplicaKt {
 }
 
 public final class me/aartikov/replica/algebra/normal/MapKt {
-	public static final fun map (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/keyed/KeyedReplica;
+	public static final fun map (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/keyed/KeyedReplica;
 	public static final fun map (Lme/aartikov/replica/single/Replica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/single/Replica;
 }
 
@@ -50,7 +50,7 @@ public final class me/aartikov/replica/algebra/paged/FlowReplicaKt {
 }
 
 public final class me/aartikov/replica/algebra/paged/MapKt {
-	public static final fun map (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;
+	public static final fun map (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;
 	public static final fun map (Lme/aartikov/replica/paged/PagedReplica;Lkotlin/jvm/functions/Function1;)Lme/aartikov/replica/paged/PagedReplica;
 }
 
