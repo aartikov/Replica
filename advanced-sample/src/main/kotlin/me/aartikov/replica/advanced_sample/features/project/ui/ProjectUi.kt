@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -44,7 +45,8 @@ fun ProjectUi(
         ) { project, refreshing ->
             ProjectContent(
                 project = project,
-                onUrlClick = component::onUrlClick
+                onUrlClick = component::onUrlClick,
+                onTestClick = component::onTestClick
             )
             RefreshingProgress(
                 refreshing,
@@ -58,6 +60,7 @@ fun ProjectUi(
 private fun ProjectContent(
     project: Project,
     onUrlClick: (url: String) -> Unit,
+    onTestClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -103,6 +106,16 @@ private fun ProjectContent(
                 style = MaterialTheme.typography.h5
             )
         }
+
+        Button(
+            modifier = Modifier.padding(top = 48.dp),
+            onClick = onTestClick
+        ) {
+            Text(
+                text = "TEST",
+                style = MaterialTheme.typography.button
+            )
+        }
     }
 }
 
@@ -135,4 +148,6 @@ class FakeProjectComponent : ProjectComponent {
     override fun onRetryClick() = Unit
 
     override fun onUrlClick(url: String) = Unit
+
+    override fun onTestClick() = Unit
 }

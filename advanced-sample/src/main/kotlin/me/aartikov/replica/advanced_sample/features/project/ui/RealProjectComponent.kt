@@ -1,11 +1,14 @@
 package me.aartikov.replica.advanced_sample.features.project.ui
 
 import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.launch
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.error_handling.safeRun
 import me.aartikov.replica.advanced_sample.core.external_app_service.ExternalAppService
+import me.aartikov.replica.advanced_sample.core.utils.componentCoroutineScope
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.features.project.domain.Project
+import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.Replica
 
 class RealProjectComponent(
@@ -28,6 +31,16 @@ class RealProjectComponent(
     override fun onUrlClick(url: String) {
         safeRun(errorHandler) {
             externalAppService.openBrowser(url)
+        }
+    }
+
+    override fun onTestClick() {
+        val physicalProjectReplica = projectReplica as PhysicalReplica<Project>
+        componentCoroutineScope().launch {
+            physicalProjectReplica.clear()
+            physicalProjectReplica.invalidate()
+            physicalProjectReplica.clear()
+            physicalProjectReplica.invalidate()
         }
     }
 }

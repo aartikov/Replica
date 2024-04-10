@@ -13,4 +13,6 @@ interface ProjectComponent {
     fun onRetryClick()
 
     fun onUrlClick(url: String)
+
+    fun onTestClick()
 }
