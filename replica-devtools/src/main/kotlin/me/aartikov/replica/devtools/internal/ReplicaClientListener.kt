@@ -8,6 +8,9 @@ import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.devtools.dto.DtoStore
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaEvent
+import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
+import me.aartikov.replica.keyed_paged.KeyedPagedReplicaEvent
+import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.single.PhysicalReplica
 
 internal class ReplicaClientListener(
@@ -34,16 +37,26 @@ internal class ReplicaClientListener(
             }
 
             is ReplicaClientEvent.PagedReplicaCreated -> {
-                // TODO: add paged replicas support in ReplicaDevTools
+                store.addReplica(event.replica.toDto())
+                launchPagedReplicaProcessing(event.replica)
             }
 
             is ReplicaClientEvent.KeyedPagedReplicaCreated -> {
-                // TODO: add keyed paged replicas support in ReplicaDevTools
+                store.addKeyedReplica(event.keyedPagedReplica.toDto())
+                launchKeyedPagedReplicaProcessing(event.keyedPagedReplica)
             }
         }
     }
 
     private fun launchReplicaProcessing(replica: PhysicalReplica<*>) {
+        replica.stateFlow
+            .onEach { state ->
+                store.updateReplicaState(replica.id.value, state.toDto())
+            }
+            .launchIn(replica.coroutineScope)
+    }
+
+    private fun launchPagedReplicaProcessing(replica: PagedPhysicalReplica<*, *>) {
         replica.stateFlow
             .onEach { state ->
                 store.updateReplicaState(replica.id.value, state.toDto())
@@ -61,6 +74,36 @@ internal class ReplicaClientListener(
         keyedReplica.eventFlow
             .onEach { handleKeyedReplicaEvent(keyedReplica.id, it) }
             .launchIn(keyedReplica.coroutineScope)
+    }
+
+    private fun launchKeyedPagedReplicaProcessing(keyedReplica: KeyedPagedPhysicalReplica<*, *, *>) {
+        keyedReplica.stateFlow
+            .onEach { state ->
+                store.updateKeyedReplicaState(keyedReplica.id.value, state.toDto())
+            }
+            .launchIn(keyedReplica.coroutineScope)
+
+        keyedReplica.eventFlow
+            .onEach {
+                handleKeyedPagedReplicaEvent(keyedReplica.id, it)
+            }
+            .launchIn(keyedReplica.coroutineScope)
+    }
+
+    private fun handleKeyedPagedReplicaEvent(
+        keyedReplicaId: ReplicaId,
+        event: KeyedPagedReplicaEvent<*, *, *>
+    ) {
+        when (event) {
+            is KeyedPagedReplicaEvent.ReplicaCreated -> {
+                store.addKeyedReplicaChild(keyedReplicaId.value, event.replica.toDto())
+                launchKeyedPagedReplicaChildProcessing(keyedReplicaId, event.replica)
+            }
+
+            is KeyedPagedReplicaEvent.ReplicaRemoved -> {
+                store.removeKeyedReplicaChild(keyedReplicaId.value, event.replicaId.value)
+            }
+        }
     }
 
     private fun handleKeyedReplicaEvent(
@@ -82,6 +125,21 @@ internal class ReplicaClientListener(
     private fun launchKeyedReplicaChildProcessing(
         keyedReplicaId: ReplicaId,
         childReplica: PhysicalReplica<*>
+    ) {
+        childReplica.stateFlow
+            .onEach { state ->
+                store.updateKeyedReplicaChildState(
+                    keyedReplicaId.value,
+                    childReplica.id.value,
+                    state.toDto()
+                )
+            }
+            .launchIn(childReplica.coroutineScope)
+    }
+
+    private fun launchKeyedPagedReplicaChildProcessing(
+        keyedReplicaId: ReplicaId,
+        childReplica: PagedPhysicalReplica<*, *>
     ) {
         childReplica.stateFlow
             .onEach { state ->
