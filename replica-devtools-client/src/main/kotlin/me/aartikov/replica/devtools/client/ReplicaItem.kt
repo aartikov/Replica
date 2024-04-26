@@ -28,6 +28,21 @@ fun ReplicaItem(item: SimpleReplicaViewData) {
             },
             value = item.name
         )
+
+        if (item.pagesAmount != null) {
+            RText(
+                attrs = {
+                    style {
+                        paddingRight(16.px)
+                        overflow("hidden")
+                        whiteSpace("nowrap")
+                        display(DisplayStyle.Flex)
+                    }
+                },
+                value = "Pages: ${item.pagesAmount}",
+            )
+        }
+
         StatusItem(item.status)
         ObserverIcon(item.observerType)
     }

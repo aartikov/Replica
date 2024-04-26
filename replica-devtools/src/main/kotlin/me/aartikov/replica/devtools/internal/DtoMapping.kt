@@ -24,7 +24,7 @@ internal fun PhysicalReplica<*>.toDto(): ReplicaDto {
 
 internal fun ReplicaState<*>.toDto(): ReplicaStateDto {
     return ReplicaStateDto(
-        loading = loading,
+        loadingFirstPage = loading,
         hasData = data != null,
         hasError = error != null,
         dataIsFresh = data?.fresh == true,
@@ -60,13 +60,16 @@ internal fun PagedPhysicalReplica<*, *>.toDto(): ReplicaDto {
 
 internal fun PagedReplicaState<*, *>.toDto(): ReplicaStateDto {
     return ReplicaStateDto(
-        loading = this.loadingStatus == PagedLoadingStatus.LoadingFirstPage,
+        loadingFirstPage = loadingStatus == PagedLoadingStatus.LoadingFirstPage,
+        loadingNextPage = loadingStatus == PagedLoadingStatus.LoadingNextPage,
+        loadingPreviousPage = loadingStatus == PagedLoadingStatus.LoadingPreviousPage,
         hasData = data != null,
         hasError = error != null,
         dataIsFresh = data?.fresh == true,
         observerCount = observingState.observerCount,
         activeObserverCount = observingState.activeObserverCount,
-        observingTime = observingState.observingTime.toDto()
+        observingTime = observingState.observingTime.toDto(),
+        pagesAmount = data?.value?.pages?.size
     )
 }
 

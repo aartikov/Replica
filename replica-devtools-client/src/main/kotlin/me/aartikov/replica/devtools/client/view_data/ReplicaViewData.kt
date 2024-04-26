@@ -14,7 +14,8 @@ data class SimpleReplicaViewData(
     override val name: String,
     val status: StatusItemType,
     val observerType: ObserverType,
-    override val observingTime: ObservingTime
+    override val observingTime: ObservingTime,
+    val pagesAmount: Int?
 ) : ItemViewData(id, name, observingTime)
 
 data class KeyedReplicaViewData(
@@ -31,7 +32,8 @@ fun ReplicaDto.toViewData(): SimpleReplicaViewData {
         name = name,
         status = state.toStatusItemType(),
         observerType = state.toObserverType(),
-        observingTime = state.observingTime.toViewData()
+        observingTime = state.observingTime.toViewData(),
+        pagesAmount = state.pagesAmount
     )
 }
 
