@@ -4,17 +4,19 @@ import me.aartikov.replica.devtools.client.StatusColor
 import me.aartikov.replica.devtools.client.Theme
 import me.aartikov.replica.devtools.dto.ReplicaStateDto
 
-enum class StatusItemType {
-    Fresh,
-    Stale,
-    Error,
-    Loading,
-    Refresh,
-    Empty;
+enum class StatusItemType(val value: String) {
+    Fresh("Fresh"),
+    Stale("Stale"),
+    Error("Error"),
+    Loading("Loading"),
+    Refresh("Refresh"),
+    LoadingNextPage("Next"),
+    LoadingPreviousPage("Previous"),
+    Empty("Empty");
 
     fun getColor(theme: Theme): StatusColor {
         return when (this) {
-            Loading -> theme.loadingStatusColor
+            Loading, LoadingNextPage, LoadingPreviousPage -> theme.loadingStatusColor
             Fresh -> theme.freshStatusColor
             Error -> theme.errorStatusColor
             Refresh -> theme.loadingStatusColor
@@ -25,12 +27,16 @@ enum class StatusItemType {
 }
 
 fun ReplicaStateDto.toStatusItemType(): StatusItemType {
+    val loading = loadingFirstPage || loadingNextPage || loadingPreviousPage
+
     return when {
-        hasData && !loading && dataIsFresh -> StatusItemType.Fresh
+        loadingNextPage -> StatusItemType.LoadingNextPage
+        loadingPreviousPage -> StatusItemType.LoadingPreviousPage
+        hasData && !loading -> StatusItemType.Fresh
         hasData && !loading && !dataIsFresh -> StatusItemType.Stale
-        !hasData && hasError && !loading -> StatusItemType.Error
-        !hasData && loading -> StatusItemType.Loading
-        hasData && loading -> StatusItemType.Refresh
+        !hasData && hasError &&  !loading-> StatusItemType.Error
+        !hasData && loadingFirstPage -> StatusItemType.Loading
+        hasData && loadingFirstPage -> StatusItemType.Refresh
         else -> StatusItemType.Empty
     }
 }

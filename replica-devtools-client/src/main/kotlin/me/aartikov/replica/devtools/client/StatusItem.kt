@@ -10,7 +10,7 @@ fun StatusItem(type: StatusItemType) {
     val statusColor = type.getColor(theme)
 
     RText(
-        value = type.name,
+        value = type.value,
         attrs = {
             style {
                 borderRadius(4.px)

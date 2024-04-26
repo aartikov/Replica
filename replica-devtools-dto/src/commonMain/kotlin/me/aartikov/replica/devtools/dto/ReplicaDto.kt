@@ -12,13 +12,16 @@ data class ReplicaDto(
 
 @Serializable
 data class ReplicaStateDto(
-    val loading: Boolean,
+    val loadingFirstPage: Boolean,
+    val loadingNextPage: Boolean = false,
+    val loadingPreviousPage: Boolean = false,
     val hasData: Boolean,
     val hasError: Boolean,
     val dataIsFresh: Boolean,
     val observerCount: Int,
     val activeObserverCount: Int,
-    val observingTime: ObservingTimeDto
+    val observingTime: ObservingTimeDto,
+    val pagesAmount: Int? = null
 )
 
 @Serializable
