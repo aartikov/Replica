@@ -13,7 +13,9 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -50,6 +52,7 @@ class CancelTimeTest {
         runCurrent()
         observerScope.cancel()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
+        runCurrent()
 
         assertFalse(replica.currentState.loading)
         assertNull(replica.currentState.data)
@@ -73,6 +76,7 @@ class CancelTimeTest {
         replica.refresh()
         observerScope.cancel()
         delay(DEFAULT_DELAY - 1)
+        runCurrent()
 
         assertTrue(replica.currentState.loading)
         assertNull(replica.currentState.data)
@@ -93,6 +97,7 @@ class CancelTimeTest {
 
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
+        runCurrent()
 
         assertTrue(replica.currentState.loading)
         assertTrue(replica.currentState.preloading)
@@ -118,6 +123,7 @@ class CancelTimeTest {
         replica.refresh()
         observerActive.update { false }
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
+        runCurrent()
 
         assertTrue(replica.currentState.loading)
     }
@@ -140,6 +146,7 @@ class CancelTimeTest {
         runCurrent()
         observer.cancelObserving()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
+        runCurrent()
 
         assertFalse(replica.currentState.loading)
     }
@@ -164,6 +171,7 @@ class CancelTimeTest {
         delay(DEFAULT_DELAY - 1) // cancel time is not passed yet
         replica.observe(TestScope(), MutableStateFlow(true))
         delay(2) // in sum, cancel time is passed
+        runCurrent()
 
         assertTrue(replica.currentState.loading)
     }
@@ -186,6 +194,7 @@ class CancelTimeTest {
         launch { replica.getData(forceRefresh = true) }
         observer.cancelObserving()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
+        runCurrent()
 
         assertTrue(replica.currentState.loading)
     }

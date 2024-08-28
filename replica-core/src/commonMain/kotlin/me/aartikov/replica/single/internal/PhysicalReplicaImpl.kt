@@ -2,14 +2,31 @@ package me.aartikov.replica.single.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
-import me.aartikov.replica.single.*
+import me.aartikov.replica.single.Fetcher
+import me.aartikov.replica.single.PhysicalReplica
+import me.aartikov.replica.single.ReplicaEvent
+import me.aartikov.replica.single.ReplicaObserver
+import me.aartikov.replica.single.ReplicaSettings
+import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.internal.controllers.*
+import me.aartikov.replica.single.internal.controllers.ClearingController
+import me.aartikov.replica.single.internal.controllers.DataChangingController
+import me.aartikov.replica.single.internal.controllers.DataLoadingController
+import me.aartikov.replica.single.internal.controllers.FreshnessController
+import me.aartikov.replica.single.internal.controllers.ObserversController
+import me.aartikov.replica.single.internal.controllers.OptimisticUpdatesController
 import me.aartikov.replica.time.TimeProvider
 
 
@@ -73,11 +90,15 @@ internal class PhysicalReplicaImpl<T : Any>(
     }
 
     override fun refresh() {
-        dataLoadingController.refresh()
+        coroutineScope.launch {
+            dataLoadingController.refresh()
+        }
     }
 
     override fun revalidate() {
-        dataLoadingController.revalidate()
+        coroutineScope.launch {
+            dataLoadingController.revalidate()
+        }
     }
 
     override suspend fun getData(forceRefresh: Boolean): T {
@@ -102,11 +123,13 @@ internal class PhysicalReplicaImpl<T : Any>(
     }
 
     override fun cancel() {
-        dataLoadingController.cancel()
+        coroutineScope.launch {
+            dataLoadingController.cancel()
+        }
     }
 
     override suspend fun clear(removeFromStorage: Boolean) {
-        cancel()
+        dataLoadingController.cancel()
         clearingController.clear(removeFromStorage)
     }
 
