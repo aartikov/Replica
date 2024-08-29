@@ -1,12 +1,12 @@
 package me.aartikov.replica.single
 
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds

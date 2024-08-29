@@ -3,13 +3,13 @@ package me.aartikov.replica.algebra
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.combine
 import me.aartikov.replica.algebra.normal.combineEager
 import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
+import me.aartikov.replica.algebra.utils.ObserverScope
 import me.aartikov.replica.algebra.utils.ReplicaProvider
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
@@ -41,7 +41,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         runCurrent()
 
@@ -56,7 +56,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         replica1.refresh()
         runCurrent()
 
@@ -73,7 +73,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combineEager(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         replica1.refresh()
         runCurrent()
 
@@ -91,7 +91,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         delay(DEFAULT_DELAY - 1) // loading not completes yet
 
@@ -110,7 +110,7 @@ class CombineReplicaTest {
             val replica2 = replicaProvider.replica(fetcher = { data2 })
 
             val combinedReplica = combineEager(replica1, replica2) { d1, d2 -> d1 + d2 }
-            val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+            val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
             combinedReplica.refresh()
             delay(DEFAULT_DELAY - 1) // loading not completes yet
 
@@ -130,7 +130,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         runCurrent()
 
@@ -149,7 +149,7 @@ class CombineReplicaTest {
             val replica2 = replicaProvider.replica(fetcher = { data2 })
 
             val combinedReplica = combineEager(replica1, replica2) { d1, d2 -> d1 + d2 }
-            val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+            val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
             combinedReplica.refresh()
             runCurrent()
 
@@ -167,7 +167,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { throw exception2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         runCurrent()
 
@@ -190,7 +190,7 @@ class CombineReplicaTest {
         val replica2 = replicaProvider.replica(fetcher = { data2 })
 
         val combinedReplica = combine(replica1, replica2) { d1, d2 -> d1 + d2 }
-        val observer = combinedReplica.observe(TestScope(), MutableStateFlow(true))
+        val observer = combinedReplica.observe(ObserverScope(), MutableStateFlow(true))
         combinedReplica.refresh()
         runCurrent()
         replica2.setData(data2Changed)

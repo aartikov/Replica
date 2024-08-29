@@ -123,7 +123,7 @@ internal class DataLoadingController<T : Any>(
 
             replicaStateFlow.value = state.copy(
                 loading = true,
-                preloading = state.preloading || state.observingState.status == ObservingStatus.None,
+                preloading = state.observingState.status == ObservingStatus.None,
                 dataRequested = if (setDataRequested) true else state.dataRequested
             )
 

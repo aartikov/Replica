@@ -3,9 +3,12 @@ package me.aartikov.replica.single.observing
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.CombinedLoadingError
@@ -16,6 +19,7 @@ import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -42,7 +46,7 @@ class LoadingErrorObservingTest {
         )
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
         runCurrent()
 
         val state = observer.currentState
@@ -59,7 +63,7 @@ class LoadingErrorObservingTest {
         )
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
         runCurrent()
 
         val state = observer.currentState
@@ -75,7 +79,7 @@ class LoadingErrorObservingTest {
             }
         )
 
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
         observer.cancelObserving()
         replica.refresh()
         runCurrent()
@@ -93,7 +97,7 @@ class LoadingErrorObservingTest {
             }
         )
 
-        val scope = TestScope()
+        val scope = ObserverScope()
         val observer = replica.observe(scope, MutableStateFlow(true))
         scope.cancel()
         replica.refresh()
@@ -114,7 +118,7 @@ class LoadingErrorObservingTest {
 
         replica.refresh()
         val observerActive = MutableStateFlow(false)
-        val observer = replica.observe(TestScope(), observerActive)
+        val observer = replica.observe(ObserverScope(), observerActive)
         observerActive.update { true }
         runCurrent()
 
@@ -133,7 +137,7 @@ class LoadingErrorObservingTest {
         )
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
 
         val errorEvent = observer.loadingErrorFlow.firstOrNull()
         delay(DEFAULT_DELAY * 2) // wait until loading has finished
@@ -155,7 +159,7 @@ class LoadingErrorObservingTest {
         )
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
         runCurrent()
 
         val state = observer.currentState
@@ -179,7 +183,7 @@ class LoadingErrorObservingTest {
                 delay(DEFAULT_DELAY * 2) // wait until loading has finished
             }
         }
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
 
         val errorEvents = observer.loadingErrorFlow.take(errorsCount).toList()
         val state = observer.currentState
@@ -211,7 +215,7 @@ class LoadingErrorObservingTest {
         }
 
         val observerActive = MutableStateFlow(false)
-        val observer = replica.observe(TestScope(), observerActive)
+        val observer = replica.observe(ObserverScope(), observerActive)
         delay(DEFAULT_DELAY * errorsCount)
         observerActive.update { true }
 

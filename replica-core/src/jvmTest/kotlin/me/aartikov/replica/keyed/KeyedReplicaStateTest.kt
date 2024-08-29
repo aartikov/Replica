@@ -4,11 +4,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -53,7 +53,7 @@ class KeyedReplicaStateTest {
         val replica = replicaProvider.replica()
 
         replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
-        replica.observe(TestScope(), MutableStateFlow(false), MutableStateFlow(DEFAULT_KEY))
+        replica.observe(ObserverScope(), MutableStateFlow(false), MutableStateFlow(DEFAULT_KEY))
         runCurrent()
 
         assertEquals(1, replica.currentState.replicaCount)
@@ -68,7 +68,7 @@ class KeyedReplicaStateTest {
 
             repeat(replicasWithObserverCount) {
                 replica.setData(it, "test_data_$it")
-                replica.observe(TestScope(), MutableStateFlow(false), MutableStateFlow(it))
+                replica.observe(ObserverScope(), MutableStateFlow(false), MutableStateFlow(it))
             }
             runCurrent()
 
@@ -82,7 +82,7 @@ class KeyedReplicaStateTest {
             val replica = replicaProvider.replica()
 
             replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
-            replica.observe(TestScope(), MutableStateFlow(true), MutableStateFlow(DEFAULT_KEY))
+            replica.observe(ObserverScope(), MutableStateFlow(true), MutableStateFlow(DEFAULT_KEY))
             runCurrent()
 
             assertEquals(1, replica.currentState.replicaCount)
@@ -96,7 +96,7 @@ class KeyedReplicaStateTest {
 
             replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
             val observerActive = MutableStateFlow(false)
-            replica.observe(TestScope(), observerActive, MutableStateFlow(DEFAULT_KEY))
+            replica.observe(ObserverScope(), observerActive, MutableStateFlow(DEFAULT_KEY))
             observerActive.update { true }
             runCurrent()
 
@@ -113,7 +113,7 @@ class KeyedReplicaStateTest {
 
             replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
             val observerActive = MutableStateFlow(true)
-            replica.observe(TestScope(), observerActive, MutableStateFlow(DEFAULT_KEY))
+            replica.observe(ObserverScope(), observerActive, MutableStateFlow(DEFAULT_KEY))
             observerActive.update { false }
             runCurrent()
 
@@ -133,7 +133,7 @@ class KeyedReplicaStateTest {
             replica.setData(key0, KeyedReplicaProvider.testData(key0))
             replica.setData(key1, KeyedReplicaProvider.testData(key1))
             val observingKey = MutableStateFlow(key0)
-            replica.observe(TestScope(), MutableStateFlow(true), observingKey)
+            replica.observe(ObserverScope(), MutableStateFlow(true), observingKey)
             observingKey.update { key1 }
             runCurrent()
 
@@ -149,8 +149,9 @@ class KeyedReplicaStateTest {
             val replica = replicaProvider.replica()
 
             replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
-            val observerScope = TestScope()
+            val observerScope = ObserverScope()
             replica.observe(observerScope, MutableStateFlow(true), MutableStateFlow(DEFAULT_KEY))
+            runCurrent()
             observerScope.cancel()
             runCurrent()
 
@@ -167,7 +168,7 @@ class KeyedReplicaStateTest {
 
             replica.setData(DEFAULT_KEY, KeyedReplicaProvider.testData(DEFAULT_KEY))
             val observer = replica.observe(
-                TestScope(),
+                ObserverScope(),
                 MutableStateFlow(true),
                 MutableStateFlow(DEFAULT_KEY)
             )

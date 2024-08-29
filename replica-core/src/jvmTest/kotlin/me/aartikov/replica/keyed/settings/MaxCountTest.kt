@@ -3,12 +3,12 @@ package me.aartikov.replica.keyed.settings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
@@ -67,7 +67,7 @@ class MaxCountTest {
 
         repeat(numOfReplicas) {
             replica.setData(it, KeyedReplicaProvider.testData(it))
-            replica.observe(TestScope(), MutableStateFlow(false), MutableStateFlow(it))
+            replica.observe(ObserverScope(), MutableStateFlow(false), MutableStateFlow(it))
         }
         delay(101) // waiting until LimitChildCount.ClearingDebounceTime is passed
 
@@ -91,7 +91,7 @@ class MaxCountTest {
             KeyedReplicaProvider.testData(replicaKeyWithObserver1)
         )
         replica.observe(
-            observerCoroutineScope = TestScope(),
+            observerCoroutineScope = ObserverScope(),
             observerActive = MutableStateFlow(true),
             key = MutableStateFlow(replicaKeyWithObserver1)
         )
@@ -100,7 +100,7 @@ class MaxCountTest {
             KeyedReplicaProvider.testData(replicaKeyWithObserver2)
         )
         replica.observe(
-            observerCoroutineScope = TestScope(),
+            observerCoroutineScope = ObserverScope(),
             observerActive = MutableStateFlow(true),
             key = MutableStateFlow(replicaKeyWithObserver2)
         )

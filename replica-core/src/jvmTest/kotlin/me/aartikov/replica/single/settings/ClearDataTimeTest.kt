@@ -3,12 +3,12 @@ package me.aartikov.replica.single.settings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
@@ -98,7 +98,7 @@ class ClearDataTimeTest {
             )
         )
 
-        replica.observe(TestScope(), MutableStateFlow(true))
+        replica.observe(ObserverScope(), MutableStateFlow(true))
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear time is passed
 
@@ -114,7 +114,7 @@ class ClearDataTimeTest {
             )
         )
 
-        replica.observe(TestScope(), MutableStateFlow(false))
+        replica.observe(ObserverScope(), MutableStateFlow(false))
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear time is passed
 

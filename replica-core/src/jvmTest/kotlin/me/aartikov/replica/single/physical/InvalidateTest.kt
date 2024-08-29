@@ -4,7 +4,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.InvalidationMode
@@ -12,7 +11,11 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.*
+import me.aartikov.replica.utils.ObserverScope
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -34,7 +37,7 @@ class InvalidateTest {
         val replica = replicaProvider.replica()
 
         replica.refresh()
-        runCurrent()
+        delay(1) // waiting until data is loaded
         replica.invalidate(InvalidationMode.DontRefresh)
 
         assertEquals(ReplicaProvider.TEST_DATA, replica.currentState.data?.value)
@@ -70,9 +73,7 @@ class InvalidateTest {
     fun `data is refreshed after invalidate call with RefreshAlways mode`() = runTest {
         var counter = 0
         val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = DEFAULT_DELAY.milliseconds
-            ),
+            replicaSettings = ReplicaSettings(staleTime = null),
             fetcher = {
                 counter++
                 ReplicaProvider.TEST_DATA
@@ -80,6 +81,7 @@ class InvalidateTest {
         )
 
         replica.refresh()
+        delay(1) // waiting until data is loaded
         replica.invalidate(InvalidationMode.RefreshAlways)
         runCurrent()
 
@@ -91,9 +93,7 @@ class InvalidateTest {
     fun `data isn't refreshed after invalidate call with DontRefresh mode`() = runTest {
         var counter = 0
         val replica = replicaProvider.replica(
-            replicaSettings = ReplicaSettings(
-                staleTime = DEFAULT_DELAY.milliseconds
-            ),
+            replicaSettings = ReplicaSettings(staleTime = null),
             fetcher = {
                 counter++
                 ReplicaProvider.TEST_DATA
@@ -101,10 +101,11 @@ class InvalidateTest {
         )
 
         replica.refresh()
+        delay(1) // waiting until data is loaded
         replica.invalidate(InvalidationMode.DontRefresh)
         runCurrent()
 
-        assertTrue(replica.currentState.hasFreshData)
+        assertFalse(replica.currentState.hasFreshData)
         assertEquals(1, counter)
     }
 
@@ -123,10 +124,11 @@ class InvalidateTest {
             )
 
             replica.refresh()
+            delay(1) // waiting until data is loaded
             replica.invalidate(InvalidationMode.RefreshIfHasObservers)
             runCurrent()
 
-            assertTrue(replica.currentState.hasFreshData)
+            assertFalse(replica.currentState.hasFreshData)
             assertEquals(1, counter)
         }
 
@@ -146,7 +148,8 @@ class InvalidateTest {
             )
 
             replica.refresh()
-            replica.observe(TestScope(), MutableStateFlow(false))
+            delay(1) // waiting until data is loaded
+            replica.observe(ObserverScope(), MutableStateFlow(false))
             replica.invalidate(InvalidationMode.RefreshIfHasObservers)
             runCurrent()
 
@@ -170,13 +173,15 @@ class InvalidateTest {
             )
 
             replica.refresh()
-            val observerScope = TestScope()
+            delay(1) // waiting until data is loaded
+            val observerScope = ObserverScope()
             replica.observe(observerScope, MutableStateFlow(false))
+            runCurrent()
             observerScope.cancel()
             replica.invalidate(InvalidationMode.RefreshIfHasObservers)
             runCurrent()
 
-            assertTrue(replica.currentState.hasFreshData)
+            assertFalse(replica.currentState.hasFreshData)
             assertEquals(1, counter)
         }
 }

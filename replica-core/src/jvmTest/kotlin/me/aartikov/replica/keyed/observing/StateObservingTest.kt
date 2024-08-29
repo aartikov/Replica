@@ -4,13 +4,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +34,7 @@ class StateObservingTest {
 
         val activeObserver = MutableStateFlow(true)
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             activeObserver,
             MutableStateFlow(DEFAULT_KEY)
         )
@@ -50,7 +50,7 @@ class StateObservingTest {
         val replica = replicaProvider.replica()
 
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             MutableStateFlow(DEFAULT_KEY)
         )
@@ -66,7 +66,7 @@ class StateObservingTest {
         val replica = replicaProvider.replica()
 
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(false),
             MutableStateFlow(DEFAULT_KEY)
         )
@@ -84,7 +84,7 @@ class StateObservingTest {
 
         val observerActive = MutableStateFlow(false)
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             observerActive,
             MutableStateFlow(DEFAULT_KEY)
         )
@@ -105,7 +105,7 @@ class StateObservingTest {
 
         val observerKey = MutableStateFlow<Int?>(null)
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             observerKey
         )
@@ -125,7 +125,7 @@ class StateObservingTest {
 
         val observerKey = MutableStateFlow(DEFAULT_KEY)
         val observer = replica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             observerKey
         )

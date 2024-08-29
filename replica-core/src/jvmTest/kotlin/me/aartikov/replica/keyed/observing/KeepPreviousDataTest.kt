@@ -3,7 +3,6 @@ package me.aartikov.replica.keyed.observing
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
@@ -11,6 +10,7 @@ import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +47,7 @@ class KeepPreviousDataTest {
         val observer = replica
             .keepPreviousData()
             .observe(
-                observerCoroutineScope = TestScope(),
+                observerCoroutineScope = ObserverScope(),
                 observerActive = MutableStateFlow(true),
                 key = observerKey
             )
@@ -80,7 +80,7 @@ class KeepPreviousDataTest {
         val observerKey = MutableStateFlow(DEFAULT_KEY)
         val observer = replica
             .observe(
-                observerCoroutineScope = TestScope(),
+                observerCoroutineScope = ObserverScope(),
                 observerActive = MutableStateFlow(true),
                 key = observerKey
             )

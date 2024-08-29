@@ -421,25 +421,32 @@ public final class me/aartikov/replica/devtools/dto/ReplicaDto$Companion {
 
 public final class me/aartikov/replica/devtools/dto/ReplicaStateDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/ReplicaStateDto$Companion;
-	public synthetic fun <init> (IZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (ZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;)V
+	public synthetic fun <init> (IZZZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Ljava/lang/Integer;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (ZZZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Ljava/lang/Integer;)V
+	public synthetic fun <init> (ZZZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Z
+	public final fun component10 ()Ljava/lang/Integer;
 	public final fun component2 ()Z
 	public final fun component3 ()Z
 	public final fun component4 ()Z
-	public final fun component5 ()I
-	public final fun component6 ()I
-	public final fun component7 ()Lme/aartikov/replica/devtools/dto/ObservingTimeDto;
-	public final fun copy (ZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;)Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun component7 ()I
+	public final fun component8 ()I
+	public final fun component9 ()Lme/aartikov/replica/devtools/dto/ObservingTimeDto;
+	public final fun copy (ZZZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Ljava/lang/Integer;)Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ReplicaStateDto;ZZZZZZIILme/aartikov/replica/devtools/dto/ObservingTimeDto;Ljava/lang/Integer;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ReplicaStateDto;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getActiveObserverCount ()I
 	public final fun getDataIsFresh ()Z
 	public final fun getHasData ()Z
 	public final fun getHasError ()Z
-	public final fun getLoading ()Z
+	public final fun getLoadingFirstPage ()Z
+	public final fun getLoadingNextPage ()Z
+	public final fun getLoadingPreviousPage ()Z
 	public final fun getObserverCount ()I
 	public final fun getObservingTime ()Lme/aartikov/replica/devtools/dto/ObservingTimeDto;
+	public final fun getPagesAmount ()Ljava/lang/Integer;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lme/aartikov/replica/devtools/dto/ReplicaStateDto;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V

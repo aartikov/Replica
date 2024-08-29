@@ -2,13 +2,13 @@ package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.associate
 import me.aartikov.replica.algebra.normal.map
 import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
+import me.aartikov.replica.algebra.utils.ObserverScope
 import me.aartikov.replica.algebra.utils.ReplicaProvider
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingReason
@@ -50,7 +50,7 @@ class AssociateReplicaTest {
         }
         val key = 0
         val observer = associatedReplica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             MutableStateFlow(key)
         )
@@ -71,7 +71,7 @@ class AssociateReplicaTest {
         }
         val key = data.length + 1
         val observer = associatedReplica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             MutableStateFlow(key)
         )
@@ -96,7 +96,7 @@ class AssociateReplicaTest {
         val secondKey = 1
         val observerKey = MutableStateFlow(firstKey)
         val observer = associatedReplica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             observerKey
         )
@@ -117,7 +117,7 @@ class AssociateReplicaTest {
 
         val key = 0
         val observer = associatedReplica.observe(
-            TestScope(),
+            ObserverScope(),
             MutableStateFlow(true),
             MutableStateFlow(key)
         )

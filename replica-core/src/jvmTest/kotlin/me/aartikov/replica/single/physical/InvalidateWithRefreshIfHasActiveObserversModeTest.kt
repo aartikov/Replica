@@ -2,9 +2,9 @@ package me.aartikov.replica.single.physical
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.InvalidationMode
@@ -12,7 +12,9 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +48,8 @@ class InvalidateWithRefreshIfHasActiveObserversModeTest {
             )
 
             replica.refresh()
-            replica.observe(TestScope(), MutableStateFlow(true))
+            delay(1) // waiting until data is loaded
+            replica.observe(ObserverScope(), MutableStateFlow(true))
             replica.invalidate(InvalidationMode.RefreshIfHasActiveObservers)
             runCurrent()
 
@@ -70,11 +73,12 @@ class InvalidateWithRefreshIfHasActiveObserversModeTest {
             )
 
             replica.refresh()
-            replica.observe(TestScope(), MutableStateFlow(false))
+            delay(1) // waiting until data is loaded
+            replica.observe(ObserverScope(), MutableStateFlow(false))
             replica.invalidate(InvalidationMode.RefreshIfHasActiveObservers)
             runCurrent()
 
-            assertTrue(replica.currentState.hasFreshData)
+            assertFalse(replica.currentState.hasFreshData)
             assertEquals(1, counter)
         }
 
@@ -94,13 +98,14 @@ class InvalidateWithRefreshIfHasActiveObserversModeTest {
             )
 
             replica.refresh()
+            delay(1) // waiting until data is loaded
             val observerActive = MutableStateFlow(true)
-            replica.observe(TestScope(), observerActive)
+            replica.observe(ObserverScope(), observerActive)
             observerActive.update { false }
             replica.invalidate(InvalidationMode.RefreshIfHasActiveObservers)
             runCurrent()
 
-            assertTrue(replica.currentState.hasFreshData)
+            assertFalse(replica.currentState.hasFreshData)
             assertEquals(1, counter)
         }
 
@@ -120,13 +125,15 @@ class InvalidateWithRefreshIfHasActiveObserversModeTest {
             )
 
             replica.refresh()
-            val observerScope = TestScope()
+            delay(1) // waiting until data is loaded
+            val observerScope = ObserverScope()
             replica.observe(observerScope, MutableStateFlow(true))
+            runCurrent()
             observerScope.cancel()
             replica.invalidate(InvalidationMode.RefreshIfHasActiveObservers)
             runCurrent()
 
-            assertTrue(replica.currentState.hasFreshData)
+            assertFalse(replica.currentState.hasFreshData)
             assertEquals(1, counter)
         }
 }

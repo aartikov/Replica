@@ -4,13 +4,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
@@ -110,7 +111,7 @@ class ClearErrorTimeTest {
             fetcher = { throw error }
         )
 
-        replica.observe(TestScope(), MutableStateFlow(true))
+        replica.observe(ObserverScope(), MutableStateFlow(true))
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
@@ -128,7 +129,7 @@ class ClearErrorTimeTest {
             fetcher = { throw error }
         )
 
-        replica.observe(TestScope(), MutableStateFlow(false))
+        replica.observe(ObserverScope(), MutableStateFlow(false))
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
@@ -147,11 +148,13 @@ class ClearErrorTimeTest {
                 fetcher = { throw error }
             )
 
-            val observerScope = TestScope()
+            val observerScope = ObserverScope()
             replica.observe(observerScope, MutableStateFlow(true))
             replica.refresh()
+            runCurrent()
             observerScope.cancel()
             delay(DEFAULT_DELAY + 1) // waiting until error time is passed
+            runCurrent()
 
             assertNull(replica.currentState.error)
         }

@@ -4,7 +4,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
@@ -13,7 +12,11 @@ import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.*
+import me.aartikov.replica.utils.ObserverScope
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,7 +45,7 @@ class RevalidationOnNetworkConnectionTest {
             }
         )
 
-        replica.observe(TestScope(), MutableStateFlow(true))
+        replica.observe(ObserverScope(), MutableStateFlow(true))
         replica.refresh()
         isConnected.update { true }
         runCurrent()
@@ -99,7 +102,7 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            replica.observe(TestScope(), MutableStateFlow(false))
+            replica.observe(ObserverScope(), MutableStateFlow(false))
             replica.refresh()
             runCurrent()
             isConnected.update { true }
@@ -129,11 +132,12 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            val observerScope = TestScope()
+            val observerScope = ObserverScope()
             replica.observe(observerScope, MutableStateFlow(true))
             replica.refresh()
-            observerScope.cancel()
             runCurrent()
+            observerScope.cancel()
+
             isConnected.update { true }
             runCurrent()
 

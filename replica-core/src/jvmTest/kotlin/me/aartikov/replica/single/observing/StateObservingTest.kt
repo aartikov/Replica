@@ -4,13 +4,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.ObserverScope
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +33,7 @@ class StateObservingTest {
         val newData = ("new data")
 
         replica.setData(newData)
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
         runCurrent()
 
         val state = observer.currentState
@@ -46,7 +46,7 @@ class StateObservingTest {
         val newData = ("new data")
 
         replica.setData(newData)
-        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
 
         val state = observer.currentState
         assertEquals(Loadable<Any>(), state)
@@ -57,7 +57,7 @@ class StateObservingTest {
         val replica = replicaProvider.replica()
 
         val activeObserver = MutableStateFlow(true)
-        val observer = replica.observe(TestScope(), activeObserver)
+        val observer = replica.observe(ObserverScope(), activeObserver)
         activeObserver.update { false }
         replica.setData("test")
 
@@ -70,7 +70,7 @@ class StateObservingTest {
         val replica = replicaProvider.replica()
         val newData = "new data"
 
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
         delay(DEFAULT_DELAY)
         replica.setData(newData)
         delay(DEFAULT_DELAY)
@@ -84,7 +84,7 @@ class StateObservingTest {
         val replica = replicaProvider.replica()
         val newData = "new data"
 
-        val observer = replica.observe(TestScope(), MutableStateFlow(false))
+        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
         delay(DEFAULT_DELAY)
         replica.setData(newData)
         delay(DEFAULT_DELAY)
@@ -99,7 +99,7 @@ class StateObservingTest {
         val newData = "new data"
 
         val observerActive = MutableStateFlow(false)
-        val observer = replica.observe(TestScope(), observerActive)
+        val observer = replica.observe(ObserverScope(), observerActive)
 
         replica.setData(newData)
         observerActive.value = true
