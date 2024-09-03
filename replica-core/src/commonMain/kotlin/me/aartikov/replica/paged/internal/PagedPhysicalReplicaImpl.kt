@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
@@ -88,19 +89,27 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
     }
 
     override fun refresh() {
-        dataLoadingController.refresh()
+        coroutineScope.launch {
+            dataLoadingController.refresh()
+        }
     }
 
     override fun revalidate() {
-        dataLoadingController.revalidate()
+        coroutineScope.launch {
+            dataLoadingController.revalidate()
+        }
     }
 
     override fun loadNext() {
-        dataLoadingController.loadNext()
+        coroutineScope.launch {
+            dataLoadingController.loadNext()
+        }
     }
 
     override fun loadPrevious() {
-        dataLoadingController.loadPrevious()
+        coroutineScope.launch {
+            dataLoadingController.loadPrevious()
+        }
     }
 
     override suspend fun setData(data: List<P>) {
@@ -121,11 +130,13 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
     }
 
     override fun cancel() {
-        dataLoadingController.cancel()
+        coroutineScope.launch {
+            dataLoadingController.cancel()
+        }
     }
 
     override suspend fun clear() {
-        cancel()
+        dataLoadingController.cancel()
         clearingController.clear()
     }
 

@@ -1,8 +1,10 @@
 package me.aartikov.replica.common.internal
 
+import kotlin.concurrent.AtomicLong
+
 internal actual class AtomicLong actual constructor(initialValue: Long) {
 
-    private val impl = kotlin.native.concurrent.AtomicLong(initialValue)
+    private val impl = AtomicLong(initialValue)
 
     actual var value: Long
         get() = impl.value

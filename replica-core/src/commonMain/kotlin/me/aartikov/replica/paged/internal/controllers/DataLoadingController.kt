@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
@@ -37,12 +36,35 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
             .launchIn(coroutineScope)
     }
 
-    fun refresh() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
+    suspend fun refresh() {
+        withContext(dispatcher) {
+            refreshImpl()
+        }
+    }
+
+    suspend fun revalidate() {
+        withContext(dispatcher) {
+            if (!replicaStateFlow.value.hasFreshData) {
                 refreshImpl()
             }
         }
+    }
+
+    suspend fun loadNext() {
+        withContext(dispatcher) {
+            loadNextImpl()
+        }
+    }
+
+    suspend fun loadPrevious() {
+        withContext(dispatcher) {
+            loadPreviousImpl()
+        }
+    }
+
+    suspend fun cancel() {
+        // TODO: change state
+        dataLoader.cancel()
     }
 
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
@@ -62,36 +84,6 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
                 InvalidationMode.RefreshAlways -> refresh()
             }
         }
-    }
-
-    fun revalidate() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                if (!replicaStateFlow.value.hasFreshData) {
-                    refreshImpl()
-                }
-            }
-        }
-    }
-
-    fun loadNext() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                loadNextImpl()
-            }
-        }
-    }
-
-    fun loadPrevious() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                loadPreviousImpl()
-            }
-        }
-    }
-
-    fun cancel() {
-        dataLoader.cancel()
     }
 
     private fun refreshImpl() {
@@ -114,6 +106,10 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
         val currentLoadingStatus = replicaStateFlow.value.loadingStatus
         val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
         dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
+    }
+
+    private suspend fun load() {
+
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<I, P>) {
