@@ -42,8 +42,6 @@ Replica provides:
 - Integration with [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) and [Decompose](https://github.com/arkivanov/Decompose)
 - Visual debug tool integrated to Android Studio
 - KMM support
-
-Planned features:
 - Pagination
 
 ## Gradle Setup
