@@ -48,16 +48,17 @@ suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.c
  * Cancels network requests and clears data in child replicas with the matching tags.
  */
 suspend fun <K : Any, I : Any, P : Page<I>> KeyedPagedPhysicalReplica<K, I, P>.clearByTags(
+    invalidationMode: InvalidationMode = InvalidationMode.DontRefresh,
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
     if (predicate(tags)) {
-        clearAll()
+        clearAll(invalidationMode)
         return
     }
 
     onEachPagedReplica {
         if (predicate(tags)) {
-            clear()
+            clear(invalidationMode)
         }
     }
 }

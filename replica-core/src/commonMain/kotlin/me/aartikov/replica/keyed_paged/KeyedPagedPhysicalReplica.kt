@@ -95,8 +95,13 @@ interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
 
     /**
      * Cancels current request and clears data for a given [key].
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      */
-    suspend fun clear(key: K)
+    suspend fun clear(
+        key: K,
+        invalidationMode: InvalidationMode = InvalidationMode.DontRefresh
+    )
 
     /**
      * Clears error stored in [PagedReplicaState] for a given [key].
@@ -105,8 +110,10 @@ interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
 
     /**
      * Cancels network requests and clears data in all child replicas.
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      */
-    suspend fun clearAll()
+    suspend fun clearAll(invalidationMode: InvalidationMode = InvalidationMode.DontRefresh)
 
     /**
      * Begins optimistic update for a given [key]. Observed data will be transformed by [update] function immediately.

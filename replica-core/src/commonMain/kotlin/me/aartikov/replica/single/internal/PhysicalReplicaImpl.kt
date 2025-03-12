@@ -128,9 +128,10 @@ internal class PhysicalReplicaImpl<T : Any>(
         }
     }
 
-    override suspend fun clear(removeFromStorage: Boolean) {
+    override suspend fun clear(invalidationMode: InvalidationMode, removeFromStorage: Boolean) {
         dataLoadingController.cancel()
         clearingController.clear(removeFromStorage)
+        dataLoadingController.refreshAfterInvalidation(invalidationMode)
     }
 
     override suspend fun clearError() {

@@ -45,18 +45,21 @@ suspend fun <K : Any, T : Any> KeyedPhysicalReplica<K, T>.cancelByTags(
 
 /**
  * Cancels network requests and clears data in child replicas with the matching tags.
+ *
+ * @param invalidationMode specifies how replicas refresh data. See: [InvalidationMode].
  */
 suspend fun <K : Any, T : Any> KeyedPhysicalReplica<K, T>.clearByTags(
+    invalidationMode: InvalidationMode = InvalidationMode.DontRefresh,
     predicate: (Set<ReplicaTag>) -> Boolean
 ) {
     if (predicate(tags)) {
-        clearAll()
+        clearAll(invalidationMode)
         return
     }
 
     onEachReplica {
         if (predicate(tags)) {
-            clear()
+            clear(invalidationMode)
         }
     }
 }

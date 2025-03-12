@@ -119,17 +119,17 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
         getReplica(key)?.cancel()
     }
 
-    override suspend fun clear(key: K) {
-        getReplica(key)?.clear()
+    override suspend fun clear(key: K, invalidationMode: InvalidationMode) {
+        getReplica(key)?.clear(invalidationMode)
     }
 
     override suspend fun clearError(key: K) {
         getReplica(key)?.clearError()
     }
 
-    override suspend fun clearAll() {
+    override suspend fun clearAll(invalidationMode: InvalidationMode) {
         onEachPagedReplica {
-            clear()
+            clear(invalidationMode)
         }
     }
 

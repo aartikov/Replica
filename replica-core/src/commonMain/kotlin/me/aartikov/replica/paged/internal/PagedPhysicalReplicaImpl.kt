@@ -135,9 +135,10 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         }
     }
 
-    override suspend fun clear() {
+    override suspend fun clear(invalidationMode: InvalidationMode) {
         dataLoadingController.cancel()
         clearingController.clear()
+        dataLoadingController.refreshAfterInvalidation(invalidationMode)
     }
 
     override suspend fun clearError() {
