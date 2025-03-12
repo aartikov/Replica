@@ -1,6 +1,5 @@
 package me.aartikov.replica.keyed_paged
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedLoadingStatus
 import me.aartikov.replica.paged.PagedReplicaObserver
@@ -31,20 +31,11 @@ private class KeepPreviousDataKeyedPagedReplica<K : Any, T : Any>(
 ) : KeyedPagedReplica<K, T> {
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): PagedReplicaObserver<T> {
-        val originalObserver = originalKeyedPagedReplica.observe(
-            observerCoroutineScope,
-            observerActive,
-            key
-        )
-
-        return KeepPreviousDataPagedReplicaObserver(
-            observerCoroutineScope,
-            originalObserver
-        )
+        val originalObserver = originalKeyedPagedReplica.observe(observerHost, keyFlow)
+        return KeepPreviousDataPagedReplicaObserver(observerHost, originalObserver)
     }
 
     override fun refresh(key: K) {
@@ -65,9 +56,11 @@ private class KeepPreviousDataKeyedPagedReplica<K : Any, T : Any>(
 }
 
 private class KeepPreviousDataPagedReplicaObserver<T : Any>(
-    val coroutineScope: CoroutineScope,
+    observerHost: ReplicaObserverHost,
     val originalObserver: PagedReplicaObserver<T>
 ) : PagedReplicaObserver<T> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Paged<T>())
     override val stateFlow: StateFlow<Paged<T>> = _stateFlow.asStateFlow()

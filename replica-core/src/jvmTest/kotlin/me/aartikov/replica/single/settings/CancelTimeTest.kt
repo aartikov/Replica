@@ -1,10 +1,7 @@
 package me.aartikov.replica.single.settings
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -12,7 +9,7 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
-import me.aartikov.replica.utils.ObserverScope
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -46,11 +43,11 @@ class CancelTimeTest {
             }
         )
 
-        val observerScope = ObserverScope()
-        replica.observe(observerScope, MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
         runCurrent()
-        observerScope.cancel()
+        observerHost.cancelCoroutineScope()
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
         runCurrent()
 
@@ -71,11 +68,11 @@ class CancelTimeTest {
             }
         )
 
-        val observerScope = ObserverScope()
-        replica.observe(observerScope, MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
         runCurrent()
-        observerScope.cancel()
+        observerHost.cancelCoroutineScope()
         delay(DEFAULT_DELAY - 1)
         runCurrent()
 
@@ -118,11 +115,10 @@ class CancelTimeTest {
             }
         )
 
-        val observerScope = ObserverScope()
-        val observerActive = MutableStateFlow(true)
-        replica.observe(observerScope, observerActive)
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
-        observerActive.update { false }
+        observerHost.active = false
         delay(DEFAULT_DELAY + 1) // waiting until cancel time passed
         runCurrent()
 
@@ -142,7 +138,8 @@ class CancelTimeTest {
             }
         )
 
-        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
+        val observerHost = TestObserverHost(active = false)
+        val observer = replica.observe(observerHost)
         replica.refresh()
         runCurrent()
         observer.cancelObserving()
@@ -165,13 +162,15 @@ class CancelTimeTest {
             }
         )
 
-        val observerScope = ObserverScope()
-        replica.observe(observerScope, MutableStateFlow(true))
+        val observerHost1 = TestObserverHost(active = true)
+        replica.observe(observerHost1)
         replica.refresh()
         runCurrent()
-        observerScope.cancel()
+        observerHost1.cancelCoroutineScope()
         delay(DEFAULT_DELAY - 1) // cancel time is not passed yet
-        replica.observe(ObserverScope(), MutableStateFlow(true))
+
+        val observerHost2 = TestObserverHost(active = true)
+        replica.observe(observerHost2)
         delay(2) // in sum, cancel time is passed
         runCurrent()
 
@@ -191,7 +190,8 @@ class CancelTimeTest {
             }
         )
 
-        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = replica.observe(observerHost)
         replica.refresh()
         launch { replica.getData(forceRefresh = true) }
         observer.cancelObserving()

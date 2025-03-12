@@ -1,9 +1,7 @@
 package me.aartikov.replica.single.settings
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
@@ -11,7 +9,7 @@ import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import me.aartikov.replica.utils.ObserverScope
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
@@ -111,7 +109,8 @@ class ClearErrorTimeTest {
             fetcher = { throw error }
         )
 
-        replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
@@ -129,7 +128,8 @@ class ClearErrorTimeTest {
             fetcher = { throw error }
         )
 
-        replica.observe(ObserverScope(), MutableStateFlow(false))
+        val observerHost = TestObserverHost(active = false)
+        replica.observe(observerHost)
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until clear error time is passed
 
@@ -137,7 +137,7 @@ class ClearErrorTimeTest {
     }
 
     @Test
-    fun `clearing if observer is canceled observing and then clear error time is passed`() =
+    fun `clearing if observing scope is canceled and then clear error time is passed`() =
         runTest {
             val error = LoadingFailedException()
             val replica = replicaProvider.replica(
@@ -148,11 +148,11 @@ class ClearErrorTimeTest {
                 fetcher = { throw error }
             )
 
-            val observerScope = ObserverScope()
-            replica.observe(observerScope, MutableStateFlow(true))
+            val observerHost = TestObserverHost(active = true)
+            replica.observe(observerHost)
             replica.refresh()
             runCurrent()
-            observerScope.cancel()
+            observerHost.cancelCoroutineScope()
             delay(DEFAULT_DELAY + 1) // waiting until error time is passed
             runCurrent()
 

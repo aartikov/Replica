@@ -2,6 +2,7 @@ package me.aartikov.replica.keyed_paged
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.paged.PagedReplicaObserver
 import me.aartikov.replica.single.ReplicaObserver
 
@@ -15,15 +16,10 @@ interface KeyedPagedReplica<K : Any, out T : Any> {
 
     /**
      * Starts to observe a keyed replica. Returned [ReplicaObserver] gives access to replica state and error events.
-     * @param observerCoroutineScope represents life time of an observer. An observer will stop observing when [observerCoroutineScope] is canceled.
-     * @param observerActive a [StateFlow] of observer states (active or inactive). Allows replica to know if it has active observers.
-     * [key] a [StateFlow] of keys. When key is changed an observer retargets to another chunk of data.
+     * @param observerHost - see: [ReplicaObserverHost]
+     * @param keyFlow] - a [StateFlow] of keys. When key is changed an observer retargets to another chunk of data.
      */
-    fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
-    ): PagedReplicaObserver<T>
+    fun observe(observerHost: ReplicaObserverHost, keyFlow: StateFlow<K?>): PagedReplicaObserver<T>
 
     /**
      * Loads fresh data from a network for a given [key].
@@ -43,4 +39,13 @@ interface KeyedPagedReplica<K : Any, out T : Any> {
 
     fun loadPrevious(key: K)
 
+}
+
+@Deprecated("Use observe(observerHost) instead")
+fun <K : Any, T : Any> KeyedPagedReplica<K, T>.observe(
+    observerCoroutineScope: CoroutineScope,
+    observerActive: StateFlow<Boolean>,
+    keyFlow: StateFlow<K?>
+): PagedReplicaObserver<T> {
+    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
 }

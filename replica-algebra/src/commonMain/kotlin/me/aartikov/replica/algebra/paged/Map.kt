@@ -1,6 +1,5 @@
 package me.aartikov.replica.algebra.paged
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.LoadingReason
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.keyed_paged.KeyedPagedReplica
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedLoadingStatus
@@ -41,17 +41,11 @@ private class MappedReplica<T : Any, R : Any>(
     private val transform: (T) -> R
 ) : PagedReplica<R> {
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<R> {
-        val originalObserver = originalReplica.observe(
-            observerCoroutineScope,
-            observerActive
-        )
+    override fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<R> {
+        val originalObserver = originalReplica.observe(observerHost)
 
         return MappedReplicaObserver(
-            observerCoroutineScope,
+            observerHost,
             originalObserver,
             transform
         )
@@ -81,10 +75,12 @@ private class MappingResult<T : Any, R : Any>(
 )
 
 private class MappedReplicaObserver<T : Any, R : Any>(
-    private val coroutineScope: CoroutineScope,
+    private val observerHost: ReplicaObserverHost,
     private val originalObserver: PagedReplicaObserver<T>,
     private val transform: (T) -> R
 ) : PagedReplicaObserver<R> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Paged<R>())
     override val stateFlow: StateFlow<Paged<R>> = _stateFlow.asStateFlow()

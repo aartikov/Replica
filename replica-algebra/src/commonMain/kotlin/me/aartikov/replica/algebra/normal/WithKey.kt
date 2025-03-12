@@ -1,8 +1,8 @@
 package me.aartikov.replica.algebra.normal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
@@ -26,15 +26,8 @@ private class WithKeyReplica<K : Any, T : Any>(
     private val keyFlow: StateFlow<K?>
 ) : Replica<T> {
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<T> {
-        return keyedReplica.observe(
-            observerCoroutineScope,
-            observerActive,
-            keyFlow
-        )
+    override fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T> {
+        return keyedReplica.observe(observerHost, keyFlow)
     }
 
     override fun refresh() {

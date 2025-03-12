@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.common.internal.Lock
 import me.aartikov.replica.common.internal.withLock
@@ -59,14 +60,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     }
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): ReplicaObserver<T> {
         return KeyedReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
-            key = key,
+            observerHost = observerHost,
+            keyFlow = keyFlow,
             replicaProvider = { getOrCreateReplica(it) }
         )
     }

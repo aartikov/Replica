@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
@@ -76,13 +77,9 @@ internal class PhysicalReplicaImpl<T : Any>(
         }
     }
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<T> {
+    override fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T> {
         return ReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
+            observerHost = observerHost,
             replicaStateFlow = stateFlow,
             replicaEventFlow = eventFlow,
             observersController = observersController

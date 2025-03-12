@@ -5,8 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
-import me.aartikov.replica.decompose.coroutineScope
-import me.aartikov.replica.decompose.observe
+import me.aartikov.replica.decompose.replicaObserverHost
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedReplica
 import me.aartikov.replica.paged.currentState
@@ -23,8 +22,8 @@ fun <T : Any> Replica<T>.observe(
     errorHandler: ErrorHandler
 ): StateFlow<Loadable<T>> {
 
-    val coroutineScope = lifecycle.coroutineScope()
-    val observer = observe(lifecycle)
+    val observerHost = lifecycle.replicaObserverHost()
+    val observer = observe(observerHost)
 
     observer
         .loadingErrorFlow
@@ -34,7 +33,7 @@ fun <T : Any> Replica<T>.observe(
                 showError = observer.currentState.data != null  // show error only if fullscreen error is not shown
             )
         }
-        .launchIn(coroutineScope)
+        .launchIn(observerHost.observerCoroutineScope)
 
     return observer.stateFlow
 }
@@ -48,8 +47,8 @@ fun <T : Any> PagedReplica<T>.observe(
     errorHandler: ErrorHandler
 ): StateFlow<Paged<T>> {
 
-    val coroutineScope = lifecycle.coroutineScope()
-    val observer = observe(lifecycle)
+    val observerHost = lifecycle.replicaObserverHost()
+    val observer = observe(observerHost)
 
     observer
         .loadingErrorFlow
@@ -59,7 +58,7 @@ fun <T : Any> PagedReplica<T>.observe(
                 showError = observer.currentState.data != null  // show error only if fullscreen error is not shown
             )
         }
-        .launchIn(coroutineScope)
+        .launchIn(observerHost.observerCoroutineScope)
 
     return observer.stateFlow
 }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedData
@@ -75,13 +76,9 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         }
     }
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<PagedData<I, P>> {
+    override fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<PagedData<I, P>> {
         return PagedReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
+            observerHost = observerHost,
             replicaStateFlow = stateFlow,
             replicaEventFlow = eventFlow,
             observersController = observersController

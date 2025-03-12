@@ -1,6 +1,5 @@
 package me.aartikov.replica.single.internal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.LoadingReason
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.internal.AtomicLong
 import me.aartikov.replica.common.internal.toActivableFlow
 import me.aartikov.replica.single.Loadable
@@ -27,8 +27,7 @@ import me.aartikov.replica.single.internal.controllers.ObserversController
 import me.aartikov.replica.single.toLoadable
 
 internal class ReplicaObserverImpl<T : Any>(
-    private val coroutineScope: CoroutineScope,
-    private val activeFlow: StateFlow<Boolean>,
+    observerHost: ReplicaObserverHost,
     private val replicaStateFlow: StateFlow<ReplicaState<T>>,
     private val replicaEventFlow: Flow<ReplicaEvent<T>>,
     private val observersController: ObserversController<T>
@@ -37,6 +36,9 @@ internal class ReplicaObserverImpl<T : Any>(
     companion object {
         private val idGenerator = AtomicLong(0)
     }
+
+    private val coroutineScope = observerHost.observerCoroutineScope
+    private val activeFlow = observerHost.observerActive
 
     private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()

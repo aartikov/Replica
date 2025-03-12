@@ -1,6 +1,5 @@
 package me.aartikov.replica.algebra.normal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
@@ -29,16 +29,10 @@ private class AssociatedKeyedReplica<K : Any, T : Any>(
 ) : KeyedReplica<K, T> {
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): ReplicaObserver<T> {
-        return AssociatedReplicaObserver(
-            observerCoroutineScope,
-            observerActive,
-            key,
-            replicaProvider
-        )
+        return AssociatedReplicaObserver(observerHost, keyFlow, replicaProvider)
     }
 
     override fun refresh(key: K) {
@@ -55,11 +49,12 @@ private class AssociatedKeyedReplica<K : Any, T : Any>(
 }
 
 private class AssociatedReplicaObserver<T : Any, K : Any>(
-    private val coroutineScope: CoroutineScope,
-    private val activeFlow: StateFlow<Boolean>,
-    private val key: StateFlow<K?>,
+    private val observerHost: ReplicaObserverHost,
+    private val keyFlow: StateFlow<K?>,
     private val replicaProvider: (K) -> Replica<T>
 ) : ReplicaObserver<T> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Loadable<T>())
     override val stateFlow: StateFlow<Loadable<T>> = _stateFlow.asStateFlow()
@@ -83,7 +78,7 @@ private class AssociatedReplicaObserver<T : Any, K : Any>(
     }
 
     private fun launchObserving() {
-        key
+        keyFlow
             .onEach { currentKey ->
                 cancelCurrentObserving()
                 launchObservingForKey(currentKey)
@@ -93,7 +88,7 @@ private class AssociatedReplicaObserver<T : Any, K : Any>(
 
     private fun launchObservingForKey(currentKey: K?) {
         currentReplica = currentKey?.let { replicaProvider(currentKey) }
-        currentReplicaObserver = currentReplica?.observe(coroutineScope, activeFlow)
+        currentReplicaObserver = currentReplica?.observe(observerHost)
 
         val currentReplicaObserver = currentReplicaObserver
         if (currentReplicaObserver == null) {

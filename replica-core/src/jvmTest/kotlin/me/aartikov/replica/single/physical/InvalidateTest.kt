@@ -1,9 +1,7 @@
 package me.aartikov.replica.single.physical
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.InvalidationMode
@@ -11,7 +9,7 @@ import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
-import me.aartikov.replica.utils.ObserverScope
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -149,7 +147,8 @@ class InvalidateTest {
 
             replica.refresh()
             delay(1) // waiting until data is loaded
-            replica.observe(ObserverScope(), MutableStateFlow(false))
+            val observerHost = TestObserverHost(active = false)
+            replica.observe(observerHost)
             replica.invalidate(InvalidationMode.RefreshIfHasObservers)
             runCurrent()
 
@@ -174,10 +173,10 @@ class InvalidateTest {
 
             replica.refresh()
             delay(1) // waiting until data is loaded
-            val observerScope = ObserverScope()
-            replica.observe(observerScope, MutableStateFlow(false))
+            val observerHost = TestObserverHost(active = false)
+            replica.observe(observerHost)
             runCurrent()
-            observerScope.cancel()
+            observerHost.cancelCoroutineScope()
             replica.invalidate(InvalidationMode.RefreshIfHasObservers)
             runCurrent()
 

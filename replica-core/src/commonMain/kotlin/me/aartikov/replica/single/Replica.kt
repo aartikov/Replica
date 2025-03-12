@@ -2,6 +2,7 @@ package me.aartikov.replica.single
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.ReplicaObserverHost
 
 /**
  * Replica is a primitive for data replication.
@@ -23,13 +24,9 @@ interface Replica<out T : Any> {
 
     /**
      * Starts to observe a replica. Returned [ReplicaObserver] gives access to replica state and error events.
-     * @param observerCoroutineScope represents life time of an observer. An observer will stop observing when [observerCoroutineScope] is canceled.
-     * @param observerActive a [StateFlow] of observer states (active or inactive). Allows replica to know if it has active observers.
+     * @param observerHost - see: [ReplicaObserverHost]
      */
-    fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<T>
+    fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T>
 
     /**
      * Loads fresh data from a network.
@@ -54,4 +51,12 @@ interface Replica<out T : Any> {
      * Note: it will not lead to a new network request if another one is in progress.
      */
     suspend fun getData(forceRefresh: Boolean = false): T
+}
+
+@Deprecated("Use observe(observerHost) instead")
+fun <T : Any> Replica<T>.observe(
+    observerCoroutineScope: CoroutineScope,
+    observerActive: StateFlow<Boolean>
+): ReplicaObserver<T> {
+    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
 }

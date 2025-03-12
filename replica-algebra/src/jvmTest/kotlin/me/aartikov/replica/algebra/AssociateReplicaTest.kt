@@ -8,8 +8,8 @@ import me.aartikov.replica.algebra.normal.associate
 import me.aartikov.replica.algebra.normal.map
 import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
-import me.aartikov.replica.algebra.utils.ObserverScope
 import me.aartikov.replica.algebra.utils.ReplicaProvider
+import me.aartikov.replica.algebra.utils.TestObserverHost
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
@@ -49,11 +49,8 @@ class AssociateReplicaTest {
             replica.map { it.getOrNull(key)?.toString() ?: "no data" }
         }
         val key = 0
-        val observer = associatedReplica.observe(
-            ObserverScope(),
-            MutableStateFlow(true),
-            MutableStateFlow(key)
-        )
+        val observerHost = TestObserverHost(active = true)
+        val observer = associatedReplica.observe(observerHost, MutableStateFlow(key))
         associatedReplica.refresh(key)
         runCurrent()
 
@@ -70,11 +67,8 @@ class AssociateReplicaTest {
             replica.map { it.getOrElse(key) { throw  exception } }
         }
         val key = data.length + 1
-        val observer = associatedReplica.observe(
-            ObserverScope(),
-            MutableStateFlow(true),
-            MutableStateFlow(key)
-        )
+        val observerHost = TestObserverHost(active = true)
+        val observer = associatedReplica.observe(observerHost, MutableStateFlow(key))
         associatedReplica.refresh(key)
         runCurrent()
 
@@ -95,11 +89,8 @@ class AssociateReplicaTest {
         val firstKey = 0
         val secondKey = 1
         val observerKey = MutableStateFlow(firstKey)
-        val observer = associatedReplica.observe(
-            ObserverScope(),
-            MutableStateFlow(true),
-            observerKey
-        )
+        val observerHost = TestObserverHost(active = true)
+        val observer = associatedReplica.observe(observerHost, observerKey)
         associatedReplica.refresh(firstKey)
         observerKey.value = secondKey
         runCurrent()
@@ -116,11 +107,8 @@ class AssociateReplicaTest {
         }
 
         val key = 0
-        val observer = associatedReplica.observe(
-            ObserverScope(),
-            MutableStateFlow(true),
-            MutableStateFlow(key)
-        )
+        val observerHost = TestObserverHost(active = true)
+        val observer = associatedReplica.observe(observerHost, MutableStateFlow(key))
         associatedReplica.refresh(key)
         runCurrent()
         replica.setData("ABCDE")

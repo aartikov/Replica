@@ -2,14 +2,13 @@ package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.map
 import me.aartikov.replica.algebra.utils.LoadingFailedException
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
-import me.aartikov.replica.algebra.utils.ObserverScope
 import me.aartikov.replica.algebra.utils.ReplicaProvider
+import me.aartikov.replica.algebra.utils.TestObserverHost
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingReason
 import me.aartikov.replica.single.Loadable
@@ -49,7 +48,8 @@ class MapReplicaTest {
         val transform = { value: String -> value + "mapped" }
 
         val mappedReplica = replica.map(transform)
-        val observer = mappedReplica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = mappedReplica.observe(observerHost)
         mappedReplica.refresh()
         runCurrent()
 
@@ -73,7 +73,8 @@ class MapReplicaTest {
         val transform = { value: String -> value + "mapped" }
 
         val mappedReplica: Replica<String> = replica.map(transform)
-        val observer = mappedReplica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = mappedReplica.observe(observerHost)
         mappedReplica.refresh()
         runCurrent()
         mappedReplica.refresh()
@@ -106,7 +107,8 @@ class MapReplicaTest {
         val transform = { value: String -> value + "mapped" }
 
         val mappedReplica = replica.map(transform)
-        val observer = mappedReplica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = mappedReplica.observe(observerHost)
         mappedReplica.refresh()
         runCurrent()
         mappedReplica.refresh()

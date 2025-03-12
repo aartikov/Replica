@@ -1,9 +1,6 @@
 package me.aartikov.replica.single.observing
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -11,7 +8,7 @@ import me.aartikov.replica.common.ObservingTime
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
-import me.aartikov.replica.utils.ObserverScope
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +38,8 @@ class ObservingTimeTest {
     fun `is now when active observer observe`() = runTest {
         val replica = replicaProvider.replica()
 
-        replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -52,7 +50,8 @@ class ObservingTimeTest {
     fun `is never when inactive observer is added`() = runTest {
         val replica = replicaProvider.replica()
 
-        replica.observe(ObserverScope(), MutableStateFlow(false))
+        val observerHost = TestObserverHost(active = false)
+        replica.observe(observerHost)
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -64,10 +63,10 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         fakeTimeProvider.currentTime = TEST_TIME
-        val observerActive = MutableStateFlow(true)
-        replica.observe(ObserverScope(), observerActive)
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         runCurrent()
-        observerActive.value = false
+        observerHost.active = false
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -78,9 +77,9 @@ class ObservingTimeTest {
     fun `is now when observer became active`() = runTest {
         val replica = replicaProvider.replica()
 
-        val observerActive = MutableStateFlow(false)
-        replica.observe(ObserverScope(), observerActive)
-        observerActive.update { true }
+        val observerHost = TestObserverHost(active = false)
+        replica.observe(observerHost)
+        observerHost.active = true
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -91,7 +90,8 @@ class ObservingTimeTest {
     fun `is never when observer canceled and was not active yet`() = runTest {
         val replica = replicaProvider.replica()
 
-        val observer = replica.observe(ObserverScope(), MutableStateFlow(false))
+        val observerHost = TestObserverHost(active = false)
+        val observer = replica.observe(observerHost)
         observer.cancelObserving()
         runCurrent()
 
@@ -104,7 +104,8 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         fakeTimeProvider.currentTime = TEST_TIME
-        val observer = replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = replica.observe(observerHost)
         runCurrent()
         observer.cancelObserving()
         runCurrent()
@@ -117,10 +118,10 @@ class ObservingTimeTest {
     fun `is never when observer scope canceled and observer was not active yet`() = runTest {
         val replica = replicaProvider.replica()
 
-        val observerScope = ObserverScope()
-        replica.observe(observerScope, MutableStateFlow(false))
+        val observerHost = TestObserverHost(active = false)
+        replica.observe(observerHost)
         runCurrent()
-        observerScope.cancel()
+        observerHost.cancelCoroutineScope()
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -132,10 +133,10 @@ class ObservingTimeTest {
         val replica = replicaProvider.replica()
 
         fakeTimeProvider.currentTime = TEST_TIME
-        val observerScope = ObserverScope()
-        replica.observe(observerScope, MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         runCurrent()
-        observerScope.cancel()
+        observerHost.cancelCoroutineScope()
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -146,10 +147,11 @@ class ObservingTimeTest {
     fun `is now when second active observer became inactive`() = runTest {
         val replica = replicaProvider.replica()
 
-        val observerActive = MutableStateFlow(true)
-        replica.observe(ObserverScope(), MutableStateFlow(true))
-        replica.observe(ObserverScope(), observerActive)
-        observerActive.update { false }
+        val observerHost1 = TestObserverHost(active = true)
+        val observerHost2 = TestObserverHost(active = true)
+        replica.observe(observerHost1)
+        replica.observe(observerHost2)
+        observerHost2.active = false
         runCurrent()
 
         val state = replica.currentState.observingState
@@ -160,8 +162,9 @@ class ObservingTimeTest {
     fun `is now when second active observer canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        replica.observe(ObserverScope(), MutableStateFlow(true))
-        val observer2 = replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
+        val observer2 = replica.observe(observerHost)
         observer2.cancelObserving()
         runCurrent()
 
@@ -173,11 +176,12 @@ class ObservingTimeTest {
     fun `is now when second active observer scope canceled`() = runTest {
         val replica = replicaProvider.replica()
 
-        val observerScope = ObserverScope()
-        replica.observe(ObserverScope(), MutableStateFlow(true))
-        replica.observe(observerScope, MutableStateFlow(true))
+        val observerHost1 = TestObserverHost(active = true)
+        val observerHost2 = TestObserverHost(active = true)
+        replica.observe(observerHost1)
+        replica.observe(observerHost2)
         runCurrent()
-        observerScope.cancel()
+        observerHost2.cancelCoroutineScope()
         runCurrent()
 
         val state = replica.currentState.observingState

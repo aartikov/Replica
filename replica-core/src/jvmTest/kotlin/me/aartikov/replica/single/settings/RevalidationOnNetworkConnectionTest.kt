@@ -1,7 +1,6 @@
 package me.aartikov.replica.single.settings
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.runCurrent
@@ -12,7 +11,7 @@ import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import me.aartikov.replica.utils.ObserverScope
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -45,7 +44,8 @@ class RevalidationOnNetworkConnectionTest {
             }
         )
 
-        replica.observe(ObserverScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
         isConnected.update { true }
         runCurrent()
@@ -102,7 +102,8 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            replica.observe(ObserverScope(), MutableStateFlow(false))
+            val observerHost = TestObserverHost(active = false)
+            replica.observe(observerHost)
             replica.refresh()
             runCurrent()
             isConnected.update { true }
@@ -132,11 +133,11 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            val observerScope = ObserverScope()
-            replica.observe(observerScope, MutableStateFlow(true))
+            val observerHost = TestObserverHost(active = true)
+            replica.observe(observerHost)
             replica.refresh()
             runCurrent()
-            observerScope.cancel()
+            observerHost.cancelCoroutineScope()
 
             isConnected.update { true }
             runCurrent()
