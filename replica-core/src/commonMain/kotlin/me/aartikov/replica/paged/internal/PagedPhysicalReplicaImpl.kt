@@ -55,7 +55,7 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         ObserversController(timeProvider, dispatcher, _stateFlow, _eventFlow)
 
     private val dataLoadingController = DataLoadingController(
-        timeProvider, dispatcher, coroutineScope, idExtractor, _stateFlow, _eventFlow,
+        coroutineScope, timeProvider, dispatcher, idExtractor, _stateFlow, _eventFlow,
         DataLoader(coroutineScope, fetcher)
     )
 

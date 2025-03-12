@@ -21,9 +21,9 @@ import me.aartikov.replica.paged.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<I : Any, P : Page<I>>(
+    coroutineScope: CoroutineScope,
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope,
     private val idExtractor: ((I) -> Any)?,
     private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
     private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<I, P>>,
@@ -37,34 +37,44 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
     }
 
     suspend fun refresh() {
-        withContext(dispatcher) {
-            refreshImpl()
-        }
+        loadFirstPage(skipLoadingIfFresh = false)
     }
 
     suspend fun revalidate() {
-        withContext(dispatcher) {
-            if (!replicaStateFlow.value.hasFreshData) {
-                refreshImpl()
-            }
-        }
+        loadFirstPage(skipLoadingIfFresh = true)
     }
 
     suspend fun loadNext() {
-        withContext(dispatcher) {
-            loadNextImpl()
-        }
+        loadNextOrPreviousPage(isNext = true)
     }
 
     suspend fun loadPrevious() {
-        withContext(dispatcher) {
-            loadPreviousImpl()
-        }
+        loadNextOrPreviousPage(isNext = false)
     }
 
     suspend fun cancel() {
-        // TODO: change state
-        dataLoader.cancel()
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            if (state.loadingStatus == PagedLoadingStatus.None) return@withContext
+
+            dataLoader.cancel()
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = PagedLoadingStatus.None,
+                preloading = false
+            )
+
+            val reason = when (state.loadingStatus) {
+                PagedLoadingStatus.None -> return@withContext
+                PagedLoadingStatus.LoadingFirstPage -> LoadingReason.Normal
+                PagedLoadingStatus.LoadingNextPage -> LoadingReason.NextPage
+                PagedLoadingStatus.LoadingPreviousPage -> LoadingReason.PreviousPage
+            }
+
+            replicaEventFlow.emit(
+                PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled(reason)
+            )
+        }
     }
 
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
@@ -86,45 +96,85 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
         }
     }
 
-    private fun refreshImpl() {
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus != PagedLoadingStatus.LoadingFirstPage
-        dataLoader.loadFirstPage(cancel)
+    private suspend fun loadFirstPage(skipLoadingIfFresh: Boolean) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+
+            if (skipLoadingIfFresh && state.hasFreshData) return@withContext
+
+            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
+            val loadingStarted = when (currentLoadingStatus) {
+                PagedLoadingStatus.LoadingFirstPage -> false
+                else -> {
+                    dataLoader.cancel()
+                    dataLoader.loadFirstPage()
+                    true
+                }
+            }
+
+            val preloading = state.observingState.status == ObservingStatus.None
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = PagedLoadingStatus.LoadingFirstPage,
+                preloading = preloading || state.preloading
+            )
+
+            if (loadingStarted) {
+                replicaEventFlow.emit(
+                    PagedReplicaEvent.LoadingEvent.LoadingStarted(LoadingReason.Normal)
+                )
+            }
+        }
     }
 
-    private fun loadNextImpl() {
-        val currentData = replicaStateFlow.value.data ?: return
-        if (!currentData.value.hasNextPage) return
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingPreviousPage
-        dataLoader.loadNextPage(cancel, currentData.valueWithOptimisticUpdates)
-    }
+    private suspend fun loadNextOrPreviousPage(isNext: Boolean) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            val currentData = replicaStateFlow.value.data ?: return@withContext
 
-    private fun loadPreviousImpl() {
-        val currentData = replicaStateFlow.value.data ?: return
-        if (!currentData.value.hasPreviousPage) return
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
-        dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
-    }
+            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
 
-    private suspend fun load() {
+            val requiredLoadingStatus = when (isNext) {
+                true -> PagedLoadingStatus.LoadingNextPage
+                false -> PagedLoadingStatus.LoadingPreviousPage
+            }
 
+            val loadingStarted = when (currentLoadingStatus) {
+                PagedLoadingStatus.LoadingFirstPage, requiredLoadingStatus -> false
+                else -> {
+                    dataLoader.cancel()
+                    val loadingOperation = when (isNext) {
+                        true -> dataLoader::loadNextPage
+                        false -> dataLoader::loadPreviousPage
+                    }
+                    loadingOperation(currentData.valueWithOptimisticUpdates)
+                    true
+                }
+            }
+
+            val preloading = state.observingState.status == ObservingStatus.None
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = requiredLoadingStatus,
+                preloading = preloading || state.preloading
+            )
+
+            if (loadingStarted) {
+                val loadingReason = when (isNext) {
+                    true -> LoadingReason.NextPage
+                    false -> LoadingReason.PreviousPage
+                }
+                replicaEventFlow.emit(
+                    PagedReplicaEvent.LoadingEvent.LoadingStarted(loadingReason)
+                )
+            }
+        }
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<I, P>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             when (output) {
-                is DataLoader.Output.LoadingStarted -> {
-                    replicaStateFlow.value = state.copy(
-                        loadingStatus = output.reason.toLoadingStatus(),
-                        preloading = state.observingState.status == ObservingStatus.None
-                    )
-                    replicaEventFlow.emit(
-                        PagedReplicaEvent.LoadingEvent.LoadingStarted(output.reason)
-                    )
-                }
 
                 is DataLoader.Output.LoadingFinished.Success -> {
                     val newData = if (state.data != null) {
@@ -166,16 +216,6 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
                     replicaEventFlow.emit(PagedReplicaEvent.FreshnessEvent.Freshened)
                 }
 
-                is DataLoader.Output.LoadingFinished.Canceled -> {
-                    replicaStateFlow.value = state.copy(
-                        loadingStatus = PagedLoadingStatus.None,
-                        preloading = false
-                    )
-                    replicaEventFlow.emit(
-                        PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled(output.reason)
-                    )
-                }
-
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
                         error = LoadingError(output.reason, output.exception),
@@ -192,10 +232,4 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
             }
         }
     }
-}
-
-private fun LoadingReason.toLoadingStatus(): PagedLoadingStatus = when (this) {
-    LoadingReason.Normal -> PagedLoadingStatus.LoadingFirstPage
-    LoadingReason.NextPage -> PagedLoadingStatus.LoadingNextPage
-    LoadingReason.PreviousPage -> PagedLoadingStatus.LoadingPreviousPage
 }

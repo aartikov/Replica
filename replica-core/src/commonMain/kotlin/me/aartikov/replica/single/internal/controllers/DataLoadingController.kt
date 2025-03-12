@@ -22,9 +22,9 @@ import me.aartikov.replica.single.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<T : Any>(
+    coroutineScope: CoroutineScope,
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
     private val replicaEventFlow: MutableSharedFlow<ReplicaEvent<T>>,
     private val dataLoader: DataLoader<T>
@@ -38,11 +38,11 @@ internal class DataLoadingController<T : Any>(
 
 
     suspend fun refresh() {
-        loadData(dontLoadIfFresh = false)
+        loadData(skipLoadingIfFresh = false)
     }
 
     suspend fun revalidate() {
-        loadData(dontLoadIfFresh = true)
+        loadData(skipLoadingIfFresh = true)
     }
 
     suspend fun cancel() {
@@ -90,7 +90,7 @@ internal class DataLoadingController<T : Any>(
 
             val output = dataLoader.outputFlow
                 .onStart {
-                    loadData(dontLoadIfFresh = false, setDataRequested = true)
+                    loadData(skipLoadingIfFresh = false, setDataRequested = true)
                 }
                 .filterIsInstance<DataLoader.Output.LoadingFinished<T>>()
                 .first()
@@ -107,12 +107,13 @@ internal class DataLoadingController<T : Any>(
     }
 
     private suspend fun loadData(
-        dontLoadIfFresh: Boolean,
+        skipLoadingIfFresh: Boolean,
         setDataRequested: Boolean = false
     ) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            if (dontLoadIfFresh && state.hasFreshData) return@withContext
+
+            if (skipLoadingIfFresh && state.hasFreshData) return@withContext
 
             val loadingStarted = if (!state.loading) {
                 dataLoader.load(state.loadingFromStorageRequired)
@@ -121,10 +122,12 @@ internal class DataLoadingController<T : Any>(
                 false
             }
 
+            val preloading = state.observingState.status == ObservingStatus.None
+
             replicaStateFlow.value = state.copy(
                 loading = true,
-                preloading = state.observingState.status == ObservingStatus.None,
-                dataRequested = if (setDataRequested) true else state.dataRequested
+                preloading = preloading || state.preloading,
+                dataRequested = setDataRequested || state.dataRequested
             )
 
             if (loadingStarted) {

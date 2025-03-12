@@ -40,6 +40,7 @@ internal class DataLoader<T : Any>(
     private var loadingJob: Job? = null
 
     fun load(loadingFromStorageRequired: Boolean) {
+        cancel()
         loadingJob = coroutineScope.launch {
             try {
                 if (storage != null && loadingFromStorageRequired) {

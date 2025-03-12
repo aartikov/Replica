@@ -62,6 +62,7 @@ internal class DataLoader<I : Any, P : Page<I>>(
     }
 
     private fun load(reason: LoadingReason, fetchMethod: suspend () -> P) {
+        cancel()
         loadingJob = coroutineScope.launch {
             try {
                 val data = fetchMethod()

@@ -56,7 +56,7 @@ internal class PhysicalReplicaImpl<T : Any>(
         ObserversController(timeProvider, dispatcher, _stateFlow, _eventFlow)
 
     private val dataLoadingController = DataLoadingController(
-        timeProvider, dispatcher, coroutineScope, _stateFlow, _eventFlow,
+        coroutineScope, timeProvider, dispatcher, _stateFlow, _eventFlow,
         DataLoader(coroutineScope, storage, fetcher)
     )
 

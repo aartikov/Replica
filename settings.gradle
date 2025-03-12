@@ -99,7 +99,7 @@ dependencyResolutionManagement {
             // Debugging
             library('timber', 'com.jakewharton.timber', 'timber').version('5.0.1')
 
-            version('hyperion', '0.9.37')
+            version('hyperion', '0.9.38')
             version('hyperionAddons', '0.3.3')
             library('hyperion-core', 'com.willowtreeapps.hyperion', 'hyperion-core').versionRef('hyperion')
             library('hyperion-recorder', 'com.willowtreeapps.hyperion', 'hyperion-recorder').versionRef('hyperion')
