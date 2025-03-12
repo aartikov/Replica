@@ -80,6 +80,14 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+
+            // If a loading is already in progress, restart it.
+            if (state.loadingStatus == PagedLoadingStatus.LoadingFirstPage) {
+                cancel()
+                refresh()
+                return@withContext
+            }
+
             when (invalidationMode) {
                 InvalidationMode.DontRefresh -> Unit
 
