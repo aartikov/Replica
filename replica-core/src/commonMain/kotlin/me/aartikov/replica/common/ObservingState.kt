@@ -32,7 +32,7 @@ enum class ObservingStatus {
  */
 sealed interface ObservingTime : Comparable<ObservingTime> {
 
-    object Never : ObservingTime {
+    data object Never : ObservingTime {
         override fun compareTo(other: ObservingTime): Int = when (other) {
             is Never -> 0
             is TimeInPast, is Now -> -1
@@ -47,7 +47,7 @@ sealed interface ObservingTime : Comparable<ObservingTime> {
         }
     }
 
-    object Now : ObservingTime {
+    data object Now : ObservingTime {
         override fun compareTo(other: ObservingTime): Int = when (other) {
             is Never, is TimeInPast -> 1
             Now -> 0

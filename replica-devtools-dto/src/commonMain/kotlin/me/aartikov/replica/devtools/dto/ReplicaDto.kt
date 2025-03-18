@@ -28,11 +28,11 @@ data class ReplicaStateDto(
 sealed class ObservingTimeDto {
 
     @Serializable
-    object Never : ObservingTimeDto()
+    data object Never : ObservingTimeDto()
 
     @Serializable
     data class TimeInPast(val time: Instant) : ObservingTimeDto()
 
     @Serializable
-    object Now : ObservingTimeDto()
+    data object Now : ObservingTimeDto()
 }
