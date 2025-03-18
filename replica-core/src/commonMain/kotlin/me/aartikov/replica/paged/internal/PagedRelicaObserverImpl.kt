@@ -1,6 +1,5 @@
 package me.aartikov.replica.paged.internal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +15,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.internal.AtomicLong
 import me.aartikov.replica.common.internal.toActivableFlow
 import me.aartikov.replica.paged.Page
@@ -28,8 +28,7 @@ import me.aartikov.replica.paged.internal.controllers.ObserversController
 import me.aartikov.replica.paged.toPaged
 
 internal class PagedReplicaObserverImpl<I : Any, P : Page<I>>(
-    private val coroutineScope: CoroutineScope,
-    private val activeFlow: StateFlow<Boolean>,
+    private val observerHost: ReplicaObserverHost,
     private val replicaStateFlow: StateFlow<PagedReplicaState<I, P>>,
     private val replicaEventFlow: Flow<PagedReplicaEvent<I, P>>,
     private val observersController: ObserversController<I, P>
@@ -38,6 +37,9 @@ internal class PagedReplicaObserverImpl<I : Any, P : Page<I>>(
     companion object {
         private val idGenerator = AtomicLong(0)
     }
+
+    private val coroutineScope = observerHost.observerCoroutineScope
+    private val activeFlow = observerHost.observerActive
 
     private val _stateFlow = MutableStateFlow(Paged<PagedData<I, P>>())
     override val stateFlow: StateFlow<Paged<PagedData<I, P>>> = _stateFlow.asStateFlow()

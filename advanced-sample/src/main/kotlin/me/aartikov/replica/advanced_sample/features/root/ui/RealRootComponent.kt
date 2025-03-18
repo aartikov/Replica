@@ -86,19 +86,19 @@ class RealRootComponent(
     private sealed interface ChildConfig : Parcelable {
 
         @Parcelize
-        object Menu : ChildConfig
+        data object Menu : ChildConfig
 
         @Parcelize
-        object Project : ChildConfig
+        data object Project : ChildConfig
 
         @Parcelize
-        object Pokemons : ChildConfig
+        data object Pokemons : ChildConfig
 
         @Parcelize
-        object Fruits : ChildConfig
+        data object Fruits : ChildConfig
 
         @Parcelize
-        object Dudes : ChildConfig
+        data object Dudes : ChildConfig
     }
 }
 

@@ -1,9 +1,12 @@
 package me.aartikov.replica.devtools.client
 
-import io.ktor.client.*
-import io.ktor.client.plugins.websocket.*
-import io.ktor.http.*
-import io.ktor.websocket.*
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.websocket.WebSocketException
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.http.HttpMethod
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
 import kotlinx.browser.window
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
@@ -11,7 +14,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.json.Json
-import me.aartikov.replica.devtools.dto.*
+import me.aartikov.replica.devtools.dto.DevToolsEventDto
+import me.aartikov.replica.devtools.dto.DtoStore
+import me.aartikov.replica.devtools.dto.KeyedReplicaChildCreated
+import me.aartikov.replica.devtools.dto.KeyedReplicaChildRemoved
+import me.aartikov.replica.devtools.dto.KeyedReplicaChildUpdated
+import me.aartikov.replica.devtools.dto.KeyedReplicaCreated
+import me.aartikov.replica.devtools.dto.KeyedReplicaUpdated
+import me.aartikov.replica.devtools.dto.ReplaceAll
+import me.aartikov.replica.devtools.dto.ReplicaCreated
+import me.aartikov.replica.devtools.dto.ReplicaUpdated
 
 class WebClient {
 
@@ -93,7 +105,7 @@ class WebClient {
 }
 
 sealed interface ConnectionStatus {
-    object Connected : ConnectionStatus
-    object Failed : ConnectionStatus
-    object Attempt : ConnectionStatus
+    data object Connected : ConnectionStatus
+    data object Failed : ConnectionStatus
+    data object Attempt : ConnectionStatus
 }

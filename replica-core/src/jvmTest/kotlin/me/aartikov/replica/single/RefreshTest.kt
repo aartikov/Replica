@@ -1,12 +1,14 @@
 package me.aartikov.replica.single
 
-import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -25,9 +27,15 @@ class RefreshTest {
 
     @Test
     fun `initially loads fresh data`() = runTest {
-        val replica = replicaProvider.replica()
+        val replica = replicaProvider.replica(
+            fetcher = {
+                delay(DEFAULT_DELAY)
+                "test"
+            }
+        )
 
         replica.refresh()
+        delay(DEFAULT_DELAY * 2) // waiting until loading time is complete
         runCurrent()
 
         assertNotNull(replica.currentState.data)
@@ -47,6 +55,7 @@ class RefreshTest {
         runCurrent()
         replica.cancel()
         delay(DEFAULT_DELAY * 2) // waiting until loading time is complete
+        runCurrent()
 
         assertNull(replica.currentState.data)
     }

@@ -1,6 +1,5 @@
 package me.aartikov.replica.single.internal.controllers
 
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
@@ -24,9 +22,9 @@ import me.aartikov.replica.single.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<T : Any>(
+    coroutineScope: CoroutineScope,
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope,
     private val replicaStateFlow: MutableStateFlow<ReplicaState<T>>,
     private val replicaEventFlow: MutableSharedFlow<ReplicaEvent<T>>,
     private val dataLoader: DataLoader<T>
@@ -39,13 +37,42 @@ internal class DataLoadingController<T : Any>(
     }
 
 
-    fun refresh() {
-        dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
+    suspend fun refresh() {
+        loadData(skipLoadingIfFresh = false)
+    }
+
+    suspend fun revalidate() {
+        loadData(skipLoadingIfFresh = true)
+    }
+
+    suspend fun cancel() {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            if (!state.loading) return@withContext
+
+            dataLoader.cancel()
+
+            replicaStateFlow.value = state.copy(
+                loading = false,
+                preloading = false,
+                dataRequested = false
+            )
+
+            replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Canceled)
+        }
     }
 
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+
+            // If a loading is already in progress, restart it.
+            if (state.loading) {
+                cancel()
+                refresh()
+                return@withContext
+            }
+
             when (invalidationMode) {
                 InvalidationMode.DontRefresh -> Unit
 
@@ -62,16 +89,6 @@ internal class DataLoadingController<T : Any>(
         }
     }
 
-    fun revalidate() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                if (!replicaStateFlow.value.hasFreshData) {
-                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
-                }
-            }
-        }
-    }
-
     suspend fun getData(forceRefresh: Boolean): T {
         return withContext(dispatcher) {
             val data = replicaStateFlow.value.data
@@ -81,16 +98,10 @@ internal class DataLoadingController<T : Any>(
 
             val output = dataLoader.outputFlow
                 .onStart {
-                    dataLoader.load(replicaStateFlow.value.loadingFromStorageRequired)
-                    val state = replicaStateFlow.value
-                    if (!state.dataRequested) {
-                        replicaStateFlow.value = state.copy(dataRequested = true)
-                    }
+                    loadData(skipLoadingIfFresh = false, setDataRequested = true)
                 }
                 .filterIsInstance<DataLoader.Output.LoadingFinished<T>>()
                 .first()
-
-
 
             when (output) {
                 is DataLoader.Output.LoadingFinished.Success -> {
@@ -98,27 +109,45 @@ internal class DataLoadingController<T : Any>(
                     optimisticUpdates?.applyAll(output.data) ?: output.data
                 }
 
-                is DataLoader.Output.LoadingFinished.Canceled -> throw CancellationException("Data loading is canceled")
                 is DataLoader.Output.LoadingFinished.Error -> throw output.exception
             }
         }
     }
 
-    fun cancel() {
-        dataLoader.cancel()
+    private suspend fun loadData(
+        skipLoadingIfFresh: Boolean,
+        setDataRequested: Boolean = false
+    ) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+
+            if (skipLoadingIfFresh && state.hasFreshData) return@withContext
+
+            val loadingStarted = if (!state.loading) {
+                dataLoader.load(state.loadingFromStorageRequired)
+                true
+            } else {
+                false
+            }
+
+            val preloading = state.observingState.status == ObservingStatus.None
+
+            replicaStateFlow.value = state.copy(
+                loading = true,
+                preloading = preloading || state.preloading,
+                dataRequested = setDataRequested || state.dataRequested
+            )
+
+            if (loadingStarted) {
+                replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
+            }
+        }
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<T>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             when (output) {
-                is DataLoader.Output.LoadingStarted -> {
-                    replicaStateFlow.value = state.copy(
-                        loading = true,
-                        preloading = state.observingState.status == ObservingStatus.None
-                    )
-                    replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
-                }
 
                 is DataLoader.Output.StorageRead.Data -> {
                     if (state.data == null) {
@@ -140,19 +169,12 @@ internal class DataLoadingController<T : Any>(
 
                 is DataLoader.Output.LoadingFinished.Success -> {
                     replicaStateFlow.value = state.copy(
-                        data = if (state.data != null) {
-                            state.data.copy(
-                                value = output.data,
-                                fresh = true,
-                                changingTime = timeProvider.currentTime
-                            )
-                        } else {
-                            ReplicaData(
-                                value = output.data,
-                                fresh = true,
-                                changingTime = timeProvider.currentTime
-                            )
-                        },
+                        data = ReplicaData(
+                            value = output.data,
+                            fresh = true,
+                            changingTime = timeProvider.currentTime,
+                            optimisticUpdates = state.data?.optimisticUpdates ?: emptyList()
+                        ),
                         error = null,
                         loading = false,
                         preloading = false,
@@ -160,15 +182,6 @@ internal class DataLoadingController<T : Any>(
                     )
                     replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Success(output.data))
                     replicaEventFlow.emit(ReplicaEvent.FreshnessEvent.Freshened)
-                }
-
-                DataLoader.Output.LoadingFinished.Canceled -> {
-                    replicaStateFlow.value = state.copy(
-                        loading = false,
-                        preloading = false,
-                        dataRequested = false
-                    )
-                    replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingFinished.Canceled)
                 }
 
                 is DataLoader.Output.LoadingFinished.Error -> {

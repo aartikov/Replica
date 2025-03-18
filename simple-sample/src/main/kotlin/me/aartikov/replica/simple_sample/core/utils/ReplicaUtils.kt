@@ -1,7 +1,6 @@
 package me.aartikov.replica.simple_sample.core.utils
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -10,7 +9,7 @@ import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.currentState
 import me.aartikov.replica.view_model.Activable
-import me.aartikov.replica.view_model.observe
+import me.aartikov.replica.view_model.replicaObserverHost
 
 /**
  * Observes [Replica] in a scope of [ViewModel] and handles errors by [ErrorHandler]. ViewModel has to be [Activable].
@@ -21,7 +20,8 @@ fun <T : Any, VM> Replica<T>.observe(
     errorHandler: ErrorHandler
 ): StateFlow<Loadable<T>> where VM : ViewModel, VM : Activable {
 
-    val observer = observe(viewModel)
+    val observerHost = viewModel.replicaObserverHost()
+    val observer = observe(observerHost)
 
     observer
         .loadingErrorFlow
@@ -31,7 +31,7 @@ fun <T : Any, VM> Replica<T>.observe(
                 showError = observer.currentState.data != null  // show error only if fullscreen error is not shown
             )
         }
-        .launchIn(viewModel.viewModelScope)
+        .launchIn(observerHost.observerCoroutineScope)
 
     return observer.stateFlow
 }

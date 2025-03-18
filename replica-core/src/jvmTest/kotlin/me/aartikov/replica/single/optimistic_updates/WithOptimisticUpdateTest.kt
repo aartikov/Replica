@@ -3,9 +3,7 @@ package me.aartikov.replica.single.optimistic_updates
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.common.OptimisticUpdate
@@ -14,7 +12,10 @@ import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.single.withOptimisticUpdate
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.*
+import me.aartikov.replica.utils.TestObserverHost
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import kotlin.random.Random
@@ -134,7 +135,8 @@ class WithOptimisticUpdateTest {
         val replica = replicaProvider.replica()
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = replica.observe(observerHost)
         runCurrent()
         launch {
             replica.withOptimisticUpdate(
@@ -155,7 +157,8 @@ class WithOptimisticUpdateTest {
         val replica = replicaProvider.replica()
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = replica.observe(observerHost)
         runCurrent()
         launch {
             replica.withOptimisticUpdate(
@@ -176,7 +179,8 @@ class WithOptimisticUpdateTest {
         val replica = replicaProvider.replica()
 
         replica.refresh()
-        val observer = replica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = replica.observe(observerHost)
         runCurrent()
         launch {
             try {

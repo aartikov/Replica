@@ -1,13 +1,12 @@
 package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.withKey
 import me.aartikov.replica.algebra.utils.KeyedReplicaProvider
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
+import me.aartikov.replica.algebra.utils.TestObserverHost
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
@@ -42,7 +41,8 @@ class WithKeyReplicaTest {
         val keyedReplica = replicaProvider.replica()
 
         val withKeyReplica = keyedReplica.withKey(DEFAULT_KEY)
-        val observer = withKeyReplica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = withKeyReplica.observe(observerHost)
         withKeyReplica.refresh()
         runCurrent()
 
@@ -57,7 +57,8 @@ class WithKeyReplicaTest {
         val keyedReplica = replicaProvider.replica()
 
         val withKeyReplica = keyedReplica.withKey(DEFAULT_KEY)
-        val observer = withKeyReplica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = withKeyReplica.observe(observerHost)
         keyedReplica.refresh(DEFAULT_KEY)
         runCurrent()
 
@@ -71,9 +72,10 @@ class WithKeyReplicaTest {
     fun `observes new data after original replica changed data`() = runTest {
         val keyedReplica = replicaProvider.replica()
         val newData = "new data"
-        val withKeyReplica = keyedReplica.withKey(DEFAULT_KEY)
 
-        val observer = withKeyReplica.observe(TestScope(), MutableStateFlow(true))
+        val withKeyReplica = keyedReplica.withKey(DEFAULT_KEY)
+        val observerHost = TestObserverHost(active = true)
+        val observer = withKeyReplica.observe(observerHost)
         keyedReplica.refresh(DEFAULT_KEY)
         runCurrent()
         keyedReplica.setData(DEFAULT_KEY, newData)
@@ -98,12 +100,13 @@ class WithKeyReplicaTest {
             )
 
             val withKeyReplica = keyedReplica.withKey(DEFAULT_KEY)
-            val withKeyObserver = withKeyReplica.observe(TestScope(), MutableStateFlow(true))
+            val observerHost = TestObserverHost(active = true)
+            val observer = withKeyReplica.observe(observerHost)
             runCurrent()
 
             assertEquals(
                 Loadable(data = KeyedReplicaProvider.testData(DEFAULT_KEY)),
-                withKeyObserver.currentState
+                observer.currentState
             )
         }
 }

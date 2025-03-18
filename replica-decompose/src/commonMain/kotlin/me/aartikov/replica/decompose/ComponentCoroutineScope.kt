@@ -10,7 +10,7 @@ import kotlinx.coroutines.cancel
 /**
  * Returns [CoroutineScope] that is tied to [Lifecycle]. The coroutine scope is canceled when [Lifecycle] is destroyed.
  */
-fun Lifecycle.coroutineScope(): CoroutineScope {
+internal fun Lifecycle.coroutineScope(): CoroutineScope {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     if (this.state != Lifecycle.State.DESTROYED) {

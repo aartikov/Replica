@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.LoadingError
@@ -22,9 +21,9 @@ import me.aartikov.replica.paged.internal.DataLoader
 import me.aartikov.replica.time.TimeProvider
 
 internal class DataLoadingController<I : Any, P : Page<I>>(
+    coroutineScope: CoroutineScope,
     private val timeProvider: TimeProvider,
     private val dispatcher: CoroutineDispatcher,
-    private val coroutineScope: CoroutineScope,
     private val idExtractor: ((I) -> Any)?,
     private val replicaStateFlow: MutableStateFlow<PagedReplicaState<I, P>>,
     private val replicaEventFlow: MutableSharedFlow<PagedReplicaEvent<I, P>>,
@@ -37,17 +36,58 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
             .launchIn(coroutineScope)
     }
 
-    fun refresh() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                refreshImpl()
+    suspend fun refresh() {
+        loadFirstPage(skipLoadingIfFresh = false)
+    }
+
+    suspend fun revalidate() {
+        loadFirstPage(skipLoadingIfFresh = true)
+    }
+
+    suspend fun loadNext() {
+        loadNextOrPreviousPage(isNext = true)
+    }
+
+    suspend fun loadPrevious() {
+        loadNextOrPreviousPage(isNext = false)
+    }
+
+    suspend fun cancel() {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            if (state.loadingStatus == PagedLoadingStatus.None) return@withContext
+
+            dataLoader.cancel()
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = PagedLoadingStatus.None,
+                preloading = false
+            )
+
+            val reason = when (state.loadingStatus) {
+                PagedLoadingStatus.None -> return@withContext
+                PagedLoadingStatus.LoadingFirstPage -> LoadingReason.Normal
+                PagedLoadingStatus.LoadingNextPage -> LoadingReason.NextPage
+                PagedLoadingStatus.LoadingPreviousPage -> LoadingReason.PreviousPage
             }
+
+            replicaEventFlow.emit(
+                PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled(reason)
+            )
         }
     }
 
     suspend fun refreshAfterInvalidation(invalidationMode: InvalidationMode) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
+
+            // If a loading is already in progress, restart it.
+            if (state.loadingStatus == PagedLoadingStatus.LoadingFirstPage) {
+                cancel()
+                refresh()
+                return@withContext
+            }
+
             when (invalidationMode) {
                 InvalidationMode.DontRefresh -> Unit
 
@@ -64,71 +104,85 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
         }
     }
 
-    fun revalidate() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                if (!replicaStateFlow.value.hasFreshData) {
-                    refreshImpl()
+    private suspend fun loadFirstPage(skipLoadingIfFresh: Boolean) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+
+            if (skipLoadingIfFresh && state.hasFreshData) return@withContext
+
+            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
+            val loadingStarted = when (currentLoadingStatus) {
+                PagedLoadingStatus.LoadingFirstPage -> false
+                else -> {
+                    dataLoader.cancel()
+                    dataLoader.loadFirstPage()
+                    true
                 }
             }
-        }
-    }
 
-    fun loadNext() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                loadNextImpl()
+            val preloading = state.observingState.status == ObservingStatus.None
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = PagedLoadingStatus.LoadingFirstPage,
+                preloading = preloading || state.preloading
+            )
+
+            if (loadingStarted) {
+                replicaEventFlow.emit(
+                    PagedReplicaEvent.LoadingEvent.LoadingStarted(LoadingReason.Normal)
+                )
             }
         }
     }
 
-    fun loadPrevious() {
-        coroutineScope.launch { // launch and dispatcher are required to get replicaState without race conditions
-            withContext(dispatcher) {
-                loadPreviousImpl()
+    private suspend fun loadNextOrPreviousPage(isNext: Boolean) {
+        withContext(dispatcher) {
+            val state = replicaStateFlow.value
+            val currentData = replicaStateFlow.value.data ?: return@withContext
+
+            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
+
+            val requiredLoadingStatus = when (isNext) {
+                true -> PagedLoadingStatus.LoadingNextPage
+                false -> PagedLoadingStatus.LoadingPreviousPage
+            }
+
+            val loadingStarted = when (currentLoadingStatus) {
+                PagedLoadingStatus.LoadingFirstPage, requiredLoadingStatus -> false
+                else -> {
+                    dataLoader.cancel()
+                    val loadingOperation = when (isNext) {
+                        true -> dataLoader::loadNextPage
+                        false -> dataLoader::loadPreviousPage
+                    }
+                    loadingOperation(currentData.valueWithOptimisticUpdates)
+                    true
+                }
+            }
+
+            val preloading = state.observingState.status == ObservingStatus.None
+
+            replicaStateFlow.value = state.copy(
+                loadingStatus = requiredLoadingStatus,
+                preloading = preloading || state.preloading
+            )
+
+            if (loadingStarted) {
+                val loadingReason = when (isNext) {
+                    true -> LoadingReason.NextPage
+                    false -> LoadingReason.PreviousPage
+                }
+                replicaEventFlow.emit(
+                    PagedReplicaEvent.LoadingEvent.LoadingStarted(loadingReason)
+                )
             }
         }
-    }
-
-    fun cancel() {
-        dataLoader.cancel()
-    }
-
-    private fun refreshImpl() {
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus != PagedLoadingStatus.LoadingFirstPage
-        dataLoader.loadFirstPage(cancel)
-    }
-
-    private fun loadNextImpl() {
-        val currentData = replicaStateFlow.value.data ?: return
-        if (!currentData.value.hasNextPage) return
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingPreviousPage
-        dataLoader.loadNextPage(cancel, currentData.valueWithOptimisticUpdates)
-    }
-
-    private fun loadPreviousImpl() {
-        val currentData = replicaStateFlow.value.data ?: return
-        if (!currentData.value.hasPreviousPage) return
-        val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-        val cancel = currentLoadingStatus == PagedLoadingStatus.LoadingNextPage
-        dataLoader.loadPreviousPage(cancel, currentData.valueWithOptimisticUpdates)
     }
 
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<I, P>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             when (output) {
-                is DataLoader.Output.LoadingStarted -> {
-                    replicaStateFlow.value = state.copy(
-                        loadingStatus = output.reason.toLoadingStatus(),
-                        preloading = state.observingState.status == ObservingStatus.None
-                    )
-                    replicaEventFlow.emit(
-                        PagedReplicaEvent.LoadingEvent.LoadingStarted(output.reason)
-                    )
-                }
 
                 is DataLoader.Output.LoadingFinished.Success -> {
                     val newData = if (state.data != null) {
@@ -170,16 +224,6 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
                     replicaEventFlow.emit(PagedReplicaEvent.FreshnessEvent.Freshened)
                 }
 
-                is DataLoader.Output.LoadingFinished.Canceled -> {
-                    replicaStateFlow.value = state.copy(
-                        loadingStatus = PagedLoadingStatus.None,
-                        preloading = false
-                    )
-                    replicaEventFlow.emit(
-                        PagedReplicaEvent.LoadingEvent.LoadingFinished.Canceled(output.reason)
-                    )
-                }
-
                 is DataLoader.Output.LoadingFinished.Error -> {
                     replicaStateFlow.value = state.copy(
                         error = LoadingError(output.reason, output.exception),
@@ -196,10 +240,4 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
             }
         }
     }
-}
-
-private fun LoadingReason.toLoadingStatus(): PagedLoadingStatus = when (this) {
-    LoadingReason.Normal -> PagedLoadingStatus.LoadingFirstPage
-    LoadingReason.NextPage -> PagedLoadingStatus.LoadingNextPage
-    LoadingReason.PreviousPage -> PagedLoadingStatus.LoadingPreviousPage
 }

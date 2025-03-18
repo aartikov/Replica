@@ -1,10 +1,22 @@
 package me.aartikov.replica.algebra.normal
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.LoadingReason
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
 import me.aartikov.replica.single.ReplicaObserver
@@ -249,16 +261,13 @@ private class CombinedReplica<R : Any>(
     private val eager: Boolean
 ) : Replica<R> {
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<R> {
+    override fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<R> {
         val originalObservers = originalReplicas.map {
-            it.observe(observerCoroutineScope, observerActive)
+            it.observe(observerHost)
         }
 
         return CombinedReplicaObserver(
-            observerCoroutineScope,
+            observerHost,
             originalObservers,
             transform,
             eager
@@ -292,11 +301,13 @@ private class CombiningResult<R : Any>(
 )
 
 private class CombinedReplicaObserver<R : Any>(
-    private val coroutineScope: CoroutineScope,
+    observerHost: ReplicaObserverHost,
     private val originalObservers: List<ReplicaObserver<Any>>,
     private val transform: (List<Any?>) -> R,
     private val eager: Boolean
 ) : ReplicaObserver<R> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Loadable<R>())
     override val stateFlow: StateFlow<Loadable<R>> = _stateFlow.asStateFlow()

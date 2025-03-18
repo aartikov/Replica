@@ -2,12 +2,12 @@ package me.aartikov.replica.algebra
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.algebra.normal.flowReplica
 import me.aartikov.replica.algebra.utils.MainCoroutineRule
 import me.aartikov.replica.algebra.utils.ReplicaProvider
+import me.aartikov.replica.algebra.utils.TestObserverHost
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.currentState
 import org.junit.Assert.assertEquals
@@ -35,7 +35,8 @@ class FlowReplicaTest {
         val flow = MutableStateFlow(ReplicaProvider.TEST_DATA)
 
         val flowReplica = flowReplica(flow)
-        val observer = flowReplica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = flowReplica.observe(observerHost)
         runCurrent()
 
         assertEquals(Loadable(data = ReplicaProvider.TEST_DATA), observer.currentState)
@@ -47,7 +48,8 @@ class FlowReplicaTest {
         val newData = "newData"
 
         val flowReplica = flowReplica(flow)
-        val observer = flowReplica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        val observer = flowReplica.observe(observerHost)
         flow.value = newData
         runCurrent()
 

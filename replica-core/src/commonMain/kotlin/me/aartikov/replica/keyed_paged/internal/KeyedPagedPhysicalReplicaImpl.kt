@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.update
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.common.internal.Lock
 import me.aartikov.replica.common.internal.withLock
@@ -62,14 +63,12 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
     }
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): PagedReplicaObserver<PagedData<I, P>> {
         return KeyedPagedReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
-            key = key,
+            observerHost = observerHost,
+            keyFlow = keyFlow,
             replicaProvider = { getOrCreateReplica(it) }
         )
     }
@@ -119,17 +118,17 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
         getReplica(key)?.cancel()
     }
 
-    override suspend fun clear(key: K) {
-        getReplica(key)?.clear()
+    override suspend fun clear(key: K, invalidationMode: InvalidationMode) {
+        getReplica(key)?.clear(invalidationMode)
     }
 
     override suspend fun clearError(key: K) {
         getReplica(key)?.clearError()
     }
 
-    override suspend fun clearAll() {
+    override suspend fun clearAll(invalidationMode: InvalidationMode) {
         onEachPagedReplica {
-            clear()
+            clear(invalidationMode)
         }
     }
 

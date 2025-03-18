@@ -76,8 +76,10 @@ interface PagedPhysicalReplica<I : Any, P : Page<I>> : PagedReplica<PagedData<I,
 
     /**
      * Cancels current request and clears data.
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      */
-    suspend fun clear()
+    suspend fun clear(invalidationMode: InvalidationMode = InvalidationMode.DontRefresh)
 
     /**
      * Clears error stored in [PagedReplicaState].

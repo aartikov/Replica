@@ -1,8 +1,8 @@
 package me.aartikov.replica.algebra.paged
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.keyed_paged.KeyedPagedReplica
 import me.aartikov.replica.paged.PagedReplica
 import me.aartikov.replica.paged.PagedReplicaObserver
@@ -26,15 +26,8 @@ private class WithKeyReplica<K : Any, T : Any>(
     private val keyFlow: StateFlow<K?>
 ) : PagedReplica<T> {
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<T> {
-        return keyedReplica.observe(
-            observerCoroutineScope,
-            observerActive,
-            keyFlow
-        )
+    override fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<T> {
+        return keyedReplica.observe(observerHost, keyFlow)
     }
 
     override fun refresh() {

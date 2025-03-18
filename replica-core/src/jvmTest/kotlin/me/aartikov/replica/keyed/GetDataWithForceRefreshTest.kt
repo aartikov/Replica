@@ -1,6 +1,5 @@
 package me.aartikov.replica.keyed
 
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
@@ -8,6 +7,7 @@ import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds

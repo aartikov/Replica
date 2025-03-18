@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaObserver
 
@@ -28,18 +29,13 @@ private class KeepPreviousDataKeyedReplica<K : Any, T : Any>(
 ) : KeyedReplica<K, T> {
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): ReplicaObserver<T> {
-        val originalObserver = originalKeyedReplica.observe(
-            observerCoroutineScope,
-            observerActive,
-            key
-        )
+        val originalObserver = originalKeyedReplica.observe(observerHost, keyFlow)
 
         return KeepPreviousDataReplicaObserver(
-            observerCoroutineScope,
+            observerHost.observerCoroutineScope,
             originalObserver
         )
     }

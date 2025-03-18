@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
  * Returns [StateFlow] of booleans that indicates if [Lifecycle] is active.
  * [Lifecycle] is considered active when it is STARTED or RESUMED.
  */
-fun Lifecycle.activeFlow(): StateFlow<Boolean> {
+internal fun Lifecycle.activeFlow(): StateFlow<Boolean> {
     val flow = MutableStateFlow(
         this.state == Lifecycle.State.STARTED || this.state == Lifecycle.State.RESUMED
     )

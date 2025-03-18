@@ -1,6 +1,5 @@
 package me.aartikov.replica.algebra.normal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.CombinedLoadingError
 import me.aartikov.replica.common.LoadingError
 import me.aartikov.replica.common.LoadingReason
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.Replica
@@ -40,20 +40,9 @@ private class MappedReplica<T : Any, R : Any>(
     private val transform: (T) -> R
 ) : Replica<R> {
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<R> {
-        val originalObserver = originalReplica.observe(
-            observerCoroutineScope,
-            observerActive
-        )
-
-        return MappedReplicaObserver(
-            observerCoroutineScope,
-            originalObserver,
-            transform
-        )
+    override fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<R> {
+        val originalObserver = originalReplica.observe(observerHost)
+        return MappedReplicaObserver(observerHost, originalObserver, transform)
     }
 
     override fun refresh() {
@@ -76,10 +65,12 @@ private class MappingResult<T : Any, R : Any>(
 )
 
 private class MappedReplicaObserver<T : Any, R : Any>(
-    private val coroutineScope: CoroutineScope,
+    observerHost: ReplicaObserverHost,
     private val originalObserver: ReplicaObserver<T>,
     private val transform: (T) -> R
 ) : ReplicaObserver<R> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Loadable<R>())
     override val stateFlow: StateFlow<Loadable<R>> = _stateFlow.asStateFlow()

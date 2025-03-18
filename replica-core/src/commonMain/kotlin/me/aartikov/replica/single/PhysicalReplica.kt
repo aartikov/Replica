@@ -92,9 +92,14 @@ interface PhysicalReplica<T : Any> : Replica<T> {
 
     /**
      * Cancels current request and clears data.
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      * @param removeFromStorage specifies if data will be removed from [Storage].
      */
-    suspend fun clear(removeFromStorage: Boolean = true)
+    suspend fun clear(
+        invalidationMode: InvalidationMode = InvalidationMode.DontRefresh,
+        removeFromStorage: Boolean = true
+    )
 
     /**
      * Clears error stored in [ReplicaState].

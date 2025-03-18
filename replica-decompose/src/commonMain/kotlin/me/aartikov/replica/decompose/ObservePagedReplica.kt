@@ -7,9 +7,7 @@ import me.aartikov.replica.paged.PagedReplicaObserver
 /**
  * Observes [PagedReplica] in a a scope of [Lifecycle].
  */
+@Deprecated("Use Lifecycle.replicaObserverHost()")
 fun <T : Any> PagedReplica<T>.observe(lifecycle: Lifecycle): PagedReplicaObserver<T> {
-    return this.observe(
-        lifecycle.coroutineScope(),
-        lifecycle.activeFlow()
-    )
+    return this.observe(lifecycle.replicaObserverHost())
 }

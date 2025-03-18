@@ -63,7 +63,7 @@ class RealPokemonsComponent(
     private sealed interface ChildConfig : Parcelable {
 
         @Parcelize
-        object List : ChildConfig
+        data object List : ChildConfig
 
         @Parcelize
         data class Details(val pokemonId: PokemonId) : ChildConfig

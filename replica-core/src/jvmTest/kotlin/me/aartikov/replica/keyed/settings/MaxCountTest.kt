@@ -3,12 +3,12 @@ package me.aartikov.replica.keyed.settings
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
@@ -57,7 +57,7 @@ class MaxCountTest {
 
     @Test
     fun `no replicas are removed if all replicas have observers and maxCount is setup`() = runTest {
-        val maxCount = 0
+        val maxCount = 3
         val numOfReplicas = 5
         val replica = replicaProvider.replica(
             replicaSettings = KeyedReplicaSettings(
@@ -65,9 +65,11 @@ class MaxCountTest {
             )
         )
 
+        val observerHost = TestObserverHost(active = false)
+
         repeat(numOfReplicas) {
             replica.setData(it, KeyedReplicaProvider.testData(it))
-            replica.observe(TestScope(), MutableStateFlow(false), MutableStateFlow(it))
+            replica.observe(observerHost, MutableStateFlow(it))
         }
         delay(101) // waiting until LimitChildCount.ClearingDebounceTime is passed
 
@@ -86,23 +88,23 @@ class MaxCountTest {
         val replicaKeyWithObserver2 = 1
         val replicaKeyWithoutObserver = 2
 
+        val observerHost = TestObserverHost(active = true)
+
         replica.setData(
             replicaKeyWithObserver1,
             KeyedReplicaProvider.testData(replicaKeyWithObserver1)
         )
         replica.observe(
-            observerCoroutineScope = TestScope(),
-            observerActive = MutableStateFlow(true),
-            key = MutableStateFlow(replicaKeyWithObserver1)
+            observerHost = observerHost,
+            keyFlow = MutableStateFlow(replicaKeyWithObserver1)
         )
         replica.setData(
             replicaKeyWithObserver2,
             KeyedReplicaProvider.testData(replicaKeyWithObserver2)
         )
         replica.observe(
-            observerCoroutineScope = TestScope(),
-            observerActive = MutableStateFlow(true),
-            key = MutableStateFlow(replicaKeyWithObserver2)
+            observerHost = observerHost,
+            keyFlow = MutableStateFlow(replicaKeyWithObserver2)
         )
         replica.setData(
             replicaKeyWithoutObserver,

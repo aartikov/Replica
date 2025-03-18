@@ -4,10 +4,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.common.internal.Lock
 import me.aartikov.replica.common.internal.withLock
@@ -54,14 +60,12 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
     }
 
     override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        key: StateFlow<K?>
+        observerHost: ReplicaObserverHost,
+        keyFlow: StateFlow<K?>
     ): ReplicaObserver<T> {
         return KeyedReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
-            key = key,
+            observerHost = observerHost,
+            keyFlow = keyFlow,
             replicaProvider = { getOrCreateReplica(it) }
         )
     }
@@ -107,22 +111,26 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         getReplica(key)?.cancel()
     }
 
-    override suspend fun clear(key: K, removeFromStorage: Boolean) {
+    override suspend fun clear(
+        key: K,
+        invalidationMode: InvalidationMode,
+        removeFromStorage: Boolean
+    ) {
         val replica = if (storageCleaner != null && removeFromStorage) {
             getOrCreateReplica(key)
         } else {
             getReplica(key)
         }
-        replica?.clear(removeFromStorage)
+        replica?.clear(invalidationMode, removeFromStorage)
     }
 
     override suspend fun clearError(key: K) {
         getReplica(key)?.clearError()
     }
 
-    override suspend fun clearAll() {
+    override suspend fun clearAll(invalidationMode: InvalidationMode) {
         onEachReplica {
-            clear(removeFromStorage = false)
+            clear(invalidationMode, removeFromStorage = false)
         }
         storageCleaner?.removeAll()
     }

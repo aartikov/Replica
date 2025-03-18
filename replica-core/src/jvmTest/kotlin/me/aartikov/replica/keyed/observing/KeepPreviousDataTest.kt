@@ -3,7 +3,6 @@ package me.aartikov.replica.keyed.observing
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
@@ -11,6 +10,7 @@ import me.aartikov.replica.keyed.utils.KeyedReplicaProvider
 import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.utils.MainCoroutineRule
+import me.aartikov.replica.utils.TestObserverHost
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -43,14 +43,11 @@ class KeepPreviousDataTest {
             }
         )
 
+        val observerHost = TestObserverHost(active = true)
         val observerKey = MutableStateFlow(DEFAULT_KEY)
         val observer = replica
             .keepPreviousData()
-            .observe(
-                observerCoroutineScope = TestScope(),
-                observerActive = MutableStateFlow(true),
-                key = observerKey
-            )
+            .observe(observerHost, observerKey)
         delay(DEFAULT_DELAY + 1) // waiting until loading complete
         observerKey.value = DEFAULT_KEY + 1
         delay(DEFAULT_DELAY - 1) // loading not complete yet
@@ -77,13 +74,9 @@ class KeepPreviousDataTest {
             }
         )
 
+        val observerHost = TestObserverHost(active = true)
         val observerKey = MutableStateFlow(DEFAULT_KEY)
-        val observer = replica
-            .observe(
-                observerCoroutineScope = TestScope(),
-                observerActive = MutableStateFlow(true),
-                key = observerKey
-            )
+        val observer = replica.observe(observerHost, observerKey)
         delay(DEFAULT_DELAY + 1) // waiting until loading complete
         observerKey.value = DEFAULT_KEY + 1
         delay(DEFAULT_DELAY - 1) // loading not complete yet

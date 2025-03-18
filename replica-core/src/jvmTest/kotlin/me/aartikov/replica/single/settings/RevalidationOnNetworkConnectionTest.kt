@@ -1,10 +1,8 @@
 package me.aartikov.replica.single.settings
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import me.aartikov.replica.single.ReplicaSettings
@@ -13,7 +11,11 @@ import me.aartikov.replica.single.utils.ReplicaProvider
 import me.aartikov.replica.utils.FakeNetworkConnectivityProvider
 import me.aartikov.replica.utils.LoadingFailedException
 import me.aartikov.replica.utils.MainCoroutineRule
-import org.junit.Assert.*
+import me.aartikov.replica.utils.TestObserverHost
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -42,7 +44,8 @@ class RevalidationOnNetworkConnectionTest {
             }
         )
 
-        replica.observe(TestScope(), MutableStateFlow(true))
+        val observerHost = TestObserverHost(active = true)
+        replica.observe(observerHost)
         replica.refresh()
         isConnected.update { true }
         runCurrent()
@@ -99,7 +102,8 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            replica.observe(TestScope(), MutableStateFlow(false))
+            val observerHost = TestObserverHost(active = false)
+            replica.observe(observerHost)
             replica.refresh()
             runCurrent()
             isConnected.update { true }
@@ -129,11 +133,12 @@ class RevalidationOnNetworkConnectionTest {
                 }
             )
 
-            val observerScope = TestScope()
-            replica.observe(observerScope, MutableStateFlow(true))
+            val observerHost = TestObserverHost(active = true)
+            replica.observe(observerHost)
             replica.refresh()
-            observerScope.cancel()
             runCurrent()
+            observerHost.cancelCoroutineScope()
+
             isConnected.update { true }
             runCurrent()
 

@@ -11,7 +11,7 @@ import com.arkivanov.essenty.statekeeper.consume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import me.aartikov.replica.decompose.coroutineScope
+import me.aartikov.replica.decompose.replicaObserverHost
 
 /**
  * Creates a [ChildStack] with a single active component. Should be used to create a stack for Jetpack Compose preview.
@@ -48,7 +48,7 @@ fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
  * Creates a coroutine scope tied to Decompose lifecycle. A scope is canceled when a component is destroyed.
  */
 fun LifecycleOwner.componentCoroutineScope(): CoroutineScope {
-    return lifecycle.coroutineScope()
+    return lifecycle.replicaObserverHost().observerCoroutineScope
 }
 
 /**

@@ -1,6 +1,5 @@
 package me.aartikov.replica.keyed_paged.internal
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,16 +11,18 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import me.aartikov.replica.common.LoadingError
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.paged.Paged
 import me.aartikov.replica.paged.PagedReplica
 import me.aartikov.replica.paged.PagedReplicaObserver
 
 internal class KeyedPagedReplicaObserverImpl<K : Any, T : Any>(
-    private val coroutineScope: CoroutineScope,
-    private val activeFlow: StateFlow<Boolean>,
-    private val key: StateFlow<K?>,
+    private val observerHost: ReplicaObserverHost,
+    private val keyFlow: StateFlow<K?>,
     private val replicaProvider: (K) -> PagedReplica<T>
 ) : PagedReplicaObserver<T> {
+
+    private val coroutineScope = observerHost.observerCoroutineScope
 
     private val _stateFlow = MutableStateFlow(Paged<T>())
     override val stateFlow: StateFlow<Paged<T>> = _stateFlow.asStateFlow()
@@ -45,7 +46,7 @@ internal class KeyedPagedReplicaObserverImpl<K : Any, T : Any>(
     }
 
     private fun launchObserving() {
-        key
+        keyFlow
             .onEach { currentKey ->
                 cancelCurrentObserving()
                 launchObservingForKey(currentKey)
@@ -55,7 +56,7 @@ internal class KeyedPagedReplicaObserverImpl<K : Any, T : Any>(
 
     private fun launchObservingForKey(currentKey: K?) {
         currentReplica = currentKey?.let { replicaProvider(currentKey) }
-        currentReplicaObserver = currentReplica?.observe(coroutineScope, activeFlow)
+        currentReplicaObserver = currentReplica?.observe(observerHost)
 
         val currentReplicaObserver = currentReplicaObserver
         if (currentReplicaObserver == null) {

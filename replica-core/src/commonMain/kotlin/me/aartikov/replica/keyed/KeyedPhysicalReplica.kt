@@ -90,9 +90,15 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     /**
      * Cancels current request and clears data for a given [key].
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      * @param removeFromStorage specifies if data will be removed from [KeyedStorage].
      */
-    suspend fun clear(key: K, removeFromStorage: Boolean = true)
+    suspend fun clear(
+        key: K,
+        invalidationMode: InvalidationMode = InvalidationMode.DontRefresh,
+        removeFromStorage: Boolean = true
+    )
 
     /**
      * Clears error stored in [ReplicaState] for a given [key].
@@ -101,8 +107,10 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     /**
      * Cancels network requests and clears data in all child replicas.
+     *
+     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
      */
-    suspend fun clearAll()
+    suspend fun clearAll(invalidationMode: InvalidationMode = InvalidationMode.DontRefresh)
 
     /**
      * Begins optimistic update for a given [key]. Observed data will be transformed by [update] function immediately.

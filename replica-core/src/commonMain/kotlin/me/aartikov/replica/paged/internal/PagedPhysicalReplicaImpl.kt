@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
+import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedData
@@ -54,7 +56,7 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         ObserversController(timeProvider, dispatcher, _stateFlow, _eventFlow)
 
     private val dataLoadingController = DataLoadingController(
-        timeProvider, dispatcher, coroutineScope, idExtractor, _stateFlow, _eventFlow,
+        coroutineScope, timeProvider, dispatcher, idExtractor, _stateFlow, _eventFlow,
         DataLoader(coroutineScope, fetcher)
     )
 
@@ -74,13 +76,9 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         }
     }
 
-    override fun observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): PagedReplicaObserver<PagedData<I, P>> {
+    override fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<PagedData<I, P>> {
         return PagedReplicaObserverImpl(
-            coroutineScope = observerCoroutineScope,
-            activeFlow = observerActive,
+            observerHost = observerHost,
             replicaStateFlow = stateFlow,
             replicaEventFlow = eventFlow,
             observersController = observersController
@@ -88,19 +86,27 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
     }
 
     override fun refresh() {
-        dataLoadingController.refresh()
+        coroutineScope.launch {
+            dataLoadingController.refresh()
+        }
     }
 
     override fun revalidate() {
-        dataLoadingController.revalidate()
+        coroutineScope.launch {
+            dataLoadingController.revalidate()
+        }
     }
 
     override fun loadNext() {
-        dataLoadingController.loadNext()
+        coroutineScope.launch {
+            dataLoadingController.loadNext()
+        }
     }
 
     override fun loadPrevious() {
-        dataLoadingController.loadPrevious()
+        coroutineScope.launch {
+            dataLoadingController.loadPrevious()
+        }
     }
 
     override suspend fun setData(data: List<P>) {
@@ -121,12 +127,15 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
     }
 
     override fun cancel() {
-        dataLoadingController.cancel()
+        coroutineScope.launch {
+            dataLoadingController.cancel()
+        }
     }
 
-    override suspend fun clear() {
-        cancel()
+    override suspend fun clear(invalidationMode: InvalidationMode) {
+        dataLoadingController.cancel()
         clearingController.clear()
+        dataLoadingController.refreshAfterInvalidation(invalidationMode)
     }
 
     override suspend fun clearError() {
