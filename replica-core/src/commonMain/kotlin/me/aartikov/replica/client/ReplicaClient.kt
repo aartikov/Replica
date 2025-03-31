@@ -6,6 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.client.internal.ReplicaClientImpl
+import me.aartikov.replica.common.ReplicaAction
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.keyed.KeyedFetcher
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
@@ -53,6 +54,12 @@ interface ReplicaClient {
      * Notifies that some [ReplicaClientEvent] has occurred.
      */
     val eventFlow: Flow<ReplicaClientEvent>
+
+
+    /**
+     * Emits [ReplicaAction]s.
+     */
+    val actions: Flow<ReplicaAction>
 
     /**
      * Creates a [PhysicalReplica].
@@ -189,6 +196,10 @@ interface ReplicaClient {
         action: suspend KeyedPagedPhysicalReplica<*, *, *>.() -> Unit
     )
 
+    /**
+     * Sends an [action].
+     */
+    fun sendAction(action: ReplicaAction)
 }
 
 /**

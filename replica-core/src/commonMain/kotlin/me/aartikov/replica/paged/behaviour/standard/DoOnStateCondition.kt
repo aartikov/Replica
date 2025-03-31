@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaState
@@ -37,18 +38,18 @@ private class DoOnStateCondition<I : Any, P : Page<I>>(
 
     private var job: Job? = null
 
-    override fun setup(replica: PagedPhysicalReplica<I, P>) {
-        replica.stateFlow
+    override fun setup(replicaClient: ReplicaClient, pagedReplica: PagedPhysicalReplica<I, P>) {
+        pagedReplica.stateFlow
             .map { condition(it) }
             .distinctUntilChanged()
             .onEach { conditionsMet ->
                 if (conditionsMet) {
-                    replica.coroutineScope.launchJob(replica)
+                    pagedReplica.coroutineScope.launchJob(pagedReplica)
                 } else {
                     cancelJob()
                 }
             }
-            .launchIn(replica.coroutineScope)
+            .launchIn(pagedReplica.coroutineScope)
     }
 
     private fun CoroutineScope.launchJob(replica: PagedPhysicalReplica<I, P>) {

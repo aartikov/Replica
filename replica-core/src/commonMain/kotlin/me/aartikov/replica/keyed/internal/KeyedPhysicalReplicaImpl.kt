@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
@@ -30,6 +31,7 @@ import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.currentState
 
 internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
+    replicaClient: ReplicaClient,
     override val coroutineScope: CoroutineScope,
     override val name: String,
     override val settings: KeyedReplicaSettings<K, T>,
@@ -55,7 +57,7 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
 
     init {
         behaviours.forEach { behaviour ->
-            behaviour.setup(this)
+            behaviour.setup(replicaClient, this)
         }
     }
 

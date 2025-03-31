@@ -1,14 +1,12 @@
 package me.aartikov.replica.single.behaviour
 
 import me.aartikov.replica.common.ObservingStatus
-import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.standard.*
 import kotlin.time.Duration
 
 internal fun <T : Any> ReplicaBehaviour.Companion.createForSettings(
-    settings: ReplicaSettings,
-    networkConnectivityProvider: NetworkConnectivityProvider?
+    settings: ReplicaSettings
 ) = buildList<ReplicaBehaviour<T>> {
 
     settings.staleTime?.let {
@@ -31,8 +29,8 @@ internal fun <T : Any> ReplicaBehaviour.Companion.createForSettings(
         add(createRevalidationOnActiveObserverAddedBehaviour())
     }
 
-    if (networkConnectivityProvider != null && settings.revalidateOnNetworkConnection) {
-        add(createRevalidationOnNetworkConnectionBehaviour(networkConnectivityProvider))
+    if (settings.revalidateOnNetworkConnection) {
+        add(createRevalidationOnNetworkConnectionBehaviour())
     }
 }
 
@@ -78,10 +76,8 @@ private fun <T : Any> createRevalidationOnActiveObserverAddedBehaviour(): Replic
     }
 }
 
-private fun <T : Any> createRevalidationOnNetworkConnectionBehaviour(
-    networkConnectivityProvider: NetworkConnectivityProvider
-): ReplicaBehaviour<T> {
-    return ReplicaBehaviour.doOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
+private fun <T : Any> createRevalidationOnNetworkConnectionBehaviour(): ReplicaBehaviour<T> {
+    return ReplicaBehaviour.doOnNetworkConnectivityChanged { connected ->
         if (connected && currentState.observingState.status == ObservingStatus.Active) {
             revalidate()
         }

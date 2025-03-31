@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
@@ -36,7 +37,7 @@ private class DoOnStateCondition<T : Any>(
 
     private var job: Job? = null
 
-    override fun setup(replica: PhysicalReplica<T>) {
+    override fun setup(replicaClient: ReplicaClient, replica: PhysicalReplica<T>) {
         replica.stateFlow
             .map { condition(it) }
             .distinctUntilChanged()

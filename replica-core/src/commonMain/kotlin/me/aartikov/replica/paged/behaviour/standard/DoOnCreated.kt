@@ -1,6 +1,7 @@
 package me.aartikov.replica.paged.behaviour.standard
 
 import kotlinx.coroutines.launch
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
@@ -16,9 +17,9 @@ private class DoOnCreated<I : Any, P : Page<I>>(
     private val action: suspend PagedPhysicalReplica<I, P>.() -> Unit
 ) : PagedReplicaBehaviour<I, P> {
 
-    override fun setup(replica: PagedPhysicalReplica<I, P>) {
-        replica.coroutineScope.launch {
-            replica.action()
+    override fun setup(replicaClient: ReplicaClient, pagedReplica: PagedPhysicalReplica<I, P>) {
+        pagedReplica.coroutineScope.launch {
+            pagedReplica.action()
         }
     }
 }

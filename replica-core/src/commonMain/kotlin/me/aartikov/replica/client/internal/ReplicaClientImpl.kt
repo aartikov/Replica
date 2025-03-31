@@ -2,10 +2,13 @@ package me.aartikov.replica.client.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.ReplicaClientEvent
+import me.aartikov.replica.common.ReplicaAction
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.common.internal.Lock
 import me.aartikov.replica.common.internal.withLock
@@ -66,6 +69,13 @@ internal class ReplicaClientImpl(
 
     private val keyedPagedReplicasLock = Lock()
     private val keyedPagedReplicas = mutableSetOf<KeyedPagedPhysicalReplica<*, *, *>>()
+
+    private val _actions = MutableSharedFlow<ReplicaAction>(
+        extraBufferCapacity = 1000,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    override val actions: Flow<ReplicaAction> get() = _actions.asSharedFlow()
 
     override fun <T : Any> createReplica(
         name: String,
@@ -130,6 +140,7 @@ internal class ReplicaClientImpl(
         val behavioursForSettings = KeyedReplicaBehaviour.createForSettings<K, T>(settings)
 
         val keyedReplica = KeyedPhysicalReplicaImpl(
+            this,
             coroutineScope,
             name,
             settings,
@@ -212,6 +223,7 @@ internal class ReplicaClientImpl(
         val behavioursForSettings = KeyedPagedReplicaBehaviour.createForSettings<K, I, P>(settings)
 
         val keyedPagedReplica = KeyedPagedPhysicalReplicaImpl(
+            this,
             coroutineScope,
             name,
             settings,
@@ -293,6 +305,10 @@ internal class ReplicaClientImpl(
         }
     }
 
+    override fun sendAction(action: ReplicaAction) {
+        _actions.tryEmit(action)
+    }
+
     private fun <T : Any> createReplicaInternal(
         name: String,
         settings: ReplicaSettings,
@@ -306,10 +322,10 @@ internal class ReplicaClientImpl(
 
         validateSettings(settings, hasStorage = storage != null)
 
-        val behavioursForSettings =
-            ReplicaBehaviour.createForSettings<T>(settings, networkConnectivityProvider)
+        val behavioursForSettings = ReplicaBehaviour.createForSettings<T>(settings)
 
         return PhysicalReplicaImpl(
+            this,
             timeProvider,
             coroutineDispatcher,
             coroutineScope,
@@ -333,10 +349,10 @@ internal class ReplicaClientImpl(
         coroutineScope: CoroutineScope
     ): PagedPhysicalReplica<I, P> {
 
-        val behavioursForSettings =
-            PagedReplicaBehaviour.createForSettings<I, P>(settings, networkConnectivityProvider)
+        val behavioursForSettings = PagedReplicaBehaviour.createForSettings<I, P>(settings)
 
         return PagedPhysicalReplicaImpl(
+            this,
             timeProvider,
             coroutineDispatcher,
             coroutineScope,

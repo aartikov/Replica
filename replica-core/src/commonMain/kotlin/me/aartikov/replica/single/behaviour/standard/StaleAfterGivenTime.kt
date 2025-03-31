@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
@@ -24,7 +25,7 @@ private class StaleAfterGivenTime<T : Any>(
 
     private var staleJob: Job? = null
 
-    override fun setup(replica: PhysicalReplica<T>) {
+    override fun setup(replicaClient: ReplicaClient, replica: PhysicalReplica<T>) {
         replica.eventFlow
             .onEach { event ->
                 when (event) {

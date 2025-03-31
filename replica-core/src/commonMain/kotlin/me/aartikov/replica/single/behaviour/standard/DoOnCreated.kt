@@ -1,6 +1,7 @@
 package me.aartikov.replica.single.behaviour.standard
 
 import kotlinx.coroutines.launch
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 
@@ -15,7 +16,7 @@ private class DoOnCreated<T : Any>(
     private val action: suspend PhysicalReplica<T>.() -> Unit
 ) : ReplicaBehaviour<T> {
 
-    override fun setup(replica: PhysicalReplica<T>) {
+    override fun setup(replicaClient: ReplicaClient, replica: PhysicalReplica<T>) {
         replica.coroutineScope.launch {
             replica.action()
         }

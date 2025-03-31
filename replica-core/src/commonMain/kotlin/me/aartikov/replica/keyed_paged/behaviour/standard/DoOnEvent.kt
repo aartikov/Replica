@@ -2,6 +2,7 @@ package me.aartikov.replica.keyed_paged.behaviour.standard
 
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
 import me.aartikov.replica.keyed_paged.KeyedPagedReplicaEvent
 import me.aartikov.replica.keyed_paged.behaviour.KeyedPagedReplicaBehaviour
@@ -18,7 +19,10 @@ private class DoOnEvent<K : Any, I : Any, P : Page<I>>(
     private val action: suspend KeyedPagedPhysicalReplica<K, I, P>.(event: KeyedPagedReplicaEvent<K, I, P>) -> Unit
 ) : KeyedPagedReplicaBehaviour<K, I, P> {
 
-    override fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>) {
+    override fun setup(
+        replicaClient: ReplicaClient,
+        keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>
+    ) {
         keyedPagedReplica.eventFlow
             .onEach { event ->
                 keyedPagedReplica.action(event)

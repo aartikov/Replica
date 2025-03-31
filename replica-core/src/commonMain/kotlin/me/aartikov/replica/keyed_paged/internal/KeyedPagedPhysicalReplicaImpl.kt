@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
@@ -32,6 +33,7 @@ import me.aartikov.replica.paged.PagedReplicaState
 import me.aartikov.replica.paged.currentState
 
 internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
+    replicaClient: ReplicaClient,
     override val coroutineScope: CoroutineScope,
     override val name: String,
     override val settings: KeyedPagedReplicaSettings<K, I, P>,
@@ -58,7 +60,7 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
 
     init {
         behaviours.forEach { behaviour ->
-            behaviour.setup(this)
+            behaviour.setup(replicaClient, this)
         }
     }
 

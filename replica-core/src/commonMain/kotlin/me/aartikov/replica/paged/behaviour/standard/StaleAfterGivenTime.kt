@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedPhysicalReplica
@@ -26,12 +27,12 @@ private class StaleAfterGivenTime<I : Any, P : Page<I>>(
 
     private var staleJob: Job? = null
 
-    override fun setup(replica: PagedPhysicalReplica<I, P>) {
-        replica.eventFlow
+    override fun setup(replicaClient: ReplicaClient, pagedReplica: PagedPhysicalReplica<I, P>) {
+        pagedReplica.eventFlow
             .onEach { event ->
                 when (event) {
                     is PagedReplicaEvent.FreshnessEvent.Freshened -> {
-                        replica.coroutineScope.relaunchStaleJob(replica)
+                        pagedReplica.coroutineScope.relaunchStaleJob(pagedReplica)
                     }
 
                     is PagedReplicaEvent.FreshnessEvent.BecameStale, is PagedReplicaEvent.ClearedEvent -> {
@@ -40,7 +41,7 @@ private class StaleAfterGivenTime<I : Any, P : Page<I>>(
 
                     else -> Unit
                 }
-            }.launchIn(replica.coroutineScope)
+            }.launchIn(pagedReplica.coroutineScope)
     }
 
     private fun CoroutineScope.relaunchStaleJob(replica: PagedPhysicalReplica<I, P>) {

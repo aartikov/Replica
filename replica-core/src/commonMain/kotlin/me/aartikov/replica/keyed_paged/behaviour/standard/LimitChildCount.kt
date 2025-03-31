@@ -4,6 +4,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.ObservingStatus
 import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
 import me.aartikov.replica.keyed_paged.PagedClearPolicy
@@ -31,7 +32,10 @@ private class LimitChildCount<K : Any, I : Any, P : Page<I>>(
     }
 
     @OptIn(FlowPreview::class)
-    override fun setup(keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>) {
+    override fun setup(
+        replicaClient: ReplicaClient,
+        keyedPagedReplica: KeyedPagedPhysicalReplica<K, I, P>
+    ) {
         keyedPagedReplica.stateFlow
             // Debounce is used to wait until a just created replica will change state
             .debounce(ClearingDebounceTime.inWholeMilliseconds)

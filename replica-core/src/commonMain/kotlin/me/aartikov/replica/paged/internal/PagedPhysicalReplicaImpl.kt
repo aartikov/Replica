@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.ReplicaId
@@ -33,6 +34,7 @@ import me.aartikov.replica.time.TimeProvider
 
 
 internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
+    replicaClient: ReplicaClient,
     timeProvider: TimeProvider,
     dispatcher: CoroutineDispatcher,
     override val coroutineScope: CoroutineScope,
@@ -72,7 +74,7 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
 
     init {
         behaviours.forEach { behaviour ->
-            behaviour.setup(this)
+            behaviour.setup(replicaClient, this)
         }
     }
 

@@ -1,7 +1,6 @@
 package me.aartikov.replica.paged.behaviour
 
 import me.aartikov.replica.common.ObservingStatus
-import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.paged.Page
 import me.aartikov.replica.paged.PagedLoadingStatus
 import me.aartikov.replica.paged.PagedPhysicalReplica
@@ -15,8 +14,7 @@ import me.aartikov.replica.paged.currentState
 import kotlin.time.Duration
 
 internal fun <I : Any, P : Page<I>> PagedReplicaBehaviour.Companion.createForSettings(
-    settings: PagedReplicaSettings,
-    networkConnectivityProvider: NetworkConnectivityProvider?
+    settings: PagedReplicaSettings
 ) = buildList<PagedReplicaBehaviour<I, P>> {
 
     settings.staleTime?.let {
@@ -39,8 +37,8 @@ internal fun <I : Any, P : Page<I>> PagedReplicaBehaviour.Companion.createForSet
         add(createRevalidationOnActiveObserverAddedBehaviour())
     }
 
-    if (networkConnectivityProvider != null && settings.revalidateOnNetworkConnection) {
-        add(createRevalidationOnNetworkConnectionBehaviour(networkConnectivityProvider))
+    if (settings.revalidateOnNetworkConnection) {
+        add(createRevalidationOnNetworkConnectionBehaviour())
     }
 }
 
@@ -86,10 +84,8 @@ private fun <I : Any, P : Page<I>> createRevalidationOnActiveObserverAddedBehavi
     }
 }
 
-private fun <I : Any, P : Page<I>> createRevalidationOnNetworkConnectionBehaviour(
-    networkConnectivityProvider: NetworkConnectivityProvider
-): PagedReplicaBehaviour<I, P> {
-    return PagedReplicaBehaviour.doOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
+private fun <I : Any, P : Page<I>> createRevalidationOnNetworkConnectionBehaviour(): PagedReplicaBehaviour<I, P> {
+    return PagedReplicaBehaviour.doOnNetworkConnectivityChanged { connected ->
         if (connected && currentState.observingState.status == ObservingStatus.Active) {
             revalidate()
         }
