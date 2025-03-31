@@ -10,7 +10,11 @@ import me.aartikov.replica.paged.Page
 /**
  * [KeyedPagedReplicaBehaviour] that executes some [action] on all [KeyedPagedReplicaEvent].
  */
-class KeyedPagedPagedDoOnEvent<K : Any, I : Any, P : Page<I>>(
+fun <K : Any, I : Any, P : Page<I>> KeyedPagedReplicaBehaviour.Companion.doOnEvent(
+    action: suspend KeyedPagedPhysicalReplica<K, I, P>.(event: KeyedPagedReplicaEvent<K, I, P>) -> Unit
+): KeyedPagedReplicaBehaviour<K, I, P> = DoOnEvent(action)
+
+private class DoOnEvent<K : Any, I : Any, P : Page<I>>(
     private val action: suspend KeyedPagedPhysicalReplica<K, I, P>.(event: KeyedPagedReplicaEvent<K, I, P>) -> Unit
 ) : KeyedPagedReplicaBehaviour<K, I, P> {
 

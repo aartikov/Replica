@@ -14,7 +14,12 @@ import me.aartikov.replica.single.currentState
 import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class LimitChildCount<K : Any, T : Any>(
+internal fun <K : Any, T : Any> KeyedReplicaBehaviour.Companion.limitChildCount(
+    maxCount: Int,
+    clearPolicy: ClearPolicy<K, T>
+): KeyedReplicaBehaviour<K, T> = LimitChildCount(maxCount, clearPolicy)
+
+private class LimitChildCount<K : Any, T : Any>(
     private val maxCount: Int,
     private val clearPolicy: ClearPolicy<K, T>
 ) : KeyedReplicaBehaviour<K, T> {

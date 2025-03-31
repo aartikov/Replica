@@ -14,7 +14,7 @@ import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.KeyedStorage
 import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
-import me.aartikov.replica.keyed.behaviour.createBehavioursForKeyedReplicaSettings
+import me.aartikov.replica.keyed.behaviour.createForSettings
 import me.aartikov.replica.keyed.internal.FixedKeyStorage
 import me.aartikov.replica.keyed.internal.KeyedPhysicalReplicaImpl
 import me.aartikov.replica.keyed.internal.KeyedStorageCleaner
@@ -22,7 +22,7 @@ import me.aartikov.replica.keyed_paged.KeyedPagedFetcher
 import me.aartikov.replica.keyed_paged.KeyedPagedPhysicalReplica
 import me.aartikov.replica.keyed_paged.KeyedPagedReplicaSettings
 import me.aartikov.replica.keyed_paged.behaviour.KeyedPagedReplicaBehaviour
-import me.aartikov.replica.keyed_paged.behaviour.createBehavioursForKeyedPagedReplicaSettings
+import me.aartikov.replica.keyed_paged.behaviour.createForSettings
 import me.aartikov.replica.keyed_paged.internal.KeyedPagedPhysicalReplicaImpl
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.paged.Page
@@ -31,14 +31,14 @@ import me.aartikov.replica.paged.PagedFetcher
 import me.aartikov.replica.paged.PagedPhysicalReplica
 import me.aartikov.replica.paged.PagedReplicaSettings
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
-import me.aartikov.replica.paged.behaviour.createBehavioursForPagedReplicaSettings
+import me.aartikov.replica.paged.behaviour.createForSettings
 import me.aartikov.replica.paged.internal.PagedPhysicalReplicaImpl
 import me.aartikov.replica.single.Fetcher
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.behaviour.createBehavioursForReplicaSettings
+import me.aartikov.replica.single.behaviour.createForSettings
 import me.aartikov.replica.single.internal.PhysicalReplicaImpl
 import me.aartikov.replica.single.internal.SequentialStorage
 import me.aartikov.replica.time.TimeProvider
@@ -127,7 +127,7 @@ internal class ReplicaClientImpl(
             )
         }
 
-        val behavioursForSettings = createBehavioursForKeyedReplicaSettings<K, T>(settings)
+        val behavioursForSettings = KeyedReplicaBehaviour.createForSettings<K, T>(settings)
 
         val keyedReplica = KeyedPhysicalReplicaImpl(
             coroutineScope,
@@ -209,9 +209,9 @@ internal class ReplicaClientImpl(
             )
         }
 
-        val behavioursForSettings = createBehavioursForKeyedPagedReplicaSettings<K, I, P>(settings)
+        val behavioursForSettings = KeyedPagedReplicaBehaviour.createForSettings<K, I, P>(settings)
 
-        val keyedReplica = KeyedPagedPhysicalReplicaImpl(
+        val keyedPagedReplica = KeyedPagedPhysicalReplicaImpl(
             coroutineScope,
             name,
             settings,
@@ -221,10 +221,10 @@ internal class ReplicaClientImpl(
         )
 
         keyedPagedReplicasLock.withLock {
-            keyedPagedReplicas.add(keyedReplica)
+            keyedPagedReplicas.add(keyedPagedReplica)
         }
-        _eventFlow.tryEmit(ReplicaClientEvent.KeyedPagedReplicaCreated(keyedReplica))
-        return keyedReplica
+        _eventFlow.tryEmit(ReplicaClientEvent.KeyedPagedReplicaCreated(keyedPagedReplica))
+        return keyedPagedReplica
     }
 
     override suspend fun onEachReplica(
@@ -307,7 +307,7 @@ internal class ReplicaClientImpl(
         validateSettings(settings, hasStorage = storage != null)
 
         val behavioursForSettings =
-            createBehavioursForReplicaSettings<T>(settings, networkConnectivityProvider)
+            ReplicaBehaviour.createForSettings<T>(settings, networkConnectivityProvider)
 
         return PhysicalReplicaImpl(
             timeProvider,
@@ -334,7 +334,7 @@ internal class ReplicaClientImpl(
     ): PagedPhysicalReplica<I, P> {
 
         val behavioursForSettings =
-            createBehavioursForPagedReplicaSettings<I, P>(settings, networkConnectivityProvider)
+            PagedReplicaBehaviour.createForSettings<I, P>(settings, networkConnectivityProvider)
 
         return PagedPhysicalReplicaImpl(
             timeProvider,

@@ -1,10 +1,15 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
@@ -15,7 +20,14 @@ import kotlin.time.Duration
  * [startDelay] allows to delay execution of an action. If a state stops satisfying the condition before [startDelay] expires the action will not be executed.
  * [repeatInterval] allows to execute an [action] periodically until a state satisfying the condition. null means execute the action once.
  */
-class DoOnStateCondition<T : Any>(
+fun <T : Any> ReplicaBehaviour.Companion.doOnStateCondition(
+    condition: (ReplicaState<T>) -> Boolean,
+    startDelay: Duration = Duration.ZERO,
+    repeatInterval: Duration? = null,
+    action: suspend PhysicalReplica<T>.() -> Unit
+): ReplicaBehaviour<T> = DoOnStateCondition(condition, startDelay, repeatInterval, action)
+
+private class DoOnStateCondition<T : Any>(
     private val condition: (ReplicaState<T>) -> Boolean,
     private val startDelay: Duration = Duration.ZERO,
     private val repeatInterval: Duration? = null,

@@ -16,7 +16,12 @@ import me.aartikov.replica.paged.currentState
 import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class LimitChildCount<K : Any, I : Any, P : Page<I>>(
+internal fun <K : Any, I : Any, P : Page<I>> KeyedPagedReplicaBehaviour.Companion.limitChildCount(
+    maxCount: Int,
+    clearPolicy: PagedClearPolicy<K, I, P>
+): KeyedPagedReplicaBehaviour<K, I, P> = LimitChildCount(maxCount, clearPolicy)
+
+private class LimitChildCount<K : Any, I : Any, P : Page<I>>(
     private val maxCount: Int,
     private val clearPolicy: PagedClearPolicy<K, I, P>
 ) : KeyedPagedReplicaBehaviour<K, I, P> {
@@ -47,7 +52,7 @@ internal class LimitChildCount<K : Any, I : Any, P : Page<I>>(
         keyedPagedReplica.onEachPagedReplica { key ->
             val state = currentState
             val removable = state.loadingStatus == PagedLoadingStatus.None
-                        && state.observingState.status == ObservingStatus.None
+                    && state.observingState.status == ObservingStatus.None
             if (removable) {
                 keysWithStateForRemoving.add(key to state)
             }

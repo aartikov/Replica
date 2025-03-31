@@ -6,13 +6,13 @@ import me.aartikov.replica.single.*
 import me.aartikov.replica.single.behaviour.standard.*
 import kotlin.time.Duration
 
-internal fun <T : Any> createBehavioursForReplicaSettings(
+internal fun <T : Any> ReplicaBehaviour.Companion.createForSettings(
     settings: ReplicaSettings,
     networkConnectivityProvider: NetworkConnectivityProvider?
 ) = buildList<ReplicaBehaviour<T>> {
 
     settings.staleTime?.let {
-        add(StaleAfterGivenTime(it))
+        add(ReplicaBehaviour.staleAfterGivenTime(it))
     }
 
     settings.clearTime?.let {
@@ -37,7 +37,7 @@ internal fun <T : Any> createBehavioursForReplicaSettings(
 }
 
 private fun <T : Any> createClearingBehaviour(clearTime: Duration): ReplicaBehaviour<T> {
-    return DoOnStateCondition(
+    return ReplicaBehaviour.doOnStateCondition(
         condition = {
             (it.data != null || it.error != null) && !it.loading
                 && it.observingState.status == ObservingStatus.None
@@ -48,7 +48,7 @@ private fun <T : Any> createClearingBehaviour(clearTime: Duration): ReplicaBehav
 }
 
 private fun <T : Any> createErrorClearingBehaviour(clearErrorTime: Duration): ReplicaBehaviour<T> {
-    return DoOnStateCondition(
+    return ReplicaBehaviour.doOnStateCondition(
         condition = {
             it.error != null && !it.loading && it.observingState.status == ObservingStatus.None
         },
@@ -58,7 +58,7 @@ private fun <T : Any> createErrorClearingBehaviour(clearErrorTime: Duration): Re
 }
 
 private fun <T : Any> createCancellationBehaviour(cancelTime: Duration): ReplicaBehaviour<T> {
-    return DoOnStateCondition(
+    return ReplicaBehaviour.doOnStateCondition(
         condition = {
             it.loading && !it.dataRequested && !it.preloading
                 && it.observingState.status == ObservingStatus.None
@@ -69,7 +69,7 @@ private fun <T : Any> createCancellationBehaviour(cancelTime: Duration): Replica
 }
 
 private fun <T : Any> createRevalidationOnActiveObserverAddedBehaviour(): ReplicaBehaviour<T> {
-    return DoOnEvent { event ->
+    return ReplicaBehaviour.doOnEvent { event ->
         if (event is ReplicaEvent.ObserverCountChangedEvent
             && event.activeCount > event.previousActiveCount
         ) {
@@ -81,7 +81,7 @@ private fun <T : Any> createRevalidationOnActiveObserverAddedBehaviour(): Replic
 private fun <T : Any> createRevalidationOnNetworkConnectionBehaviour(
     networkConnectivityProvider: NetworkConnectivityProvider
 ): ReplicaBehaviour<T> {
-    return DoOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
+    return ReplicaBehaviour.doOnNetworkConnectivityChanged(networkConnectivityProvider) { connected ->
         if (connected && currentState.observingState.status == ObservingStatus.Active) {
             revalidate()
         }

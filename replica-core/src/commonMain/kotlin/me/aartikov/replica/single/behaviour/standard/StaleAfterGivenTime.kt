@@ -1,15 +1,24 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.aartikov.replica.common.InvalidationMode
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaEvent
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
 import kotlin.time.Duration
 
-internal class StaleAfterGivenTime<T : Any>(
+fun <T : Any> ReplicaBehaviour.Companion.staleAfterGivenTime(
+    staleTime: Duration
+): ReplicaBehaviour<T> = StaleAfterGivenTime(staleTime)
+
+private class StaleAfterGivenTime<T : Any>(
     private val staleTime: Duration
 ) : ReplicaBehaviour<T> {
 

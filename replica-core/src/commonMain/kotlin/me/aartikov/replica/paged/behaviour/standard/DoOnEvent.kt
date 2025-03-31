@@ -9,9 +9,13 @@ import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import me.aartikov.replica.single.ReplicaEvent
 
 /**
- * [PagedReplicaBehaviour] that executes some [action] on all [ReplicaEvent].
+ * [PagedReplicaBehaviour] that executes some [action] on every [ReplicaEvent].
  */
-class PagedDoOnEvent<I : Any, P : Page<I>>(
+fun <I : Any, P : Page<I>> PagedReplicaBehaviour.Companion.doOnEvent(
+    action: suspend PagedPhysicalReplica<I, P>.(event: PagedReplicaEvent<I, P>) -> Unit
+): PagedReplicaBehaviour<I, P> = DoOnEvent(action)
+
+private class DoOnEvent<I : Any, P : Page<I>>(
     private val action: suspend PagedPhysicalReplica<I, P>.(event: PagedReplicaEvent<I, P>) -> Unit
 ) : PagedReplicaBehaviour<I, P> {
 

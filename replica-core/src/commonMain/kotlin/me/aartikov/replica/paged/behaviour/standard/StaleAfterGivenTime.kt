@@ -15,7 +15,12 @@ import me.aartikov.replica.paged.PagedReplicaEvent
 import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import kotlin.time.Duration
 
-internal class PagedStaleAfterGivenTime<I : Any, P : Page<I>>(
+internal fun <I : Any, P : Page<I>> PagedReplicaBehaviour.Companion.staleAfterGivenTime(
+    staleTime: Duration
+): PagedReplicaBehaviour<I, P> = StaleAfterGivenTime(staleTime)
+
+
+private class StaleAfterGivenTime<I : Any, P : Page<I>>(
     private val staleTime: Duration
 ) : PagedReplicaBehaviour<I, P> {
 
