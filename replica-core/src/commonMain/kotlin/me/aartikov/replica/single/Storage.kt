@@ -6,7 +6,7 @@ package me.aartikov.replica.single
 interface Storage<T : Any> {
 
     /**
-     * Write [data] on a storage.
+     * Write [data] to a storage.
      */
     suspend fun write(data: T)
 
@@ -16,7 +16,7 @@ interface Storage<T : Any> {
     suspend fun read(): T?
 
     /**
-     * Remove data in a storage.
+     * Remove data from a storage.
      */
     suspend fun remove()
 }

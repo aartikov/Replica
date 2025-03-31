@@ -5,30 +5,31 @@ import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.LoadingError
 
 /**
- * Replica observer connects to a replica and receives updates: state and loading error events.
- * Replica observer can be active or inactive (this property is not exposed in the API but is used internally). Only active observer receives updates.
- * Replica observer is associated with some User Interface - a screen or a part of screen.
+ * A replica observer connects to a replica and receives updates, including the replica state and loading error events.
+ * A replica observer can be active or inactive (this property is used internally and is not exposed in the public API).
+ * Only an active replica observer receives updates.
+ * Typically, a replica observer is associated with a user interface component (e.g., a screen or a portion of a screen).
  */
 interface ReplicaObserver<out T : Any> {
 
     /**
-     * Flow of replica states.
+     * A flow of replica states.
      */
     val stateFlow: StateFlow<Loadable<T>>
 
     /**
-     * Flow of loading error events.
+     * A flow of loading error events.
      */
     val loadingErrorFlow: Flow<LoadingError>
 
     /**
-     * Cancels observing manually.
-     * Typically, the call of this method is not required, because an observer is tied to some coroutine scope.
+     * Cancels observation manually.
+     * Typically, calling this method is not required because the observer is tied to a coroutine scope.
      */
     fun cancelObserving()
 }
 
 /**
- * Returns current replica state.
+ * Returns the current replica state.
  */
 val <T : Any> ReplicaObserver<T>.currentState get() = stateFlow.value

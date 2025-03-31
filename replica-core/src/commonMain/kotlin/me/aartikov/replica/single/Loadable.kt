@@ -4,8 +4,8 @@ import me.aartikov.replica.common.AbstractLoadable
 import me.aartikov.replica.common.CombinedLoadingError
 
 /**
- * Replica state that can be observed on a UI.
- * In opposite to [ReplicaState] this class contains very limited set of fields.
+ * Represents a replica state that can be observed in the UI.
+ * Unlike [ReplicaState], this class contains a limited set of fields.
  */
 data class Loadable<out T : Any>(
     override val loading: Boolean = false,
@@ -14,7 +14,10 @@ data class Loadable<out T : Any>(
 ) : AbstractLoadable<T>
 
 /**
- * Transforms data with a [transform] functions.
+ * Transforms the data using the given [transform] function.
+ *
+ * @param transform A function that converts data of type T to type R.
+ * @return A new [Loadable] instance containing the transformed data.
  */
 fun <T : Any, R : Any> Loadable<T>.mapData(transform: (T) -> R): Loadable<R> {
     return Loadable(

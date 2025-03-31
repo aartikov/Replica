@@ -6,13 +6,14 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Configures behaviour of a replica.
- * @property staleTime specifies how quickly fetched data will became stale (null means never).
- * @property clearTime specifies how quickly data will be cleared when there is no observers (null means never).
- * @property clearErrorTime specifies how quickly error will be cleared when there is no observers (null means never).
- * @property cancelTime specifies how quickly request will be canceled when there is no observers (null means never).
- * @property revalidateOnActiveObserverAdded specifies if stale data will be refreshed when an active observer is added.
- * @property revalidateOnNetworkConnection specifies if stale data will be refreshed when a network connection is established and a replica has active observer. Note: [NetworkConnectivityProvider] has to be added to [ReplicaClient].
+ * Configures the behaviour of a replica.
+ *
+ * @property staleTime The duration after which fetched data becomes stale (null means never).
+ * @property clearTime The duration after which data is cleared when there are no observers (null means never).
+ * @property clearErrorTime The duration after which an error is cleared when there are no observers (null means never).
+ * @property cancelTime The duration after which a network request is canceled when there are no observers (null means never).
+ * @property revalidateOnActiveObserverAdded Whether stale data should be refreshed when an active observer is added.
+ * @property revalidateOnNetworkConnection Whether stale data should be refreshed when a network connection is established and the replica has an active observer. Note: [NetworkConnectivityProvider] must be added to [ReplicaClient].
  */
 data class ReplicaSettings(
     val staleTime: Duration?,
@@ -25,7 +26,7 @@ data class ReplicaSettings(
 
     companion object {
         /**
-         * Settings for a replica with none automatic behaviour.
+         * Settings for a replica with no automatic behaviour.
          */
         val WithoutBehaviour = ReplicaSettings(
             staleTime = null,

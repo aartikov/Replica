@@ -10,91 +10,91 @@ import me.aartikov.replica.common.ReplicaTag
 
 /**
  * Replica is a primitive for data replication.
- * The replica's task is to represent some chunk of data from a server on a client side.
- * Replica is configured by [Fetcher] and [ReplicaSettings].
- * Replica loads missing data when an active observer connects (see: [Replica.observe]).
- * Replica keeps track of data staleness.
- * Replica refreshes stale data when an active observer is connected.
- * Replica deduplicates network requests (it doesn't coll a new request if another one is in progress).
- * Replica cancels network request when a last observer is disconnected.
- * Replica clears data when it has no observers for a long time.
+ * Its task is to represent a chunk of data from a server on the client side.
+ * A Replica is configured using [Fetcher] and [ReplicaSettings].
+ * It loads missing data when an active observer connects (see [Replica.observe]).
+ * It tracks data staleness.
+ * It refreshes stale data when an active observer is connected.
+ * It deduplicates network requests (it doesn't call a new request if another one is in progress).
+ * It cancels the network request when the last observer is disconnected.
+ * It clears data when it has no observers for an extended period.
  *
  * The difference between [Replica] and [PhysicalReplica] is that the latter has a richer API.
- * [Replica] has minimalistic read-only API, whereas [PhysicalReplica] allows to cancel requests, modify data, execute optimistic updates.
+ * [Replica] provides a minimalistic read-only API, whereas [PhysicalReplica] allows canceling requests, modifying data, and executing optimistic updates.
  * [PhysicalReplica] extends [Replica], but not all replicas are physical replicas.
- * There are lightweight virtual replicas created by combining other replicas (see: replica-algebra module for more details).
+ * There are lightweight virtual replicas created by combining other replicas (see the replica-algebra module for more details).
  */
 interface PhysicalReplica<T : Any> : Replica<T> {
 
     /**
-     * Unique identifier
+     * Unique identifier.
      */
     val id: ReplicaId
 
     /**
-     * Human readable name, used for debugging
+     * Human-readable name used for debugging.
      */
     val name: String
 
     /**
-     * Settings, see: [ReplicaSettings]
+     * Settings. See [ReplicaSettings].
      */
     val settings: ReplicaSettings
 
     /**
-     * Tags that can be used for bulk operations
+     * Tags that can be used for bulk operations.
      */
     val tags: Set<ReplicaTag>
 
     /**
-     * A coroutine scope that represents life time of a replica.
+     * A CoroutineScope representing the lifetime of this replica.
      */
     val coroutineScope: CoroutineScope
 
     /**
-     * Provides [ReplicaState] as an observable value.
+     * Provides the [ReplicaState] as an observable value.
      */
     val stateFlow: StateFlow<ReplicaState<T>>
 
     /**
-     * Notifies that some [ReplicaEvent] has occurred.
+     * Emits [ReplicaEvent] notifications.
      */
     val eventFlow: Flow<ReplicaEvent<T>>
 
     /**
-     * Replace current data with new [data].
+     * Replaces the current data with new [data].
      *
-     * Note: It doesn't change data freshness. If previous data is missing a new data will be stale.
+     * Note: This does not change data freshness. If the previous data is missing, the new data will be considered stale.
      */
     suspend fun setData(data: T)
 
     /**
-     * Modifies current data with [transform] function if it is exists.
+     * Modifies the current data using the [transform] function if it exists.
      *
-     * Note: It doesn't change data freshness.
+     * Note: This does not change data freshness.
      */
     suspend fun mutateData(transform: (T) -> T)
 
     /**
-     * Makes data stale if it is exists. It also could call a refresh depending on [InvalidationMode].
+     * Makes the data stale if it exists. It may also trigger a refresh depending on [InvalidationMode].
      */
     suspend fun invalidate(mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers)
 
     /**
-     * Makes data fresh if it is exists.
+     * Makes the data fresh if it exists.
      */
     suspend fun makeFresh()
 
     /**
-     * Cancels current request if it is in progress.
+     * Cancels the current request if it is in progress.
      */
     fun cancel()
 
     /**
-     * Cancels current request and clears data.
+     * Cancels the current request and clears the data.
      *
-     * @param invalidationMode specifies how a replica refreshes data. See: [InvalidationMode].
-     * @param removeFromStorage specifies if data will be removed from [Storage].
+     * @param invalidationMode Specifies how the replica refreshes data. See [InvalidationMode].
+     * @param removeFromStorage Specifies whether the data will be removed from [Storage].
      */
     suspend fun clear(
         invalidationMode: InvalidationMode = InvalidationMode.DontRefresh,
@@ -102,33 +102,33 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     )
 
     /**
-     * Clears error stored in [ReplicaState].
+     * Clears the error stored in [ReplicaState].
      */
     suspend fun clearError()
 
     /**
-     * Begins optimistic update. Observed data will be transformed by [update] function immediately.
+     * Begins an optimistic update. The observed data will be immediately transformed by the [update] function.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
     suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
-     * Commits optimistic update. Replica forgets previous data.
+     * Commits the optimistic update, causing the replica to discard the previous data.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
     suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
 
     /**
-     * Rollbacks optimistic update. Observed data will be replaced to the original one.
+     * Rolls back the optimistic update. The observed data will be reverted to the original state.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
     suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>)
 }
 
 /**
- * Returns current [ReplicaState].
+ * Returns the current [ReplicaState].
  */
 val <T : Any> PhysicalReplica<T>.currentState get() = stateFlow.value
