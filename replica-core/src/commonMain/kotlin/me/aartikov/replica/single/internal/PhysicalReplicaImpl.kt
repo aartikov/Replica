@@ -137,15 +137,15 @@ internal class PhysicalReplicaImpl<T : Any>(
         clearingController.clearError()
     }
 
-    override suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>) {
-        optimisticUpdatesController.beginOptimisticUpdate(update)
+    override suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>, operationId: Any) {
+        optimisticUpdatesController.beginOptimisticUpdate(update, operationId)
     }
 
-    override suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>) {
-        optimisticUpdatesController.commitOptimisticUpdate(update)
+    override suspend fun commitOptimisticUpdate(operationId: Any) {
+        optimisticUpdatesController.commitOptimisticUpdate(operationId)
     }
 
-    override suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>) {
-        optimisticUpdatesController.rollbackOptimisticUpdate(update)
+    override suspend fun rollbackOptimisticUpdate(operationId: Any) {
+        optimisticUpdatesController.rollbackOptimisticUpdate(operationId)
     }
 }

@@ -137,16 +137,20 @@ internal class KeyedPhysicalReplicaImpl<K : Any, T : Any>(
         storageCleaner?.removeAll()
     }
 
-    override suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<T>) {
-        getReplica(key)?.beginOptimisticUpdate(update)
+    override suspend fun beginOptimisticUpdate(
+        key: K,
+        update: OptimisticUpdate<T>,
+        operationId: Any
+    ) {
+        getReplica(key)?.beginOptimisticUpdate(update, operationId)
     }
 
-    override suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<T>) {
-        getReplica(key)?.commitOptimisticUpdate(update)
+    override suspend fun commitOptimisticUpdate(key: K, operationId: Any) {
+        getReplica(key)?.commitOptimisticUpdate(operationId)
     }
 
-    override suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<T>) {
-        getReplica(key)?.rollbackOptimisticUpdate(update)
+    override suspend fun rollbackOptimisticUpdate(key: K, operationId: Any) {
+        getReplica(key)?.rollbackOptimisticUpdate(operationId)
     }
 
     override suspend fun onReplica(key: K, action: suspend PhysicalReplica<T>.() -> Unit) {

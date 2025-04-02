@@ -107,25 +107,26 @@ interface PhysicalReplica<T : Any> : Replica<T> {
     suspend fun clearError()
 
     /**
-     * Begins an optimistic update. The observed data will be immediately transformed by the [update] function.
+     * Begins an optimistic update with the identifier [operationId]. The observed data will be immediately transformed by the [update].
      *
+     * Note: An update with the same [operationId] will replace the previous update.
      * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>)
+    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>, operationId: Any)
 
     /**
-     * Commits the optimistic update, causing the replica to discard the previous data.
+     * Commits the optimistic update with a given [operationId]. Replica forgets the original data.
      *
      * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>)
+    suspend fun commitOptimisticUpdate(operationId: Any)
 
     /**
-     * Rolls back the optimistic update. The observed data will be reverted to the original state.
+     * Rolls back the optimistic update with a given [operationId]. The observed data will be reverted to the original state.
      *
      * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>)
+    suspend fun rollbackOptimisticUpdate(operationId: Any)
 }
 
 /**

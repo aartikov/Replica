@@ -134,16 +134,20 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
         }
     }
 
-    override suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>) {
-        getReplica(key)?.beginOptimisticUpdate(update)
+    override suspend fun beginOptimisticUpdate(
+        key: K,
+        update: OptimisticUpdate<List<P>>,
+        operationId: Any
+    ) {
+        getReplica(key)?.beginOptimisticUpdate(update, operationId)
     }
 
-    override suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>) {
-        getReplica(key)?.commitOptimisticUpdate(update)
+    override suspend fun commitOptimisticUpdate(key: K, operationId: Any) {
+        getReplica(key)?.commitOptimisticUpdate(operationId)
     }
 
-    override suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>) {
-        getReplica(key)?.rollbackOptimisticUpdate(update)
+    override suspend fun rollbackOptimisticUpdate(key: K, operationId: Any) {
+        getReplica(key)?.rollbackOptimisticUpdate(operationId)
     }
 
     override suspend fun onPagedReplica(

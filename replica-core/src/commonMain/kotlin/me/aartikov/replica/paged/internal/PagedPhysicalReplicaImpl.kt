@@ -144,15 +144,18 @@ internal class PagedPhysicalReplicaImpl<I : Any, P : Page<I>>(
         clearingController.clearError()
     }
 
-    override suspend fun beginOptimisticUpdate(update: OptimisticUpdate<List<P>>) {
-        optimisticUpdatesController.beginOptimisticUpdate(update)
+    override suspend fun beginOptimisticUpdate(
+        update: OptimisticUpdate<List<P>>,
+        operationId: Any
+    ) {
+        optimisticUpdatesController.beginOptimisticUpdate(update, operationId)
     }
 
-    override suspend fun commitOptimisticUpdate(update: OptimisticUpdate<List<P>>) {
-        optimisticUpdatesController.commitOptimisticUpdate(update)
+    override suspend fun commitOptimisticUpdate(operationId: Any) {
+        optimisticUpdatesController.commitOptimisticUpdate(operationId)
     }
 
-    override suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<List<P>>) {
-        optimisticUpdatesController.rollbackOptimisticUpdate(update)
+    override suspend fun rollbackOptimisticUpdate(operationId: Any) {
+        optimisticUpdatesController.rollbackOptimisticUpdate(operationId)
     }
 }

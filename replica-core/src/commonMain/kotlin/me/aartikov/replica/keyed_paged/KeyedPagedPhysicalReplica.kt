@@ -116,25 +116,25 @@ interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
     suspend fun clearAll(invalidationMode: InvalidationMode = InvalidationMode.DontRefresh)
 
     /**
-     * Begins optimistic update for a given [key]. Observed data will be transformed by [update] function immediately.
+     * Begins optimistic update for a given [key] with the identifier [operationId]. Observed data will be transformed by [update] function immediately.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
-    suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
+    suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>, operationId: Any)
 
     /**
-     * Commits optimistic update for a given [key]. Child replica forgets previous data.
+     * Commits optimistic update for a given [key] with the identifier [operationId]. Observed data will be replaced to the original one. Child replica forgets previous data.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
-    suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
+    suspend fun commitOptimisticUpdate(key: K, operationId: Any)
 
     /**
-     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the original one.
+     * Rollbacks optimistic update for a given [key] with the identifier [operationId]. Observed data will be replaced to the original one.
      *
      * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
      */
-    suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<List<P>>)
+    suspend fun rollbackOptimisticUpdate(key: K, operationId: Any)
 
     /**
      * Executes an [action] on a [PagedPhysicalReplica] with a given [key]. If the replica doesn't exist it is created.
@@ -144,7 +144,10 @@ interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
     /**
      * Executes an [action] on a [PagedPhysicalReplica] with a given [key]. If the replica doesn't exist the action is not executed.
      */
-    suspend fun onExistingPagedReplica(key: K, action: suspend PagedPhysicalReplica<I, P>.() -> Unit)
+    suspend fun onExistingPagedReplica(
+        key: K,
+        action: suspend PagedPhysicalReplica<I, P>.() -> Unit
+    )
 
     /**
      * Executes an [action] on each child [PagedPhysicalReplica].

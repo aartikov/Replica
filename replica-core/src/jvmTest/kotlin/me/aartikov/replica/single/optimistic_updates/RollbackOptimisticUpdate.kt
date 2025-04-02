@@ -19,6 +19,10 @@ class RollbackOptimisticUpdate {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
+    companion object {
+        private const val KEY = "key"
+    }
+
     @Test
     fun `rollbacks optimistic update`() = runTest {
         val optimisticUpdate = OptimisticUpdate<String> { "new data" }
@@ -26,11 +30,11 @@ class RollbackOptimisticUpdate {
 
         replica.refresh()
         runCurrent()
-        replica.beginOptimisticUpdate(optimisticUpdate)
-        replica.rollbackOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
+        replica.rollbackOptimisticUpdate(KEY)
 
         assertEquals(
-            emptyList<OptimisticUpdate<String>>(),
+            emptyMap<Any, OptimisticUpdate<String>>(),
             replica.currentState.data?.optimisticUpdates
         )
     }

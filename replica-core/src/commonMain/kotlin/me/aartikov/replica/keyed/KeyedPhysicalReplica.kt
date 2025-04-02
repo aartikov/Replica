@@ -9,6 +9,7 @@ import me.aartikov.replica.common.ReplicaId
 import me.aartikov.replica.common.ReplicaTag
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaState
+import me.aartikov.replica.single.withOptimisticUpdate
 
 /**
  * Keyed replica replicates multiple chunks of data - different chunks for different keys.
@@ -113,25 +114,26 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
     suspend fun clearAll(invalidationMode: InvalidationMode = InvalidationMode.DontRefresh)
 
     /**
-     * Begins optimistic update for a given [key]. Observed data will be transformed by [update] function immediately.
+     * Begins optimistic update for a given [key] with the identifier [operationId]. Observed data will be transformed by the [update] function immediately.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: An update with the same [operationId] will replace the previous update.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
+    suspend fun beginOptimisticUpdate(key: K, update: OptimisticUpdate<T>, operationId: Any)
 
     /**
-     * Commits optimistic update for a given [key]. Child replica forgets previous data.
+     * Commits optimistic update for a given [key] with the identifier [operationId]. Replica forgets the original data.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun commitOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
+    suspend fun commitOptimisticUpdate(key: K, operationId: Any)
 
     /**
-     * Rollbacks optimistic update for a given [key]. Observed data will be replaced to the original one.
+     * Rollbacks optimistic update for a given [key] with the identifier [operationId]. Observed data will be replaced to the original one.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun rollbackOptimisticUpdate(key: K, update: OptimisticUpdate<T>)
+    suspend fun rollbackOptimisticUpdate(key: K, operationId: Any)
 
     /**
      * Executes an [action] on a [PhysicalReplica] with a given [key]. If the replica doesn't exist it is created.

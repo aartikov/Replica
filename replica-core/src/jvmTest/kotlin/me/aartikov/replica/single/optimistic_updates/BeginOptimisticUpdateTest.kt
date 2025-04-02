@@ -22,6 +22,7 @@ class BeginOptimisticUpdateTest {
 
     companion object {
         private const val DEFAULT_DELAY = 100L
+        private const val KEY = "key"
     }
 
     @get:Rule
@@ -34,9 +35,12 @@ class BeginOptimisticUpdateTest {
 
         replica.refresh()
         runCurrent()
-        replica.beginOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
 
-        assertEquals(listOf(optimisticUpdate), replica.currentState.data?.optimisticUpdates)
+        assertEquals(
+            mapOf(KEY to optimisticUpdate),
+            replica.currentState.data?.optimisticUpdates
+        )
     }
 
     @Test
@@ -44,7 +48,7 @@ class BeginOptimisticUpdateTest {
         val optimisticUpdate = OptimisticUpdate<String> { "new data" }
         val replica = replicaProvider.replica()
 
-        replica.beginOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
 
         assertNull(replica.currentState.data?.optimisticUpdates)
     }
@@ -60,10 +64,10 @@ class BeginOptimisticUpdateTest {
 
         replica.refresh()
         delay(DEFAULT_DELAY + 1) // waiting until data is stale
-        replica.beginOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
 
         assertEquals(
-            listOf(optimisticUpdate),
+            mapOf(KEY to optimisticUpdate),
             replica.currentState.data?.optimisticUpdates
         )
     }

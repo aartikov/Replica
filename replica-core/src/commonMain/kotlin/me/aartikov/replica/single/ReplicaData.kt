@@ -11,9 +11,9 @@ data class ReplicaData<T : Any>(
     val value: T,
     val fresh: Boolean,
     val changingTime: Instant,
-    val optimisticUpdates: List<OptimisticUpdate<T>> = emptyList()
+    val optimisticUpdates: Map<Any, OptimisticUpdate<T>> = emptyMap()
 ) {
     val valueWithOptimisticUpdates by lazy {
-        optimisticUpdates.applyAll(value)
+        optimisticUpdates.values.applyAll(value)
     }
 }

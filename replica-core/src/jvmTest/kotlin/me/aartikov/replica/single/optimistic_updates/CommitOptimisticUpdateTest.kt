@@ -20,6 +20,10 @@ class CommitOptimisticUpdateTest {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
+    companion object {
+        private const val KEY = "key"
+    }
+
     @Test
     fun `changes data with success`() = runTest {
         val newData = "new data"
@@ -28,11 +32,11 @@ class CommitOptimisticUpdateTest {
 
         replica.refresh()
         runCurrent()
-        replica.beginOptimisticUpdate(optimisticUpdate)
-        replica.commitOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
+        replica.commitOptimisticUpdate(KEY)
 
         assertEquals(
-            emptyList<OptimisticUpdate<String>>(),
+            emptyMap<Any, OptimisticUpdate<String>>(),
             replica.currentState.data?.optimisticUpdates
         )
         assertEquals(
@@ -47,8 +51,8 @@ class CommitOptimisticUpdateTest {
         val optimisticUpdate = OptimisticUpdate<String> { newData }
         val replica = replicaProvider.replica()
 
-        replica.beginOptimisticUpdate(optimisticUpdate)
-        replica.commitOptimisticUpdate(optimisticUpdate)
+        replica.beginOptimisticUpdate(optimisticUpdate, KEY)
+        replica.commitOptimisticUpdate(KEY)
 
         assertNull(replica.currentState.data?.optimisticUpdates)
         assertNull(replica.currentState.data?.value)

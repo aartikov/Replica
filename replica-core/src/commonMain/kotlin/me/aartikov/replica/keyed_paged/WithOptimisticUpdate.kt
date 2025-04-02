@@ -6,14 +6,19 @@ import me.aartikov.replica.paged.Page
 
 /**
  * Executes an optimistic update on a [KeyedPagedPhysicalReplica] for a given [key].
+ * [operationId] is the identifier of the operation being executed.
+ * If you don't pass [operationId] explicitly then [update] is used as [operationId].
  * [update] is applied immediately on observed replica state. Then [block] is executed.
  * If [block] succeed an update is committed, otherwise an update is rolled back.
  *
  * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
+ *
+ * Note: An update with the same [operationId] will replace the previous update.
  */
 suspend inline fun <K : Any, I : Any, P : Page<I>, R> KeyedPagedPhysicalReplica<K, I, P>.withOptimisticUpdate(
     update: OptimisticUpdate<List<P>>,
     key: K,
+    operationId: Any = update,
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
@@ -21,9 +26,9 @@ suspend inline fun <K : Any, I : Any, P : Page<I>, R> KeyedPagedPhysicalReplica<
     block: () -> R
 ): R {
     return performOptimisticUpdate(
-        begin = { beginOptimisticUpdate(key, update) },
-        commit = { commitOptimisticUpdate(key, update) },
-        rollback = { rollbackOptimisticUpdate(key, update) },
+        begin = { beginOptimisticUpdate(key, update, operationId) },
+        commit = { commitOptimisticUpdate(key, operationId) },
+        rollback = { rollbackOptimisticUpdate(key, operationId) },
         onSuccess = onSuccess,
         onError = onError,
         onCanceled = onCanceled,

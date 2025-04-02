@@ -11,7 +11,7 @@ fun interface OptimisticUpdate<T : Any> {
     fun apply(data: T): T
 }
 
-fun <T : Any> List<OptimisticUpdate<T>>.applyAll(data: T): T {
+fun <T : Any> Collection<OptimisticUpdate<T>>.applyAll(data: T): T {
     return fold(data, { d, u -> u.apply(d) })
 }
 

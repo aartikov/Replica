@@ -87,25 +87,26 @@ interface PagedPhysicalReplica<I : Any, P : Page<I>> : PagedReplica<PagedData<I,
     suspend fun clearError()
 
     /**
-     * Begins optimistic update. Observed data will be transformed by [update] function immediately.
+     * Begins an optimistic update with the identifier [operationId]. The observed data will be immediately transformed by the [update].
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: An update with the same [operationId] will replace the previous update.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<List<P>>)
+    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<List<P>>, operationId: Any)
 
     /**
-     * Commits optimistic update. Replica forgets previous data.
+     * Commits the optimistic update with a given [operationId]. Replica forgets the original data.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun commitOptimisticUpdate(update: OptimisticUpdate<List<P>>)
+    suspend fun commitOptimisticUpdate(operationId: Any)
 
     /**
-     * Rollbacks optimistic update. Observed data will be replaced to the original one.
+     * Rolls back the optimistic update with a given [operationId]. The observed data will be reverted to the original state.
      *
-     * Note: for simple cases it is better to use [withOptimisticUpdate] extension.
+     * Note: For simple cases, it is preferable to use the [withOptimisticUpdate] extension.
      */
-    suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<List<P>>)
+    suspend fun rollbackOptimisticUpdate(operationId: Any)
 }
 
 /**

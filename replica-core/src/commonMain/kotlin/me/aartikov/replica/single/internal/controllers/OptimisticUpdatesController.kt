@@ -15,28 +15,29 @@ internal class OptimisticUpdatesController<T : Any>(
     private val storage: Storage<T>?
 ) {
 
-    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>) {
+    suspend fun beginOptimisticUpdate(update: OptimisticUpdate<T>, operationId: Any) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
-                        optimisticUpdates = state.data.optimisticUpdates + update
+                        optimisticUpdates = state.data.optimisticUpdates - operationId + (operationId to update)
                     )
                 )
             }
         }
     }
 
-    suspend fun commitOptimisticUpdate(update: OptimisticUpdate<T>) {
+    suspend fun commitOptimisticUpdate(operationId: Any) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            if (state.data != null) {
+            val update = state.data?.optimisticUpdates?.get(operationId)
+            if (update != null) {
                 val newData = update.apply(state.data.value)
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
                         value = newData,
-                        optimisticUpdates = state.data.optimisticUpdates - update,
+                        optimisticUpdates = state.data.optimisticUpdates - operationId,
                         changingTime = timeProvider.currentTime
                     )
                 )
@@ -45,13 +46,13 @@ internal class OptimisticUpdatesController<T : Any>(
         }
     }
 
-    suspend fun rollbackOptimisticUpdate(update: OptimisticUpdate<T>) {
+    suspend fun rollbackOptimisticUpdate(operationId: Any) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
             if (state.data != null) {
                 replicaStateFlow.value = state.copy(
                     data = state.data.copy(
-                        optimisticUpdates = state.data.optimisticUpdates - update
+                        optimisticUpdates = state.data.optimisticUpdates - operationId
                     )
                 )
             }

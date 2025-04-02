@@ -105,7 +105,7 @@ internal class DataLoadingController<T : Any>(
 
             when (output) {
                 is DataLoader.Output.LoadingFinished.Success -> {
-                    val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates
+                    val optimisticUpdates = replicaStateFlow.value.data?.optimisticUpdates?.values
                     optimisticUpdates?.applyAll(output.data) ?: output.data
                 }
 
@@ -173,7 +173,7 @@ internal class DataLoadingController<T : Any>(
                             value = output.data,
                             fresh = true,
                             changingTime = timeProvider.currentTime,
-                            optimisticUpdates = state.data?.optimisticUpdates ?: emptyList()
+                            optimisticUpdates = state.data?.optimisticUpdates ?: emptyMap()
                         ),
                         error = null,
                         loading = false,

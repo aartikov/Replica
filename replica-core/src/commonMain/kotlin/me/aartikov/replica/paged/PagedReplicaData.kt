@@ -9,9 +9,9 @@ data class PagedReplicaData<I : Any, P : Page<I>>(
     val fresh: Boolean,
     val changingTime: Instant,
     val idExtractor: ((I) -> Any)?,
-    val optimisticUpdates: List<OptimisticUpdate<List<P>>> = emptyList()
+    val optimisticUpdates: Map<Any, OptimisticUpdate<List<P>>> = emptyMap()
 ) {
     val valueWithOptimisticUpdates: PagedData<I, P> by lazy {
-        PagedData(optimisticUpdates.applyAll(value.pages), idExtractor)
+        PagedData(optimisticUpdates.values.applyAll(value.pages), idExtractor)
     }
 }
