@@ -8,6 +8,13 @@ interface PagedReplica<out T : Any> {
 
     fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<T>
 
+    @Deprecated("Use observe(observerHost) instead")
+    fun observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>
+    ): PagedReplicaObserver<T> =
+        observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
+
     fun refresh()
 
     fun revalidate()
@@ -16,12 +23,4 @@ interface PagedReplica<out T : Any> {
 
     fun loadPrevious()
 
-}
-
-@Deprecated("Use observe(observerHost) instead")
-fun <T : Any> PagedReplica<T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>
-): PagedReplicaObserver<T> {
-    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
 }

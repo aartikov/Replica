@@ -21,6 +21,14 @@ interface KeyedPagedReplica<K : Any, out T : Any> {
      */
     fun observe(observerHost: ReplicaObserverHost, keyFlow: StateFlow<K?>): PagedReplicaObserver<T>
 
+    @Deprecated("Use observe(observerHost) instead")
+    fun <K : Any, T : Any> KeyedPagedReplica<K, T>.observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>,
+        keyFlow: StateFlow<K?>
+    ): PagedReplicaObserver<T> =
+        observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
+
     /**
      * Loads fresh data from a network for a given [key].
      *
@@ -39,13 +47,4 @@ interface KeyedPagedReplica<K : Any, out T : Any> {
 
     fun loadPrevious(key: K)
 
-}
-
-@Deprecated("Use observe(observerHost) instead")
-fun <K : Any, T : Any> KeyedPagedReplica<K, T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>,
-    keyFlow: StateFlow<K?>
-): PagedReplicaObserver<T> {
-    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
 }

@@ -20,6 +20,14 @@ interface KeyedReplica<K : Any, out T : Any> {
      */
     fun observe(observerHost: ReplicaObserverHost, keyFlow: StateFlow<K?>): ReplicaObserver<T>
 
+    @Deprecated("Use observe(observerHost) instead")
+    fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>,
+        keyFlow: StateFlow<K?>
+    ): ReplicaObserver<T> =
+        observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
+
     /**
      * Loads fresh data from a network for a given [key].
      *
@@ -44,13 +52,4 @@ interface KeyedReplica<K : Any, out T : Any> {
      *
      */
     suspend fun getData(key: K, forceRefresh: Boolean = false): T
-}
-
-@Deprecated("Use observe(observerHost) instead")
-fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>,
-    keyFlow: StateFlow<K?>
-): ReplicaObserver<T> {
-    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
 }

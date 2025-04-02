@@ -29,6 +29,12 @@ interface Replica<out T : Any> {
      */
     fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T>
 
+    @Deprecated("Use observe(observerHost) instead")
+    fun <T : Any> Replica<T>.observe(
+        observerCoroutineScope: CoroutineScope,
+        observerActive: StateFlow<Boolean>
+    ): ReplicaObserver<T> = observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
+
     /**
      * Loads fresh data from the network.
      *
@@ -52,12 +58,4 @@ interface Replica<out T : Any> {
      * Note: This will not trigger a new network request if another one is already in progress.
      */
     suspend fun getData(forceRefresh: Boolean = false): T
-}
-
-@Deprecated("Use observe(observerHost) instead")
-fun <T : Any> Replica<T>.observe(
-    observerCoroutineScope: CoroutineScope,
-    observerActive: StateFlow<Boolean>
-): ReplicaObserver<T> {
-    return observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
 }
