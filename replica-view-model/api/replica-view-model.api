@@ -10,11 +10,7 @@ public final class me/aartikov/replica/view_model/BindToLifecycleKt {
 	public static final fun bindToLifecycle (Lme/aartikov/replica/view_model/Activable;Landroidx/lifecycle/Lifecycle;)V
 }
 
-public final class me/aartikov/replica/view_model/ObservePagedReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/paged/PagedReplica;Landroidx/lifecycle/ViewModel;)Lme/aartikov/replica/paged/PagedReplicaObserver;
-}
-
-public final class me/aartikov/replica/view_model/ObserveReplicaKt {
-	public static final fun observe (Lme/aartikov/replica/single/Replica;Landroidx/lifecycle/ViewModel;)Lme/aartikov/replica/single/ReplicaObserver;
+public final class me/aartikov/replica/view_model/ViewModelReplicaObserverHostKt {
+	public static final fun replicaObserverHost (Landroidx/lifecycle/ViewModel;)Lme/aartikov/replica/common/ReplicaObserverHost;
 }
 

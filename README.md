@@ -48,7 +48,7 @@ Replica provides:
 ```gradle
 dependencies {
 
-    def replicaVersion = '1.3.1-alpha1'
+    def replicaVersion = '1.4.0-alpha'
 
     // Basic usage
     implementation "com.github.aartikov:replica-core:$replicaVersion"
