@@ -11,6 +11,13 @@ import me.aartikov.replica.paged.behaviour.PagedReplicaBehaviour
 import kotlin.reflect.KClass
 
 /**
+ * Creates a [PagedReplicaBehaviour] that processes [ReplicaAction] actions of a specific type [A].
+ */
+inline fun <I : Any, P : Page<I>, reified A : ReplicaAction> PagedReplicaBehaviour.Companion.doOnAction(
+    noinline handler: suspend PagedPhysicalReplica<I, P>.(action: A) -> Unit
+): PagedReplicaBehaviour<I, P> = doOnAction(A::class, handler)
+
+/**
  * Creates a [PagedReplicaBehaviour] that processes [ReplicaAction] actions of a specific type as defined by [actionClass].
  */
 fun <I : Any, P : Page<I>, A : ReplicaAction> PagedReplicaBehaviour.Companion.doOnAction(

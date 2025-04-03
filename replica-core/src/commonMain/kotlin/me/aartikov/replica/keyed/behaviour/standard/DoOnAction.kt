@@ -10,14 +10,21 @@ import me.aartikov.replica.keyed.behaviour.KeyedReplicaBehaviour
 import kotlin.reflect.KClass
 
 /**
+ * Creates a [KeyedReplicaBehaviour] that processes [ReplicaAction] actions of a specific type [A].
+ */
+inline fun <K : Any, T : Any, reified A : ReplicaAction> KeyedReplicaBehaviour.Companion.doOnAction(
+    noinline handler: suspend KeyedPhysicalReplica<K, T>.(action: A) -> Unit
+): KeyedReplicaBehaviour<K, T> = doOnAction(A::class, handler)
+
+/**
  * Creates a [KeyedReplicaBehaviour] that processes [ReplicaAction] actions of a specific type as defined by [actionClass].
  */
-fun <K : Any, T : Any> KeyedReplicaBehaviour.Companion.doOnAction(
-    actionClass: KClass<ReplicaAction>,
-    handler: suspend KeyedPhysicalReplica<K, T>.(action: ReplicaAction) -> Unit
+fun <K : Any, T : Any, A : ReplicaAction> KeyedReplicaBehaviour.Companion.doOnAction(
+    actionClass: KClass<A>,
+    handler: suspend KeyedPhysicalReplica<K, T>.(action: A) -> Unit
 ): KeyedReplicaBehaviour<K, T> = DoOnAction(actionClass, handler)
 
-internal class DoOnAction<K : Any, T : Any, A : ReplicaAction>(
+private class DoOnAction<K : Any, T : Any, A : ReplicaAction>(
     private val actionClass: KClass<A>,
     private val handler: suspend KeyedPhysicalReplica<K, T>.(action: A) -> Unit
 ) : KeyedReplicaBehaviour<K, T> {
