@@ -13,3 +13,7 @@ data class Fruit(
     val imageUrl: String,
     val liked: Boolean
 )
+
+fun List<Fruit>.withLiked(id: FruitId, liked: Boolean) = map {
+    if (it.id == id) it.copy(liked = liked) else it
+}

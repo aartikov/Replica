@@ -16,7 +16,7 @@ suspend inline fun <T : Any, R> PhysicalReplica<T>.withOptimisticUpdate(
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
     noinline onFinished: (suspend () -> Unit)? = null,
-    block: () -> R
+    block: suspend () -> R
 ): R {
     return performOptimisticUpdate(
         begin = { beginOptimisticUpdate(update, operationId = update) },

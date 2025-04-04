@@ -17,7 +17,7 @@ suspend inline fun <K : Any, T : Any, R> KeyedPhysicalReplica<K, T>.withOptimist
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
     noinline onFinished: (suspend () -> Unit)? = null,
-    block: () -> R
+    block: suspend () -> R
 ): R {
     return performOptimisticUpdate(
         begin = { beginOptimisticUpdate(key, update, operationId = update) },
