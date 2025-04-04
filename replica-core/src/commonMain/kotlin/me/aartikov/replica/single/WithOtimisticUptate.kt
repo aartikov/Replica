@@ -5,18 +5,13 @@ import me.aartikov.replica.common.performOptimisticUpdate
 
 /**
  * Executes an optimistic update on a [PhysicalReplica].
- * [operationId] is the identifier of the operation being executed.
- * If you don't pass [operationId] explicitly then [update] is used as [operationId].
  * [update] is applied immediately on observed replica state. Then [block] is executed.
  * If [block] succeed an update is committed, otherwise an update is rolled back.
  *
  * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
- *
- * Note: An update with the same [operationId] will replace the previous update.
  */
 suspend inline fun <T : Any, R> PhysicalReplica<T>.withOptimisticUpdate(
     update: OptimisticUpdate<T>,
-    operationId: Any = update,
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
@@ -24,9 +19,9 @@ suspend inline fun <T : Any, R> PhysicalReplica<T>.withOptimisticUpdate(
     block: () -> R
 ): R {
     return performOptimisticUpdate(
-        begin = { beginOptimisticUpdate(update, operationId) },
-        commit = { commitOptimisticUpdate(operationId) },
-        rollback = { rollbackOptimisticUpdate(operationId) },
+        begin = { beginOptimisticUpdate(update, operationId = update) },
+        commit = { commitOptimisticUpdate(update) },
+        rollback = { rollbackOptimisticUpdate(update) },
         onSuccess = onSuccess,
         onError = onError,
         onCanceled = onCanceled,
