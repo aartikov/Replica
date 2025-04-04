@@ -1,16 +1,20 @@
 package me.aartikov.replica.advanced_sample.features.fruits.data
 
+import kotlinx.coroutines.delay
 import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
 import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitId
 import me.aartikov.replica.client.ReplicaClient
+import me.aartikov.replica.client.sendActionWithOptimisticUpdate
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
-import me.aartikov.replica.single.withOptimisticUpdate
+import me.aartikov.replica.single.behaviour.ReplicaBehaviour
+import me.aartikov.replica.single.behaviour.standard.provideOptimisticUpdate
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class FruitRepositoryImpl(
-    replicaClient: ReplicaClient,
+    private val replicaClient: ReplicaClient,
     private val api: FruitApi
 ) : FruitRepository {
 
@@ -19,17 +23,23 @@ class FruitRepositoryImpl(
         settings = ReplicaSettings(staleTime = 30.seconds),
         fetcher = {
             api.getFruits().map { it.toDomain() }
-        }
+        },
+        behaviours = listOf(
+            ReplicaBehaviour.provideOptimisticUpdate { action: SetFruitLikedAction ->
+                OptimisticUpdate { fruits ->
+                    fruits.map {
+                        if (it.id == action.fruitId) it.copy(liked = action.liked) else it
+                    }
+                }
+            }
+        )
     )
 
-    override suspend fun setFruitLiked(fruitId: FruitId, liked: Boolean) {
-        val updateFruitLiked = OptimisticUpdate<List<Fruit>> { fruits ->
-            fruits.map {
-                if (it.id == fruitId) it.copy(liked = liked) else it
-            }
-        }
-
-        fruitsReplica.withOptimisticUpdate(updateFruitLiked) {
+    override suspend fun setFruitLiked(fruitId: FruitId, liked: Boolean, debounceDelay: Duration) {
+        replicaClient.sendActionWithOptimisticUpdate(
+            action = SetFruitLikedAction(fruitId, liked)
+        ) {
+            delay(debounceDelay)
             if (liked) {
                 api.likeFruit(fruitId.value)
             } else {
