@@ -3,6 +3,7 @@ package me.aartikov.replica.advanced_sample.features.fruits.data
 import kotlinx.coroutines.delay
 import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
 import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitId
+import me.aartikov.replica.advanced_sample.features.fruits.domain.withLiked
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.client.sendActionWithOptimisticUpdate
 import me.aartikov.replica.common.OptimisticUpdate
@@ -27,9 +28,7 @@ class FruitRepositoryImpl(
         behaviours = listOf(
             ReplicaBehaviour.provideOptimisticUpdate { action: SetFruitLikedAction ->
                 OptimisticUpdate { fruits ->
-                    fruits.map {
-                        if (it.id == action.fruitId) it.copy(liked = action.liked) else it
-                    }
+                    fruits.withLiked(action.fruitId, action.liked)
                 }
             }
         )
