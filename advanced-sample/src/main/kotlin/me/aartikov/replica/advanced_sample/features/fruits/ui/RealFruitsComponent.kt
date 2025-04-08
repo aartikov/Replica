@@ -19,7 +19,7 @@ class RealFruitsComponent(
 
     override fun onFruitClick(fruitId: FruitId) {
         val fruit = fruitsState.value.data?.find { it.id == fruitId } ?: return
-        fruitLikeUpdater.toggleFruitLiked(fruit, errorHandler)
+        fruitLikeUpdater.setFruitLiked(fruit.id, liked = !fruit.liked, errorHandler)
     }
 
     override fun onRefresh() {

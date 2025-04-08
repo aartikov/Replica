@@ -13,12 +13,11 @@ class FruitLikeUpdater(
 
     private val jobLauncher = CancellingJobLauncher<FruitId, Boolean>(applicationCoroutineScope)
 
-    fun toggleFruitLiked(fruit: Fruit, errorHandler: ErrorHandler) {
-        val targetLiked = !fruit.liked
-        jobLauncher.launchJob(fruit.id, targetLiked, errorHandler) {
+    fun setFruitLiked(fruitId: FruitId, liked: Boolean, errorHandler: ErrorHandler) {
+        jobLauncher.launchJob(fruitId, targetState = liked, errorHandler) {
             fruitRepository.setFruitLiked(
-                fruitId = fruit.id,
-                liked = targetLiked,
+                fruitId = fruitId,
+                liked = liked,
                 debounceDelay = 500.milliseconds
             )
         }
