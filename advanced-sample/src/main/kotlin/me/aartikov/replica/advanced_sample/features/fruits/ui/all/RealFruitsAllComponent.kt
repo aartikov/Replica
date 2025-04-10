@@ -18,7 +18,7 @@ class RealFruitsAllComponent(
 
     override fun onFruitClick(fruitId: FruitId) {
         val fruit = fruitsState.value.data?.find { it.id == fruitId } ?: return
-        fruitFavouriteUpdater.toggleFruitFavourite(fruit, errorHandler)
+        fruitFavouriteUpdater.setFruitFavourite(fruit.id, !fruit.isFavourite, errorHandler)
     }
 
     override fun onRefresh() = fruitsReplica.refresh()

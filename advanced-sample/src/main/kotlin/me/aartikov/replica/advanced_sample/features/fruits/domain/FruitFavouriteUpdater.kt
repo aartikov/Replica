@@ -16,13 +16,11 @@ class FruitFavouriteUpdater(
 
     val inProgressRequestIds get() = jobLauncher.inProgressRequestIds
 
-    fun toggleFruitFavourite(fruit: Fruit, errorHandler: ErrorHandler) {
-        val targetIsFavourite = !fruit.isFavourite
-
-        jobLauncher.launchJob(fruit.id, targetIsFavourite, errorHandler) {
+    fun setFruitFavourite(fruitId: FruitId, isFavourite: Boolean, errorHandler: ErrorHandler) {
+        jobLauncher.launchJob(fruitId, isFavourite, errorHandler) {
             fruitRepository.setFruitFavourite(
-                fruitId = fruit.id,
-                isFavourite = targetIsFavourite,
+                fruitId = fruitId,
+                isFavourite = isFavourite,
                 debounceDelay = 500.milliseconds
             )
         }
