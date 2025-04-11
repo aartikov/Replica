@@ -24,7 +24,7 @@ class RealFruitsFavouritesComponent(
 
         if (!fruit.isFavourite || fruitId in removingInProgress.value) return
 
-        fruitFavouriteUpdater.removeFromFavourite(fruitId, errorHandler)
+        fruitFavouriteUpdater.setFruitFavourite(fruitId, false, errorHandler)
     }
 
     override fun onRefresh() = fruitsReplica.refresh()
