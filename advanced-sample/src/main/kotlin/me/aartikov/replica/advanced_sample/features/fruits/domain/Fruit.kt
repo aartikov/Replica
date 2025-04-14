@@ -11,9 +11,9 @@ data class Fruit(
     val id: FruitId,
     val name: String,
     val imageUrl: String,
-    val liked: Boolean
+    val isFavourite: Boolean
 )
 
-fun List<Fruit>.withLiked(id: FruitId, liked: Boolean) = map {
-    if (it.id == id) it.copy(liked = liked) else it
+fun List<Fruit>.withUpdatedIsFavourite(id: FruitId, isFavourite: Boolean) = map {
+    if (it.id == id) it.copy(isFavourite = isFavourite) else it
 }
