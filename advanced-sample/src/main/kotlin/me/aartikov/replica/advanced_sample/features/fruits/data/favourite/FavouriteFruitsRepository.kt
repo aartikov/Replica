@@ -6,6 +6,7 @@ import me.aartikov.replica.single.Replica
 import kotlin.time.Duration
 
 interface FavouriteFruitsRepository {
+
     val favouriteFruitsReplica: Replica<List<Fruit>>
 
     suspend fun setFruitFavourite(fruitId: FruitId, isFavourite: Boolean, debounceDelay: Duration)

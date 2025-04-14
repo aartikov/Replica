@@ -6,11 +6,10 @@ import me.aartikov.replica.advanced_sample.features.fruits.data.dto.toDomain
 import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
 import me.aartikov.replica.advanced_sample.features.fruits.domain.withUpdatedIsFavourite
 import me.aartikov.replica.client.ReplicaClient
-import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
-import me.aartikov.replica.single.behaviour.standard.provideOptimisticUpdate
+import me.aartikov.replica.single.behaviour.standard.mutateOnAction
 import kotlin.time.Duration.Companion.seconds
 
 class AllFruitsRepositoryImpl(
@@ -25,10 +24,8 @@ class AllFruitsRepositoryImpl(
             api.getFruits().map { it.toDomain() }
         },
         behaviours = listOf(
-            ReplicaBehaviour.provideOptimisticUpdate { action: SetFruitFavouriteAction ->
-                OptimisticUpdate { fruits ->
-                    fruits.withUpdatedIsFavourite(action.fruitId, action.isFavourite)
-                }
+            ReplicaBehaviour.mutateOnAction { action: SetFruitFavouriteAction, fruits ->
+                fruits.withUpdatedIsFavourite(action.fruitId, action.isFavourite)
             }
         )
     )

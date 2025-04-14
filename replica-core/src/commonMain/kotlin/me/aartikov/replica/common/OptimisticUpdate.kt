@@ -17,7 +17,7 @@ fun <T : Any> Collection<OptimisticUpdate<T>>.applyAll(data: T): T {
 
 /**
  * Executes [begin] and then [block]. If an operation succeed than [commit] is executed, otherwise [rollback] is executed.
- * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
+ * [onSuccess], [onError], [onCanceled] are optional callbacks for additional actions.
  */
 suspend inline fun <R> performOptimisticUpdate(
     begin: () -> Unit,
@@ -26,7 +26,6 @@ suspend inline fun <R> performOptimisticUpdate(
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
-    noinline onFinished: (suspend () -> Unit)? = null,
     block: suspend () -> R
 ): R {
     try {
@@ -34,19 +33,16 @@ suspend inline fun <R> performOptimisticUpdate(
         val result = block()
         commit()
         onSuccess?.invoke()
-        onFinished?.invoke()
         return result
     } catch (e: CancellationException) {
         withContext(NonCancellable) {
             rollback()
             onCanceled?.invoke()
-            onFinished?.invoke()
         }
         throw e
     } catch (e: Exception) {
         rollback()
         onError?.invoke(e)
-        onFinished?.invoke()
         throw e
     }
 }

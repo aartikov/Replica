@@ -62,10 +62,7 @@ fun FruitItem(
             modifier = Modifier
                 .size(24.dp),
             painter = painterResource(
-                when {
-                    !fruit.isFavourite && isEnabled -> R.drawable.ic_unliked
-                    else -> R.drawable.ic_liked
-                }
+                if (fruit.isFavourite) R.drawable.ic_liked else R.drawable.ic_unliked
             ),
             contentDescription = null
         )
