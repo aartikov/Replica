@@ -8,7 +8,7 @@ import me.aartikov.replica.common.performOptimisticUpdate
  * [update] is applied immediately on observed replica state. Then [block] is executed.
  * If [block] succeed an update is committed, otherwise an update is rolled back.
  *
- * [onSuccess], [onError], [onCanceled], [onFinished] are optional callbacks for additional actions.
+ * [onSuccess], [onError], [onCanceled] are optional callbacks for additional actions.
  */
 suspend inline fun <K : Any, T : Any, R> KeyedPhysicalReplica<K, T>.withOptimisticUpdate(
     key: K,
@@ -16,8 +16,7 @@ suspend inline fun <K : Any, T : Any, R> KeyedPhysicalReplica<K, T>.withOptimist
     noinline onSuccess: (suspend () -> Unit)? = null,
     noinline onError: (suspend (Exception) -> Unit)? = null,
     noinline onCanceled: (suspend () -> Unit)? = null,
-    noinline onFinished: (suspend () -> Unit)? = null,
-    block: () -> R
+    block: suspend () -> R
 ): R {
     return performOptimisticUpdate(
         begin = { beginOptimisticUpdate(key, update, operationId = update) },
@@ -26,7 +25,6 @@ suspend inline fun <K : Any, T : Any, R> KeyedPhysicalReplica<K, T>.withOptimist
         onSuccess = onSuccess,
         onError = onError,
         onCanceled = onCanceled,
-        onFinished = onFinished,
         block = block
     )
 }

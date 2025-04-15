@@ -1,10 +1,11 @@
-package me.aartikov.replica.advanced_sample.features.fruits.data
+package me.aartikov.replica.advanced_sample.features.fruits.data.api
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.aartikov.replica.advanced_sample.core.error_handling.NoInternetException
 import me.aartikov.replica.advanced_sample.core.error_handling.ServerException
+import me.aartikov.replica.advanced_sample.features.fruits.data.dto.FruitResponse
 import me.aartikov.replica.network.NetworkConnectivityProvider
 import me.aartikov.replica.network.connected
 
@@ -28,17 +29,23 @@ class FakeFruitApi(
         return fruits
     }
 
+    override suspend fun getFavouriteFruits(): List<FruitResponse> {
+        emulateNetworkError()
+        delay(800)
+        return fruits.filter(FruitResponse::isFavourite)
+    }
+
     override suspend fun likeFruit(fruitId: String) {
         emulateNetworkError()
         emulateLikeError(fruitId)
         delay(500)
-        setLiked(fruitId, true)
+        setIsFavourite(fruitId, true)
     }
 
     override suspend fun dislikeFruit(fruitId: String) {
         emulateNetworkError()
         delay(500)
-        setLiked(fruitId, false)
+        setIsFavourite(fruitId, false)
     }
 
     private fun createFruits(): List<FruitResponse> {
@@ -47,7 +54,7 @@ class FakeFruitApi(
                 id = index.toString(),
                 name = name,
                 imageUrl = "file:///android_asset/fruits/$name.png",
-                liked = false
+                isFavourite = false
             )
         }
     }
@@ -78,9 +85,9 @@ class FakeFruitApi(
         }
     }
 
-    private suspend fun setLiked(fruitId: String, liked: Boolean) = mutex.withLock {
+    private suspend fun setIsFavourite(fruitId: String, isFavourite: Boolean) = mutex.withLock {
         fruits = fruits.map {
-            if (it.id == fruitId) it.copy(liked = liked) else it
+            if (it.id == fruitId) it.copy(isFavourite = isFavourite) else it
         }
     }
 }

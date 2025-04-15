@@ -28,6 +28,8 @@ import me.aartikov.replica.single.PhysicalReplica
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.Storage
 import me.aartikov.replica.single.behaviour.ReplicaBehaviour
+import me.aartikov.replica.single.behaviour.standard.doOnAction
+import me.aartikov.replica.single.behaviour.standard.mutateOnAction
 import me.aartikov.replica.time.RealTimeProvider
 import me.aartikov.replica.time.TimeProvider
 
@@ -197,7 +199,7 @@ interface ReplicaClient {
     )
 
     /**
-     * Sends an [action].
+     * Sends an [action]. Use [doOnAction] or [mutateOnAction] to handle it.
      */
     fun sendAction(action: ReplicaAction)
 }

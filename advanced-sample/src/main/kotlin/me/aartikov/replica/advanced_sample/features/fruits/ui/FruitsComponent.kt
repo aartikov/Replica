@@ -1,17 +1,25 @@
 package me.aartikov.replica.advanced_sample.features.fruits.ui
 
+import com.arkivanov.decompose.router.stack.ChildStack
 import kotlinx.coroutines.flow.StateFlow
-import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
-import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitId
-import me.aartikov.replica.single.Loadable
+import me.aartikov.replica.advanced_sample.R
+import me.aartikov.replica.advanced_sample.features.fruits.ui.all.FruitsAllComponent
+import me.aartikov.replica.advanced_sample.features.fruits.ui.favourites.FruitsFavouritesComponent
 
 interface FruitsComponent {
 
-    val fruitsState: StateFlow<Loadable<List<Fruit>>>
+    val stack: StateFlow<ChildStack<*, Child>>
+    val selectedTab: StateFlow<Tab>
 
-    fun onFruitClick(fruitId: FruitId)
+    fun onTabClick(tab: Tab)
 
-    fun onRefresh()
+    enum class Tab(val resId: Int) {
+        All(R.string.fruits_all),
+        Favourites(R.string.fruits_favourites)
+    }
 
-    fun onRetryClick()
+    sealed interface Child {
+        data class Favourites(val component: FruitsFavouritesComponent) : Child
+        data class All(val component: FruitsAllComponent) : Child
+    }
 }
