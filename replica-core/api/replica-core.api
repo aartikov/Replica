@@ -80,6 +80,11 @@ public final class me/aartikov/replica/client/ReplicaClientKt {
 	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
 }
 
+public final class me/aartikov/replica/client/SendOptimisticActionKt {
+	public static final fun sendOptimisticAction (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaAction;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendOptimisticAction$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaAction;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
 public abstract interface class me/aartikov/replica/common/AbstractLoadable {
 	public abstract fun getData ()Ljava/lang/Object;
 	public abstract fun getError ()Lme/aartikov/replica/common/CombinedLoadingError;
@@ -201,8 +206,8 @@ public abstract interface class me/aartikov/replica/common/OptimisticUpdate {
 
 public final class me/aartikov/replica/common/OptimisticUpdateKt {
 	public static final fun applyAll (Ljava/util/Collection;Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun performOptimisticUpdate (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun performOptimisticUpdate$default (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun performOptimisticUpdate (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun performOptimisticUpdate$default (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/common/ReplicaAction {
@@ -366,7 +371,6 @@ public final class me/aartikov/replica/keyed/KeyedReplicaEvent$ReplicaRemoved : 
 }
 
 public final class me/aartikov/replica/keyed/KeyedReplicaSettings {
-	public fun <init> ()V
 	public fun <init> (ILme/aartikov/replica/keyed/ClearPolicy;)V
 	public synthetic fun <init> (ILme/aartikov/replica/keyed/ClearPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()I
@@ -408,8 +412,8 @@ public abstract interface class me/aartikov/replica/keyed/KeyedStorage {
 }
 
 public final class me/aartikov/replica/keyed/WithOptimisticUpdateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour {
@@ -421,7 +425,8 @@ public final class me/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour$Com
 }
 
 public final class me/aartikov/replica/keyed/behaviour/standard/DoOnActionKt {
-	public static final fun doOnAction (Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour;
+	public static final fun doOnAction (Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;)Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour;
+	public static synthetic fun doOnAction$default (Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lme/aartikov/replica/keyed/behaviour/KeyedReplicaBehaviour;
 }
 
 public final class me/aartikov/replica/keyed/behaviour/standard/DoOnEventKt {
@@ -518,7 +523,6 @@ public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent$Replic
 }
 
 public final class me/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings {
-	public fun <init> ()V
 	public fun <init> (ILme/aartikov/replica/keyed_paged/PagedClearPolicy;)V
 	public synthetic fun <init> (ILme/aartikov/replica/keyed_paged/PagedClearPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()I
@@ -596,8 +600,8 @@ public final class me/aartikov/replica/keyed_paged/PagedClearPolicy {
 }
 
 public final class me/aartikov/replica/keyed_paged/WithOptimisticUpdateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour {
@@ -609,7 +613,8 @@ public final class me/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBe
 }
 
 public final class me/aartikov/replica/keyed_paged/behaviour/standard/DoOnActionKt {
-	public static final fun doOnAction (Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour;
+	public static final fun doOnAction (Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;)Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour;
+	public static synthetic fun doOnAction$default (Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/behaviour/KeyedPagedReplicaBehaviour;
 }
 
 public final class me/aartikov/replica/keyed_paged/behaviour/standard/DoOnEventKt {
@@ -915,8 +920,8 @@ public final class me/aartikov/replica/paged/PagedReplicaState$Companion {
 }
 
 public final class me/aartikov/replica/paged/WithOtimisticUptateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour {
@@ -928,7 +933,8 @@ public final class me/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Com
 }
 
 public final class me/aartikov/replica/paged/behaviour/standard/DoOnActionKt {
-	public static final fun doOnAction (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
+	public static final fun doOnAction (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
+	public static synthetic fun doOnAction$default (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
 }
 
 public final class me/aartikov/replica/paged/behaviour/standard/DoOnCreatedKt {
@@ -946,6 +952,11 @@ public final class me/aartikov/replica/paged/behaviour/standard/DoOnNetworkConne
 public final class me/aartikov/replica/paged/behaviour/standard/DoOnStateConditionKt {
 	public static final fun doOnStateCondition-sI0rep0 (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
 	public static synthetic fun doOnStateCondition-sI0rep0$default (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
+}
+
+public final class me/aartikov/replica/paged/behaviour/standard/MutateOnActionKt {
+	public static final fun mutateOnAction (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function2;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
+	public static synthetic fun mutateOnAction$default (Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lme/aartikov/replica/paged/behaviour/PagedReplicaBehaviour;
 }
 
 public abstract interface class me/aartikov/replica/single/Fetcher {
@@ -1205,8 +1216,8 @@ public abstract interface class me/aartikov/replica/single/Storage {
 }
 
 public final class me/aartikov/replica/single/WithOtimisticUptateKt {
-	public static final fun withOptimisticUpdate (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun withOptimisticUpdate (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withOptimisticUpdate$default (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/OptimisticUpdate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class me/aartikov/replica/single/behaviour/ReplicaBehaviour {
@@ -1218,7 +1229,8 @@ public final class me/aartikov/replica/single/behaviour/ReplicaBehaviour$Compani
 }
 
 public final class me/aartikov/replica/single/behaviour/standard/DoOnActionKt {
-	public static final fun doOnAction (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function3;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
+	public static final fun doOnAction (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
+	public static synthetic fun doOnAction$default (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
 }
 
 public final class me/aartikov/replica/single/behaviour/standard/DoOnCreatedKt {
@@ -1236,6 +1248,11 @@ public final class me/aartikov/replica/single/behaviour/standard/DoOnNetworkConn
 public final class me/aartikov/replica/single/behaviour/standard/DoOnStateConditionKt {
 	public static final fun doOnStateCondition-sI0rep0 (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
 	public static synthetic fun doOnStateCondition-sI0rep0$default (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/jvm/functions/Function1;JLkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
+}
+
+public final class me/aartikov/replica/single/behaviour/standard/MutateOnActionKt {
+	public static final fun mutateOnAction (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function2;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
+	public static synthetic fun mutateOnAction$default (Lme/aartikov/replica/single/behaviour/ReplicaBehaviour$Companion;Lkotlin/reflect/KClass;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lme/aartikov/replica/single/behaviour/ReplicaBehaviour;
 }
 
 public final class me/aartikov/replica/single/behaviour/standard/StaleAfterGivenTimeKt {

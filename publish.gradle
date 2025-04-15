@@ -9,7 +9,7 @@ apply plugin: 'signing'
 
 ext {
     PUBLISH_GROUP_ID = 'com.github.aartikov'
-    PUBLISH_VERSION = '1.4.0-alpha'
+    PUBLISH_VERSION = '1.5.0-alpha'
     DESCRIPTION = 'Kotlin Multiplatform libary for organizing of network communication in a declarative way'
 
     GITHUB_USER = 'aartikov'
