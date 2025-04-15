@@ -19,6 +19,7 @@ class PokemonRepositoryImpl(
     override val pokemonsByTypeReplica: KeyedPhysicalReplica<PokemonTypeId, List<Pokemon>> =
         replicaClient.createKeyedReplica(
             name = "pokemonsByType",
+            settings = KeyedReplicaSettings(maxCount = 10),
             childName = { typeId -> "typeId = ${typeId.value}" },
             childSettings = {
                 ReplicaSettings(

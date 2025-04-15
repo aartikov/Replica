@@ -15,7 +15,7 @@ class KeyedReplicaProvider {
 
     private val timeProvider = FakeTimeProvider()
 
-    private val defaultReplicaSettings = KeyedReplicaSettings<Int, String>()
+    private val defaultReplicaSettings = KeyedReplicaSettings<Int, String>(Int.MAX_VALUE)
 
     private val defaultChildReplicaSettings = { _: Int -> ReplicaSettings.WithoutBehaviour }
 

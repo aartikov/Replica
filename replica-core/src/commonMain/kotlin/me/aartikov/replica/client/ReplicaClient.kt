@@ -101,7 +101,7 @@ interface ReplicaClient {
     fun <K : Any, T : Any> createKeyedReplica(
         name: String,
         childName: (K) -> String,
-        settings: KeyedReplicaSettings<K, T> = KeyedReplicaSettings(),
+        settings: KeyedReplicaSettings<K, T>,
         childSettings: (K) -> ReplicaSettings,
         tags: Set<ReplicaTag> = emptySet(),
         childTags: (K) -> Set<ReplicaTag> = { emptySet() },
@@ -154,7 +154,7 @@ interface ReplicaClient {
     fun <K : Any, I : Any, P : Page<I>> createKeyedPagedReplica(
         name: String,
         childName: (K) -> String,
-        settings: KeyedPagedReplicaSettings<K, I, P> = KeyedPagedReplicaSettings(),
+        settings: KeyedPagedReplicaSettings<K, I, P>,
         childSettings: (K) -> PagedReplicaSettings,
         tags: Set<ReplicaTag> = emptySet(),
         childTags: (K) -> Set<ReplicaTag> = { emptySet() },

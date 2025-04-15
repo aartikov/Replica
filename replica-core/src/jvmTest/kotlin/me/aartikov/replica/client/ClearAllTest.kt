@@ -4,6 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import me.aartikov.replica.keyed.KeyedReplicaSettings
 import me.aartikov.replica.keyed.currentState
 import me.aartikov.replica.single.ReplicaSettings
 import me.aartikov.replica.single.currentState
@@ -55,7 +56,8 @@ class ClearAllTest {
 
         repeat(keyedReplicasCount) { i ->
             val keyedReplica = client.createKeyedReplica(
-                "testKeyedReplica$i",
+                name = "testKeyedReplica$i",
+                settings = KeyedReplicaSettings(maxCount = 100),
                 childName = { k -> "testReplica$k" },
                 childSettings = { ReplicaSettings.WithoutBehaviour },
                 fetcher = { k: Int -> "test$k" }

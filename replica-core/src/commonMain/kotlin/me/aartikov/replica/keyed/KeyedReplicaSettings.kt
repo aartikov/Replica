@@ -6,6 +6,6 @@ package me.aartikov.replica.keyed
  * @property clearPolicy configures how keyed replica clears children when child count exceeds [maxCount]. See: [ClearPolicy].
  */
 data class KeyedReplicaSettings<K : Any, T : Any>(
-    val maxCount: Int = Int.MAX_VALUE,
-    val clearPolicy: ClearPolicy<K, T> = ClearPolicy()
+    val maxCount: Int,
+    val clearPolicy: ClearPolicy<K, T> = ClearPolicy(ClearOrder.ByObservingTime)
 )

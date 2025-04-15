@@ -9,6 +9,6 @@ import me.aartikov.replica.paged.Page
  * See: [PagedClearPolicy].
  */
 data class KeyedPagedReplicaSettings<K : Any, I : Any, P : Page<I>>(
-    val maxCount: Int = Int.MAX_VALUE,
-    val clearPolicy: PagedClearPolicy<K, I, P> = PagedClearPolicy()
+    val maxCount: Int,
+    val clearPolicy: PagedClearPolicy<K, I, P> = PagedClearPolicy(PagedClearOrder.ByObservingTime)
 )
