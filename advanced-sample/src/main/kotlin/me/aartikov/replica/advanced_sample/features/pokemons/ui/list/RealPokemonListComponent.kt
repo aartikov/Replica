@@ -1,9 +1,8 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui.list
 
-import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.core.utils.persistent
@@ -42,7 +41,8 @@ class RealPokemonListComponent(
     init {
         persistent(
             save = { PersistentState(selectedTypeId.value) },
-            restore = { state -> selectedTypeId.value = state.selectedTypeId }
+            restore = { state -> selectedTypeId.value = state.selectedTypeId },
+            serializer = PersistentState.serializer()
         )
     }
 
@@ -62,8 +62,8 @@ class RealPokemonListComponent(
         pokemonsReplica.refresh()
     }
 
-    @Parcelize
+    @Serializable
     private data class PersistentState(
         val selectedTypeId: PokemonTypeId
-    ) : Parcelable
+    )
 }

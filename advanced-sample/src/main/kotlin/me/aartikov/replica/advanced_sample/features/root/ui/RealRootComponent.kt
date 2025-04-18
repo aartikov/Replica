@@ -1,6 +1,5 @@
 package me.aartikov.replica.advanced_sample.features.root.ui
 
-import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -8,7 +7,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.push
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
 import me.aartikov.replica.advanced_sample.core.createMessageComponent
 import me.aartikov.replica.advanced_sample.core.utils.toStateFlow
@@ -31,6 +30,7 @@ class RealRootComponent(
         source = navigation,
         initialConfiguration = ChildConfig.Menu,
         handleBackButton = true,
+        serializer = ChildConfig.serializer(),
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
 
@@ -83,21 +83,22 @@ class RealRootComponent(
         }
     }
 
-    private sealed interface ChildConfig : Parcelable {
+    @Serializable
+    private sealed interface ChildConfig {
 
-        @Parcelize
+        @Serializable
         data object Menu : ChildConfig
 
-        @Parcelize
+        @Serializable
         data object Project : ChildConfig
 
-        @Parcelize
+        @Serializable
         data object Pokemons : ChildConfig
 
-        @Parcelize
+        @Serializable
         data object Fruits : ChildConfig
 
-        @Parcelize
+        @Serializable
         data object Dudes : ChildConfig
     }
 }
