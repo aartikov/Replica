@@ -8,30 +8,28 @@ apply(from = "${rootDir}/publish.gradle")
 
 kotlin {
     jvm {
-        compilations.configureEach {
-            kotlinOptions.jvmTarget = "1.8"
+        compilerOptions {
+            optIn.add("kotlin.RequiresOptIn")
         }
     }
 
-    ios()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     js(IR) {
         browser()
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":replica-core"))
-                api(libs.coroutines.core)
-            }
+        commonMain.dependencies {
+            api(project(":replica-core"))
+            api(libs.coroutines.core)
         }
-        
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.junit)
-                implementation(libs.coroutines.test)
-            }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.coroutines.test)
         }
     }
 }

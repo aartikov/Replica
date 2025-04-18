@@ -13,7 +13,7 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             kotlin.srcDir("src/commonMain/kotlin")
             dependencies {
                 implementation(libs.serialization.core)

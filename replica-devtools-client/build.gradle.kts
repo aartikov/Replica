@@ -1,32 +1,32 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
     js(IR) {
         browser {
             distribution {
-                directory = file("$projectDir/../replica-devtools/src/main/resources/replica-devtools/")
+                outputDirectory =
+                    file("$projectDir/../replica-devtools/src/main/resources/replica-devtools/")
             }
         }
         binaries.executable()
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(libs.kotlin.datetime)
-            }
+        commonMain.dependencies {
+            api(libs.kotlin.datetime)
         }
 
-        val jsMain by getting {
+        jsMain {
             kotlin.srcDir("src/main/kotlin")
             resources.srcDir("src/main/resources")
 
             dependencies {
                 implementation(project(":replica-devtools-dto"))
-                implementation(compose.web.core)
+                implementation(compose.html.core)
                 implementation(compose.runtime)
                 implementation(libs.serialization.json)
 

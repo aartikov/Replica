@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.dokka)
@@ -8,39 +10,28 @@ apply(from = "${rootDir}/publish.gradle")
 
 kotlin {
     jvm {
-        compilations.configureEach {
-            kotlinOptions.jvmTarget = "1.8"
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_1_8
         }
     }
 
-    ios()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     js(IR) {
         browser()
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(libs.coroutines.core)
-                api(libs.kotlin.datetime)
-            }
+        commonMain.dependencies {
+            api(libs.coroutines.core)
+            api(libs.kotlin.datetime)
         }
 
-        val jvmMain by getting {}
-
-/*        val iosMain by getting {}
-        val iosSimulatorArm64Main by getting {
-            dependsOn(iosMain)
-        }*/
-
-        val jsMain by getting {}
-
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.junit)
-                implementation(libs.coroutines.test)
-            }
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.coroutines.test)
         }
     }
 }

@@ -6,6 +6,8 @@ plugins {
 }
 
 android {
+    namespace = "me.aartikov.replica.simple_sample"
+
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -35,8 +37,6 @@ android {
     packaging {
         resources.excludes.add("META-INF/*")
     }
-
-    namespace = "me.aartikov.replica.simple_sample"
 }
 
 dependencies {

@@ -3,9 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
+    namespace = "me.aartikov.replica.advanced_sample"
+
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -31,15 +34,9 @@ android {
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
-
     packaging {
         resources.excludes.add("META-INF/*")
     }
-
-    namespace = "me.aartikov.replica.advanced_sample"
 }
 
 dependencies {

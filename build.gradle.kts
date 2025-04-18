@@ -1,14 +1,3 @@
-buildscript {
-    extra.apply {
-        set(
-            "androidLibraryConfig", mapOf(
-                "minSdkVersion" to 23,
-                "compileSdkVersion" to 34
-            )
-        )
-    }
-}
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -18,7 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize) apply false
     alias(libs.plugins.binary.compatibility.validator) apply false
     alias(libs.plugins.jetbrains.compose) apply false
-
+    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.dokka) apply true
 }
 

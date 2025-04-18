@@ -3,14 +3,13 @@ minSdk = "23"
 targetSdk = "34"
 compileSdk = "35"
 
-androidGradlePlugin = "8.5.2"
-kotlin = "1.9.10"
+androidGradlePlugin = "8.7.3"
+kotlin = "2.1.20"
 kotlinDateTime = "0.4.1"
 coroutines = "1.7.3"
 androidDesugar = "2.0.3"
 lifecycle = "2.6.2"
-compose = "1.5.2"
-composeCompiler = "1.5.3"
+compose = "1.5.3"
 activityCompose = "1.7.2"
 appcompat = "1.6.1"
 fragment = "1.6.1"
@@ -35,7 +34,7 @@ junit = "4.13.2"
 ktor = "2.3.4"
 dokka = "1.9.0"
 binaryCompatibilityValidator = "0.13.2"
-jetbrainsCompose = "1.5.2"
+jetbrainsCompose = "1.6.10"
 
 [libraries]
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDateTime" }
@@ -117,3 +116,4 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrainsCompose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

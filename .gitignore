@@ -17,3 +17,6 @@ captures/
 
 # Kotlin JS
 /kotlin-js-store/yarn.lock
+
+# Kotlin
+.kotlin/
