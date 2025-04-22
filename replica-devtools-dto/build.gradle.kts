@@ -1,13 +1,18 @@
+import me.aartikov.gradle.setupBinaryCompatibilityValidator
+import me.aartikov.gradle.setupPublication
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.binary.compatibility.validator)
+    alias(libs.plugins.setup)
 }
 
-apply(from = "${rootDir}/publish.gradle")
+setupPublication()
+setupBinaryCompatibilityValidator()
 
 kotlin {
     jvm()
+
     js(IR) {
         browser()
     }

@@ -1,13 +1,20 @@
+import me.aartikov.gradle.setupBinaryCompatibilityValidator
+import me.aartikov.gradle.setupDokka
+import me.aartikov.gradle.setupPublication
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.binary.compatibility.validator)
+    alias(libs.plugins.setup)
 }
 
-apply(from = "${rootDir}/publish.gradle")
+setupDokka()
+setupPublication()
+setupBinaryCompatibilityValidator()
 
 android {
+    namespace = "me.aartikov.replica.devtools.noop"
+
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -15,7 +22,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -23,18 +29,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
-
-    namespace = "me.aartikov.replica.devtools.noop"
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.android.desugar)
     api(project(":replica-core"))
     testImplementation(libs.junit)
 }

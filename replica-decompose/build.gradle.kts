@@ -1,12 +1,16 @@
+import me.aartikov.gradle.setupBinaryCompatibilityValidator
+import me.aartikov.gradle.setupDokka
+import me.aartikov.gradle.setupPublication
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.binary.compatibility.validator)
+    alias(libs.plugins.setup)
 }
 
-apply(from = "${rootDir}/publish.gradle")
+setupDokka()
+setupPublication()
+setupBinaryCompatibilityValidator()
 
 kotlin {
     jvm {
