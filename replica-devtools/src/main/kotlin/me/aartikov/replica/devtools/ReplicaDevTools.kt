@@ -16,6 +16,13 @@ import me.aartikov.replica.devtools.internal.ReplicaDevToolsImpl
  * 3) Launch the mobile application.
  * 4) Find string "ReplicaDevTools is available with address: <some_url>" in a Logcat and open "<some_url>" in a web-browser.
  * 5) Navigate in the app and observe replica states in a web-browser.
+ *
+ * If the device is connected via USB and connection is unavailable,
+ * you can still use ReplicaDevTools by forwarding the port via ADB:
+ *
+ *    adb -s <device_name> forward tcp:8080 tcp:8080
+ *
+ * Then open http://localhost:8080 in a desktop browser.
  */
 interface ReplicaDevTools {
     /**
