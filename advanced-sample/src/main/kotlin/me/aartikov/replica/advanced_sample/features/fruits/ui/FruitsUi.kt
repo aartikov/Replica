@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.features.fruits.ui.all.FruitsAllUi
 import me.aartikov.replica.advanced_sample.features.fruits.ui.favourites.FruitsFavouritesUi

@@ -88,7 +88,7 @@ private fun FruitsListContent(
     ) {
         items(
             items = fruits,
-            key = { fruit -> fruit.id }
+            key = { fruit -> fruit.id.value }
         ) { fruit ->
             FruitItem(
                 fruit = fruit,

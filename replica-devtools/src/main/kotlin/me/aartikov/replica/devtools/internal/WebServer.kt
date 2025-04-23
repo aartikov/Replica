@@ -3,8 +3,7 @@ package me.aartikov.replica.devtools.internal
 import android.util.Log
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.http.content.resources
-import io.ktor.server.http.content.static
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
@@ -41,11 +40,8 @@ internal class WebServer(
             install(WebSockets)
             routing {
                 webSocket("/ws") { processSession(this) }
-                static("/") {
-                    resources("replica-devtools")
-                }
+                staticResources("/", "replica-devtools")
             }
-
         }
     }
 

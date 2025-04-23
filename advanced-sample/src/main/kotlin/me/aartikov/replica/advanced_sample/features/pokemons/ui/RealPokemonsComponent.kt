@@ -1,13 +1,12 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui
 
-import android.os.Parcelable
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
 import me.aartikov.replica.advanced_sample.core.utils.toStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonDetailsComponent
@@ -26,6 +25,7 @@ class RealPokemonsComponent(
         source = navigation,
         initialConfiguration = ChildConfig.List,
         handleBackButton = true,
+        serializer = ChildConfig.serializer(),
         childFactory = ::createChild
     ).toStateFlow(lifecycle)
 
@@ -55,17 +55,18 @@ class RealPokemonsComponent(
     private fun onPokemonListOutput(output: PokemonListComponent.Output) {
         when (output) {
             is PokemonListComponent.Output.PokemonDetailsRequested -> {
-                navigation.push(ChildConfig.Details(output.pokemonId))
+                navigation.pushNew(ChildConfig.Details(output.pokemonId))
             }
         }
     }
 
-    private sealed interface ChildConfig : Parcelable {
+    @Serializable
+    private sealed interface ChildConfig {
 
-        @Parcelize
+        @Serializable
         data object List : ChildConfig
 
-        @Parcelize
+        @Serializable
         data class Details(val pokemonId: PokemonId) : ChildConfig
     }
 }

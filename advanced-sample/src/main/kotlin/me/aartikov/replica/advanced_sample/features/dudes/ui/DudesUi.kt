@@ -112,7 +112,7 @@ private fun DudesListContent(
     ) {
         items(
             items = dudes.items,
-            key = { it.id }
+            key = { it.id.value }
         ) { dude ->
             DudeItem(dude)
 

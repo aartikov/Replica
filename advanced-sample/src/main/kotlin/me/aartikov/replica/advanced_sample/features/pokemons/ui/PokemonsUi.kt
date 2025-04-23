@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStackStateFlow
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.details.PokemonDetailsUi
@@ -15,7 +15,7 @@ import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.PokemonList
 @Composable
 fun PokemonsUi(
     component: PokemonsComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val childStack by component.childStack.collectAsState()
 

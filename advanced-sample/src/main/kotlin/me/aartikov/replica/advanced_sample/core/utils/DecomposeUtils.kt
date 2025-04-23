@@ -1,16 +1,15 @@
 package me.aartikov.replica.advanced_sample.core.utils
 
-import android.os.Parcelable
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
-import com.arkivanov.essenty.statekeeper.consume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.KSerializer
 import me.aartikov.replica.decompose.replicaObserverHost
 
 /**
@@ -35,9 +34,9 @@ fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
 
     if (lifecycle.state != Lifecycle.State.DESTROYED) {
         val observer = { value: T -> state.value = value }
-        subscribe(observer)
+        val cancellation = subscribe(observer)
         lifecycle.doOnDestroy {
-            unsubscribe(observer)
+            cancellation.cancel()
         }
     }
 
@@ -54,11 +53,12 @@ fun LifecycleOwner.componentCoroutineScope(): CoroutineScope {
 /**
  * A helper function to save and restore component state.
  */
-inline fun <reified T : Parcelable> StateKeeperOwner.persistent(
+inline fun <T : Any> StateKeeperOwner.persistent(
     key: String = "PersistentState",
+    serializer: KSerializer<T>,
     noinline save: () -> T,
-    restore: (T) -> Unit
+    restore: (T) -> Unit,
 ) {
-    stateKeeper.consume<T>(key)?.run(restore)
-    stateKeeper.register(key, save)
+    stateKeeper.consume(key, serializer)?.run(restore)
+    stateKeeper.register(key, serializer, save)
 }

@@ -119,7 +119,7 @@ private fun PokemonListContent(
     ) {
         items(
             items = pokemons,
-            key = { pokemon -> pokemon.id }
+            key = { pokemon -> pokemon.id.value }
         ) { pokemon ->
             PokemonItem(
                 pokemon = pokemon,

@@ -1,5 +1,6 @@
 package me.aartikov.replica.simple_sample.features.pokemons.ui.details
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -33,7 +34,13 @@ class PokemonDetailsFragment : Fragment(R.layout.fragment_pokemon_details) {
     }
 
     private val vm by viewModel<PokemonDetailsViewModel> {
-        parametersOf(requireArguments().get(ARG_POKEMON_ID))
+        val pokemonId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getParcelable(ARG_POKEMON_ID, PokemonId::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            requireArguments().getParcelable(ARG_POKEMON_ID)
+        }
+        parametersOf(pokemonId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

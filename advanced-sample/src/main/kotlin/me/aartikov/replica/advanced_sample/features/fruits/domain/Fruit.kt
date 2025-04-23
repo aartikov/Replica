@@ -1,11 +1,10 @@
 package me.aartikov.replica.advanced_sample.features.fruits.domain
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
+@Serializable
 @JvmInline
-value class FruitId(val value: String) : Parcelable
+value class FruitId(val value: String)
 
 data class Fruit(
     val id: FruitId,

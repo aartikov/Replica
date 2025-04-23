@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import me.aartikov.replica.advanced_sample.core.message.ui.FakeMessageComponent
 import me.aartikov.replica.advanced_sample.core.message.ui.MessageUi
@@ -24,7 +24,7 @@ import me.aartikov.replica.advanced_sample.features.project.ui.ProjectUi
 @Composable
 fun RootUi(
     component: RootComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     SystemBarColors()
 

@@ -1,11 +1,10 @@
 package me.aartikov.replica.advanced_sample.features.dudes.domain
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
+@Serializable
 @JvmInline
-value class DudeId(val value: String) : Parcelable
+value class DudeId(val value: String)
 
 data class Dude(
     val id: DudeId,

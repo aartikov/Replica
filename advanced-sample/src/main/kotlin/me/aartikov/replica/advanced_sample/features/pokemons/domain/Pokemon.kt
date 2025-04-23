@@ -1,11 +1,10 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.domain
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
+@Serializable
 @JvmInline
-value class PokemonId(val value: String) : Parcelable
+value class PokemonId(val value: String)
 
 data class Pokemon(
     val id: PokemonId,
