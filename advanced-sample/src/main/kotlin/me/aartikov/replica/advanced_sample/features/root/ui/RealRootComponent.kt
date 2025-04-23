@@ -5,7 +5,7 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 import me.aartikov.replica.advanced_sample.core.ComponentFactory
@@ -21,7 +21,7 @@ import me.aartikov.replica.advanced_sample.features.project.createProjectCompone
 
 class RealRootComponent(
     componentContext: ComponentContext,
-    private val componentFactory: ComponentFactory
+    private val componentFactory: ComponentFactory,
 ) : ComponentContext by componentContext, RootComponent {
 
     private val navigation = StackNavigation<ChildConfig>()
@@ -72,15 +72,12 @@ class RealRootComponent(
         }
 
     private fun onMenuOutput(output: MenuComponent.Output): Unit = when (output) {
-        is MenuComponent.Output.MenuItemSelected -> {
-            val config = when (output.menuItem) {
-                MenuItem.Project -> ChildConfig.Project
-                MenuItem.Pokemons -> ChildConfig.Pokemons
-                MenuItem.Fruits -> ChildConfig.Fruits
-                MenuItem.Dudes -> ChildConfig.Dudes
-            }
-            navigation.push(config)
-        }
+        is MenuComponent.Output.MenuItemSelected -> when (output.menuItem) {
+            MenuItem.Project -> ChildConfig.Project
+            MenuItem.Pokemons -> ChildConfig.Pokemons
+            MenuItem.Fruits -> ChildConfig.Fruits
+            MenuItem.Dudes -> ChildConfig.Dudes
+        }.run(navigation::pushNew)
     }
 
     @Serializable
@@ -102,4 +99,3 @@ class RealRootComponent(
         data object Dudes : ChildConfig
     }
 }
-

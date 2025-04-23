@@ -1,15 +1,14 @@
 package me.aartikov.replica.advanced_sample.features.root.ui
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import me.aartikov.replica.advanced_sample.core.message.ui.FakeMessageComponent
 import me.aartikov.replica.advanced_sample.core.message.ui.MessageUi
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
@@ -26,11 +25,12 @@ fun RootUi(
     component: RootComponent,
     modifier: Modifier = Modifier,
 ) {
-    SystemBarColors()
-
     val childStack by component.childStack.collectAsState()
 
-    Children(childStack, modifier) { child ->
+    Children(
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
+        stack = childStack
+    ) { child ->
         when (val instance = child.instance) {
             is RootComponent.Child.Menu -> MenuUi(instance.component)
             is RootComponent.Child.Project -> ProjectUi(instance.component)
@@ -47,24 +47,9 @@ fun RootUi(
     )
 }
 
-@Composable
-private fun SystemBarColors() {
-    val systemUiController = rememberSystemUiController()
-
-    val statusBarColor = MaterialTheme.colors.surface
-    LaunchedEffect(statusBarColor) {
-        systemUiController.setStatusBarColor(statusBarColor)
-    }
-
-    val navigationBarColor = MaterialTheme.colors.surface
-    LaunchedEffect(navigationBarColor) {
-        systemUiController.setNavigationBarColor(navigationBarColor)
-    }
-}
-
 @Preview(showSystemUi = true)
 @Composable
-fun RootUiPreview() {
+private fun RootUiPreview() {
     AppTheme {
         RootUi(FakeRootComponent())
     }

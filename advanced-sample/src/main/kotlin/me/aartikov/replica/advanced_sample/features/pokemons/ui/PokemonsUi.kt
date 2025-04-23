@@ -29,7 +29,7 @@ fun PokemonsUi(
 
 @Preview
 @Composable
-fun PokemonsUiPreview() {
+private fun PokemonsUiPreview() {
     AppTheme {
         PokemonsUi(FakePokemonsComponent())
     }

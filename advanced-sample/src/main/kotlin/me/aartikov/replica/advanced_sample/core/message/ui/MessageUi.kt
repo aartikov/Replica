@@ -1,8 +1,20 @@
 package me.aartikov.replica.advanced_sample.core.message.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,18 +36,19 @@ import me.aartikov.sesame.localizedstring.LocalizedString
 fun MessageUi(
     component: MessageComponent,
     modifier: Modifier = Modifier,
-    bottomPadding: Dp
+    bottomPadding: Dp,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
         component.visibleMessage?.let {
-            val inverseIsDarkTheme = MaterialTheme.colors.isLight
-            AppTheme(inverseIsDarkTheme) {
-                MessagePopup(
-                    message = it,
-                    bottomPadding = bottomPadding,
-                    onAction = component::onActionClick
-                )
-            }
+            MessagePopup(
+                message = it,
+                bottomPadding = bottomPadding,
+                onAction = component::onActionClick
+            )
         }
     }
 }
@@ -44,7 +57,7 @@ fun MessageUi(
 private fun MessagePopup(
     message: Message,
     onAction: () -> Unit,
-    bottomPadding: Dp
+    bottomPadding: Dp,
 ) {
     Popup(
         alignment = Alignment.BottomCenter,
@@ -55,8 +68,10 @@ private fun MessagePopup(
     ) {
         Card(
             shape = RoundedCornerShape(8.dp),
-            backgroundColor = MaterialTheme.colors.background,
-            elevation = 3.dp,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
+            elevation = CardDefaults.cardElevation(3.dp),
             modifier = Modifier
                 .padding(bottom = bottomPadding, start = 8.dp, end = 8.dp)
                 .wrapContentSize()
@@ -72,14 +87,14 @@ private fun MessagePopup(
                     Icon(
                         painter = painterResource(it),
                         contentDescription = null,
-                        tint = MaterialTheme.colors.primary
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
                 Text(
                     modifier = Modifier.weight(1f),
                     text = message.text.resolve(),
-                    color = MaterialTheme.colors.onBackground,
-                    style = MaterialTheme.typography.body1
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 message.actionTitle?.let {
                     MessageButton(text = it.resolve(), onClick = onAction)
@@ -93,7 +108,7 @@ private fun MessagePopup(
 private fun MessageButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TextButton(
         onClick = onClick,
@@ -101,14 +116,14 @@ private fun MessageButton(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-fun MessageUiPreview() {
+private fun MessageUiPreview() {
     AppTheme {
         MessageUi(FakeMessageComponent(), Modifier, 40.dp)
     }

@@ -1,9 +1,9 @@
 package me.aartikov.replica.advanced_sample.features.menu.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,11 +16,13 @@ import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 @Composable
 fun MenuUi(
     component: MenuComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -28,7 +30,7 @@ fun MenuUi(
             Text(
                 modifier = Modifier.padding(top = 32.dp),
                 text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.headlineSmall
             )
 
             Box(modifier = Modifier.weight(1.0f)) {
@@ -69,7 +71,7 @@ fun MenuUi(
 
 @Preview
 @Composable
-fun MenuUiPreview() {
+private fun MenuUiPreview() {
     AppTheme {
         MenuUi(FakeMenuComponent())
     }

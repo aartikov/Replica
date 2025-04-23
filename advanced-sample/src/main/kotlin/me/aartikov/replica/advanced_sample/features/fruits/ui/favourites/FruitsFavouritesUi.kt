@@ -2,15 +2,20 @@ package me.aartikov.replica.advanced_sample.features.fruits.ui.favourites
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
+import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
-import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
 import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitId
 import me.aartikov.replica.advanced_sample.features.fruits.ui.widget.FruitItem
@@ -37,22 +42,22 @@ fun FruitsFavouritesUi(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Surface(
                 modifier = modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.background,
-                elevation = 4.dp
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 4.dp
             ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                     text = stringResource(R.string.fruits_like_question),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
-            SwipeRefreshLceWidget(
+            PullRefreshLceWidget(
                 state = fruitsState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick
@@ -65,6 +70,7 @@ fun FruitsFavouritesUi(
                     )
                 } else {
                     EmptyPlaceholder(
+                        modifier = Modifier.navigationBarsPadding(),
                         description = stringResource(R.string.fruits_empty_description)
                     )
                 }
@@ -97,15 +103,19 @@ private fun FruitsListContent(
             )
 
             if (fruit !== fruits.lastOrNull()) {
-                Divider()
+                HorizontalDivider()
             }
+        }
+
+        item {
+            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }
 
 @Preview
 @Composable
-fun FruitsUiPreview() {
+private fun FruitsUiPreview() {
     AppTheme {
         FruitsFavouritesUi(FakeFruitsFavouritesComponent())
     }

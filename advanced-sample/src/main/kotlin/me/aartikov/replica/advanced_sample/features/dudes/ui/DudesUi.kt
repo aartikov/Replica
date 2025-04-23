@@ -3,17 +3,23 @@ package me.aartikov.replica.advanced_sample.features.dudes.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,8 +39,8 @@ import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.utils.OnEndReached
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.PagedLoadingProgress
+import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
-import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.advanced_sample.features.dudes.domain.Dude
 import me.aartikov.replica.advanced_sample.features.dudes.domain.DudesContent
 import me.aartikov.replica.paged.Paged
@@ -43,28 +49,30 @@ import me.aartikov.replica.paged.PagedLoadingStatus
 @Composable
 fun DudesUi(
     component: DudesComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val dudesState by component.dudesState.collectAsState()
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Surface(
                 modifier = modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.background,
-                elevation = 4.dp
+                color = MaterialTheme.colorScheme.background,
+                shadowElevation = 4.dp
             ) {
                 Text(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                     text = stringResource(R.string.dudes_list_description),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
 
-            SwipeRefreshLceWidget(
+            PullRefreshLceWidget(
                 state = dudesState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick
@@ -78,6 +86,7 @@ fun DudesUi(
                     )
                 } else {
                     EmptyPlaceholder(
+                        modifier = Modifier.navigationBarsPadding(),
                         description = stringResource(R.string.dudes_empty_description)
                     )
                 }
@@ -94,7 +103,7 @@ private fun DudesListContent(
     dudes: DudesContent,
     hasError: Boolean,
     onLoadNext: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
     if (dudes.hasNextPage && loadingStatus == PagedLoadingStatus.None) {
@@ -117,7 +126,7 @@ private fun DudesListContent(
             DudeItem(dude)
 
             if (dude !== dudes.items.lastOrNull()) {
-                Divider()
+                HorizontalDivider()
             }
         }
 
@@ -126,13 +135,17 @@ private fun DudesListContent(
                 PagedLoadingProgress()
             }
         }
+
+        item {
+            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
+        }
     }
 }
 
 @Composable
 private fun DudeItem(
     dude: Dude,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -160,14 +173,14 @@ private fun DudeItem(
                 .weight(1.0f)
                 .padding(horizontal = 16.dp),
             text = dude.name,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
 
 @Preview
 @Composable
-fun DudesUiPreview() {
+private fun DudesUiPreview() {
     AppTheme {
         DudesUi(FakeDudesComponent())
     }

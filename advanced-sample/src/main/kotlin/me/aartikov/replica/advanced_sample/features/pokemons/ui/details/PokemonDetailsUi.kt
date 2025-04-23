@@ -1,13 +1,19 @@
 package me.aartikov.replica.advanced_sample.features.pokemons.ui.details
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,8 +30,8 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
+import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
-import me.aartikov.replica.advanced_sample.core.widget.SwipeRefreshLceWidget
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.DetailedPokemon
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
@@ -41,9 +47,10 @@ fun PokemonDetailsUi(
 
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
+        color = MaterialTheme.colorScheme.background
     ) {
-        SwipeRefreshLceWidget(
+        PullRefreshLceWidget(
+            modifier = Modifier.systemBarsPadding(),
             state = pokemonState,
             onRefresh = component::onRefresh,
             onRetryClick = component::onRetryClick
@@ -69,13 +76,14 @@ private fun PokemonDetailsContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .systemBarsPadding()
             .padding(horizontal = 16.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             textAlign = TextAlign.Center,
             text = pokemon.name,
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.headlineSmall
         )
 
         AsyncImage(
@@ -88,7 +96,7 @@ private fun PokemonDetailsContent(
                 .padding(top = 32.dp)
                 .size(200.dp)
                 .clip(CircleShape)
-                .background(color = MaterialTheme.colors.surface)
+                .background(color = MaterialTheme.colorScheme.surface)
         )
 
         Text(
@@ -121,7 +129,7 @@ private fun PokemonDetailsContent(
 
 @Preview(showSystemUi = true)
 @Composable
-fun PokemonDetailsUiPreview() {
+private fun PokemonDetailsUiPreview() {
     AppTheme {
         PokemonDetailsUi(FakePokemonDetailsComponent())
     }

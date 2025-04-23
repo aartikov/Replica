@@ -1,9 +1,9 @@
 package me.aartikov.replica.advanced_sample.features.menu.ui
 
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -31,7 +31,7 @@ fun MenuButton(
 
 @Preview
 @Composable
-fun MenuButtonPreview() {
+private fun MenuButtonPreview() {
     AppTheme {
         MenuButton(text = "Menu item", onClick = {})
     }

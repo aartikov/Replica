@@ -1,5 +1,6 @@
 package me.aartikov.replica.advanced_sample.core.widget
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
@@ -14,21 +15,22 @@ fun <T : Any> LceWidget(
     state: AbstractLoadable<T>,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable (data: T, refreshing: Boolean) -> Unit
+    content: @Composable (data: T, refreshing: Boolean) -> Unit,
 ) {
     val loading = state.loading
     val data = state.data
     val error = state.error
 
-    when {
-        data != null -> content(data, loading)
+    Box(modifier) {
+        when {
+            data != null -> content(data, loading)
 
-        loading -> FullscreenCircularProgress(modifier)
+            loading -> FullscreenCircularProgress()
 
-        error != null -> ErrorPlaceholder(
-            errorMessage = error.exception.errorMessage.resolve(),
-            onRetryClick = onRetryClick,
-            modifier = modifier
-        )
+            error != null -> ErrorPlaceholder(
+                errorMessage = error.exception.errorMessage.resolve(),
+                onRetryClick = onRetryClick,
+            )
+        }
     }
 }
