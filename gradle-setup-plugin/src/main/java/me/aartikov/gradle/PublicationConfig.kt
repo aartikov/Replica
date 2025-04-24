@@ -4,7 +4,7 @@ data class PublicationConfig(
     val group: String = "com.github.aartikov",
     val version: String = "1.5.0-alpha",
     val projectName: String = "Replica",
-    val projectDescription: String = "Kotlin Multiplatform libary for organizing of network communication in a declarative way",
+    val projectDescription: String = "Kotlin Multiplatform library for organizing of network communication in a declarative way",
     val projectUrl: String = "https://github.com/aartikov/Replica",
     val licenseName: String = "The MIT License",
     val licenseUrl: String = "https://github.com/aartikov/Replica/blob/master/LICENSE",
