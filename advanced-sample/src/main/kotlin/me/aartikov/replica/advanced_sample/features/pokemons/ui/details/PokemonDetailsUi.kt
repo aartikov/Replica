@@ -27,16 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.flow.MutableStateFlow
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.DetailedPokemon
-import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.list.PokemonTypeItem
-import me.aartikov.replica.single.Loadable
 
 @Composable
 fun PokemonDetailsUi(
@@ -135,27 +132,4 @@ private fun PokemonDetailsUiPreview() {
     AppTheme {
         PokemonDetailsUi(FakePokemonDetailsComponent())
     }
-}
-
-class FakePokemonDetailsComponent : PokemonDetailsComponent {
-
-    override val pokemonState = MutableStateFlow(
-        Loadable(
-            loading = true,
-            data = DetailedPokemon(
-                id = PokemonId("1"),
-                name = "Bulbasaur",
-                imageUrl = "",
-                height = 0.7f,
-                weight = 6.9f,
-                types = listOf(PokemonType.Grass, PokemonType.Poison)
-            )
-        )
-    )
-
-    override fun onTypeClick(type: PokemonType) = Unit
-
-    override fun onRefresh() = Unit
-
-    override fun onRetryClick() = Unit
 }

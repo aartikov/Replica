@@ -1,6 +1,14 @@
 package me.aartikov.replica.advanced_sample.features.menu.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -75,8 +83,4 @@ private fun MenuUiPreview() {
     AppTheme {
         MenuUi(FakeMenuComponent())
     }
-}
-
-class FakeMenuComponent : MenuComponent {
-    override fun onMenuItemClick(item: MenuItem) = Unit
 }

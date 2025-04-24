@@ -9,13 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import me.aartikov.replica.advanced_sample.core.message.ui.FakeMessageComponent
 import me.aartikov.replica.advanced_sample.core.message.ui.MessageUi
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
-import me.aartikov.replica.advanced_sample.core.utils.createFakeChildStackStateFlow
 import me.aartikov.replica.advanced_sample.features.dudes.ui.DudesUi
 import me.aartikov.replica.advanced_sample.features.fruits.ui.FruitsUi
-import me.aartikov.replica.advanced_sample.features.menu.ui.FakeMenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuUi
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.PokemonsUi
 import me.aartikov.replica.advanced_sample.features.project.ui.ProjectUi
@@ -53,13 +50,4 @@ private fun RootUiPreview() {
     AppTheme {
         RootUi(FakeRootComponent())
     }
-}
-
-class FakeRootComponent : RootComponent {
-
-    override val childStack = createFakeChildStackStateFlow(
-        RootComponent.Child.Menu(FakeMenuComponent())
-    )
-
-    override val messageComponent = FakeMessageComponent()
 }
