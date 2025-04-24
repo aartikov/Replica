@@ -5,15 +5,16 @@ import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.error_handling.safeRun
 import me.aartikov.replica.advanced_sample.core.external_app_service.ExternalAppService
 import me.aartikov.replica.advanced_sample.core.utils.observe
-import me.aartikov.replica.advanced_sample.features.project.domain.Project
-import me.aartikov.replica.single.Replica
+import me.aartikov.replica.advanced_sample.features.project.data.ProjectRepository
 
 class RealProjectComponent(
     componentContext: ComponentContext,
-    private val projectReplica: Replica<Project>,
+    projectRepository: ProjectRepository,
     private val externalAppService: ExternalAppService,
     private val errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, ProjectComponent {
+
+    private val projectReplica = projectRepository.projectReplica
 
     override val projectState = projectReplica.observe(lifecycle, errorHandler)
 

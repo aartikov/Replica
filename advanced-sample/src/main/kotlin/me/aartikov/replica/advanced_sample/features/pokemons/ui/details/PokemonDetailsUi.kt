@@ -41,7 +41,7 @@ import me.aartikov.replica.single.Loadable
 @Composable
 fun PokemonDetailsUi(
     component: PokemonDetailsComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val pokemonState by component.pokemonState.collectAsState()
 
@@ -56,7 +56,8 @@ fun PokemonDetailsUi(
             onRetryClick = component::onRetryClick
         ) { pokemon, refreshing ->
             PokemonDetailsContent(
-                pokemon = pokemon
+                pokemon = pokemon,
+                onTypeClick = component::onTypeClick
             )
 
             RefreshingProgress(
@@ -70,7 +71,8 @@ fun PokemonDetailsUi(
 @Composable
 private fun PokemonDetailsContent(
     pokemon: DetailedPokemon,
-    modifier: Modifier = Modifier
+    onTypeClick: (PokemonType) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -109,7 +111,7 @@ private fun PokemonDetailsContent(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             pokemon.types.forEach {
-                PokemonTypeItem(type = it, isSelected = true)
+                PokemonTypeItem(type = it, isSelected = true, onClick = { onTypeClick(it) })
             }
         }
 
@@ -135,7 +137,6 @@ private fun PokemonDetailsUiPreview() {
     }
 }
 
-
 class FakePokemonDetailsComponent : PokemonDetailsComponent {
 
     override val pokemonState = MutableStateFlow(
@@ -152,8 +153,9 @@ class FakePokemonDetailsComponent : PokemonDetailsComponent {
         )
     )
 
+    override fun onTypeClick(type: PokemonType) = Unit
+
     override fun onRefresh() = Unit
 
     override fun onRetryClick() = Unit
-
 }

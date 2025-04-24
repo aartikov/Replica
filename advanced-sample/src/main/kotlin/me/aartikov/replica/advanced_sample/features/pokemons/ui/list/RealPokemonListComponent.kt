@@ -6,19 +6,18 @@ import kotlinx.serialization.Serializable
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.utils.observe
 import me.aartikov.replica.advanced_sample.core.utils.persistent
-import me.aartikov.replica.advanced_sample.features.pokemons.domain.Pokemon
+import me.aartikov.replica.advanced_sample.features.pokemons.data.PokemonRepository
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonId
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonType
 import me.aartikov.replica.advanced_sample.features.pokemons.domain.PokemonTypeId
 import me.aartikov.replica.algebra.normal.withKey
-import me.aartikov.replica.keyed.KeyedReplica
 import me.aartikov.replica.keyed.keepPreviousData
 
 class RealPokemonListComponent(
     componentContext: ComponentContext,
     private val onOutput: (PokemonListComponent.Output) -> Unit,
-    pokemonsByTypeReplica: KeyedReplica<PokemonTypeId, List<Pokemon>>,
-    errorHandler: ErrorHandler
+    pokemonsRepository: PokemonRepository,
+    errorHandler: ErrorHandler,
 ) : ComponentContext by componentContext, PokemonListComponent {
 
     override val types = listOf(
@@ -29,12 +28,10 @@ class RealPokemonListComponent(
         PokemonType.Poison
     )
 
-    override var selectedTypeId = MutableStateFlow(types[0].id)
-        private set
+    override val selectedTypeId = MutableStateFlow(types[0].id)
 
-    private val pokemonsReplica = pokemonsByTypeReplica
-        .keepPreviousData()
-        .withKey(selectedTypeId)
+    private val pokemonsReplica =
+        pokemonsRepository.pokemonsByTypeReplica.keepPreviousData().withKey(selectedTypeId)
 
     override val pokemonsState = pokemonsReplica.observe(lifecycle, errorHandler)
 
@@ -64,6 +61,6 @@ class RealPokemonListComponent(
 
     @Serializable
     private data class PersistentState(
-        val selectedTypeId: PokemonTypeId
+        val selectedTypeId: PokemonTypeId,
     )
 }

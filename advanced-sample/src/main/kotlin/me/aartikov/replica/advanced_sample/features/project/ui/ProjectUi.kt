@@ -117,7 +117,6 @@ private fun ProjectUiPreview() {
     }
 }
 
-
 class FakeProjectComponent : ProjectComponent {
 
     override val projectState = MutableStateFlow(
