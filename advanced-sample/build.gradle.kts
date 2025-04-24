@@ -58,7 +58,6 @@ dependencies {
     debugImplementation(libs.compose.tooling)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
-    implementation(libs.bundles.accompanist)
     implementation(libs.coilCompose)
     implementation(libs.splashscreen)
 

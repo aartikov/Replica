@@ -18,7 +18,6 @@ recyclerView = "1.4.0"
 swipeRefresh = "1.1.0"
 material = "1.12.0"
 splashscreen = "1.0.1"
-accompanist = "0.36.0"
 coil = "2.7.0"
 sesameLocalizedString = "1.5.0"
 decompose = "3.2.2"
@@ -62,9 +61,6 @@ swipeRefresh = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayo
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
-accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
-
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coilCompose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
@@ -106,7 +102,6 @@ binary-compatibility-validator = { module = "org.jetbrains.kotlinx:binary-compat
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 
 [bundles]
-accompanist = ["accompanist-systemuicontroller", "accompanist-swiperefresh"]
 decompose = ["decompose-core", "decompose-compose"]
 ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-server-websockets"]
 ktor-client = ["ktor-client-core", "ktor-client-websockets"]
