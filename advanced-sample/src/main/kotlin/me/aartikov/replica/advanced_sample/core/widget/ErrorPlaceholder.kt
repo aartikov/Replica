@@ -1,9 +1,9 @@
 package me.aartikov.replica.advanced_sample.core.widget
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +32,7 @@ fun ErrorPlaceholder(
             text = errorMessage,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.bodyMedium
         )
         TextButton(
             onClick = onRetryClick
@@ -46,7 +46,7 @@ fun ErrorPlaceholder(
 
 @Preview
 @Composable
-fun ErrorPlaceholderPreview() {
+private fun ErrorPlaceholderPreview() {
     AppTheme {
         ErrorPlaceholder(
             errorMessage = "Error message",

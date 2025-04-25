@@ -3,17 +3,18 @@ package me.aartikov.replica.advanced_sample.features.fruits.ui.favourites
 import com.arkivanov.decompose.ComponentContext
 import me.aartikov.replica.advanced_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.advanced_sample.core.utils.observe
-import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
+import me.aartikov.replica.advanced_sample.features.fruits.data.favourite.FavouriteFruitsRepository
 import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitFavouriteUpdater
 import me.aartikov.replica.advanced_sample.features.fruits.domain.FruitId
-import me.aartikov.replica.single.Replica
 
 class RealFruitsFavouritesComponent(
     componentContext: ComponentContext,
-    private val fruitsReplica: Replica<List<Fruit>>,
+    favouriteFruitsRepository: FavouriteFruitsRepository,
     private val fruitFavouriteUpdater: FruitFavouriteUpdater,
     private val errorHandler: ErrorHandler
 ) : ComponentContext by componentContext, FruitsFavouritesComponent {
+
+    private val fruitsReplica = favouriteFruitsRepository.favouriteFruitsReplica
 
     override val fruitsState = fruitsReplica.observe(lifecycle, errorHandler)
 
@@ -28,5 +29,6 @@ class RealFruitsFavouritesComponent(
     }
 
     override fun onRefresh() = fruitsReplica.refresh()
+
     override fun onRetryClick() = fruitsReplica.revalidate()
 }

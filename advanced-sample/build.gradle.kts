@@ -25,7 +25,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
@@ -34,7 +34,11 @@ android {
     }
 
     packaging {
-        resources.excludes.add("META-INF/*")
+        resources.excludes += setOf(
+            "/META-INF/{AL2.0,LGPL2.1}",
+            "/META-INF/INDEX.LIST",
+            "/META-INF/io.netty.versions.properties"
+        )
     }
 }
 
@@ -53,12 +57,11 @@ dependencies {
 
     // UI
     implementation(libs.compose.ui)
-    implementation(libs.compose.material)
+    implementation(libs.compose.material3)
     implementation(libs.compose.preview)
     debugImplementation(libs.compose.tooling)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
-    implementation(libs.bundles.accompanist)
     implementation(libs.coilCompose)
     implementation(libs.splashscreen)
 

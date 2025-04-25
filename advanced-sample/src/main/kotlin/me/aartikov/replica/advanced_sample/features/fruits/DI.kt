@@ -36,13 +36,11 @@ fun ComponentFactory.createFruitsComponent(
 fun ComponentFactory.createFruitsAllComponent(
     componentContext: ComponentContext
 ): FruitsAllComponent {
-    val fruitsReplica = get<AllFruitsRepository>().fruitsReplica
-    return RealFruitsAllComponent(componentContext, fruitsReplica, get(), get())
+    return RealFruitsAllComponent(componentContext, get(), get(), get())
 }
 
 fun ComponentFactory.createFruitsFavouritesComponent(
     componentContext: ComponentContext
 ): FruitsFavouritesComponent {
-    val fruitsReplica = get<FavouriteFruitsRepository>().favouriteFruitsReplica
-    return RealFruitsFavouritesComponent(componentContext, fruitsReplica, get(), get())
+    return RealFruitsFavouritesComponent(componentContext, get(), get(), get())
 }

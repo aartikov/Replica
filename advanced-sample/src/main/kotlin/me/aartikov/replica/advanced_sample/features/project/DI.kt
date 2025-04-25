@@ -25,6 +25,5 @@ val projectModule = module {
 fun ComponentFactory.createProjectComponent(
     componentContext: ComponentContext
 ): ProjectComponent {
-    val projectReplica = get<ProjectRepository>().projectReplica
-    return RealProjectComponent(componentContext, projectReplica, get(), get())
+    return RealProjectComponent(componentContext, get(), get(), get())
 }

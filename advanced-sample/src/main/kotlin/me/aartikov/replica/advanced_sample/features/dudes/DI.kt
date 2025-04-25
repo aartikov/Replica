@@ -25,6 +25,5 @@ val dudesModule = module {
 fun ComponentFactory.createDudesComponent(
     componentContext: ComponentContext
 ): DudesComponent {
-    val dudesReplica = get<DudeRepository>().dudesReplica
-    return RealDudesComponent(componentContext, dudesReplica, get())
+    return RealDudesComponent(componentContext, get(), get())
 }
