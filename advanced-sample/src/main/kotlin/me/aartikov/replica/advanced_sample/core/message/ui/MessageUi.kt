@@ -69,7 +69,7 @@ private fun MessagePopup(
         Card(
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background,
+                containerColor = MaterialTheme.colorScheme.inverseSurface,
             ),
             elevation = CardDefaults.cardElevation(3.dp),
             modifier = Modifier
@@ -87,13 +87,13 @@ private fun MessagePopup(
                     Icon(
                         painter = painterResource(it),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
                 Text(
                     modifier = Modifier.weight(1f),
                     text = message.text.resolve(),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 message.actionTitle?.let {
@@ -116,7 +116,8 @@ private fun MessageButton(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimary,
         )
     }
 }
