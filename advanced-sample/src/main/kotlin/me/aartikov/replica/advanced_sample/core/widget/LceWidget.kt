@@ -1,6 +1,7 @@
 package me.aartikov.replica.advanced_sample.core.widget
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
@@ -25,9 +26,10 @@ fun <T : Any> LceWidget(
         when {
             data != null -> content(data, loading)
 
-            loading -> FullscreenCircularProgress()
+            loading -> FullscreenCircularProgress(Modifier.navigationBarsPadding())
 
             error != null -> ErrorPlaceholder(
+                modifier = Modifier.navigationBarsPadding(),
                 errorMessage = error.exception.errorMessage.resolve(),
                 onRetryClick = onRetryClick,
             )

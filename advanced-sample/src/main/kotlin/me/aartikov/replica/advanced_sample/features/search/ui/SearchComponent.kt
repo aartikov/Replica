@@ -7,7 +7,7 @@ import ru.mobileup.kmm_form_validation.control.InputControl
 
 interface SearchComponent {
 
-    val wikiSearchItems: StateFlow<Loadable<List<WikiSearchItem>>>
+    val wikiItemsState: StateFlow<Loadable<List<WikiSearchItem>>>
 
     val queryInputControl: InputControl
 
@@ -15,5 +15,5 @@ interface SearchComponent {
 
     fun onItemClick(item: WikiSearchItem)
 
-    fun onRetryClick()
+    fun onRefresh()
 }

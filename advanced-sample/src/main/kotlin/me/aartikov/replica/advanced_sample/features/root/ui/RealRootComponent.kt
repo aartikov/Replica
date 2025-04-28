@@ -18,12 +18,6 @@ import me.aartikov.replica.advanced_sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuItem
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonsComponent
 import me.aartikov.replica.advanced_sample.features.project.createProjectComponent
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Dudes
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Fruits
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Menu
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Pokemons
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Project
-import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Search
 import me.aartikov.replica.advanced_sample.features.search.createSearchComponent
 
 class RealRootComponent(
@@ -48,37 +42,37 @@ class RealRootComponent(
     private fun createChild(config: ChildConfig, componentContext: ComponentContext) =
         when (config) {
             ChildConfig.Menu -> {
-                Menu(
+                RootComponent.Child.Menu(
                     componentFactory.createMenuComponent(componentContext, ::onMenuOutput)
                 )
             }
 
             ChildConfig.Project -> {
-                Project(
+                RootComponent.Child.Project(
                     componentFactory.createProjectComponent(componentContext)
                 )
             }
 
             ChildConfig.Pokemons -> {
-                Pokemons(
+                RootComponent.Child.Pokemons(
                     componentFactory.createPokemonsComponent(componentContext)
                 )
             }
 
             ChildConfig.Fruits -> {
-                Fruits(
+                RootComponent.Child.Fruits(
                     componentFactory.createFruitsComponent(componentContext)
                 )
             }
 
             ChildConfig.Dudes -> {
-                Dudes(
+                RootComponent.Child.Dudes(
                     componentFactory.createDudesComponent(componentContext)
                 )
             }
 
             ChildConfig.Search -> {
-                Search(
+                RootComponent.Child.Search(
                     componentFactory.createSearchComponent(componentContext)
                 )
             }

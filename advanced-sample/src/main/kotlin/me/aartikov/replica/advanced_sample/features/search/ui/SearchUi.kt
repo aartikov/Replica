@@ -4,14 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,12 +44,12 @@ fun SearchUi(
     component: SearchComponent,
     modifier: Modifier = Modifier,
 ) {
-    val wikiItems by component.wikiSearchItems.collectAsState()
+    val wikiItems by component.wikiItemsState.collectAsState()
     val debouncedQuery by component.debouncedQuery.collectAsState()
-    val scrollState = rememberScrollState()
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(wikiItems.data) {
-        scrollState.animateScrollTo(0)
+        lazyListState.animateScrollToItem(0)
     }
 
     Column(
@@ -56,19 +61,33 @@ fun SearchUi(
 
         PullRefreshLceWidget(
             state = wikiItems,
-            onRetryClick = component::onRetryClick,
-            onRefresh = component::onRetryClick
+            onRetryClick = component::onRefresh,
+            onRefresh = component::onRefresh
         ) { items, refreshing ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(
-                        state = scrollState,
-                        enabled = debouncedQuery.isNotBlank()
-                    )
-                    .navigationBarsPadding(),
-                contentAlignment = Alignment.Center
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState,
+                contentPadding = PaddingValues(vertical = 16.dp),
+                userScrollEnabled = debouncedQuery.isNotBlank()
             ) {
+                items(items = items, key = { it.url }) {
+                    Column(
+                        Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    ) {
+                        WikiItem(
+                            wikiItem = it,
+                            onClick = { component.onItemClick(it) }
+                        )
+                        if (it !== items.lastOrNull()) HorizontalDivider()
+                    }
+                }
+
+                item {
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
+                }
+            }
+
+            Box(Modifier.navigationBarsPadding()) {
                 when {
                     debouncedQuery.isBlank() -> {
                         EmptyPlaceholder(
@@ -76,27 +95,13 @@ fun SearchUi(
                         )
                     }
 
-                    items.isEmpty() && !wikiItems.loading && !refreshing -> {
+                    items.isEmpty() && !refreshing -> {
                         EmptyPlaceholder(
                             description = stringResource(
                                 R.string.no_results_placeholder,
                                 debouncedQuery
                             )
                         )
-                    }
-
-                    else -> {
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .padding(vertical = 16.dp),
-                        ) {
-                            items.forEach {
-                                WikiItem(wikiItem = it, onClick = { component.onItemClick(it) })
-
-                                if (it !== items.lastOrNull()) HorizontalDivider()
-                            }
-                        }
                     }
                 }
             }

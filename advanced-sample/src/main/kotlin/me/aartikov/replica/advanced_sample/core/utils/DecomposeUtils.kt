@@ -1,9 +1,10 @@
 package me.aartikov.replica.advanced_sample.core.utils
 
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
 import kotlinx.coroutines.CoroutineScope
@@ -46,8 +47,18 @@ fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
 /**
  * Creates a coroutine scope tied to Decompose lifecycle. A scope is canceled when a component is destroyed.
  */
-val LifecycleOwner.componentCoroutineScope: CoroutineScope
-    get() = lifecycle.replicaObserverHost().observerCoroutineScope
+val ComponentContext.componentCoroutineScope: CoroutineScope
+    get() = (instanceKeeper.get(ComponentScopeKey) as? CoroutineScopeWrapper)?.scope
+        ?: lifecycle
+            .replicaObserverHost()
+            .observerCoroutineScope
+            .also { newScope ->
+                instanceKeeper.put(ComponentScopeKey, CoroutineScopeWrapper(newScope))
+            }
+
+private object ComponentScopeKey
+
+private class CoroutineScopeWrapper(val scope: CoroutineScope) : InstanceKeeper.Instance
 
 /**
  * A helper function to save and restore component state.
