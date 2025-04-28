@@ -18,6 +18,13 @@ import me.aartikov.replica.advanced_sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuItem
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonsComponent
 import me.aartikov.replica.advanced_sample.features.project.createProjectComponent
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Dudes
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Fruits
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Menu
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Pokemons
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Project
+import me.aartikov.replica.advanced_sample.features.root.ui.RootComponent.Child.Search
+import me.aartikov.replica.advanced_sample.features.search.createSearchComponent
 
 class RealRootComponent(
     componentContext: ComponentContext,
@@ -40,33 +47,39 @@ class RealRootComponent(
 
     private fun createChild(config: ChildConfig, componentContext: ComponentContext) =
         when (config) {
-            is ChildConfig.Menu -> {
-                RootComponent.Child.Menu(
+            ChildConfig.Menu -> {
+                Menu(
                     componentFactory.createMenuComponent(componentContext, ::onMenuOutput)
                 )
             }
 
-            is ChildConfig.Project -> {
-                RootComponent.Child.Project(
+            ChildConfig.Project -> {
+                Project(
                     componentFactory.createProjectComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Pokemons -> {
-                RootComponent.Child.Pokemons(
+            ChildConfig.Pokemons -> {
+                Pokemons(
                     componentFactory.createPokemonsComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Fruits -> {
-                RootComponent.Child.Fruits(
+            ChildConfig.Fruits -> {
+                Fruits(
                     componentFactory.createFruitsComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Dudes -> {
-                RootComponent.Child.Dudes(
+            ChildConfig.Dudes -> {
+                Dudes(
                     componentFactory.createDudesComponent(componentContext)
+                )
+            }
+
+            ChildConfig.Search -> {
+                Search(
+                    componentFactory.createSearchComponent(componentContext)
                 )
             }
         }
@@ -77,6 +90,7 @@ class RealRootComponent(
             MenuItem.Pokemons -> ChildConfig.Pokemons
             MenuItem.Fruits -> ChildConfig.Fruits
             MenuItem.Dudes -> ChildConfig.Dudes
+            MenuItem.Search -> ChildConfig.Search
         }.run(navigation::pushNew)
     }
 
@@ -97,5 +111,8 @@ class RealRootComponent(
 
         @Serializable
         data object Dudes : ChildConfig
+
+        @Serializable
+        data object Search : ChildConfig
     }
 }

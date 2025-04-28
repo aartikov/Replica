@@ -7,6 +7,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,12 +37,17 @@ fun <T : Any> PullRefreshLceWidget(
     ) { data, refreshing ->
         var pullGestureOccurred by remember { mutableStateOf(false) }
 
+        val pullRefreshState = rememberPullToRefreshState()
+
+        val isRefreshing by remember(pullGestureOccurred, refreshing) {
+            derivedStateOf {
+                pullGestureOccurred && refreshing
+            }
+        }
+
         LaunchedEffect(refreshing) {
             if (!refreshing) pullGestureOccurred = false
         }
-
-        val pullRefreshState = rememberPullToRefreshState()
-        val isRefreshing = pullGestureOccurred && refreshing
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,

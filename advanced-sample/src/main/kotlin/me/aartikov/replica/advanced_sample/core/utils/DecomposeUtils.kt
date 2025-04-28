@@ -46,9 +46,8 @@ fun <T : Any> Value<T>.toStateFlow(lifecycle: Lifecycle): StateFlow<T> {
 /**
  * Creates a coroutine scope tied to Decompose lifecycle. A scope is canceled when a component is destroyed.
  */
-fun LifecycleOwner.componentCoroutineScope(): CoroutineScope {
-    return lifecycle.replicaObserverHost().observerCoroutineScope
-}
+val LifecycleOwner.componentCoroutineScope: CoroutineScope
+    get() = lifecycle.replicaObserverHost().observerCoroutineScope
 
 /**
  * A helper function to save and restore component state.

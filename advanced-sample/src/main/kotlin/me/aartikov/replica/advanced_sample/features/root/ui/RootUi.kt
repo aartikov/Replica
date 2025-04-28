@@ -38,6 +38,7 @@ import me.aartikov.replica.advanced_sample.features.fruits.ui.FruitsUi
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuUi
 import me.aartikov.replica.advanced_sample.features.pokemons.ui.PokemonsUi
 import me.aartikov.replica.advanced_sample.features.project.ui.ProjectUi
+import me.aartikov.replica.advanced_sample.features.search.ui.SearchUi
 import android.graphics.Color as AndroidColor
 
 @Composable
@@ -57,6 +58,7 @@ fun RootUi(
             is RootComponent.Child.Pokemons -> PokemonsUi(instance.component)
             is RootComponent.Child.Fruits -> FruitsUi(instance.component)
             is RootComponent.Child.Dudes -> DudesUi(instance.component)
+            is RootComponent.Child.Search -> SearchUi(instance.component)
         }
     }
 

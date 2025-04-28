@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_title">Search</string>
+    <string name="search_top_bar_title">Wiki search</string>
+    <string name="search_query_placeholder">Enter a query to search for articles</string>
+    <string name="no_results_placeholder">No results found for the query: "%1$s"</string>
+</resources>

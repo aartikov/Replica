@@ -35,6 +35,7 @@ ktor = "3.1.2"
 dokka = "2.0.0"
 binaryCompatibilityValidator = "0.17.0"
 jetbrainsCompose = "1.6.10"
+form = "1.2.0"
 
 [libraries]
 kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDateTime" }
@@ -65,6 +66,8 @@ coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coilCompose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 sesame-localizedString = { group = "com.github.aartikov", name = "sesame-localized-string", version.ref = "sesameLocalizedString" }
+
+form-validation = { group = "ru.mobileup", name = "kmm-form-validation", version.ref = "form" }
 
 decompose-core = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
