@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -34,12 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
-import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
-import me.aartikov.replica.advanced_sample.core.utils.resolve
+import me.aartikov.replica.advanced_sample.core.utils.plus
+import me.aartikov.replica.advanced_sample.core.widget.ContentOrPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
-import me.aartikov.replica.advanced_sample.core.widget.ErrorPlaceholder
-import me.aartikov.replica.advanced_sample.core.widget.FullscreenCircularProgress
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.features.search.domain.WikiSearchItem
@@ -70,20 +64,37 @@ fun SearchUi(
             state = wikiSearchResult,
             onRetryClick = component::onRefresh,
             onRefresh = component::onRefresh,
-            loadingContent = { FullscreenCircularProgress(Modifier.navigationBarsPadding()) },
-            errorContent = { error ->
-                ErrorPlaceholder(
-                    modifier = Modifier.navigationBarsPadding(),
-                    errorMessage = error.exception.errorMessage.resolve(),
-                    onRetryClick = component::onRefresh
+        ) { result, refreshing, paddingValues ->
+            ContentOrPlaceholder(
+                items = result.items,
+                placeholder = {
+                    when {
+                        result.query.isBlank() -> {
+                            EmptyPlaceholder(
+                                modifier = Modifier.navigationBarsPadding(),
+                                description = stringResource(R.string.search_query_placeholder)
+                            )
+                        }
+
+                        result.items.isEmpty() -> {
+                            EmptyPlaceholder(
+                                modifier = Modifier.navigationBarsPadding(),
+                                description = stringResource(
+                                    R.string.no_results_placeholder,
+                                    result.query
+                                )
+                            )
+                        }
+                    }
+                }
+            ) {
+                WikiSearchList(
+                    result = result,
+                    lazyListState = lazyListState,
+                    contentPadding = paddingValues,
+                    onItemClick = component::onItemClick
                 )
             }
-        ) { result, refreshing ->
-            WikiSearchList(
-                result = result,
-                lazyListState = lazyListState,
-                onItemClick = component::onItemClick
-            )
 
             RefreshingProgress(refreshing)
         }
@@ -133,12 +144,13 @@ private fun SearchTopBar(
 private fun BoxScope.WikiSearchList(
     result: WikiSearchResult,
     lazyListState: LazyListState,
+    contentPadding: PaddingValues,
     onItemClick: (WikiSearchItem) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = lazyListState,
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = contentPadding + PaddingValues(vertical = 16.dp),
         userScrollEnabled = result.query.isNotBlank()
     ) {
         items(items = result.items, key = { it.url }) {
@@ -149,26 +161,6 @@ private fun BoxScope.WikiSearchList(
 
                 if (it !== result.items.lastOrNull()) HorizontalDivider()
             }
-        }
-
-        item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
-        }
-    }
-
-    when {
-        result.query.isBlank() -> {
-            EmptyPlaceholder(
-                modifier = Modifier.navigationBarsPadding(),
-                description = stringResource(R.string.search_query_placeholder)
-            )
-        }
-
-        result.items.isEmpty() -> {
-            EmptyPlaceholder(
-                modifier = Modifier.navigationBarsPadding(),
-                description = stringResource(R.string.no_results_placeholder, result.query)
-            )
         }
     }
 }

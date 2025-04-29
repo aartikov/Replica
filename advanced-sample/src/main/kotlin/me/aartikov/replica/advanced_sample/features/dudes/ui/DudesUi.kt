@@ -3,16 +3,11 @@ package me.aartikov.replica.advanced_sample.features.dudes.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,13 +29,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import me.aartikov.replica.advanced_sample.R
-import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.utils.OnEndReached
-import me.aartikov.replica.advanced_sample.core.utils.resolve
+import me.aartikov.replica.advanced_sample.core.utils.plus
+import me.aartikov.replica.advanced_sample.core.widget.ContentOrPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
-import me.aartikov.replica.advanced_sample.core.widget.ErrorPlaceholder
-import me.aartikov.replica.advanced_sample.core.widget.FullscreenCircularProgress
 import me.aartikov.replica.advanced_sample.core.widget.PagedLoadingProgress
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
@@ -61,7 +54,7 @@ fun DudesUi(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Surface(
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.background,
                 shadowElevation = 4.dp
             ) {
@@ -78,26 +71,22 @@ fun DudesUi(
                 state = dudesState,
                 onRefresh = component::onRefresh,
                 onRetryClick = component::onRetryClick,
-                loadingContent = { FullscreenCircularProgress(Modifier.navigationBarsPadding()) },
-                errorContent = { error ->
-                    ErrorPlaceholder(
-                        modifier = Modifier.navigationBarsPadding(),
-                        errorMessage = error.exception.errorMessage.resolve(),
-                        onRetryClick = component::onRefresh
-                    )
-                }
-            ) { dudes, refreshing ->
-                if (dudes.items.isNotEmpty()) {
+            ) { dudes, refreshing, paddingValues ->
+                ContentOrPlaceholder(
+                    items = dudes.items,
+                    placeholder = {
+                        EmptyPlaceholder(
+                            modifier = Modifier.padding(paddingValues),
+                            description = stringResource(R.string.dudes_empty_description)
+                        )
+                    }
+                ) {
                     DudesListContent(
                         loadingStatus = dudesState.loadingStatus,
                         dudes = dudes,
                         hasError = dudesState.error != null,
-                        onLoadNext = component::onLoadNext
-                    )
-                } else {
-                    EmptyPlaceholder(
-                        modifier = Modifier.navigationBarsPadding(),
-                        description = stringResource(R.string.dudes_empty_description)
+                        onLoadNext = component::onLoadNext,
+                        contentPadding = paddingValues
                     )
                 }
 
@@ -113,6 +102,7 @@ private fun DudesListContent(
     dudes: DudesContent,
     hasError: Boolean,
     onLoadNext: () -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
@@ -127,7 +117,7 @@ private fun DudesListContent(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         state = lazyListState,
-        contentPadding = PaddingValues(vertical = 12.dp)
+        contentPadding = contentPadding + PaddingValues(vertical = 12.dp)
     ) {
         items(
             items = dudes.items,
@@ -144,10 +134,6 @@ private fun DudesListContent(
             item {
                 PagedLoadingProgress()
             }
-        }
-
-        item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }

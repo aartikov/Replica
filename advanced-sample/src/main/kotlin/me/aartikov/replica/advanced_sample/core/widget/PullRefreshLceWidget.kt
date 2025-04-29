@@ -1,6 +1,10 @@
 package me.aartikov.replica.advanced_sample.core.widget
 
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -32,14 +36,18 @@ fun <T : Any> PullRefreshLceWidget(
     onRefresh: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
-    loadingContent: @Composable BoxScope.() -> Unit = { FullscreenCircularProgress() },
-    errorContent: @Composable BoxScope.(CombinedLoadingError) -> Unit = { error ->
+    contentWindowInsets: WindowInsets = WindowInsets.navigationBars,
+    loadingContent: @Composable BoxScope.(PaddingValues) -> Unit = {
+        FullscreenCircularProgress(Modifier.windowInsetsPadding(contentWindowInsets))
+    },
+    errorContent: @Composable BoxScope.(CombinedLoadingError, PaddingValues) -> Unit = { error, _ ->
         ErrorPlaceholder(
+            modifier = Modifier.windowInsetsPadding(contentWindowInsets),
             errorMessage = error.exception.errorMessage.resolve(),
             onRetryClick = onRetryClick
         )
     },
-    content: @Composable BoxScope.(data: T, refreshing: Boolean) -> Unit,
+    content: @Composable BoxScope.(data: T, refreshing: Boolean, paddingValues: PaddingValues) -> Unit,
 ) {
     LceWidget(
         state = state,
@@ -47,7 +55,7 @@ fun <T : Any> PullRefreshLceWidget(
         modifier = modifier,
         loadingContent = loadingContent,
         errorContent = errorContent,
-    ) { data, refreshing ->
+    ) { data, refreshing, paddingValues ->
         var pullGestureOccurred by remember { mutableStateOf(false) }
 
         val pullRefreshState = rememberPullToRefreshState()
@@ -78,7 +86,7 @@ fun <T : Any> PullRefreshLceWidget(
                 )
             },
         ) {
-            content(data, refreshing && !pullGestureOccurred)
+            content(data, refreshing && !pullGestureOccurred, paddingValues)
         }
     }
 }

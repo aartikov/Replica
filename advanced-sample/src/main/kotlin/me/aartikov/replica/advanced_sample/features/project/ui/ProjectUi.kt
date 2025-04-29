@@ -3,8 +3,11 @@ package me.aartikov.replica.advanced_sample.features.project.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,15 +44,18 @@ fun ProjectUi(
         PullRefreshLceWidget(
             state = projectState,
             onRefresh = component::onRefresh,
-            onRetryClick = component::onRetryClick
-        ) { project, refreshing ->
+            onRetryClick = component::onRetryClick,
+            contentWindowInsets = WindowInsets.systemBars
+        ) { project, refreshing, paddingValues ->
             ProjectContent(
                 project = project,
-                onUrlClick = component::onUrlClick
+                onUrlClick = component::onUrlClick,
+                contentPadding = paddingValues
             )
+
             RefreshingProgress(
-                refreshing,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                active = refreshing
             )
         }
     }
@@ -59,12 +65,14 @@ fun ProjectUi(
 private fun ProjectContent(
     project: Project,
     onUrlClick: (url: String) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .padding(contentPadding)
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
