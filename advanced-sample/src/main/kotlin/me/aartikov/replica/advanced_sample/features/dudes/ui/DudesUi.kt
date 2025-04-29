@@ -34,9 +34,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import me.aartikov.replica.advanced_sample.R
+import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.utils.OnEndReached
+import me.aartikov.replica.advanced_sample.core.utils.resolve
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
+import me.aartikov.replica.advanced_sample.core.widget.ErrorPlaceholder
+import me.aartikov.replica.advanced_sample.core.widget.FullscreenCircularProgress
 import me.aartikov.replica.advanced_sample.core.widget.PagedLoadingProgress
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
@@ -73,7 +77,15 @@ fun DudesUi(
             PullRefreshLceWidget(
                 state = dudesState,
                 onRefresh = component::onRefresh,
-                onRetryClick = component::onRetryClick
+                onRetryClick = component::onRetryClick,
+                loadingContent = { FullscreenCircularProgress(Modifier.navigationBarsPadding()) },
+                errorContent = { error ->
+                    ErrorPlaceholder(
+                        modifier = Modifier.navigationBarsPadding(),
+                        errorMessage = error.exception.errorMessage.resolve(),
+                        onRetryClick = component::onRefresh
+                    )
+                }
             ) { dudes, refreshing ->
                 if (dudes.items.isNotEmpty()) {
                     DudesListContent(

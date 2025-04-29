@@ -1,5 +1,6 @@
 package me.aartikov.replica.advanced_sample.core.widget
 
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -14,7 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
+import me.aartikov.replica.advanced_sample.core.utils.resolve
 import me.aartikov.replica.common.AbstractLoadable
+import me.aartikov.replica.common.CombinedLoadingError
 
 /**
  * Displays Replica state ([AbstractLoadable]) with pull-to-refresh functionality.
@@ -28,12 +32,21 @@ fun <T : Any> PullRefreshLceWidget(
     onRefresh: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable (data: T, refreshing: Boolean) -> Unit
+    loadingContent: @Composable BoxScope.() -> Unit = { FullscreenCircularProgress() },
+    errorContent: @Composable BoxScope.(CombinedLoadingError) -> Unit = { error ->
+        ErrorPlaceholder(
+            errorMessage = error.exception.errorMessage.resolve(),
+            onRetryClick = onRetryClick
+        )
+    },
+    content: @Composable BoxScope.(data: T, refreshing: Boolean) -> Unit,
 ) {
     LceWidget(
         state = state,
         onRetryClick = onRetryClick,
-        modifier = modifier
+        modifier = modifier,
+        loadingContent = loadingContent,
+        errorContent = errorContent,
     ) { data, refreshing ->
         var pullGestureOccurred by remember { mutableStateOf(false) }
 

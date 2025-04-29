@@ -4,7 +4,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
-import me.aartikov.replica.advanced_sample.features.search.domain.WikiSearchItem
+import me.aartikov.replica.advanced_sample.features.search.domain.WikiSearchResult
 import me.aartikov.replica.client.ReplicaClient
 import me.aartikov.replica.keyed.KeyedPhysicalReplica
 import me.aartikov.replica.keyed.KeyedReplicaSettings
@@ -16,7 +16,7 @@ class WikiRepositoryImpl(
     api: WikiApi,
 ) : WikiRepository {
 
-    override val searchReplica: KeyedPhysicalReplica<String, List<WikiSearchItem>> =
+    override val searchReplica: KeyedPhysicalReplica<String, WikiSearchResult> =
         replicaClient.createKeyedReplica(
             name = "wikiSearch",
             settings = KeyedReplicaSettings(maxCount = 10),
@@ -28,9 +28,14 @@ class WikiRepositoryImpl(
                 )
             },
             fetcher = { query ->
-                if (query.isBlank()) return@createKeyedReplica emptyList()
+                val trimmedQuery = query.trim()
 
-                api.search(query.trim()).parseWikiSearchResponse().toDomain()
+                if (trimmedQuery.isBlank()) {
+                    WikiSearchResult(trimmedQuery, emptyList())
+                } else {
+                    val items = api.search(trimmedQuery).parseWikiSearchResponse().toDomain()
+                    WikiSearchResult(trimmedQuery, items)
+                }
             }
         )
 }

@@ -27,16 +27,15 @@ class RealSearchComponent(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     )
 
-    override val debouncedQuery = queryInputControl.debouncedValue(
+    private val debouncedQuery = queryInputControl.debouncedValue(
         scope = componentCoroutineScope,
-        timeoutMillis = { if (it.isBlank()) 0L else 500L },
         transform = String::trimAndTrimMiddle
     )
 
     private val searchReplica =
         wikiRepository.searchReplica.keepPreviousData().withKey(debouncedQuery)
 
-    override val wikiItemsState = searchReplica.observe(lifecycle, errorHandler)
+    override val wikiSearchResultState = searchReplica.observe(lifecycle, errorHandler)
 
     override fun onItemClick(item: WikiSearchItem) {
         safeRun(errorHandler) {

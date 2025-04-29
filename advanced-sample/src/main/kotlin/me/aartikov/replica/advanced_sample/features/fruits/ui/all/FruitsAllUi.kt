@@ -24,8 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
+import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
+import me.aartikov.replica.advanced_sample.core.utils.resolve
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
+import me.aartikov.replica.advanced_sample.core.widget.ErrorPlaceholder
+import me.aartikov.replica.advanced_sample.core.widget.FullscreenCircularProgress
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.features.fruits.domain.Fruit
@@ -59,7 +63,15 @@ fun FruitsAllUi(
             PullRefreshLceWidget(
                 state = fruitsState,
                 onRefresh = component::onRefresh,
-                onRetryClick = component::onRetryClick
+                onRetryClick = component::onRetryClick,
+                loadingContent = { FullscreenCircularProgress(Modifier.navigationBarsPadding()) },
+                errorContent = { error ->
+                    ErrorPlaceholder(
+                        modifier = Modifier.navigationBarsPadding(),
+                        errorMessage = error.exception.errorMessage.resolve(),
+                        onRetryClick = component::onRefresh
+                    )
+                }
             ) { fruits, refreshing ->
                 if (fruits.isNotEmpty()) {
                     FruitsListContent(
