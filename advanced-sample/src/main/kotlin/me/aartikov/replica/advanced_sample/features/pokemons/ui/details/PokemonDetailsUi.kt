@@ -3,10 +3,13 @@ package me.aartikov.replica.advanced_sample.features.pokemons.ui.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -50,15 +53,18 @@ fun PokemonDetailsUi(
             modifier = Modifier.systemBarsPadding(),
             state = pokemonState,
             onRefresh = component::onRefresh,
-            onRetryClick = component::onRetryClick
-        ) { pokemon, refreshing ->
+            onRetryClick = component::onRetryClick,
+            contentWindowInsets = WindowInsets.systemBars,
+        ) { pokemon, refreshing, paddingValues ->
             PokemonDetailsContent(
                 pokemon = pokemon,
-                onTypeClick = component::onTypeClick
+                onTypeClick = component::onTypeClick,
+                contentPadding = paddingValues,
+                modifier = Modifier.fillMaxSize()
             )
 
             RefreshingProgress(
-                refreshing,
+                active = refreshing,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
@@ -69,13 +75,14 @@ fun PokemonDetailsUi(
 private fun PokemonDetailsContent(
     pokemon: DetailedPokemon,
     onTypeClick: (PokemonType) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .systemBarsPadding()
+            .padding(contentPadding)
             .padding(horizontal = 16.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

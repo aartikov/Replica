@@ -1,7 +1,6 @@
 package me.aartikov.replica.advanced_sample.features.menu.ui
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,41 +40,34 @@ fun MenuUi(
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Box(modifier = Modifier.weight(1.0f)) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .width(IntrinsicSize.Max)
-                ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .width(IntrinsicSize.Max),
+                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MenuItem.entries.forEach {
                     MenuButton(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.project_title),
-                        onClick = { component.onMenuItemClick(MenuItem.Project) }
-                    )
-
-                    MenuButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.pokemons_title),
-                        onClick = { component.onMenuItemClick(MenuItem.Pokemons) }
-                    )
-
-                    MenuButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.fruits_title),
-                        onClick = { component.onMenuItemClick(MenuItem.Fruits) }
-                    )
-
-                    MenuButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.dudes_title),
-                        onClick = { component.onMenuItemClick(MenuItem.Dudes) }
+                        text = it.displayName,
+                        onClick = { component.onMenuItemClick(it) }
                     )
                 }
             }
         }
     }
 }
+
+private val MenuItem.displayName: String
+    @Composable
+    get() = when (this) {
+        MenuItem.Project -> R.string.project_title
+        MenuItem.Pokemons -> R.string.pokemons_title
+        MenuItem.Fruits -> R.string.fruits_title
+        MenuItem.Dudes -> R.string.dudes_title
+        MenuItem.Search -> R.string.search_title
+    }.let { stringResource(it) }
 
 @Preview
 @Composable

@@ -26,7 +26,7 @@ import me.aartikov.replica.advanced_sample.features.fruits.ui.favourites.FruitsF
 @Composable
 fun FruitsUi(
     component: FruitsComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val stack by component.stack.collectAsState()
     val selectedTab by component.selectedTab.collectAsState()
@@ -59,7 +59,7 @@ fun FruitsUi(
 private fun FruitsTopBar(
     onTabClick: (FruitsComponent.Tab) -> Unit,
     selectedTab: FruitsComponent.Tab,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Row(
         modifier = modifier

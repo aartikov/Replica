@@ -18,6 +18,7 @@ import me.aartikov.replica.advanced_sample.features.menu.ui.MenuComponent
 import me.aartikov.replica.advanced_sample.features.menu.ui.MenuItem
 import me.aartikov.replica.advanced_sample.features.pokemons.createPokemonsComponent
 import me.aartikov.replica.advanced_sample.features.project.createProjectComponent
+import me.aartikov.replica.advanced_sample.features.search.createSearchComponent
 
 class RealRootComponent(
     componentContext: ComponentContext,
@@ -40,33 +41,39 @@ class RealRootComponent(
 
     private fun createChild(config: ChildConfig, componentContext: ComponentContext) =
         when (config) {
-            is ChildConfig.Menu -> {
+            ChildConfig.Menu -> {
                 RootComponent.Child.Menu(
                     componentFactory.createMenuComponent(componentContext, ::onMenuOutput)
                 )
             }
 
-            is ChildConfig.Project -> {
+            ChildConfig.Project -> {
                 RootComponent.Child.Project(
                     componentFactory.createProjectComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Pokemons -> {
+            ChildConfig.Pokemons -> {
                 RootComponent.Child.Pokemons(
                     componentFactory.createPokemonsComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Fruits -> {
+            ChildConfig.Fruits -> {
                 RootComponent.Child.Fruits(
                     componentFactory.createFruitsComponent(componentContext)
                 )
             }
 
-            is ChildConfig.Dudes -> {
+            ChildConfig.Dudes -> {
                 RootComponent.Child.Dudes(
                     componentFactory.createDudesComponent(componentContext)
+                )
+            }
+
+            ChildConfig.Search -> {
+                RootComponent.Child.Search(
+                    componentFactory.createSearchComponent(componentContext)
                 )
             }
         }
@@ -77,6 +84,7 @@ class RealRootComponent(
             MenuItem.Pokemons -> ChildConfig.Pokemons
             MenuItem.Fruits -> ChildConfig.Fruits
             MenuItem.Dudes -> ChildConfig.Dudes
+            MenuItem.Search -> ChildConfig.Search
         }.run(navigation::pushNew)
     }
 
@@ -97,5 +105,8 @@ class RealRootComponent(
 
         @Serializable
         data object Dudes : ChildConfig
+
+        @Serializable
+        data object Search : ChildConfig
     }
 }

@@ -6,15 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
+import me.aartikov.replica.advanced_sample.core.utils.plus
+import me.aartikov.replica.advanced_sample.core.widget.ContentOrPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
@@ -61,17 +58,21 @@ fun PokemonListUi(
             PullRefreshLceWidget(
                 state = pokemonsState,
                 onRefresh = component::onRefresh,
-                onRetryClick = component::onRetryClick
-            ) { pokemons, refreshing ->
-                if (pokemons.isNotEmpty()) {
+                onRetryClick = component::onRetryClick,
+            ) { pokemons, refreshing, paddingValues ->
+                ContentOrPlaceholder(
+                    items = pokemons,
+                    placeholder = {
+                        EmptyPlaceholder(
+                            modifier = Modifier.padding(paddingValues),
+                            description = stringResource(R.string.pokemons_empty_description)
+                        )
+                    }
+                ) { list ->
                     PokemonListContent(
-                        pokemons = pokemons,
-                        onPokemonClick = component::onPokemonClick
-                    )
-                } else {
-                    EmptyPlaceholder(
-                        modifier = Modifier.navigationBarsPadding(),
-                        description = stringResource(R.string.pokemons_empty_description)
+                        pokemons = list,
+                        onPokemonClick = component::onPokemonClick,
+                        contentPadding = paddingValues,
                     )
                 }
 
@@ -122,11 +123,12 @@ private fun PokemonTypesRow(
 private fun PokemonListContent(
     pokemons: List<Pokemon>,
     onPokemonClick: (PokemonId) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 12.dp)
+        contentPadding = contentPadding + PaddingValues(vertical = 12.dp)
     ) {
         items(
             items = pokemons,
@@ -140,10 +142,6 @@ private fun PokemonListContent(
             if (pokemon !== pokemons.lastOrNull()) {
                 HorizontalDivider()
             }
-        }
-
-        item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }

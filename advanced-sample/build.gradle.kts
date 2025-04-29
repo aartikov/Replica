@@ -68,6 +68,7 @@ dependencies {
     // Architecture
     implementation(libs.sesame.localizedString)
     implementation(libs.bundles.decompose)
+    implementation(libs.form.validation)
 
     // Network
     implementation(libs.retrofit.core)

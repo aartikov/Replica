@@ -21,7 +21,7 @@ class RealMessageComponent(
         private const val SHOW_TIME = 4000L
     }
 
-    private val coroutineScope = componentCoroutineScope()
+    private val coroutineScope = componentCoroutineScope
 
     override var visibleMessage by mutableStateOf<Message?>(null)
         private set

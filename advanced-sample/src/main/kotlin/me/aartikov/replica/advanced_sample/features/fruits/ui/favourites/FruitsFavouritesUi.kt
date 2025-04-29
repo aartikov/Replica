@@ -2,14 +2,9 @@ package me.aartikov.replica.advanced_sample.features.fruits.ui.favourites
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -25,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
+import me.aartikov.replica.advanced_sample.core.utils.plus
+import me.aartikov.replica.advanced_sample.core.widget.ContentOrPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
 import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
@@ -35,7 +32,7 @@ import me.aartikov.replica.advanced_sample.features.fruits.ui.widget.FruitItem
 @Composable
 fun FruitsFavouritesUi(
     component: FruitsFavouritesComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val fruitsState by component.fruitsState.collectAsState()
     val removingInProgress by component.removingInProgress.collectAsState()
@@ -60,18 +57,22 @@ fun FruitsFavouritesUi(
             PullRefreshLceWidget(
                 state = fruitsState,
                 onRefresh = component::onRefresh,
-                onRetryClick = component::onRetryClick
-            ) { fruits, refreshing ->
-                if (fruits.isNotEmpty()) {
+                onRetryClick = component::onRetryClick,
+            ) { fruits, refreshing, paddingValues ->
+                ContentOrPlaceholder(
+                    items = fruits,
+                    placeholder = {
+                        EmptyPlaceholder(
+                            modifier = Modifier.padding(paddingValues),
+                            description = stringResource(R.string.fruits_empty_description)
+                        )
+                    }
+                ) { list ->
                     FruitsListContent(
-                        fruits = fruits,
+                        fruits = list,
                         removingInProgress = removingInProgress,
-                        onFruitClick = component::onRemoveFruitClick
-                    )
-                } else {
-                    EmptyPlaceholder(
-                        modifier = Modifier.navigationBarsPadding(),
-                        description = stringResource(R.string.fruits_empty_description)
+                        onFruitClick = component::onRemoveFruitClick,
+                        contentPadding = paddingValues,
                     )
                 }
 
@@ -86,11 +87,12 @@ private fun FruitsListContent(
     fruits: List<Fruit>,
     removingInProgress: Set<FruitId>,
     onFruitClick: (FruitId) -> Unit,
-    modifier: Modifier = Modifier
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 12.dp)
+        contentPadding = contentPadding + PaddingValues(vertical = 12.dp)
     ) {
         items(
             items = fruits,
@@ -105,10 +107,6 @@ private fun FruitsListContent(
             if (fruit !== fruits.lastOrNull()) {
                 HorizontalDivider()
             }
-        }
-
-        item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }
