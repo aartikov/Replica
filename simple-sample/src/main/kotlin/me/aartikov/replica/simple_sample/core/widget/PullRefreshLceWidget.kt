@@ -1,4 +1,4 @@
-package me.aartikov.replica.advanced_sample.core.widget
+package me.aartikov.replica.simple_sample.core.widget
 
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,10 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import me.aartikov.replica.advanced_sample.core.error_handling.errorMessage
-import me.aartikov.replica.advanced_sample.core.utils.resolve
 import me.aartikov.replica.common.AbstractLoadable
 import me.aartikov.replica.common.CombinedLoadingError
+import me.aartikov.replica.simple_sample.core.error_handling.errorMessage
+import me.aartikov.replica.simple_sample.core.utils.resolve
 
 /**
  * Displays Replica state ([AbstractLoadable]) with pull-to-refresh functionality.

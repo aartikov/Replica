@@ -8,9 +8,10 @@ import me.aartikov.replica.simple_sample.BuildConfig
 import me.aartikov.replica.simple_sample.core.error_handling.ErrorHandler
 import me.aartikov.replica.simple_sample.core.message.data.MessageService
 import me.aartikov.replica.simple_sample.core.message.data.MessageServiceImpl
-import me.aartikov.replica.simple_sample.core.message.ui.MessagePopup
+import me.aartikov.replica.simple_sample.core.message.ui.DefaultMessageViewModel
 import me.aartikov.replica.simple_sample.core.network.NetworkApiFactory
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val coreModule = module {
@@ -20,5 +21,5 @@ val coreModule = module {
     single { ReplicaDevTools(get(), get()) }
     single<MessageService> { MessageServiceImpl() }
     single { ErrorHandler(get()) }
-    factory { MessagePopup(get()) }
+    viewModel { DefaultMessageViewModel(get()) }
 }

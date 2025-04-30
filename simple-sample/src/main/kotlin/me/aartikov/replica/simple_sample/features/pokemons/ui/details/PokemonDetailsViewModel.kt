@@ -1,25 +1,17 @@
 package me.aartikov.replica.simple_sample.features.pokemons.ui.details
 
-import androidx.lifecycle.ViewModel
-import me.aartikov.replica.simple_sample.core.error_handling.ErrorHandler
-import me.aartikov.replica.simple_sample.core.utils.observe
+import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.simple_sample.features.pokemons.domain.DetailedPokemon
-import me.aartikov.replica.single.Replica
+import me.aartikov.replica.single.Loadable
 import me.aartikov.replica.view_model.Activable
-import me.aartikov.replica.view_model.activable
 
-class PokemonDetailsViewModel(
-    private val pokemonReplica: Replica<DetailedPokemon>,
-    errorHandler: ErrorHandler
-) : ViewModel(), Activable by activable() {
+interface PokemonDetailsViewModel : Activable {
 
-    val pokemonState = pokemonReplica.observe(this, errorHandler)
+    val pokemonState: StateFlow<Loadable<DetailedPokemon>>
 
-    fun onRefresh() {
-        pokemonReplica.refresh()
-    }
+    fun onPokemonImageClick(name: String)
 
-    fun onRetryClick() {
-        pokemonReplica.refresh()
-    }
+    fun onRefresh()
+
+    fun onRetryClick()
 }

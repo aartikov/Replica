@@ -62,7 +62,7 @@ dependencies {
     debugImplementation(libs.compose.tooling)
     implementation(libs.activity.compose)
     implementation(libs.appcompat)
-    implementation(libs.coilCompose)
+    implementation(libs.coil.compose)
     implementation(libs.splashscreen)
 
     // Architecture
