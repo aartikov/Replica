@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="ToolbarStyle" parent="@style/Widget.MaterialComponents.Toolbar">
-        <item name="titleTextColor">@color/white</item>
-    </style>
-</resources>

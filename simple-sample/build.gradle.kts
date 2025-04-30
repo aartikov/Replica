@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -26,16 +26,20 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     packaging {
-        resources.excludes.add("META-INF/*")
+        resources.excludes += setOf(
+            "/META-INF/{AL2.0,LGPL2.1}",
+            "/META-INF/INDEX.LIST",
+            "/META-INF/io.netty.versions.properties"
+        )
     }
 }
 
@@ -55,11 +59,15 @@ dependencies {
 
     // UI
     implementation(libs.appcompat)
-    implementation(libs.fragment)
-    implementation(libs.recyclerView)
-    implementation(libs.material)
-    implementation(libs.coil)
-    implementation(libs.swipeRefresh)
+
+    // UI
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.preview)
+    implementation(libs.compose.navgigaton)
+    debugImplementation(libs.compose.tooling)
+    implementation(libs.activity.compose)
+    implementation(libs.coil.compose)
     implementation(libs.splashscreen)
 
     // Architecture
@@ -76,6 +84,7 @@ dependencies {
 
     // DI
     implementation(libs.koin.android)
+    implementation(libs.koin.android.compose)
 
     // Logging
     implementation(libs.timber)

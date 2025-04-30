@@ -1,34 +1,34 @@
 package me.aartikov.replica.simple_sample.app
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.fragment.app.commit
-import me.aartikov.replica.simple_sample.R
-import me.aartikov.replica.simple_sample.core.message.ui.MessagePopup
-import me.aartikov.replica.simple_sample.features.pokemons.ui.PokemonsFragment
-import org.koin.android.ext.android.get
+import me.aartikov.replica.simple_sample.app.navigation.AppNavHost
+import me.aartikov.replica.simple_sample.core.message.ui.MessageUi
+import me.aartikov.replica.simple_sample.core.theme.AppTheme
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        setupMessagePopup()
-        if (savedInstanceState == null) {
-            setupInitialFragment()
+
+        enableEdgeToEdge()
+
+        setContent {
+            PokemonApplication()
         }
     }
+}
 
-    private fun setupInitialFragment() {
-        supportFragmentManager.commit {
-            val fragment = PokemonsFragment()
-            add(R.id.container, fragment)
-            setPrimaryNavigationFragment(fragment)
-        }
-    }
+@Composable
+private fun PokemonApplication() {
+    AppTheme {
+        AppNavHost()
 
-    private fun setupMessagePopup() {
-        get<MessagePopup>().setup(this)
+        MessageUi()
     }
 }

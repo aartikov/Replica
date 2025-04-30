@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -71,14 +70,14 @@ fun SearchUi(
                     when {
                         result.query.isBlank() -> {
                             EmptyPlaceholder(
-                                modifier = Modifier.navigationBarsPadding(),
+                                modifier = Modifier.padding(paddingValues),
                                 description = stringResource(R.string.search_query_placeholder)
                             )
                         }
 
                         result.items.isEmpty() -> {
                             EmptyPlaceholder(
-                                modifier = Modifier.navigationBarsPadding(),
+                                modifier = Modifier.padding(paddingValues),
                                 description = stringResource(
                                     R.string.no_results_placeholder,
                                     result.query
