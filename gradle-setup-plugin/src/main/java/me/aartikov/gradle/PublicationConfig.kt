@@ -2,7 +2,7 @@ package me.aartikov.gradle
 
 data class PublicationConfig(
     val group: String = "com.github.aartikov",
-    val version: String = "1.5.0-alpha",
+    val version: String = "1.5.1-alpha",
     val projectName: String = "Replica",
     val projectDescription: String = "Kotlin Multiplatform library for organizing of network communication in a declarative way",
     val projectUrl: String = "https://github.com/aartikov/Replica",
