@@ -1,5 +1,4 @@
 import me.aartikov.gradle.setupBinaryCompatibilityValidator
-import me.aartikov.gradle.setupPublication
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -8,7 +7,6 @@ plugins {
     alias(libs.plugins.setup)
 }
 
-setupPublication()
 setupBinaryCompatibilityValidator()
 
 kotlin {

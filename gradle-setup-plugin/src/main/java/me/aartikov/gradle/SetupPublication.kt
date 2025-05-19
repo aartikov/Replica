@@ -19,6 +19,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 import java.util.Properties
 
+// ./gradlew build
+// ./gradlew publishAllPublicationsToSonatypeRepository --no-parallel
 fun Project.setupPublication() {
     val config = loadPublicationConfig()
 
@@ -42,10 +44,8 @@ private fun Project.loadPublicationConfig(): PublicationConfig {
     return PublicationConfig(
         repositoryUserName = get("ossrhUsername", "OSSRH_USERNAME"),
         repositoryPassword = get("ossrhPassword", "OSSRH_PASSWORD"),
-        signingKey = get(
-            "signing.secretKeyRingFile",
-            "SIGNING_SECRET_KEY_RING_FILE"
-        )?.let { File(it).readText() },
+        signingKey = get("signing.secretKeyRingFile", "SIGNING_SECRET_KEY_RING_FILE")
+            ?.let { File(it).readText() },
         signingPassword = get("signing.password", "SIGNING_PASSWORD")
     )
 }
