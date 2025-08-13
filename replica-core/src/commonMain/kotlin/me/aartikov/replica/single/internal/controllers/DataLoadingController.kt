@@ -123,14 +123,8 @@ internal class DataLoadingController<T : Any>(
 
             if (skipLoadingIfFresh && state.hasFreshData) return@withContext
 
-            val loadingStarted = if (!state.loading) {
-                dataLoader.load(state.loadingFromStorageRequired)
-                true
-            } else {
-                false
-            }
-
             val preloading = state.observingState.status == ObservingStatus.None
+            val shouldStartLoading = !state.loading
 
             replicaStateFlow.value = state.copy(
                 loading = true,
@@ -138,8 +132,9 @@ internal class DataLoadingController<T : Any>(
                 dataRequested = setDataRequested || state.dataRequested
             )
 
-            if (loadingStarted) {
+            if (shouldStartLoading) {
                 replicaEventFlow.emit(ReplicaEvent.LoadingEvent.LoadingStarted)
+                dataLoader.load(state.loadingFromStorageRequired)
             }
         }
     }
@@ -147,8 +142,8 @@ internal class DataLoadingController<T : Any>(
     private suspend fun onDataLoaderOutput(output: DataLoader.Output<T>) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            when (output) {
 
+            when (output) {
                 is DataLoader.Output.StorageRead.Data -> {
                     if (state.data == null) {
                         replicaStateFlow.value = state.copy(

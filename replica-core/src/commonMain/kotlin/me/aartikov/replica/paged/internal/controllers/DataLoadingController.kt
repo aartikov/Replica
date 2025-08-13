@@ -110,27 +110,20 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
 
             if (skipLoadingIfFresh && state.hasFreshData) return@withContext
 
-            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
-            val loadingStarted = when (currentLoadingStatus) {
-                PagedLoadingStatus.LoadingFirstPage -> false
-                else -> {
-                    dataLoader.cancel()
-                    dataLoader.loadFirstPage()
-                    true
-                }
-            }
-
             val preloading = state.observingState.status == ObservingStatus.None
+            val shouldStartLoading = state.loadingStatus != PagedLoadingStatus.LoadingFirstPage
 
             replicaStateFlow.value = state.copy(
                 loadingStatus = PagedLoadingStatus.LoadingFirstPage,
                 preloading = preloading || state.preloading
             )
 
-            if (loadingStarted) {
+            if (shouldStartLoading) {
                 replicaEventFlow.emit(
                     PagedReplicaEvent.LoadingEvent.LoadingStarted(LoadingReason.Normal)
                 )
+                dataLoader.cancel()
+                dataLoader.loadFirstPage()
             }
         }
     }
@@ -138,43 +131,38 @@ internal class DataLoadingController<I : Any, P : Page<I>>(
     private suspend fun loadNextOrPreviousPage(isNext: Boolean) {
         withContext(dispatcher) {
             val state = replicaStateFlow.value
-            val currentData = replicaStateFlow.value.data ?: return@withContext
-
-            val currentLoadingStatus = replicaStateFlow.value.loadingStatus
+            val currentData = state.data ?: return@withContext
 
             val requiredLoadingStatus = when (isNext) {
                 true -> PagedLoadingStatus.LoadingNextPage
                 false -> PagedLoadingStatus.LoadingPreviousPage
             }
 
-            val loadingStarted = when (currentLoadingStatus) {
-                PagedLoadingStatus.LoadingFirstPage, requiredLoadingStatus -> false
-                else -> {
-                    dataLoader.cancel()
-                    val loadingOperation = when (isNext) {
-                        true -> dataLoader::loadNextPage
-                        false -> dataLoader::loadPreviousPage
-                    }
-                    loadingOperation(currentData.valueWithOptimisticUpdates)
-                    true
-                }
-            }
-
             val preloading = state.observingState.status == ObservingStatus.None
+            val shouldStartLoading = state.loadingStatus != PagedLoadingStatus.LoadingFirstPage
+                    && state.loadingStatus != requiredLoadingStatus
 
             replicaStateFlow.value = state.copy(
                 loadingStatus = requiredLoadingStatus,
                 preloading = preloading || state.preloading
             )
 
-            if (loadingStarted) {
+            if (shouldStartLoading) {
                 val loadingReason = when (isNext) {
                     true -> LoadingReason.NextPage
                     false -> LoadingReason.PreviousPage
                 }
+
+                val loadingOperation = when (isNext) {
+                    true -> dataLoader::loadNextPage
+                    false -> dataLoader::loadPreviousPage
+                }
+
                 replicaEventFlow.emit(
                     PagedReplicaEvent.LoadingEvent.LoadingStarted(loadingReason)
                 )
+                dataLoader.cancel()
+                loadingOperation(currentData.valueWithOptimisticUpdates)
             }
         }
     }
