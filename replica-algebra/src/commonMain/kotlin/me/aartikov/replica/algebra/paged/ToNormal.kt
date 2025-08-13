@@ -26,6 +26,9 @@ fun <T : Any> PagedReplica<T>.toReplica(): Replica<T> {
     return PagedToNormalReplica(this)
 }
 
+/**
+ * Transforms [KeyedPagedReplica] to normal [KeyedReplica].
+ */
 fun <K : Any, T : Any> KeyedPagedReplica<K, T>.toReplica(): KeyedReplica<K, T> {
     return associate { key ->
         withKey(key).toReplica()
@@ -90,7 +93,6 @@ private class PagedToNormalReplicaObserver<T : Any>(
 
     override fun cancelObserving() {
         originalObserver.cancelObserving()
-
         stateObservingJob?.cancel()
         stateObservingJob = null
     }
