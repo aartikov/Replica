@@ -19,11 +19,11 @@ import me.aartikov.replica.paged.PagedReplicaObserver
 /**
  * Creates a paged replica from [Flow] of data.
  */
-fun <T : Any> flowPagedReplica(flow: Flow<T>): PagedReplica<T> {
+fun <T : Any> flowPagedReplica(flow: Flow<T?>): PagedReplica<T> {
     return FlowReplica(flow)
 }
 
-private class FlowReplica<T : Any>(private val flow: Flow<T>) : PagedReplica<T> {
+private class FlowReplica<T : Any>(private val flow: Flow<T?>) : PagedReplica<T> {
 
     override fun observe(observerHost: ReplicaObserverHost): PagedReplicaObserver<T> {
         return FlowReplicaObserver(observerHost, flow)
@@ -48,7 +48,7 @@ private class FlowReplica<T : Any>(private val flow: Flow<T>) : PagedReplica<T> 
 
 private class FlowReplicaObserver<T : Any>(
     observerHost: ReplicaObserverHost,
-    private val dataFlow: Flow<T>
+    private val dataFlow: Flow<T?>
 ) : PagedReplicaObserver<T> {
 
     private val coroutineScope = observerHost.observerCoroutineScope

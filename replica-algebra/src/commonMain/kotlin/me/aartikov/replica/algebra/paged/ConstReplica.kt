@@ -6,6 +6,6 @@ import me.aartikov.replica.paged.PagedReplica
 /**
  * Creates paged replica with a const data.
  */
-fun <T : Any> constPagedReplica(data: T): PagedReplica<T> {
+fun <T : Any> constPagedReplica(data: T?): PagedReplica<T> {
     return flowPagedReplica(MutableStateFlow(data))
 }

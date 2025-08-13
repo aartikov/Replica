@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,12 +21,12 @@ import me.aartikov.replica.single.ReplicaObserver
 /**
  * Creates a replica from [Flow] of data.
  */
-fun <T : Any> flowReplica(flow: Flow<T>): Replica<T> {
+fun <T : Any> flowReplica(flow: Flow<T?>): Replica<T> {
     return FlowReplica(flow)
 }
 
 private class FlowReplica<T : Any>(
-    private val flow: Flow<T>
+    private val flow: Flow<T?>
 ) : Replica<T> {
 
     override fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T> {
@@ -41,13 +42,13 @@ private class FlowReplica<T : Any>(
     }
 
     override suspend fun getData(forceRefresh: Boolean): T {
-        return flow.first()
+        return flow.filterNotNull().first()
     }
 }
 
 private class FlowReplicaObserver<T : Any>(
     private val observerHost: ReplicaObserverHost,
-    private val dataFlow: Flow<T>
+    private val dataFlow: Flow<T?>
 ) : ReplicaObserver<T> {
 
     private val coroutineScope = observerHost.observerCoroutineScope
