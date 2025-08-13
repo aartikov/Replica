@@ -59,6 +59,11 @@ public final class me/aartikov/replica/algebra/paged/ToNormalKt {
 	public static final fun toReplica (Lme/aartikov/replica/paged/PagedReplica;)Lme/aartikov/replica/single/Replica;
 }
 
+public final class me/aartikov/replica/algebra/paged/ToPagedKt {
+	public static final fun toPaged (Lme/aartikov/replica/keyed/KeyedReplica;)Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;
+	public static final fun toPaged (Lme/aartikov/replica/single/Replica;)Lme/aartikov/replica/paged/PagedReplica;
+}
+
 public final class me/aartikov/replica/algebra/paged/WithKeyKt {
 	public static final fun withKey (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Ljava/lang/Object;)Lme/aartikov/replica/paged/PagedReplica;
 	public static final fun withKey (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplica;

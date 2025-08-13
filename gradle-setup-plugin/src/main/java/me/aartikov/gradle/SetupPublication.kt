@@ -21,6 +21,12 @@ import java.util.Properties
 
 // ./gradlew build
 // ./gradlew publishAllPublicationsToSonatypeRepository --no-parallel
+// curl -X POST \
+//  -u '<user_name>:<token>' \
+//  -H 'Content-Type: application/json' \
+//  "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.github.aartikov?publishing_type=automatic"
+
+// See more: https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#1-modify-your-ci-script
 fun Project.setupPublication() {
     val config = loadPublicationConfig()
 
@@ -136,7 +142,7 @@ private fun PublishingExtension.setupRepository(config: PublicationConfig) {
         maven {
             name = "sonatype"
 
-            setUrl(config.repositoryUrl)
+            setUrl(config.publishingUrl)
 
             credentials {
                 username = config.repositoryUserName
