@@ -29,7 +29,7 @@ class RealSearchComponent(
 
     private val debouncedQuery = queryInputControl.debouncedValue(
         scope = componentCoroutineScope,
-        transform = String::trimAndTrimMiddle
+        transform = String::trim
     )
 
     private val searchReplica =
@@ -45,5 +45,3 @@ class RealSearchComponent(
 
     override fun onRefresh() = searchReplica.refresh()
 }
-
-private fun String.trimAndTrimMiddle(): String = trim().replace(Regex("\\s+"), " ")

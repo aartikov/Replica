@@ -1,6 +1,6 @@
 package me.aartikov.replica.algebra.utils
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import me.aartikov.replica.time.TimeProvider
 
 class FakeTimeProvider : TimeProvider {

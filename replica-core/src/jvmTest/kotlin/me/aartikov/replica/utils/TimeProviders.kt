@@ -3,7 +3,7 @@ package me.aartikov.replica.utils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.currentTime
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import me.aartikov.replica.time.TimeProvider
 
 @OptIn(ExperimentalCoroutinesApi::class)

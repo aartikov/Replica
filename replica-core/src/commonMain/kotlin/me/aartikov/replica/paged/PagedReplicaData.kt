@@ -1,6 +1,6 @@
 package me.aartikov.replica.paged
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import me.aartikov.replica.common.OptimisticUpdate
 import me.aartikov.replica.common.applyAll
 

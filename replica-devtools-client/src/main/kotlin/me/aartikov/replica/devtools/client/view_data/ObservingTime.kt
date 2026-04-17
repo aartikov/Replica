@@ -1,6 +1,6 @@
 package me.aartikov.replica.devtools.client.view_data
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import me.aartikov.replica.devtools.dto.ObservingTimeDto
 
 sealed interface ObservingTime : Comparable<ObservingTime> {

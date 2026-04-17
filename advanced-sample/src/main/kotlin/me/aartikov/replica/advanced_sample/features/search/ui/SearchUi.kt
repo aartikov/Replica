@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import me.aartikov.replica.advanced_sample.R
 import me.aartikov.replica.advanced_sample.core.theme.AppTheme
 import me.aartikov.replica.advanced_sample.core.utils.plus
+import me.aartikov.replica.advanced_sample.core.utils.toCompose
 import me.aartikov.replica.advanced_sample.core.widget.ContentOrPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.EmptyPlaceholder
 import me.aartikov.replica.advanced_sample.core.widget.PullRefreshLceWidget
@@ -38,7 +39,6 @@ import me.aartikov.replica.advanced_sample.core.widget.RefreshingProgress
 import me.aartikov.replica.advanced_sample.features.search.domain.WikiSearchItem
 import me.aartikov.replica.advanced_sample.features.search.domain.WikiSearchResult
 import ru.mobileup.kmm_form_validation.control.InputControl
-import ru.mobileup.kmm_form_validation.toCompose
 
 @Composable
 fun SearchUi(

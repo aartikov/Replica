@@ -1,6 +1,6 @@
 package me.aartikov.replica.time
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Provides current time (as [Instant]).

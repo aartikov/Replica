@@ -1,6 +1,6 @@
 package me.aartikov.replica.common
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Has information about observers of a replica.
