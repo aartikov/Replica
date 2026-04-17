@@ -30,7 +30,7 @@ ktor = "3.4.2"
 dokka = "2.2.0"
 binaryCompatibilityValidator = "0.18.1"
 jetbrainsCompose = "1.10.3"
-form = "2.0.0"
+form = "2.1.0"
 composeNavigation = "2.9.7"
 
 [libraries]
