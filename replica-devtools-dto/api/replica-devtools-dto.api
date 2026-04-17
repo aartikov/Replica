@@ -36,7 +36,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated : m
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -44,6 +44,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaChildCreated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildCreated$Companion {
@@ -64,7 +65,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved : m
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -72,6 +73,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildRemoved$Companion {
@@ -94,7 +96,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated : m
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -102,6 +104,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaChildUpdated$Companion {
@@ -120,7 +123,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaCreated : me/aar
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaCreated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -128,6 +131,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaCreated$$ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaCreated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaCreated$Companion {
@@ -153,7 +157,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaDto$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -161,6 +165,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaDto$$seriali
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaDto;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaDto$Companion {
@@ -183,7 +188,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -191,6 +196,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto$$se
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaStateDto;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaStateDto$Companion {
@@ -211,7 +217,7 @@ public final class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated : me/aar
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -219,6 +225,7 @@ public synthetic class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated$$ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/KeyedReplicaUpdated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/KeyedReplicaUpdated$Companion {
@@ -253,17 +260,17 @@ public final class me/aartikov/replica/devtools/dto/ObservingTimeDto$Now : me/aa
 
 public final class me/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast : me/aartikov/replica/devtools/dto/ObservingTimeDto {
 	public static final field Companion Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast$Companion;
-	public fun <init> (Lkotlinx/datetime/Instant;)V
-	public final fun component1 ()Lkotlinx/datetime/Instant;
-	public final fun copy (Lkotlinx/datetime/Instant;)Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;
-	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;Lkotlinx/datetime/Instant;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;
+	public fun <init> (Lkotlin/time/Instant;)V
+	public final fun component1 ()Lkotlin/time/Instant;
+	public final fun copy (Lkotlin/time/Instant;)Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;
+	public static synthetic fun copy$default (Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;Lkotlin/time/Instant;ILjava/lang/Object;)Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getTime ()Lkotlinx/datetime/Instant;
+	public final fun getTime ()Lkotlin/time/Instant;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -271,6 +278,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInP
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ObservingTimeDto$TimeInPast$Companion {
@@ -289,7 +297,7 @@ public final class me/aartikov/replica/devtools/dto/ReplaceAll : me/aartikov/rep
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplaceAll$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplaceAll$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplaceAll$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -297,6 +305,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplaceAll$$serializer :
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplaceAll;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplaceAll$Companion {
@@ -319,7 +328,7 @@ public final class me/aartikov/replica/devtools/dto/ReplicaClientDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplicaClientDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplicaClientDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplicaClientDto$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -327,6 +336,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplicaClientDto$$serial
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplicaClientDto;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplicaClientDto$Companion {
@@ -345,7 +355,7 @@ public final class me/aartikov/replica/devtools/dto/ReplicaCreated : me/aartikov
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplicaCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplicaCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplicaCreated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -353,6 +363,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplicaCreated$$serializ
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplicaCreated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplicaCreated$Companion {
@@ -375,7 +386,7 @@ public final class me/aartikov/replica/devtools/dto/ReplicaDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplicaDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplicaDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplicaDto$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -383,6 +394,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplicaDto$$serializer :
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplicaDto;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplicaDto$Companion {
@@ -420,7 +432,7 @@ public final class me/aartikov/replica/devtools/dto/ReplicaStateDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplicaStateDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplicaStateDto$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplicaStateDto$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -428,6 +440,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplicaStateDto$$seriali
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplicaStateDto;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplicaStateDto$Companion {
@@ -448,7 +461,7 @@ public final class me/aartikov/replica/devtools/dto/ReplicaUpdated : me/aartikov
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class me/aartikov/replica/devtools/dto/ReplicaUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class me/aartikov/replica/devtools/dto/ReplicaUpdated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lme/aartikov/replica/devtools/dto/ReplicaUpdated$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -456,6 +469,7 @@ public synthetic class me/aartikov/replica/devtools/dto/ReplicaUpdated$$serializ
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lme/aartikov/replica/devtools/dto/ReplicaUpdated;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class me/aartikov/replica/devtools/dto/ReplicaUpdated$Companion {
