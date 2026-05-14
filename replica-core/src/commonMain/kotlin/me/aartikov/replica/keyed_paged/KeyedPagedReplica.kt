@@ -1,6 +1,5 @@
 package me.aartikov.replica.keyed_paged
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.paged.PagedReplicaObserver
@@ -20,14 +19,6 @@ interface KeyedPagedReplica<K : Any, out T : Any> {
      * @param keyFlow] - a [StateFlow] of keys. When key is changed an observer retargets to another chunk of data.
      */
     fun observe(observerHost: ReplicaObserverHost, keyFlow: StateFlow<K?>): PagedReplicaObserver<T>
-
-    @Deprecated("Use observe(observerHost) instead")
-    fun <K : Any, T : Any> KeyedPagedReplica<K, T>.observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        keyFlow: StateFlow<K?>
-    ): PagedReplicaObserver<T> =
-        observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
 
     /**
      * Loads fresh data from a network for a given [key].

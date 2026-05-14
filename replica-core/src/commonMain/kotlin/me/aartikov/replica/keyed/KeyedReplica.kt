@@ -1,6 +1,5 @@
 package me.aartikov.replica.keyed
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.ReplicaObserverHost
 import me.aartikov.replica.single.ReplicaObserver
@@ -19,14 +18,6 @@ interface KeyedReplica<K : Any, out T : Any> {
      * @param keyFlow - a [StateFlow] of keys. When key is changed an observer retargets to another chunk of data.
      */
     fun observe(observerHost: ReplicaObserverHost, keyFlow: StateFlow<K?>): ReplicaObserver<T>
-
-    @Deprecated("Use observe(observerHost) instead")
-    fun <K : Any, T : Any> KeyedReplica<K, T>.observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>,
-        keyFlow: StateFlow<K?>
-    ): ReplicaObserver<T> =
-        observe(ReplicaObserverHost(observerCoroutineScope, observerActive), keyFlow)
 
     /**
      * Loads fresh data from a network for a given [key].

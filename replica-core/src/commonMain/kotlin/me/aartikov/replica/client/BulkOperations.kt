@@ -83,19 +83,6 @@ suspend fun ReplicaClient.invalidateAll(
 }
 
 /**
- * Clears and invalidates all replicas
- *
- * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
- */
-@Deprecated("Use clearAll with required InvalidationMode")
-suspend fun ReplicaClient.clearAndInvalidateAll(
-    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
-) {
-    clearAll()
-    invalidateAll(mode)
-}
-
-/**
  * Cancels network requests in replicas with the matching tags.
  */
 suspend fun ReplicaClient.cancelByTags(predicate: (Set<ReplicaTag>) -> Boolean) {
@@ -181,21 +168,6 @@ suspend fun ReplicaClient.invalidateByTags(
 }
 
 /**
- * Clears and invalidates replicas with the matching tags.
- *
- * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
- */
-@Deprecated("Use clearByTags with required InvalidationMode")
-suspend fun ReplicaClient.clearAndInvalidateByTags(
-    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers,
-    predicate: (Set<ReplicaTag>) -> Boolean
-) {
-    clearByTags(predicate = predicate)
-    invalidateByTags(mode, predicate)
-}
-
-
-/**
  * Cancels network requests in replicas with a given [tag].
  */
 suspend fun ReplicaClient.cancelByTag(tag: ReplicaTag) {
@@ -224,18 +196,4 @@ suspend fun ReplicaClient.invalidateByTag(
     mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers
 ) {
     invalidateByTags(mode) { it.contains(tag) }
-}
-
-/**
- * Clears and invalidates replicas with a given [tag] stale.
- *
- * @param mode specifies how replicas behave after invalidation. See: [InvalidationMode].
- */
-@Deprecated("Use clearByTag with required InvalidationMode")
-suspend fun ReplicaClient.clearAndInvalidateByTag(
-    mode: InvalidationMode = InvalidationMode.RefreshIfHasObservers,
-    tag: ReplicaTag
-) {
-    clearByTag(tag)
-    invalidateByTag(tag, mode)
 }

@@ -1,7 +1,5 @@
 package me.aartikov.replica.single
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.StateFlow
 import me.aartikov.replica.common.ReplicaObserverHost
 
 /**
@@ -28,12 +26,6 @@ interface Replica<out T : Any> {
      * @param observerHost See [ReplicaObserverHost] for more details.
      */
     fun observe(observerHost: ReplicaObserverHost): ReplicaObserver<T>
-
-    @Deprecated("Use observe(observerHost) instead")
-    fun <T : Any> Replica<T>.observe(
-        observerCoroutineScope: CoroutineScope,
-        observerActive: StateFlow<Boolean>
-    ): ReplicaObserver<T> = observe(ReplicaObserverHost(observerCoroutineScope, observerActive))
 
     /**
      * Loads fresh data from the network.
