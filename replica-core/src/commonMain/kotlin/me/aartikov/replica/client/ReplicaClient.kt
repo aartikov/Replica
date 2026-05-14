@@ -43,7 +43,7 @@ interface ReplicaClient {
     }
 
     /**
-     * A coroutine scope that represents life time of a client.
+     * A coroutine scope that represents lifetime of a client.
      */
     val coroutineScope: CoroutineScope
 
@@ -209,7 +209,7 @@ interface ReplicaClient {
  *
  * @param networkConnectivityProvider See: [NetworkConnectivityProvider]
  * @param timeProvider See: [TimeProvider]
- * @param coroutineScope a coroutine scope that represents life time of a replica client. This scope must have a single-thread coroutine dispatcher for example [Dispatchers.Main.immediate].
+ * @param coroutineScope a coroutine scope that represents lifetime of a replica client. This scope must have a single-thread coroutine dispatcher for example [Dispatchers.Main.immediate].
  */
 fun ReplicaClient(
     networkConnectivityProvider: NetworkConnectivityProvider? = null,
