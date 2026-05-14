@@ -27,10 +27,6 @@ internal fun Lifecycle.activeFlow(): StateFlow<Boolean> {
             flow.value = true
         }
 
-        override fun onPause() {
-            flow.value = false
-        }
-
         override fun onStop() {
             flow.value = false
         }
