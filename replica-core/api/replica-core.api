@@ -4,12 +4,6 @@ public final class me/aartikov/replica/client/BulkOperationsKt {
 	public static final fun cancelByTags (Lme/aartikov/replica/client/ReplicaClient;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun clearAll (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun clearAll$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun clearAndInvalidateAll (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun clearAndInvalidateAll$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun clearAndInvalidateByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun clearAndInvalidateByTag$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lme/aartikov/replica/common/ReplicaTag;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static final fun clearAndInvalidateByTags (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun clearAndInvalidateByTags$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun clearByTag (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun clearByTag$default (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/ReplicaTag;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static final fun clearByTags (Lme/aartikov/replica/client/ReplicaClient;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -344,7 +338,6 @@ public final class me/aartikov/replica/keyed/KeyedPhysicalReplica$DefaultImpls {
 	public static synthetic fun clear$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun clearAll$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun invalidate$default (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/keyed/KeyedPhysicalReplica;Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 
 public final class me/aartikov/replica/keyed/KeyedPhysicalReplicaKt {
@@ -355,14 +348,12 @@ public abstract interface class me/aartikov/replica/keyed/KeyedReplica {
 	public abstract fun getData (Ljava/lang/Object;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun getData$default (Lme/aartikov/replica/keyed/KeyedReplica;Ljava/lang/Object;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun observe (Lme/aartikov/replica/common/ReplicaObserverHost;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
-	public fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 	public abstract fun refresh (Ljava/lang/Object;)V
 	public abstract fun revalidate (Ljava/lang/Object;)V
 }
 
 public final class me/aartikov/replica/keyed/KeyedReplica$DefaultImpls {
 	public static synthetic fun getData$default (Lme/aartikov/replica/keyed/KeyedReplica;Ljava/lang/Object;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/keyed/KeyedReplica;Lme/aartikov/replica/keyed/KeyedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 
 public abstract interface class me/aartikov/replica/keyed/KeyedReplicaEvent {
@@ -500,7 +491,6 @@ public final class me/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica$Def
 	public static synthetic fun clear$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun clearAll$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun invalidate$default (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Ljava/lang/Object;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 }
 
 public final class me/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplicaKt {
@@ -511,13 +501,8 @@ public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedReplic
 	public abstract fun loadNext (Ljava/lang/Object;)V
 	public abstract fun loadPrevious (Ljava/lang/Object;)V
 	public abstract fun observe (Lme/aartikov/replica/common/ReplicaObserverHost;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
-	public fun observe (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 	public abstract fun refresh (Ljava/lang/Object;)V
 	public abstract fun revalidate (Ljava/lang/Object;)V
-}
-
-public final class me/aartikov/replica/keyed_paged/KeyedPagedReplica$DefaultImpls {
-	public static fun observe (Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lme/aartikov/replica/keyed_paged/KeyedPagedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 }
 
 public abstract interface class me/aartikov/replica/keyed_paged/KeyedPagedReplicaEvent {
@@ -732,7 +717,6 @@ public abstract interface class me/aartikov/replica/paged/PagedPhysicalReplica :
 public final class me/aartikov/replica/paged/PagedPhysicalReplica$DefaultImpls {
 	public static synthetic fun clear$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun invalidate$default (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/paged/PagedPhysicalReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 }
 
 public final class me/aartikov/replica/paged/PagedPhysicalReplicaKt {
@@ -742,14 +726,9 @@ public final class me/aartikov/replica/paged/PagedPhysicalReplicaKt {
 public abstract interface class me/aartikov/replica/paged/PagedReplica {
 	public abstract fun loadNext ()V
 	public abstract fun loadPrevious ()V
-	public fun observe (Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 	public abstract fun observe (Lme/aartikov/replica/common/ReplicaObserverHost;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 	public abstract fun refresh ()V
 	public abstract fun revalidate ()V
-}
-
-public final class me/aartikov/replica/paged/PagedReplica$DefaultImpls {
-	public static fun observe (Lme/aartikov/replica/paged/PagedReplica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/paged/PagedReplicaObserver;
 }
 
 public final class me/aartikov/replica/paged/PagedReplicaData {
@@ -1024,7 +1003,6 @@ public abstract interface class me/aartikov/replica/single/PhysicalReplica : me/
 public final class me/aartikov/replica/single/PhysicalReplica$DefaultImpls {
 	public static synthetic fun clear$default (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun invalidate$default (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/common/InvalidationMode;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/single/PhysicalReplica;Lme/aartikov/replica/single/Replica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 
 public final class me/aartikov/replica/single/PhysicalReplicaKt {
@@ -1035,14 +1013,12 @@ public abstract interface class me/aartikov/replica/single/Replica {
 	public abstract fun getData (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun getData$default (Lme/aartikov/replica/single/Replica;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun observe (Lme/aartikov/replica/common/ReplicaObserverHost;)Lme/aartikov/replica/single/ReplicaObserver;
-	public fun observe (Lme/aartikov/replica/single/Replica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 	public abstract fun refresh ()V
 	public abstract fun revalidate ()V
 }
 
 public final class me/aartikov/replica/single/Replica$DefaultImpls {
 	public static synthetic fun getData$default (Lme/aartikov/replica/single/Replica;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static fun observe (Lme/aartikov/replica/single/Replica;Lme/aartikov/replica/single/Replica;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/flow/StateFlow;)Lme/aartikov/replica/single/ReplicaObserver;
 }
 
 public final class me/aartikov/replica/single/ReplicaData {
