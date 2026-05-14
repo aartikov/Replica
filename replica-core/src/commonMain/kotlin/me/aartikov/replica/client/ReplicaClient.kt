@@ -39,7 +39,9 @@ import me.aartikov.replica.time.TimeProvider
 interface ReplicaClient {
 
     companion object {
-        val DefaultCoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val DefaultCoroutineScope: CoroutineScope by lazy {
+            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        }
     }
 
     /**
