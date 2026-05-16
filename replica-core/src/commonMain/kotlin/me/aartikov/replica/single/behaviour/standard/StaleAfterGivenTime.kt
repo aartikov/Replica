@@ -1,6 +1,6 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -30,7 +30,7 @@ private class StaleAfterGivenTime<T : Any>(
             .onEach { event ->
                 when (event) {
                     is ReplicaEvent.FreshnessEvent.Freshened -> {
-                        replica.coroutineScope.relaunchStaleJob(replica)
+                        relaunchStaleJob(replica, replicaClient.behaviourDispatcher)
                     }
                     is ReplicaEvent.FreshnessEvent.BecameStale, is ReplicaEvent.ClearedEvent -> {
                         cancelStaleJob()
@@ -40,9 +40,9 @@ private class StaleAfterGivenTime<T : Any>(
             }.launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.relaunchStaleJob(replica: PhysicalReplica<T>) {
+    private fun relaunchStaleJob(replica: PhysicalReplica<T>, behaviourDispatcher: CoroutineDispatcher) {
         staleJob?.cancel()
-        staleJob = launch {
+        staleJob = replica.coroutineScope.launch(behaviourDispatcher) {
             delay(staleTime.inWholeMilliseconds)
             withContext(NonCancellable) {
                 replica.invalidate(InvalidationMode.DontRefresh)

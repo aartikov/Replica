@@ -1,6 +1,6 @@
 package me.aartikov.replica.paged.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -32,7 +32,7 @@ private class StaleAfterGivenTime<I : Any, P : Page<I>>(
             .onEach { event ->
                 when (event) {
                     is PagedReplicaEvent.FreshnessEvent.Freshened -> {
-                        pagedReplica.coroutineScope.relaunchStaleJob(pagedReplica)
+                        relaunchStaleJob(pagedReplica, replicaClient.behaviourDispatcher)
                     }
 
                     is PagedReplicaEvent.FreshnessEvent.BecameStale, is PagedReplicaEvent.ClearedEvent -> {
@@ -44,9 +44,9 @@ private class StaleAfterGivenTime<I : Any, P : Page<I>>(
             }.launchIn(pagedReplica.coroutineScope)
     }
 
-    private fun CoroutineScope.relaunchStaleJob(replica: PagedPhysicalReplica<I, P>) {
+    private fun relaunchStaleJob(replica: PagedPhysicalReplica<I, P>, behaviourDispatcher: CoroutineDispatcher) {
         staleJob?.cancel()
-        staleJob = launch {
+        staleJob = replica.coroutineScope.launch(behaviourDispatcher) {
             delay(staleTime)
             withContext(NonCancellable) {
                 replica.invalidate(InvalidationMode.DontRefresh)

@@ -17,7 +17,6 @@ public final class me/aartikov/replica/client/BulkOperationsKt {
 }
 
 public abstract interface class me/aartikov/replica/client/ReplicaClient {
-	public static final field Companion Lme/aartikov/replica/client/ReplicaClient$Companion;
 	public abstract fun createKeyedPagedReplica (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedFetcher;)Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;
 	public static synthetic fun createKeyedPagedReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed_paged/KeyedPagedFetcher;ILjava/lang/Object;)Lme/aartikov/replica/keyed_paged/KeyedPagedPhysicalReplica;
 	public abstract fun createKeyedReplica (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedReplicaSettings;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lme/aartikov/replica/keyed/KeyedStorage;Lme/aartikov/replica/keyed/KeyedFetcher;)Lme/aartikov/replica/keyed/KeyedPhysicalReplica;
@@ -27,6 +26,7 @@ public abstract interface class me/aartikov/replica/client/ReplicaClient {
 	public abstract fun createReplica (Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Ljava/util/List;Lme/aartikov/replica/single/Storage;Lme/aartikov/replica/single/Fetcher;)Lme/aartikov/replica/single/PhysicalReplica;
 	public static synthetic fun createReplica$default (Lme/aartikov/replica/client/ReplicaClient;Ljava/lang/String;Lme/aartikov/replica/single/ReplicaSettings;Ljava/util/Set;Ljava/util/List;Lme/aartikov/replica/single/Storage;Lme/aartikov/replica/single/Fetcher;ILjava/lang/Object;)Lme/aartikov/replica/single/PhysicalReplica;
 	public abstract fun getActions ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getBehaviourDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 	public abstract fun getEventFlow ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getNetworkConnectivityProvider ()Lme/aartikov/replica/network/NetworkConnectivityProvider;
@@ -37,10 +37,6 @@ public abstract interface class me/aartikov/replica/client/ReplicaClient {
 	public abstract fun onEachReplica (ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun onEachReplica$default (Lme/aartikov/replica/client/ReplicaClient;ZLkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun sendAction (Lme/aartikov/replica/common/ReplicaAction;)V
-}
-
-public final class me/aartikov/replica/client/ReplicaClient$Companion {
-	public final fun getDefaultCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
 }
 
 public final class me/aartikov/replica/client/ReplicaClient$DefaultImpls {
@@ -76,8 +72,8 @@ public final class me/aartikov/replica/client/ReplicaClientEvent$ReplicaCreated 
 }
 
 public final class me/aartikov/replica/client/ReplicaClientKt {
-	public static final fun ReplicaClient (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;)Lme/aartikov/replica/client/ReplicaClient;
-	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineScope;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
+	public static final fun ReplicaClient (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;)Lme/aartikov/replica/client/ReplicaClient;
+	public static synthetic fun ReplicaClient$default (Lme/aartikov/replica/network/NetworkConnectivityProvider;Lme/aartikov/replica/time/TimeProvider;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlinx/coroutines/CoroutineDispatcher;ILjava/lang/Object;)Lme/aartikov/replica/client/ReplicaClient;
 }
 
 public final class me/aartikov/replica/client/SendOptimisticActionKt {

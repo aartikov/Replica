@@ -1,10 +1,9 @@
 package me.aartikov.replica.client
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
-import me.aartikov.replica.client.ReplicaClient.Companion.DefaultCoroutineScope
 import me.aartikov.replica.client.internal.ReplicaClientImpl
 import me.aartikov.replica.common.ReplicaAction
 import me.aartikov.replica.common.ReplicaTag
@@ -38,16 +37,15 @@ import me.aartikov.replica.time.TimeProvider
  */
 interface ReplicaClient {
 
-    companion object {
-        val DefaultCoroutineScope: CoroutineScope by lazy {
-            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-        }
-    }
-
     /**
      * A coroutine scope that represents lifetime of a client.
      */
     val coroutineScope: CoroutineScope
+
+    /**
+     * A coroutine dispatcher for replica behaviour timers.
+     */
+    val behaviourDispatcher: CoroutineDispatcher
 
     /**
      * Returns [NetworkConnectivityProvider] that was passed to create a client.
@@ -211,16 +209,19 @@ interface ReplicaClient {
  *
  * @param networkConnectivityProvider See: [NetworkConnectivityProvider]
  * @param timeProvider See: [TimeProvider]
- * @param coroutineScope a coroutine scope that represents lifetime of a replica client. This scope must have a single-thread coroutine dispatcher for example [Dispatchers.Main.immediate].
+ * @param mainDispatcher a coroutine dispatcher that is used by replica client. Must be single-thread, for example [Dispatchers.Main.immediate].
+ * @param behaviourDispatcher a coroutine dispatcher for replica behaviour timers. Defaults to [mainDispatcher].
  */
 fun ReplicaClient(
     networkConnectivityProvider: NetworkConnectivityProvider? = null,
     timeProvider: TimeProvider = RealTimeProvider(),
-    coroutineScope: CoroutineScope = DefaultCoroutineScope
+    mainDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    behaviourDispatcher: CoroutineDispatcher = mainDispatcher
 ): ReplicaClient {
     return ReplicaClientImpl(
         networkConnectivityProvider,
         timeProvider,
-        coroutineScope
+        mainDispatcher,
+        behaviourDispatcher
     )
 }

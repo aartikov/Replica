@@ -2,6 +2,7 @@ package me.aartikov.replica.client.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,11 +50,13 @@ import me.aartikov.replica.time.TimeProvider
 internal class ReplicaClientImpl(
     override val networkConnectivityProvider: NetworkConnectivityProvider?,
     private val timeProvider: TimeProvider,
-    override val coroutineScope: CoroutineScope
+    mainDispatcher: CoroutineDispatcher,
+    override val behaviourDispatcher: CoroutineDispatcher
 ) : ReplicaClient {
 
-    @OptIn(ExperimentalStdlibApi::class)
-    private val coroutineDispatcher = coroutineScope.coroutineContext[CoroutineDispatcher.Key]!!
+    override val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + mainDispatcher)
+
+    private val coroutineDispatcher = mainDispatcher
 
     private val _eventFlow = MutableSharedFlow<ReplicaClientEvent>(extraBufferCapacity = 1000)
     override val eventFlow get() = _eventFlow.asSharedFlow()

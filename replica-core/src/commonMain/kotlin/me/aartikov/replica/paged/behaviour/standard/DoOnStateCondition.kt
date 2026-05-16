@@ -1,6 +1,6 @@
 package me.aartikov.replica.paged.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -44,7 +44,7 @@ private class DoOnStateCondition<I : Any, P : Page<I>>(
             .distinctUntilChanged()
             .onEach { conditionsMet ->
                 if (conditionsMet) {
-                    pagedReplica.coroutineScope.launchJob(pagedReplica)
+                    launchJob(pagedReplica, replicaClient.behaviourDispatcher)
                 } else {
                     cancelJob()
                 }
@@ -52,10 +52,10 @@ private class DoOnStateCondition<I : Any, P : Page<I>>(
             .launchIn(pagedReplica.coroutineScope)
     }
 
-    private fun CoroutineScope.launchJob(replica: PagedPhysicalReplica<I, P>) {
+    private fun launchJob(replica: PagedPhysicalReplica<I, P>, behaviourDispatcher: CoroutineDispatcher) {
         if (job?.isActive == true) return
 
-        job = launch {
+        job = replica.coroutineScope.launch(behaviourDispatcher) {
             delay(startDelay)
             while (true) {
                 withContext(NonCancellable) {

@@ -1,6 +1,6 @@
 package me.aartikov.replica.single.behaviour.standard
 
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -43,7 +43,7 @@ private class DoOnStateCondition<T : Any>(
             .distinctUntilChanged()
             .onEach { conditionsMet ->
                 if (conditionsMet) {
-                    replica.coroutineScope.launchJob(replica)
+                    launchJob(replica, replicaClient.behaviourDispatcher)
                 } else {
                     cancelJob()
                 }
@@ -51,10 +51,10 @@ private class DoOnStateCondition<T : Any>(
             .launchIn(replica.coroutineScope)
     }
 
-    private fun CoroutineScope.launchJob(replica: PhysicalReplica<T>) {
+    private fun launchJob(replica: PhysicalReplica<T>, behaviourDispatcher: CoroutineDispatcher) {
         if (job?.isActive == true) return
 
-        job = launch {
+        job = replica.coroutineScope.launch(behaviourDispatcher) {
             delay(startDelay.inWholeMilliseconds)
             while (true) {
                 withContext(NonCancellable) {
