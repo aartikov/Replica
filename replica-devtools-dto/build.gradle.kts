@@ -1,5 +1,6 @@
 import me.aartikov.gradle.setupBinaryCompatibilityValidator
 import me.aartikov.gradle.setupPublication
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -14,6 +15,11 @@ kotlin {
     jvm()
 
     js(IR) {
+        browser()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
         browser()
     }
 
