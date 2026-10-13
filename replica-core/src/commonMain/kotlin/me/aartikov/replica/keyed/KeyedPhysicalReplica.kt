@@ -147,6 +147,11 @@ interface KeyedPhysicalReplica<K : Any, T : Any> : KeyedReplica<K, T> {
 
     /**
      * Executes an [action] on each child [PhysicalReplica].
+     *
+     * Processes the children that exist when iteration starts, even if they are removed during an action.
+     * New children, including replacements for removed ones, are not included.
+     * Actions run sequentially. If an action throws an exception, iteration stops and the exception
+     * is passed to the caller.
      */
     suspend fun onEachReplica(action: suspend PhysicalReplica<T>.(K) -> Unit)
 }

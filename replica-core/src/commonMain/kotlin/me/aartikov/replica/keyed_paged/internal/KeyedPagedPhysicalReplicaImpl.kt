@@ -167,9 +167,9 @@ internal class KeyedPagedPhysicalReplicaImpl<K : Any, I : Any, P : Page<I>>(
     override suspend fun onEachPagedReplica(
         action: suspend PagedPhysicalReplica<I, P>.(K) -> Unit
     ) {
-        // make a copy for concurrent modification
+        // Take a snapshot so actions can add or remove children without disrupting iteration.
         val replicasCopy = replicasLock.withLock {
-            ArrayList(replicas.entries)
+            replicas.map { (key, replica) -> key to replica }
         }
         replicasCopy.forEach { (key, replica) ->
             replica.action(key)

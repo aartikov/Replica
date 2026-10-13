@@ -151,6 +151,11 @@ interface KeyedPagedPhysicalReplica<K : Any, I : Any, P : Page<I>> :
 
     /**
      * Executes an [action] on each child [PagedPhysicalReplica].
+     *
+     * Processes the children that exist when iteration starts, even if they are removed during an action.
+     * New children, including replacements for removed ones, are not included.
+     * Actions run sequentially. If an action throws an exception, iteration stops and the exception
+     * is passed to the caller.
      */
     suspend fun onEachPagedReplica(action: suspend PagedPhysicalReplica<I, P>.(K) -> Unit)
 }

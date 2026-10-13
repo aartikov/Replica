@@ -39,9 +39,13 @@ kotlin {
             api(libs.kotlin.datetime)
         }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.coroutines.test)
+        }
+
         jvmTest.dependencies {
             implementation(libs.junit)
-            implementation(libs.coroutines.test)
         }
     }
 }
